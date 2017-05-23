@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.safris.commons.math;
+package org.lib4j.math;
 
 import java.math.BigInteger;
 import java.util.Comparator;

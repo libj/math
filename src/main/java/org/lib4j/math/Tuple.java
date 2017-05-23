@@ -14,29 +14,30 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.safris.commons.math;
+package org.lib4j.math;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.Comparator;
 
-public class MovingAverageTest {
-  @Test
-  public void testMovingAverage() {
-    final double[] vals = new double[] {1, 2, 4, 1, 2, 3, 7};
-    final double[] averages = new double[] {
-      1.0,
-      1.5,
-      2.3333333333333335,
-      2.0,
-      2.0,
-      2.1666666666666665,
-      2.857142857142857
-    };
-
-    final MovingAverage movingAverage = new MovingAverage();
-    for (int i = 0; i < vals.length; i++) {
-      movingAverage.add(vals[i]);
-      Assert.assertEquals(averages[i], movingAverage.getAverage(), 0.0001d);
+public final class Tuple<X extends Number,Y extends Number> {
+  public static final Comparator<Tuple<?,?>> comparatorX = new Comparator<Tuple<?,?>>() {
+    @Override
+    public int compare(final Tuple<?,?> o1, final Tuple<?,?> o2) {
+      return Double.compare(o1.x.doubleValue(), o2.x.doubleValue());
     }
+  };
+
+  public static final Comparator<Tuple<?,?>> comparatorY = new Comparator<Tuple<?,?>>() {
+    @Override
+    public int compare(final Tuple<?,?> o1, final Tuple<?,?> o2) {
+      return Double.compare(o1.y.doubleValue(), o2.y.doubleValue());
+    }
+  };
+
+  public final X x;
+  public final Y y;
+
+  public Tuple(final X x, final Y y) {
+    this.x = x;
+    this.y = y;
   }
 }

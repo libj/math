@@ -14,30 +14,25 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.safris.commons.math;
+package org.lib4j.math;
 
-import java.util.Comparator;
+public final class MovingAverage {
+  private volatile double average = 0d;
+  private volatile double count = 0d;
 
-public final class Tuple<X extends Number,Y extends Number> {
-  public static final Comparator<Tuple<?,?>> comparatorX = new Comparator<Tuple<?,?>>() {
-    @Override
-    public int compare(final Tuple<?,?> o1, final Tuple<?,?> o2) {
-      return Double.compare(o1.x.doubleValue(), o2.x.doubleValue());
-    }
-  };
+  public void add(final double ... value) {
+    if (value == null)
+      return;
 
-  public static final Comparator<Tuple<?,?>> comparatorY = new Comparator<Tuple<?,?>>() {
-    @Override
-    public int compare(final Tuple<?,?> o1, final Tuple<?,?> o2) {
-      return Double.compare(o1.y.doubleValue(), o2.y.doubleValue());
-    }
-  };
+    average = (average * count + Functions.sum(value)) / (count += value.length);
+  }
 
-  public final X x;
-  public final Y y;
+  public double getAverage() {
+    return average;
+  }
 
-  public Tuple(final X x, final Y y) {
-    this.x = x;
-    this.y = y;
+  @Override
+  public String toString() {
+    return String.valueOf(getAverage());
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 lib4j
+/* Copyright (c) 2010 lib4j
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -14,21 +14,9 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.safris.commons.math;
+package org.lib4j.math;
 
-/**
- * https://ccrma.stanford.edu/~jos/parshl/Peak_Detection_Steps_3.html
- * https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
- */
-public final class QuadraticInterpolation {
-  public static double calcP(final double ym1, final double y0, final double yp1) {
-    return (yp1 - ym1) / (2d * (2d * y0 - yp1 - ym1));
-  }
-
-  public static double calcY(final double ym1, final double y0, final double yp1, final double p) {
-    return y0 - 0.25d * (ym1 - yp1) * p;
-  }
-
-  private QuadraticInterpolation() {
-  }
+public interface Constants {
+  public static final double LN_2 = 0.6931471805599453d;
+  public static final double LN_10 = 2.302585092994046d;
 }

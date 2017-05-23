@@ -14,33 +14,29 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.safris.commons.math;
+package org.lib4j.math;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MovingNormalTest {
+public class MovingAverageTest {
   @Test
-  public void testMovingNormal() {
-    final double[] vals = new double[] {1, 2, 4, 1, 2, 3, 4, 2};
-    final double[] normals = new double[] {
-      -1.0,
+  public void testMovingAverage() {
+    final double[] vals = new double[] {1, 2, 4, 1, 2, 3, 7};
+    final double[] averages = new double[] {
       1.0,
-      1.6329931618554523,
-      -0.8164965809277261,
-      -0.15617376188860588,
-      0.7808688094430303,
-      1.462614271203831,
-      -0.3375263702778072
+      1.5,
+      2.3333333333333335,
+      2.0,
+      2.0,
+      2.1666666666666665,
+      2.857142857142857
     };
 
-    Functions.normalize(vals);
-    final MovingNormal movingNormal = new MovingNormal();
-    movingNormal.normalize(vals, 0, 2);
-    movingNormal.normalize(vals, 2, 4);
-    movingNormal.normalize(vals, 4, 6);
-    movingNormal.normalize(vals, 6, 8);
-    for (int i = 0; i < vals.length; i++)
-      Assert.assertEquals(normals[i], vals[i], .00001);
+    final MovingAverage movingAverage = new MovingAverage();
+    for (int i = 0; i < vals.length; i++) {
+      movingAverage.add(vals[i]);
+      Assert.assertEquals(averages[i], movingAverage.getAverage(), 0.0001d);
+    }
   }
 }
