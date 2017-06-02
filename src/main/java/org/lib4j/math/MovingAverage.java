@@ -20,11 +20,9 @@ public final class MovingAverage {
   private volatile double average = 0d;
   private volatile double count = 0d;
 
-  public void add(final double ... value) {
-    if (value == null)
-      return;
-
-    average = (average * count + Functions.sum(value)) / (count += value.length);
+  public void add(final double ... values) {
+    for (final double value : values)
+      average += (value - average) / ++count;
   }
 
   public double getAverage() {
