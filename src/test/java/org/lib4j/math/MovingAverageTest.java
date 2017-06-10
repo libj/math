@@ -36,7 +36,7 @@ public class MovingAverageTest {
     final MovingAverage movingAverage = new MovingAverage();
     for (int i = 0; i < vals.length; i++) {
       movingAverage.add(vals[i]);
-      Assert.assertEquals(averages[i], movingAverage.getAverage(), 0.0001d);
+      Assert.assertEquals(averages[i], movingAverage.doubleValue(), 0.0001d);
     }
   }
 }
