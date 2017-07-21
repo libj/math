@@ -18,58 +18,7 @@ package org.lib4j.math;
 
 import java.math.BigInteger;
 
-public final class Functions {
-  public static double round(final double a, final int digits) {
-    if (digits < 0)
-      throw new IllegalArgumentException("digits < 0");
-
-    final double scale = Math.pow(10, digits);
-    return Math.round(a * scale) / scale;
-  }
-
-  /**
-   * Returns <tt>true</tt> if the two specified arrays of Objects are
-   * <i>equal</i> to one another.  The two arrays are considered equal if
-   * both arrays contain the same number of elements, and all corresponding
-   * pairs of elements in the two arrays are equal.  Two objects <tt>e1</tt>
-   * and <tt>e2</tt> are considered <i>equal</i> if <tt>(e1==null ? e2==null
-   * : e1.equals(e2))</tt>.  In other words, the two arrays are equal if
-   * they contain the same elements in the same order.  Also, two array
-   * references are considered equal if both are <tt>null</tt>.<p>
-   *
-   * @param a one array to be tested for equality
-   * @param a2 the other array to be tested for equality
-   * @return <tt>true</tt> if the two arrays are equal
-   */
-  public static boolean equals(final char[] a, final char[] a2, final int from , final int to) {
-      if (a == a2)
-        return true;
-
-      if (a == null || a2 == null)
-        return false;
-
-      if (from >= a.length || from >= a2.length || to >= a.length || to >= a2.length)
-        return false;
-
-      for (int i = from; i < to; i++)
-        if (a[i] != a2[i])
-          return false;
-
-      return true;
-  }
-
-  /**
-   * Calculate the log given both the base and value.
-   *
-   * @param base The base.
-   * @param value The value.
-   *
-   * @return The logger.
-   */
-  public static double log(final int base, final int value) {
-    return Math.log(value) / Math.log(base);
-  }
-
+public final class StatMath {
   /**
    * Calculate the root mean square of an array of values.
    *
@@ -484,7 +433,7 @@ public final class Functions {
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    return Functions.sum(value) / (double)value.length;
+    return sum(value) / (double)value.length;
   }
 
   /**
@@ -501,7 +450,7 @@ public final class Functions {
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    return Functions.sum(value) / (double)value.length;
+    return sum(value) / (double)value.length;
   }
 
   /**
@@ -518,7 +467,7 @@ public final class Functions {
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    return Functions.sum(value) / (double)value.length;
+    return sum(value) / (double)value.length;
   }
 
   /**
@@ -535,7 +484,7 @@ public final class Functions {
     if (value.length == 0)
       return Double.NaN;
 
-    return Functions.sum(value) / (double)value.length;
+    return sum(value) / (double)value.length;
   }
 
   /**
@@ -552,7 +501,7 @@ public final class Functions {
     if (value.length == 0)
       throw new NullPointerException("value == null");
 
-    return Functions.sum(value) / value.length;
+    return sum(value) / value.length;
   }
 
   /**
@@ -580,7 +529,7 @@ public final class Functions {
     if (values.length == 0 || start == end)
       return Double.NaN;
 
-    return Functions.sum(values, start, end) / (double)(end - start);
+    return sum(values, start, end) / (double)(end - start);
   }
 
   /**
@@ -608,7 +557,7 @@ public final class Functions {
     if (values.length == 0 || start == end)
       return Double.NaN;
 
-    return Functions.sum(values, start, end) / (double)(end - start);
+    return sum(values, start, end) / (double)(end - start);
   }
 
   /**
@@ -636,7 +585,7 @@ public final class Functions {
     if (values.length == 0 || start == end)
       return Double.NaN;
 
-    return Functions.sum(values, start, end) / (double)(end - start);
+    return sum(values, start, end) / (double)(end - start);
   }
 
   /**
@@ -664,7 +613,7 @@ public final class Functions {
     if (values.length == 0 || start == end)
       return Double.NaN;
 
-    return Functions.sum(values, start, end) / (double)(end - start);
+    return sum(values, start, end) / (double)(end - start);
   }
 
   /**
@@ -692,7 +641,7 @@ public final class Functions {
     if (values.length == 0 || start == end)
       return Double.NaN;
 
-    return Functions.sum(values, start, end) / (end - start);
+    return sum(values, start, end) / (end - start);
   }
 
   /**
@@ -1401,6 +1350,6 @@ public final class Functions {
     return binomial;
   }
 
-  private Functions() {
+  private StatMath() {
   }
 }

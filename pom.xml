@@ -46,6 +46,10 @@
       <artifactId>lib4j-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>ch.obermuhlner</groupId>
+      <artifactId>big-math</artifactId>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>

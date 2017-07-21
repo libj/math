@@ -34,7 +34,7 @@ public class MovingNormalTest {
       -0.3375263702778072
     };
 
-    Functions.normalize(vals);
+    StatMath.normalize(vals);
     final MovingNormal movingNormal = new MovingNormal();
     movingNormal.normalize(vals, 0, 2);
     movingNormal.normalize(vals, 2, 4);

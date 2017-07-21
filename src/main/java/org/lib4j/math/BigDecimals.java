@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 lib4j
+/* Copyright (c) 2017 lib4j
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,28 +16,12 @@
 
 package org.lib4j.math;
 
-import java.util.Comparator;
+import java.math.BigDecimal;
 
-public final class Tuple<X extends Number,Y extends Number> {
-  public static final Comparator<Tuple<?,?>> comparatorX = new Comparator<Tuple<?,?>>() {
-    @Override
-    public int compare(final Tuple<?,?> o1, final Tuple<?,?> o2) {
-      return Double.compare(o1.x.doubleValue(), o2.x.doubleValue());
-    }
-  };
+public final class BigDecimals {
+  public static BigDecimal TWO = BigDecimal.valueOf(2l);
+  public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
 
-  public static final Comparator<Tuple<?,?>> comparatorY = new Comparator<Tuple<?,?>>() {
-    @Override
-    public int compare(final Tuple<?,?> o1, final Tuple<?,?> o2) {
-      return Double.compare(o1.y.doubleValue(), o2.y.doubleValue());
-    }
-  };
-
-  public final X x;
-  public final Y y;
-
-  public Tuple(final X x, final Y y) {
-    this.x = x;
-    this.y = y;
+  private BigDecimals() {
   }
 }
