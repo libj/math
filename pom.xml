@@ -38,6 +38,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>ch.obermuhlner</groupId>
+      <artifactId>big-math</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.lib4j</groupId>
       <artifactId>lib4j-logging</artifactId>
     </dependency>
@@ -45,10 +50,6 @@
       <groupId>org.lib4j</groupId>
       <artifactId>lib4j-test</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.obermuhlner</groupId>
-      <artifactId>big-math</artifactId>
     </dependency>
   </dependencies>
   <repositories>
