@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 lib4j
+/* Copyright (c) 2018 lib4j
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,23 +16,20 @@
 
 package org.lib4j.math;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 
-public final class BigDecimals {
-  private static final HashMap<String,BigDecimal> instances = new HashMap<String,BigDecimal>();
+public final class BigIntegers {
+  private static final HashMap<String,BigInteger> instances = new HashMap<String,BigInteger>();
 
-  public static BigDecimal TWO = BigDecimal.valueOf(2l);
-  public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
-
-  public static BigDecimal instance(final String val) {
-    BigDecimal instance = instances.get(val);
+  public static BigInteger instance(final String val) {
+    BigInteger instance = instances.get(val);
     if (instance == null)
-      instances.put(val, instance = new BigDecimal(val));
+      instances.put(val, instance = new BigInteger(val));
 
     return instance;
   }
 
-  private BigDecimals() {
+  private BigIntegers() {
   }
 }
