@@ -920,7 +920,8 @@ public final class SafeMath {
    * Returns the closest {@code byte} to the argument, with ties after
    * {@code scale} digits after the decimal rounding to positive infinity.
    *
-   * @param   a   a byte value to be rounded to the scaled byte.
+   * @param   a     a byte value to be rounded to the scaled byte.
+   * @param   scale Ignored for byte type.
    * @return  the value of the argument rounded to the nearest
    *          {@code byte} value at {@code scale}.
    * @throws  IllegalArgumentException if scale is less than 0
@@ -933,7 +934,8 @@ public final class SafeMath {
    * Returns the closest {@code short} to the argument, with ties after
    * {@code scale} digits after the decimal rounding to positive infinity.
    *
-   * @param   a   a short value to be rounded to the scaled short.
+   * @param   a     a short value to be rounded to the scaled short.
+   * @param   scale Ignored for short type.
    * @return  the value of the argument rounded to the nearest
    *          {@code short} value at {@code scale}.
    * @throws  IllegalArgumentException if scale is less than 0
@@ -946,7 +948,8 @@ public final class SafeMath {
    * Returns the closest {@code int} to the argument, with ties after
    * {@code scale} digits after the decimal rounding to positive infinity.
    *
-   * @param   a   a int value to be rounded to the scaled int.
+   * @param   a     a int value to be rounded to the scaled int.
+   * @param   scale Ignored for int type.
    * @return  the value of the argument rounded to the nearest
    *          {@code int} value at {@code scale}.
    * @throws  IllegalArgumentException if scale is less than 0
@@ -959,7 +962,8 @@ public final class SafeMath {
    * Returns the closest {@code long} to the argument, with ties after
    * {@code scale} digits after the decimal rounding to positive infinity.
    *
-   * @param   a   a long value to be rounded to the scaled long.
+   * @param   a     a long value to be rounded to the scaled long.
+   * @param   scale Ignored for long type.
    * @return  the value of the argument rounded to the nearest
    *          {@code long} value at {@code scale}.
    * @throws  IllegalArgumentException if scale is less than 0
