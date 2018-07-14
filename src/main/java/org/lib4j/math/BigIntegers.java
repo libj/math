@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 
 public final class BigIntegers {
-  private static final HashMap<String,BigInteger> instances = new HashMap<String,BigInteger>();
+  private static final HashMap<String,BigInteger> instances = new HashMap<>();
 
   public static BigInteger instance(final String val) {
     BigInteger instance = instances.get(val);

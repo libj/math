@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 public final class BigDecimals {
-  private static final HashMap<String,BigDecimal> instances = new HashMap<String,BigDecimal>();
+  private static final HashMap<String,BigDecimal> instances = new HashMap<>();
 
   public static BigDecimal TWO = BigDecimal.valueOf(2l);
   public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
