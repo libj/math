@@ -28,7 +28,7 @@ public final class StatMath {
    */
   public static double rms(final short ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -49,7 +49,7 @@ public final class StatMath {
    */
   public static double rms(final int ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -70,7 +70,7 @@ public final class StatMath {
    */
   public static double rms(final long ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -91,7 +91,7 @@ public final class StatMath {
    */
   public static double rms(final float ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -112,7 +112,7 @@ public final class StatMath {
    */
   public static double rms(final double ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -133,7 +133,7 @@ public final class StatMath {
    */
   public static short min(final short ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -155,7 +155,7 @@ public final class StatMath {
    */
   public static int min(final int ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -177,7 +177,7 @@ public final class StatMath {
    */
   public static long min(final long ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -199,7 +199,7 @@ public final class StatMath {
    */
   public static float min(final float ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -221,7 +221,7 @@ public final class StatMath {
    */
   public static double min(final double ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -243,7 +243,7 @@ public final class StatMath {
    */
   public static short max(final short ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -265,7 +265,7 @@ public final class StatMath {
    */
   public static int max(final int ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -287,7 +287,7 @@ public final class StatMath {
    */
   public static long max(final long ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -309,7 +309,7 @@ public final class StatMath {
    */
   public static float max(final float ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -331,7 +331,7 @@ public final class StatMath {
    */
   public static double max(final double ... values) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -428,7 +428,7 @@ public final class StatMath {
    */
   public static double avg(final short ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -445,7 +445,7 @@ public final class StatMath {
    */
   public static double avg(final int ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -462,7 +462,7 @@ public final class StatMath {
    */
   public static double avg(final long ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -479,7 +479,7 @@ public final class StatMath {
    */
   public static double avg(final float ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       return Double.NaN;
@@ -496,10 +496,10 @@ public final class StatMath {
    */
   public static double avg(final double ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     return sum(value) / value.length;
   }
@@ -515,7 +515,7 @@ public final class StatMath {
    */
   public static double avg(final short[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -543,7 +543,7 @@ public final class StatMath {
    */
   public static double avg(final int[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -571,7 +571,7 @@ public final class StatMath {
    */
   public static double avg(final long[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -599,7 +599,7 @@ public final class StatMath {
    */
   public static double avg(final float[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -627,7 +627,7 @@ public final class StatMath {
    */
   public static double avg(final double[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -653,7 +653,7 @@ public final class StatMath {
    */
   public static int sum(final short ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -674,7 +674,7 @@ public final class StatMath {
    */
   public static long sum(final int ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -695,7 +695,7 @@ public final class StatMath {
    */
   public static long sum(final long ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -716,7 +716,7 @@ public final class StatMath {
    */
   public static float sum(final float ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -737,7 +737,7 @@ public final class StatMath {
    */
   public static double sum(final double ... value) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -760,7 +760,7 @@ public final class StatMath {
    */
   public static int sum(final short[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -795,7 +795,7 @@ public final class StatMath {
    */
   public static int sum(final int[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -830,7 +830,7 @@ public final class StatMath {
    */
   public static long sum(final long[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -865,7 +865,7 @@ public final class StatMath {
    */
   public static float sum(final float[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -900,7 +900,7 @@ public final class StatMath {
    */
   public static double sum(final double[] values, final int start, final int end) {
     if (values == null)
-      throw new NullPointerException("values == null");
+      throw new IllegalArgumentException("values == null");
 
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
@@ -936,7 +936,7 @@ public final class StatMath {
    */
   public static int sum(final short[][] value, final int dimension) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -960,7 +960,7 @@ public final class StatMath {
    */
   public static int sum(final int[][] value, final int dimension) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -984,7 +984,7 @@ public final class StatMath {
    */
   public static long sum(final long[][] value, final int dimension) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -1008,7 +1008,7 @@ public final class StatMath {
    */
   public static float sum(final float[][] value, final int dimension) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
@@ -1032,7 +1032,7 @@ public final class StatMath {
    */
   public static double sum(final double[][] value, final int dimension) {
     if (value == null)
-      throw new NullPointerException("value == null");
+      throw new IllegalArgumentException("value == null");
 
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
