@@ -23,13 +23,9 @@ public final class StatMath {
    * Calculate the root mean square of an array of values.
    *
    * @param values The values.
-   *
    * @return The rms.
    */
   public static double rms(final short ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -44,13 +40,9 @@ public final class StatMath {
    * Calculate the root mean square of an array of values.
    *
    * @param values The values.
-   *
    * @return The rms.
    */
   public static double rms(final int ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -65,13 +57,9 @@ public final class StatMath {
    * Calculate the root mean square of an array of values.
    *
    * @param values The values.
-   *
    * @return The rms.
    */
   public static double rms(final long ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -86,13 +74,9 @@ public final class StatMath {
    * Calculate the root mean square of an array of values.
    *
    * @param values The values.
-   *
    * @return The rms.
    */
   public static double rms(final float ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -107,13 +91,9 @@ public final class StatMath {
    * Calculate the root mean square of an array of values.
    *
    * @param values The values.
-   *
    * @return The rms.
    */
   public static double rms(final double ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -128,13 +108,9 @@ public final class StatMath {
    * Calculate the minimum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The minimum value.
    */
   public static short min(final short ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -150,13 +126,9 @@ public final class StatMath {
    * Calculate the minimum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The minimum value.
    */
   public static int min(final int ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -172,13 +144,9 @@ public final class StatMath {
    * Calculate the minimum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The minimum value.
    */
   public static long min(final long ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -194,13 +162,9 @@ public final class StatMath {
    * Calculate the minimum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The minimum value.
    */
   public static float min(final float ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -216,13 +180,9 @@ public final class StatMath {
    * Calculate the minimum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The minimum value.
    */
   public static double min(final double ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -238,13 +198,9 @@ public final class StatMath {
    * Calculate the maximum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The maximum value.
    */
   public static short max(final short ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -260,13 +216,9 @@ public final class StatMath {
    * Calculate the maximum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The maximum value.
    */
   public static int max(final int ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -282,13 +234,9 @@ public final class StatMath {
    * Calculate the maximum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The maximum value.
    */
   public static long max(final long ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -304,13 +252,9 @@ public final class StatMath {
    * Calculate the maximum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The maximum value.
    */
   public static float max(final float ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -326,13 +270,9 @@ public final class StatMath {
    * Calculate the maximum value of an array of values.
    *
    * @param values The values.
-   *
    * @return The maximum value.
    */
   public static double max(final double ... values) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
@@ -352,7 +292,6 @@ public final class StatMath {
    * @param value The value to test.
    * @param min The minimum accepted value.
    * @param max The maximum accepted value.
-   *
    * @return The value complying to the threshold.
    */
   public static short threshold(final short value, final short min, final short max) {
@@ -367,7 +306,6 @@ public final class StatMath {
    * @param value The value to test.
    * @param min The minimum accepted value.
    * @param max The maximum accepted value.
-   *
    * @return The value complying to the threshold.
    */
   public static int threshold(final int value, final int min, final int max) {
@@ -382,7 +320,6 @@ public final class StatMath {
    * @param value The value to test.
    * @param min The minimum accepted value.
    * @param max The maximum accepted value.
-   *
    * @return The value complying to the threshold.
    */
   public static long threshold(final long value, final long min, final long max) {
@@ -397,7 +334,6 @@ public final class StatMath {
    * @param value The value to test.
    * @param min The minimum accepted value.
    * @param max The maximum accepted value.
-   *
    * @return The value complying to the threshold.
    */
   public static float threshold(final float value, final float min, final float max) {
@@ -412,7 +348,6 @@ public final class StatMath {
    * @param value The value to test.
    * @param min The minimum accepted value.
    * @param max The maximum accepted value.
-   *
    * @return The value complying to the threshold.
    */
   public static double threshold(final double value, final double min, final double max) {
@@ -423,13 +358,9 @@ public final class StatMath {
    * Compute the average of the members of the argument array.
    *
    * @param value The vararg array of values.
-   *
    * @return The average value.
    */
   public static double avg(final short ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -440,13 +371,9 @@ public final class StatMath {
    * Compute the average of the members of the argument array.
    *
    * @param value The vararg array of values.
-   *
    * @return The average value.
    */
   public static double avg(final int ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -457,13 +384,9 @@ public final class StatMath {
    * Compute the average of the members of the argument array.
    *
    * @param value The vararg array of values.
-   *
    * @return The average value.
    */
   public static double avg(final long ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -474,13 +397,9 @@ public final class StatMath {
    * Compute the average of the members of the argument array.
    *
    * @param value The vararg array of values.
-   *
    * @return The average value.
    */
   public static double avg(final float ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       return Double.NaN;
 
@@ -491,16 +410,9 @@ public final class StatMath {
    * Compute the average of the members of the argument array.
    *
    * @param value The vararg array of values.
-   *
    * @return The average value.
    */
   public static double avg(final double ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
-    if (value.length == 0)
-      throw new IllegalArgumentException("value == null");
-
     return sum(value) / value.length;
   }
 
@@ -510,13 +422,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static double avg(final short[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -538,13 +446,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static double avg(final int[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -566,13 +470,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static double avg(final long[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -594,13 +494,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static double avg(final float[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -622,13 +518,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static double avg(final double[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -648,13 +540,9 @@ public final class StatMath {
    * Compute the sum of values in the argument array.
    *
    * @param  value The vararg array of values.
-   *
    * @return The sum of values in the argument array.
    */
   public static int sum(final short ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -669,13 +557,9 @@ public final class StatMath {
    * Compute the sum of values in the argument array.
    *
    * @param  value The vararg array of values.
-   *
    * @return The sum of values in the argument array.
    */
   public static long sum(final int ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -690,13 +574,9 @@ public final class StatMath {
    * Compute the sum of values in the argument array.
    *
    * @param  value The vararg array of values.
-   *
    * @return The sum of values in the argument array.
    */
   public static long sum(final long ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -711,13 +591,9 @@ public final class StatMath {
    * Compute the sum of values in the argument array.
    *
    * @param  value The vararg array of values.
-   *
    * @return The sum of values in the argument array.
    */
   public static float sum(final float ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -732,13 +608,9 @@ public final class StatMath {
    * Compute the sum of values in the argument array.
    *
    * @param  value The vararg array of values.
-   *
    * @return The sum of values in the argument array.
    */
   public static double sum(final double ... value) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -755,13 +627,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static int sum(final short[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -790,13 +658,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static int sum(final int[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -825,13 +689,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static long sum(final long[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -860,13 +720,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static float sum(final float[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -895,13 +751,9 @@ public final class StatMath {
    * @param values The array of values.
    * @param start Start index from which to aggregate.
    * @param end End index to which to aggregate.
-   *
    * @return The average value.
    */
   public static double sum(final double[] values, final int start, final int end) {
-    if (values == null)
-      throw new IllegalArgumentException("values == null");
-
     if (start < 0)
       throw new IllegalArgumentException("start < 0");
 
@@ -931,13 +783,9 @@ public final class StatMath {
    *
    * @param value The 2 dimensional array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The sum of values in the argument array.
    */
   public static int sum(final short[][] value, final int dimension) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -955,13 +803,9 @@ public final class StatMath {
    *
    * @param value The 2 dimensional array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The sum of values in the argument array.
    */
   public static int sum(final int[][] value, final int dimension) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -979,13 +823,9 @@ public final class StatMath {
    *
    * @param value The 2 dimensional array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The sum of values in the argument array.
    */
   public static long sum(final long[][] value, final int dimension) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -1003,13 +843,9 @@ public final class StatMath {
    *
    * @param value The 2 dimensional array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The sum of values in the argument array.
    */
   public static float sum(final float[][] value, final int dimension) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -1027,13 +863,9 @@ public final class StatMath {
    *
    * @param value The 2 dimensional array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The sum of values in the argument array.
    */
   public static double sum(final double[][] value, final int dimension) {
-    if (value == null)
-      throw new IllegalArgumentException("value == null");
-
     if (value.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
@@ -1048,7 +880,6 @@ public final class StatMath {
    * Calculate the standard deviation of the values in the argument array.
    *
    * @param values The array of values.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final short[] values) {
@@ -1064,7 +895,6 @@ public final class StatMath {
    * Calculate the standard deviation of the values in the argument array.
    *
    * @param values The array of values.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final int[] values) {
@@ -1080,7 +910,6 @@ public final class StatMath {
    * Calculate the standard deviation of the values in the argument array.
    *
    * @param values The array of values.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final long[] values) {
@@ -1096,7 +925,6 @@ public final class StatMath {
    * Calculate the standard deviation of the values in the argument array.
    *
    * @param values The array of values.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final float[] values) {
@@ -1112,7 +940,6 @@ public final class StatMath {
    * Calculate the standard deviation of the values in the argument array.
    *
    * @param values The array of values.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final double[] values) {
@@ -1131,7 +958,6 @@ public final class StatMath {
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final short[][] data, final int dimension) {
@@ -1150,7 +976,6 @@ public final class StatMath {
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final int[][] data, final int dimension) {
@@ -1169,7 +994,6 @@ public final class StatMath {
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final long[][] data, final int dimension) {
@@ -1188,7 +1012,6 @@ public final class StatMath {
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final float[][] data, final int dimension) {
@@ -1207,7 +1030,6 @@ public final class StatMath {
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
-   *
    * @return The standard deviation of the values.
    */
   public static double stdDev(final double[][] data, final int dimension) {
@@ -1339,7 +1161,6 @@ public final class StatMath {
    *
    * @param n Pool size
    * @param k Selection size
-   *
    * @return The binomial coefficient of (final n choose k)
    */
   public static BigInteger binomial(final int n, final int k) {
