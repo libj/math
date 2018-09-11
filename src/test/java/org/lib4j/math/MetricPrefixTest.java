@@ -16,19 +16,20 @@
 
 package org.lib4j.math;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class MetricPrefixTest {
   @Test
   public void test() {
-    Assert.assertNull(MetricPrefix.ofPower(-27));
-    Assert.assertEquals(MetricPrefix.YOCTO, MetricPrefix.ofPower(-24));
-    Assert.assertEquals(MetricPrefix.ATTO, MetricPrefix.ofPower(-18));
-    Assert.assertNull(MetricPrefix.ofPower(0));
-    Assert.assertEquals(MetricPrefix.MEGA, MetricPrefix.ofPower(6));
-    Assert.assertEquals(MetricPrefix.GIGA, MetricPrefix.ofPower(9));
-    Assert.assertEquals(MetricPrefix.YOTTA, MetricPrefix.ofPower(24));
-    Assert.assertNull(MetricPrefix.ofPower(27));
+    assertNull(MetricPrefix.ofPower(-27));
+    assertEquals(MetricPrefix.YOCTO, MetricPrefix.ofPower(-24));
+    assertEquals(MetricPrefix.ATTO, MetricPrefix.ofPower(-18));
+    assertNull(MetricPrefix.ofPower(0));
+    assertEquals(MetricPrefix.MEGA, MetricPrefix.ofPower(6));
+    assertEquals(MetricPrefix.GIGA, MetricPrefix.ofPower(9));
+    assertEquals(MetricPrefix.YOTTA, MetricPrefix.ofPower(24));
+    assertNull(MetricPrefix.ofPower(27));
   }
 }

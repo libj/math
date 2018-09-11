@@ -16,7 +16,8 @@
 
 package org.lib4j.math;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class MovingNormalTest {
@@ -41,6 +42,6 @@ public class MovingNormalTest {
     movingNormal.normalize(vals, 4, 6);
     movingNormal.normalize(vals, 6, 8);
     for (int i = 0; i < vals.length; i++)
-      Assert.assertEquals(normals[i], vals[i], .00001);
+      assertEquals(normals[i], vals[i], .00001);
   }
 }
