@@ -1,4 +1,4 @@
-/* Copyright (c) 2010 lib4j
+/* Copyright (c) 2010 FastJAX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.lib4j.math;
+package org.fastjax.math;
 
 public final class Constants {
   public static final double LOG_2 = 0.6931471805599453;

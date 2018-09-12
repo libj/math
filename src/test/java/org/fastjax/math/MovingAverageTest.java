@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 lib4j
+/* Copyright (c) 2012 FastJAX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -14,25 +14,30 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.lib4j.math;
+package org.fastjax.math;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
+import static org.junit.Assert.*;
 
-public final class BigDecimals {
-  private static final HashMap<String,BigDecimal> instances = new HashMap<>();
+import org.junit.Test;
 
-  public static BigDecimal TWO = BigDecimal.valueOf(2l);
-  public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
+public class MovingAverageTest {
+  @Test
+  public void testMovingAverage() {
+    final double[] vals = new double[] {1, 2, 4, 1, 2, 3, 7};
+    final double[] averages = new double[] {
+      1.0,
+      1.5,
+      2.3333333333333335,
+      2.0,
+      2.0,
+      2.1666666666666665,
+      2.857142857142857
+    };
 
-  public static BigDecimal instance(final String val) {
-    BigDecimal instance = instances.get(val);
-    if (instance == null)
-      instances.put(val, instance = new BigDecimal(val));
-
-    return instance;
-  }
-
-  private BigDecimals() {
+    final MovingAverage movingAverage = new MovingAverage();
+    for (int i = 0; i < vals.length; i++) {
+      movingAverage.add(vals[i]);
+      assertEquals(averages[i], movingAverage.doubleValue(), 0.0001d);
+    }
   }
 }

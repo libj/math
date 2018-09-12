@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 lib4j
+/* Copyright (c) 2018 FastJAX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -14,22 +14,22 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.lib4j.math;
+package org.fastjax.math;
 
-import static org.junit.Assert.*;
+import java.math.BigInteger;
+import java.util.HashMap;
 
-import org.junit.Test;
+public final class BigIntegers {
+  private static final HashMap<String,BigInteger> instances = new HashMap<>();
 
-public class MetricPrefixTest {
-  @Test
-  public void test() {
-    assertNull(MetricPrefix.ofPower(-27));
-    assertEquals(MetricPrefix.YOCTO, MetricPrefix.ofPower(-24));
-    assertEquals(MetricPrefix.ATTO, MetricPrefix.ofPower(-18));
-    assertNull(MetricPrefix.ofPower(0));
-    assertEquals(MetricPrefix.MEGA, MetricPrefix.ofPower(6));
-    assertEquals(MetricPrefix.GIGA, MetricPrefix.ofPower(9));
-    assertEquals(MetricPrefix.YOTTA, MetricPrefix.ofPower(24));
-    assertNull(MetricPrefix.ofPower(27));
+  public static BigInteger instance(final String val) {
+    BigInteger instance = instances.get(val);
+    if (instance == null)
+      instances.put(val, instance = new BigInteger(val));
+
+    return instance;
+  }
+
+  private BigIntegers() {
   }
 }

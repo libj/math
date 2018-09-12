@@ -1,4 +1,4 @@
-package org.lib4j.math;
+package org.fastjax.math;
 
 public final class FastMath {
   /**
