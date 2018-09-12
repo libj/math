@@ -47,8 +47,9 @@
       <artifactId>lib4j-logging</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.lib4j</groupId>
-      <artifactId>lib4j-test</artifactId>
+      <groupId>org.fastjax</groupId>
+      <artifactId>fastjax-test</artifactId>
+      <version>1.1.7-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
