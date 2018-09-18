@@ -24,7 +24,6 @@
     <artifactId>fastjax</artifactId>
     <version>1.11.15-SNAPSHOT</version>
   </parent>
-  <groupId>org.fastjax</groupId>
   <artifactId>math</artifactId>
   <version>0.6.4-SNAPSHOT</version>
   <name>${project.groupId}:${project.artifactId}</name>
