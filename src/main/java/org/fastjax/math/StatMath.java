@@ -956,7 +956,7 @@ public final class StatMath {
    * This method accepts a 2 dimensional array, allowing one to iterate
    * through a specific dimension, 0 or 1.
    *
-   * @param values The array of values.
+   * @param data The array of values.
    * @param dimension The index of dimension that should be aggregated.
    * @return The standard deviation of the values.
    */
@@ -974,7 +974,7 @@ public final class StatMath {
    * This method accepts a 2 dimensional array, allowing one to iterate
    * through a specific dimension, 0 or 1.
    *
-   * @param values The array of values.
+   * @param data The array of values.
    * @param dimension The index of dimension that should be aggregated.
    * @return The standard deviation of the values.
    */
@@ -992,7 +992,7 @@ public final class StatMath {
    * This method accepts a 2 dimensional array, allowing one to iterate
    * through a specific dimension, 0 or 1.
    *
-   * @param values The array of values.
+   * @param data The array of values.
    * @param dimension The index of dimension that should be aggregated.
    * @return The standard deviation of the values.
    */
@@ -1010,7 +1010,7 @@ public final class StatMath {
    * This method accepts a 2 dimensional array, allowing one to iterate
    * through a specific dimension, 0 or 1.
    *
-   * @param values The array of values.
+   * @param data The array of values.
    * @param dimension The index of dimension that should be aggregated.
    * @return The standard deviation of the values.
    */
@@ -1028,7 +1028,7 @@ public final class StatMath {
    * This method accepts a 2 dimensional array, allowing one to iterate
    * through a specific dimension, 0 or 1.
    *
-   * @param values The array of values.
+   * @param data The array of values.
    * @param dimension The index of dimension that should be aggregated.
    * @return The standard deviation of the values.
    */

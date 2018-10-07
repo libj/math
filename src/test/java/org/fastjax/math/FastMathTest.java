@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FastJAX
+/* Copyright (c) 2018 FastJAX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FastMathTest {
-  private static final Logger logger = LoggerFactory.getLogger(FastMathTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(SafeMathTest.class);
   private static int iterations = 10000000;
 
   @Test
@@ -44,7 +44,7 @@ public class FastMathTest {
 
     final long ts3 = System.currentTimeMillis();
 
-    logger.info("Total execution time (FastMath.pow): " + (ts1 - ts0));
+    logger.info("Total execution time (SafeMath.pow): " + (ts1 - ts0));
     logger.info("Total execution time (Math.pow): " + (ts2 - ts1));
     logger.info("Total execution time ((long)Math.pow): " + (ts3 - ts2));
     assertTrue(ts1 - ts0 < ts2 - ts1);
