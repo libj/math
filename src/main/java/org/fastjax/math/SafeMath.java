@@ -826,9 +826,9 @@ public final class SafeMath {
    * and only if the result of applying the method to the value is equal to the
    * value.)
    *
-   * @param a base.
-   * @param b the exponent.
-   * @return the value {@code a}<sup>{@code b}</sup>.
+   * @param a The base.
+   * @param b The exponent.
+   * @return The value {@code a}<sup>{@code b}</sup>.
    */
   public static double pow(final double a, final double b) {
     return StrictMath.pow(a, b);
