@@ -30,6 +30,8 @@ public final class BigIntegers {
     return instance;
   }
 
+  public static final BigInteger TWO = BigInteger.valueOf(2);
+
   private BigIntegers() {
   }
 }
