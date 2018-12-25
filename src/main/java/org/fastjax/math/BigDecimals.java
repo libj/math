@@ -19,13 +19,27 @@ package org.fastjax.math;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
+/**
+ * Utility functions for operations pertaining to {@link BigDecimal}.
+ */
 public final class BigDecimals {
   private static final HashMap<String,BigDecimal> instances = new HashMap<>();
 
+  /** The value 2, with a scale of 0. */
   public static BigDecimal TWO = BigDecimal.valueOf(2l);
+
+  /** The value {@code PI}, with a scale of 15. */
   public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
 
-  public static BigDecimal instance(final String val) {
+  /**
+   * Returns a cached reference to the {@code BigDecimal} object representing
+   * the specified string value.
+   *
+   * @param val The value of the desired {@code BigDecimal} instance.
+   * @return A cached reference to the {@code BigDecimal} object representing
+   *         the specified string value.
+   */
+  public static BigDecimal of(final String val) {
     BigDecimal instance = instances.get(val);
     if (instance == null)
       instances.put(val, instance = new BigDecimal(val));

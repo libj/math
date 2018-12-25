@@ -19,18 +19,30 @@ package org.fastjax.math;
 import java.math.BigInteger;
 import java.util.HashMap;
 
+/**
+ * Utility functions for operations pertaining to {@link BigInteger}.
+ */
 public final class BigIntegers {
   private static final HashMap<String,BigInteger> instances = new HashMap<>();
 
-  public static BigInteger instance(final String val) {
+  /** The {@code BigInteger} constant two. */
+  public static final BigInteger TWO = BigInteger.valueOf(2);
+
+  /**
+   * Returns a cached reference to the {@code BigInteger} object representing
+   * the specified string value.
+   *
+   * @param val The value of the desired {@code BigInteger} instance.
+   * @return A cached reference to the {@code BigInteger} object representing
+   *         the specified string value.
+   */
+  public static BigInteger of(final String val) {
     BigInteger instance = instances.get(val);
     if (instance == null)
       instances.put(val, instance = new BigInteger(val));
 
     return instance;
   }
-
-  public static final BigInteger TWO = BigInteger.valueOf(2);
 
   private BigIntegers() {
   }

@@ -23,8 +23,8 @@ import org.junit.Test;
 public class MovingAverageTest {
   @Test
   public void testMovingAverage() {
-    final double[] vals = new double[] {1, 2, 4, 1, 2, 3, 7};
-    final double[] averages = new double[] {
+    final double[] vals = {1, 2, 4, 1, 2, 3, 7};
+    final double[] averages = {
       1.0,
       1.5,
       2.3333333333333335,
@@ -35,7 +35,7 @@ public class MovingAverageTest {
     };
 
     final MovingAverage movingAverage = new MovingAverage();
-    for (int i = 0; i < vals.length; i++) {
+    for (int i = 0; i < vals.length; ++i) {
       movingAverage.add(vals[i]);
       assertEquals(averages[i], movingAverage.doubleValue(), 0.0001d);
     }

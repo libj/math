@@ -16,8 +16,14 @@
 
 package org.fastjax.math;
 
+/**
+ * Common numerical constants.
+ */
 public final class Constants {
+  /** The {@code double} constant log(2) */
   public static final double LOG_2 = 0.6931471805599453;
+
+  /** The {@code double} constant log(10) */
   public static final double LOG_10 = 2.302585092994046;
 
   private Constants() {

@@ -30,25 +30,25 @@ public class FastMathTest {
   @SuppressWarnings("unused")
   public void test() {
     final long ts0 = System.currentTimeMillis();
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i < iterations; ++i)
       FastMath.pow(2, 73);
 
     final long ts1 = System.currentTimeMillis();
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i < iterations; ++i)
       Math.pow(2, 73);
 
     final long ts2 = System.currentTimeMillis();
     long l;
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i < iterations; ++i)
       l = (long)Math.pow(2, 73);
 
     final long ts3 = System.currentTimeMillis();
 
-    logger.info("Total execution time (SafeMath.pow): " + (ts1 - ts0));
+    logger.info("Total execution time (FastMath.pow): " + (ts1 - ts0));
     logger.info("Total execution time (Math.pow): " + (ts2 - ts1));
     logger.info("Total execution time ((long)Math.pow): " + (ts3 - ts2));
     // FIXME: This is not passing in jdk1.8:
-//    assertTrue(ts1 - ts0 < ts2 - ts1);
-//    assertTrue(ts1 - ts0 < ts3 - ts2);
+    assertTrue(ts1 - ts0 < ts2 - ts1);
+    assertTrue(ts1 - ts0 < ts3 - ts2);
   }
 }

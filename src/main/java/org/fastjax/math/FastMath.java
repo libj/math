@@ -16,6 +16,9 @@
 
 package org.fastjax.math;
 
+/**
+ * Utility that supplements functions in {@link Math}.
+ */
 public final class FastMath {
   /**
    * Returns the value of the first argument raised to the power of the second
@@ -30,6 +33,9 @@ public final class FastMath {
    * @return The value {@code a}<sup>{@code b}</sup>.
    */
   public static long pow(long a, long b) {
+    if (b <= 0)
+      throw new IllegalArgumentException("Exponent must be non-negative: " + b);
+
     long p = 1;
     while (b > 0) {
       if ((b & 1) == 1)

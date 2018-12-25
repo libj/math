@@ -23,8 +23,8 @@ import org.junit.Test;
 public class MovingNormalTest {
   @Test
   public void testMovingNormal() {
-    final double[] vals = new double[] {1, 2, 4, 1, 2, 3, 4, 2};
-    final double[] normals = new double[] {
+    final double[] vals = {1, 2, 4, 1, 2, 3, 4, 2};
+    final double[] normals = {
       -1.0,
       1.0,
       1.6329931618554523,
@@ -41,7 +41,7 @@ public class MovingNormalTest {
     movingNormal.normalize(vals, 2, 4);
     movingNormal.normalize(vals, 4, 6);
     movingNormal.normalize(vals, 6, 8);
-    for (int i = 0; i < vals.length; i++)
+    for (int i = 0; i < vals.length; ++i)
       assertEquals(normals[i], vals[i], .00001);
   }
 }

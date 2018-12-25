@@ -23,6 +23,11 @@ import java.math.RoundingMode;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
+/**
+ * Utility that supplements functions in {@link Math} by providing compiler-safe
+ * implementations for common math functions. Compiler-safe methods are those
+ * that are linked directly by the compiler based on exact argument match.
+ */
 public final class SafeMath {
   /**
    * Returns the absolute value of a {@code byte} value.
