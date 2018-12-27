@@ -27,6 +27,7 @@
   <artifactId>math</artifactId>
   <version>0.6.4-SNAPSHOT</version>
   <name>${project.groupId}:${project.artifactId}</name>
+  <url>https://math.fastjax.org/</url>
   <description>
     Lightweight, self-contained mathematics and statistics components.
   </description>
