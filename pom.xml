@@ -31,9 +31,6 @@
   <description>
     Lightweight, self-contained mathematics and statistics components.
   </description>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>ch.obermuhlner</groupId>
