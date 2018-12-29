@@ -28,8 +28,17 @@ public final class BigDecimals {
   /** The value 2, with a scale of 0. */
   public static BigDecimal TWO = BigDecimal.valueOf(2l);
 
+  /** The value {@code E}, with a scale of 15. */
+  public static BigDecimal E = BigDecimal.valueOf(Math.E);
+
   /** The value {@code PI}, with a scale of 15. */
   public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
+
+  /** The value {@code log(2)}, with a scale of 15. */
+  public static BigDecimal LOG_2 = BigDecimal.valueOf(Constants.LOG_2);
+
+  /** The value {@code log(10)}, with a scale of 15. */
+  public static BigDecimal LOG_10 = BigDecimal.valueOf(Constants.LOG_10);
 
   /**
    * Returns a cached reference to the {@code BigDecimal} object representing
