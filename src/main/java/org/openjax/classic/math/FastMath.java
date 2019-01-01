@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 FastJAX
+/* Copyright (c) 2018 OpenJAX
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.fastjax.math;
+package org.openjax.classic.math;
 
 /**
  * Utility that supplements functions in {@link Math}.
