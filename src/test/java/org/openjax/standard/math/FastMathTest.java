@@ -14,11 +14,12 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.openjax.classic.math;
+package org.openjax.standard.math;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.openjax.standard.math.FastMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

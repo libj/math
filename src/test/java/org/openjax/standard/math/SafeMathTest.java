@@ -14,12 +14,13 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.openjax.classic.math;
+package org.openjax.standard.math;
 
 import static org.junit.Assert.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openjax.standard.math.SafeMath;
 
 public class SafeMathTest {
   @Test

@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.openjax.classic.math;
+package org.openjax.standard.math;
 
 /**
  * A mutable {@link Number} that represents the
