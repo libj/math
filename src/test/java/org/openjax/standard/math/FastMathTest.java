@@ -19,13 +19,12 @@ package org.openjax.standard.math;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.openjax.standard.math.FastMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FastMathTest {
   private static final Logger logger = LoggerFactory.getLogger(SafeMathTest.class);
-  private static int iterations = 10000000;
+  private static int iterations = 20000000;
 
   @Test
   @SuppressWarnings("unused")
@@ -53,8 +52,8 @@ public class FastMathTest {
       logger.warn("This is not passing in jdk1.8, but is passing for jdk9+");
     }
     else {
-      assertTrue(ts1 - ts0 < ts2 - ts1);
-      assertTrue(ts1 - ts0 < ts3 - ts2);
+      assertTrue((ts1 - ts0) + " < " + (ts2 - ts1), ts1 - ts0 < ts2 - ts1);
+      assertTrue((ts1 - ts0) + " < " + (ts3 - ts2), ts1 - ts0 < ts3 - ts2);
     }
   }
 }
