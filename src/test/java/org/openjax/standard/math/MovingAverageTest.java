@@ -19,7 +19,6 @@ package org.openjax.standard.math;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.openjax.standard.math.MovingAverage;
 
 public class MovingAverageTest {
   @Test
