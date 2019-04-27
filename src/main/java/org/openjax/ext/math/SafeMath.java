@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.openjax.standard.math;
+package org.openjax.ext.math;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

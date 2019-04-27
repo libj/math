@@ -20,8 +20,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.openjax.standard</groupId>
-    <artifactId>standard</artifactId>
+    <groupId>org.openjax.ext</groupId>
+    <artifactId>ext</artifactId>
     <version>1.11.15-SNAPSHOT</version>
   </parent>
   <artifactId>math</artifactId>
@@ -37,7 +37,7 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.openjax.standard</groupId>
+      <groupId>org.openjax.ext</groupId>
       <artifactId>test</artifactId>
       <version>0.6.9-SNAPSHOT</version>
       <scope>test</scope>
