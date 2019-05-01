@@ -26,9 +26,9 @@
   </parent>
   <artifactId>math</artifactId>
   <version>0.6.4-SNAPSHOT</version>
-  <name>${project.groupId}:${project.artifactId}</name>
+  <name>OpenJAX Extensions Math</name>
   <description>
-    Lightweight, self-contained mathematics and statistics components.
+    A supplementary extension to the java.math package.
   </description>
   <dependencies>
     <dependency>
