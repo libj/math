@@ -20,13 +20,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.openjax.ext</groupId>
-    <artifactId>ext</artifactId>
-    <version>1.11.15-SNAPSHOT</version>
+    <groupId>org.openjax</groupId>
+    <artifactId>openjax</artifactId>
+    <version>2.5.3-SNAPSHOT</version>
   </parent>
   <artifactId>math</artifactId>
   <version>0.6.4-SNAPSHOT</version>
-  <name>OpenJAX Extensions Math</name>
+  <name>OpenJAX Math</name>
   <description>
     A supplementary extension to the java.math package.
   </description>
@@ -37,7 +37,7 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.openjax.ext</groupId>
+      <groupId>org.openjax</groupId>
       <artifactId>test</artifactId>
       <version>0.6.9-SNAPSHOT</version>
       <scope>test</scope>
