@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 OpenJAX
+/* Copyright (c) 2010 LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -14,30 +14,18 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.openjax.math;
+package org.libj.math;
 
-import static org.junit.Assert.*;
+/**
+ * Common numerical constants.
+ */
+public final class Constants {
+  /** The {@code double} constant log(2) */
+  public static final double LOG_2 = 0.6931471805599453;
 
-import org.junit.Test;
+  /** The {@code double} constant log(10) */
+  public static final double LOG_10 = 2.302585092994046;
 
-public class MovingAverageTest {
-  @Test
-  public void testMovingAverage() {
-    final double[] vals = {1, 2, 4, 1, 2, 3, 7};
-    final double[] averages = {
-      1.0,
-      1.5,
-      2.3333333333333335,
-      2.0,
-      2.0,
-      2.1666666666666665,
-      2.857142857142857
-    };
-
-    final MovingAverage movingAverage = new MovingAverage();
-    for (int i = 0; i < vals.length; ++i) {
-      movingAverage.add(vals[i]);
-      assertEquals(averages[i], movingAverage.doubleValue(), 0.0001d);
-    }
+  private Constants() {
   }
 }

@@ -1,5 +1,5 @@
 <!--
-  Copyright (c) 2008 OpenJAX
+  Copyright (c) 2008 LibJ
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.openjax</groupId>
-    <artifactId>openjax</artifactId>
-    <version>2.5.3-SNAPSHOT</version>
+    <groupId>org.libj</groupId>
+    <artifactId>libj</artifactId>
+    <version>0.9.5-SNAPSHOT</version>
   </parent>
   <artifactId>math</artifactId>
   <version>0.6.4-SNAPSHOT</version>
-  <name>OpenJAX Math</name>
+  <name>LibJ Math</name>
   <description>
     A supplementary extension to the java.math package.
   </description>
@@ -37,7 +37,7 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.openjax</groupId>
+      <groupId>org.libj</groupId>
       <artifactId>test</artifactId>
       <version>0.6.9-SNAPSHOT</version>
       <scope>test</scope>
