@@ -28,7 +28,7 @@
   <version>0.6.4-SNAPSHOT</version>
   <name>LibJ Math</name>
   <description>
-    A supplementary extension to the java.math package.
+    Supplementary extensions to the java.math package.
   </description>
   <dependencies>
     <dependency>
