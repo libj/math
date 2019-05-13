@@ -1,11 +1,13 @@
 # LibJ Math
 
-> Java API Extensions to `java.math`
-
 [![Build Status](https://travis-ci.org/libj/math.png)](https://travis-ci.org/libj/math)
 [![Coverage Status](https://coveralls.io/repos/github/libj/math/badge.svg?branch=master)](https://coveralls.io/github/libj/math?branch=master)
 [![Javadocs](https://www.javadoc.io/badge/org.libj/math.svg)](https://www.javadoc.io/doc/org.libj/math)
 [![Released Version](https://img.shields.io/maven-central/v/org.libj/math.svg)](https://mvnrepository.com/artifact/org.libj/math)
+
+## Introduction
+
+LibJ Mail is a Java API Extensions to `java.math`.
 
 ## Contributing
 
