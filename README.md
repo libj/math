@@ -1,9 +1,9 @@
 # LibJ Math
 
-[![Build Status](https://travis-ci.org/libj/math.png)](https://travis-ci.org/libj/math)
+[![Build Status](https://travis-ci.org/libj/math.svg?1)](https://travis-ci.org/libj/math)
 [![Coverage Status](https://coveralls.io/repos/github/libj/math/badge.svg?branch=master)](https://coveralls.io/github/libj/math?branch=master)
-[![Javadocs](https://www.javadoc.io/badge/org.libj/math.svg)](https://www.javadoc.io/doc/org.libj/math)
-[![Released Version](https://img.shields.io/maven-central/v/org.libj/math.svg)](https://mvnrepository.com/artifact/org.libj/math)
+[![Javadocs](https://www.javadoc.io/badge/org.libj/math.svg?1)](https://www.javadoc.io/doc/org.libj/math)
+[![Released Version](https://img.shields.io/maven-central/v/org.libj/math.svg?1)](https://mvnrepository.com/artifact/org.libj/math)
 
 ## Introduction
 
