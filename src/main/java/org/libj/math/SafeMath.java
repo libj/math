@@ -112,7 +112,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the absolute value of a {@code BigInteger} value.
+   * Returns the absolute value of a {@link BigInteger} value.
    *
    * @param a The argument whose absolute value is to be determined.
    * @return The absolute value of the argument.
@@ -122,8 +122,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns a {@code BigDecimal} whose value is the absolute value of this
-   * {@code BigDecimal}, and whose scale is {@code this.scale()}.
+   * Returns a {@link BigDecimal} whose value is the absolute value of this
+   * {@link BigDecimal}, and whose scale is {@code this.scale()}.
    *
    * @param a The argument whose absolute value is to be determined.
    * @return {@code abs(this)}
@@ -501,7 +501,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code BigInteger}
+   * Returns the smallest (closest to negative infinity) {@link BigInteger}
    * value that is greater than or equal to the argument and is equal to a
    * mathematical integer.
    *
@@ -515,7 +515,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code BigDecimal}
+   * Returns the smallest (closest to negative infinity) {@link BigDecimal}
    * value that is greater than or equal to the argument and is equal to a
    * mathematical integer.
    *
@@ -582,7 +582,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns Euler's number <i>e</i> raised to the power of a {@code BigDecimal}
+   * Returns Euler's number <i>e</i> raised to the power of a {@link BigDecimal}
    * value. Special cases:
    *
    * @param a The exponent to raise <i>e</i> to.
@@ -595,7 +595,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns Euler's number <i>e</i> raised to the power of a {@code BigInteger}
+   * Returns Euler's number <i>e</i> raised to the power of a {@link BigInteger}
    * value. Special cases:
    *
    * @param a The exponent to raise <i>e</i> to.
@@ -703,7 +703,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code BigDecimal} value
+   * Returns the largest (closest to positive infinity) {@link BigDecimal} value
    * that is less than or equal to the argument and is equal to a mathematical
    * integer.
    *
@@ -717,7 +717,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code BigInteger} value
+   * Returns the largest (closest to positive infinity) {@link BigInteger} value
    * that is less than or equal to the argument and is equal to a mathematical
    * integer.
    *
@@ -990,12 +990,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@code BigDecimal} to the argument, with ties after
+   * Returns the closest {@link BigDecimal} to the argument, with ties after
    * {@code scale} digits after the decimal rounding to positive infinity.
    *
    * @param a A BigDecimal value to be rounded to the scaled BigDecimal.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The value of the argument rounded to the nearest {@code BigDecimal}
+   * @return The value of the argument rounded to the nearest {@link BigDecimal}
    *         value at {@code scale}.
    * @throws IllegalArgumentException If scale is less than 0.
    */
@@ -1007,12 +1007,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@code BigInteger} to the argument, with ties after
+   * Returns the closest {@link BigInteger} to the argument, with ties after
    * {@code scale} digits after the decimal rounding to positive infinity.
    *
    * @param a A BigInteger value to be rounded to the scaled BigInteger.
    * @param scale Ignored for BigInteger type.
-   * @return The value of the argument rounded to the nearest {@code BigInteger}
+   * @return The value of the argument rounded to the nearest {@link BigInteger}
    *         value at {@code scale}.
    * @throws IllegalArgumentException If scale is less than 0.
    */
@@ -1096,9 +1096,9 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument {@code BigInteger}.
+   * Returns the signum function of the argument {@link BigInteger}.
    *
-   * @param a The {@code BigInteger} value whose signum is to be returned
+   * @param a The {@link BigInteger} value whose signum is to be returned
    * @return The signum function of the argument.
    */
   public static int signum(final BigInteger a) {
@@ -1106,9 +1106,9 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument {@code BigDecimal}.
+   * Returns the signum function of the argument {@link BigDecimal}.
    *
-   * @param a The {@code BigDecimal} value whose signum is to be returned
+   * @param a The {@link BigDecimal} value whose signum is to be returned
    * @return The signum function of the argument.
    */
   public static int signum(final BigDecimal a) {
@@ -1173,7 +1173,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the correctly rounded positive square root of a {@code BigDecimal}
+   * Returns the correctly rounded positive square root of a {@link BigDecimal}
    * value.
    *
    * @param a The value.
@@ -1185,7 +1185,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the correctly rounded positive square root of a {@code BigInteger}
+   * Returns the correctly rounded positive square root of a {@link BigInteger}
    * value.
    *
    * @param a The value.
@@ -1588,7 +1588,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the natural logarithm (base <i>e</i>) of a {@code BigDecimal}
+   * Returns the natural logarithm (base <i>e</i>) of a {@link BigDecimal}
    * value. Special cases:
    * <ul>
    * <li>If the argument is NaN or less than zero, then the result is NaN.

@@ -29,7 +29,7 @@ public class MovingNormal {
   /**
    * Normalizes the specified array of {@code double} values between the
    * provided {@code fromIndex} and {@code toIndex} into this
-   * {@code MovingNormal}.
+   * {@link MovingNormal}.
    *
    * @param values The values to normalize.
    * @param fromIndex The from index.
@@ -51,14 +51,18 @@ public class MovingNormal {
   }
 
   /**
-   * @return The mean value of this {@code MovingNormal}.
+   * Returns the mean value of this {@link MovingNormal}.
+   *
+   * @return The mean value of this {@link MovingNormal}.
    */
   public double getMean() {
     return mean;
   }
 
   /**
-   * @return The scale value of this {@code MovingNormal}.
+   * Returns the scale value of this {@link MovingNormal}.
+   *
+   * @return The scale value of this {@link MovingNormal}.
    */
   public double getScale() {
     return scale;

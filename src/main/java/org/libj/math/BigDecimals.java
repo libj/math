@@ -28,10 +28,10 @@ public final class BigDecimals {
   /** The value 2, with a scale of 0. */
   public static BigDecimal TWO = BigDecimal.valueOf(2l);
 
-  /** The value {@code E}, with a scale of 15. */
+  /** The value {@code #E}, with a scale of 15. */
   public static BigDecimal E = BigDecimal.valueOf(Math.E);
 
-  /** The value {@code PI}, with a scale of 15. */
+  /** The value {@link #PI}, with a scale of 15. */
   public static BigDecimal PI = BigDecimal.valueOf(Math.PI);
 
   /** The value {@code log(2)}, with a scale of 15. */
@@ -41,11 +41,11 @@ public final class BigDecimals {
   public static BigDecimal LOG_10 = BigDecimal.valueOf(Constants.LOG_10);
 
   /**
-   * Returns a cached reference to the {@code BigDecimal} object representing
+   * Returns a cached reference to the {@link BigDecimal} object representing
    * the specified string value.
    *
-   * @param val The value of the desired {@code BigDecimal} instance.
-   * @return A cached reference to the {@code BigDecimal} object representing
+   * @param val The value of the desired {@link BigDecimal} instance.
+   * @return A cached reference to the {@link BigDecimal} object representing
    *         the specified string value.
    */
   public static BigDecimal of(final String val) {

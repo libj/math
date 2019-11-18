@@ -25,15 +25,15 @@ import java.util.HashMap;
 public final class BigIntegers {
   private static final HashMap<String,BigInteger> instances = new HashMap<>();
 
-  /** The {@code BigInteger} constant two. */
+  /** The {@link BigInteger} constant two. */
   public static final BigInteger TWO = BigInteger.valueOf(2);
 
   /**
-   * Returns a cached reference to the {@code BigInteger} object representing
+   * Returns a cached reference to the {@link BigInteger} object representing
    * the specified string value.
    *
-   * @param val The value of the desired {@code BigInteger} instance.
-   * @return A cached reference to the {@code BigInteger} object representing
+   * @param val The value of the desired {@link BigInteger} instance.
+   * @return A cached reference to the {@link BigInteger} object representing
    *         the specified string value.
    */
   public static BigInteger of(final String val) {

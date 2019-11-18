@@ -28,7 +28,7 @@ public class MovingAverage extends Number {
   private volatile long count = 0;
 
   /**
-   * Creates a {@code MovingAverage} with the specified initial values.
+   * Creates a {@link MovingAverage} with the specified initial values.
    *
    * @param values The initial values.
    */
@@ -37,7 +37,7 @@ public class MovingAverage extends Number {
   }
 
   /**
-   * Creates a {@code MovingAverage} with the specified initial value.
+   * Creates a {@link MovingAverage} with the specified initial value.
    *
    * @param value The initial value.
    */
@@ -46,7 +46,7 @@ public class MovingAverage extends Number {
   }
 
   /**
-   * Creates a {@code MovingAverage} with an initial value of {@code 0}.
+   * Creates a {@link MovingAverage} with an initial value of {@code 0}.
    */
   public MovingAverage() {
   }
@@ -62,14 +62,18 @@ public class MovingAverage extends Number {
   }
 
   /**
-   * @return The count of values in this {@code MovingAverage}.
+   * Returns the count of values in this {@link MovingAverage}.
+   *
+   * @return The count of values in this {@link MovingAverage}.
    */
   public long getCount() {
     return count;
   }
 
   /**
-   * @return The value of this {@code MovingAverage} as an {@code int}.
+   * Returns the value of this {@link MovingAverage} as an {@code int}.
+   *
+   * @return The value of this {@link MovingAverage} as an {@code int}.
    */
   @Override
   public int intValue() {
@@ -77,7 +81,9 @@ public class MovingAverage extends Number {
   }
 
   /**
-   * @return The value of this {@code MovingAverage} as a {@code long}.
+   * Returns the value of this {@link MovingAverage} as a {@code long}.
+   *
+   * @return The value of this {@link MovingAverage} as a {@code long}.
    */
   @Override
   public long longValue() {
@@ -85,7 +91,9 @@ public class MovingAverage extends Number {
   }
 
   /**
-   * @return The value of this {@code MovingAverage} as a {@code float}.
+   * Returns the value of this {@link MovingAverage} as a {@code float}.
+   *
+   * @return The value of this {@link MovingAverage} as a {@code float}.
    */
   @Override
   public float floatValue() {
@@ -93,7 +101,9 @@ public class MovingAverage extends Number {
   }
 
   /**
-   * @return The value of this {@code MovingAverage} as a {@code double}.
+   * Returns the value of this {@link MovingAverage} as a {@code double}.
+   *
+   * @return The value of this {@link MovingAverage} as a {@code double}.
    */
   @Override
   public double doubleValue() {
