@@ -31,6 +31,7 @@ public final class FastMath {
    * @param a The base.
    * @param b The exponent.
    * @return The value {@code a}<sup>{@code b}</sup>.
+   * @throws IllegalArgumentException If the exponent is negative.
    */
   public static long pow(long a, long b) {
     if (b <= 0)

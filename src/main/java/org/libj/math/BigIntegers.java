@@ -26,7 +26,7 @@ public final class BigIntegers {
   private static final HashMap<String,BigInteger> instances = new HashMap<>();
 
   /** The {@link BigInteger} constant two. */
-  public static final BigInteger TWO = BigInteger.valueOf(2);
+  public static final BigInteger TWO = init("2", BigInteger.valueOf(2));
 
   /**
    * Returns a cached reference to the {@link BigInteger} object representing
@@ -39,9 +39,14 @@ public final class BigIntegers {
   public static BigInteger of(final String val) {
     BigInteger instance = instances.get(val);
     if (instance == null)
-      instances.put(val, instance = new BigInteger(val));
+      init(val, instance = new BigInteger(val));
 
     return instance;
+  }
+
+  private static BigInteger init(final String str, final BigInteger val) {
+    instances.put(str, val);
+    return val;
   }
 
   private BigIntegers() {

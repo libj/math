@@ -34,8 +34,21 @@ public class MovingNormal {
    * @param values The values to normalize.
    * @param fromIndex The from index.
    * @param toIndex The to index.
+   * @throws ArrayIndexOutOfBoundsException If the given {@code fromIndex} or
+   *           {@code toIndex} is out of range.
+   * @throws IllegalArgumentException If {@code fromIndex > toIndex}.
+   * @throws NullPointerException If {@code values} is null.
    */
-  public void normalize(final double[] values, final int fromIndex, final int toIndex) {
+  public void normalize(final int fromIndex, final int toIndex, final double ... values) {
+    if (fromIndex < 0)
+      throw new ArrayIndexOutOfBoundsException(fromIndex);
+
+    if (toIndex > values.length)
+      throw new ArrayIndexOutOfBoundsException(toIndex);
+
+    if (fromIndex > toIndex)
+      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+
     for (int i = fromIndex; i < toIndex; ++i, ++count) {
       sum += values[i];
       sumSq += values[i] * values[i];

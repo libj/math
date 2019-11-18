@@ -37,10 +37,10 @@ public class MovingNormalTest {
 
     StatMath.normalize(vals);
     final MovingNormal movingNormal = new MovingNormal();
-    movingNormal.normalize(vals, 0, 2);
-    movingNormal.normalize(vals, 2, 4);
-    movingNormal.normalize(vals, 4, 6);
-    movingNormal.normalize(vals, 6, 8);
+    movingNormal.normalize(0, 2, vals);
+    movingNormal.normalize(2, 4, vals);
+    movingNormal.normalize(4, 6, vals);
+    movingNormal.normalize(6, 8, vals);
     for (int i = 0; i < vals.length; ++i)
       assertEquals(normals[i], vals[i], .00001);
   }

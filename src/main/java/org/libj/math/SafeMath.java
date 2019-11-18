@@ -75,9 +75,9 @@ public final class SafeMath {
    * negation of the argument is returned. Special cases:
    * <ul>
    * <li>If the argument is positive zero or negative zero, the result is
-   * positive zero.
-   * <li>If the argument is infinite, the result is positive infinity.
-   * <li>If the argument is NaN, the result is NaN.
+   * positive zero.</li>
+   * <li>If the argument is infinite, the result is positive infinity.</li>
+   * <li>If the argument is NaN, the result is NaN.</li>
    * </ul>
    * In other words, the result is the same as the value of the expression:
    * <p>
@@ -96,9 +96,9 @@ public final class SafeMath {
    * negation of the argument is returned. Special cases:
    * <ul>
    * <li>If the argument is positive zero or negative zero, the result is
-   * positive zero.
-   * <li>If the argument is infinite, the result is positive infinity.
-   * <li>If the argument is NaN, the result is NaN.
+   * positive zero.</li>
+   * <li>If the argument is infinite, the result is positive infinity.</li>
+   * <li>If the argument is NaN, the result is NaN.</li>
    * </ul>
    * In other words, the result is the same as the value of the expression:
    * <p>
@@ -126,7 +126,9 @@ public final class SafeMath {
    * {@link BigDecimal}, and whose scale is {@code this.scale()}.
    *
    * @param a The argument whose absolute value is to be determined.
-   * @return {@code abs(this)}
+   * @return A {@link BigDecimal} whose value is the absolute value of this
+   *         {@link BigDecimal}, and whose scale is {@code this.scale()}.
+   * @throws NullPointerException If {@code a} is null.
    */
   public static BigDecimal abs(final BigDecimal a) {
     return a.abs();
@@ -137,7 +139,7 @@ public final class SafeMath {
    * through <i>pi</i>. Special case:
    * <ul>
    * <li>If the argument is NaN or its absolute value is greater than 1, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * </ul>
    *
    * @param a The value, whose arc cosine is to be returned.
@@ -152,12 +154,15 @@ public final class SafeMath {
    * through <i>pi</i>. Special case:
    * <ul>
    * <li>If the argument is NaN or its absolute value is greater than 1, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * </ul>
    *
    * @param a The value, whose arc cosine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc cosine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal acos(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.acos(a, mc);
@@ -168,12 +173,15 @@ public final class SafeMath {
    * through <i>pi</i>. Special case:
    * <ul>
    * <li>If the argument is NaN or its absolute value is greater than 1, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * </ul>
    *
    * @param a The value, whose arc cosine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc cosine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal acos(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.acos(new BigDecimal(a), mc);
@@ -184,9 +192,9 @@ public final class SafeMath {
    * -<i>pi</i>/2 through <i>pi</i>/2. Special cases:
    * <ul>
    * <li>If the argument is NaN or its absolute value is greater than 1, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc sine is to be returned.
@@ -201,14 +209,17 @@ public final class SafeMath {
    * -<i>pi</i>/2 through <i>pi</i>/2. Special cases:
    * <ul>
    * <li>If the argument is NaN or its absolute value is greater than 1, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc sine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc sine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal asin(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.asin(a, mc);
@@ -219,14 +230,17 @@ public final class SafeMath {
    * -<i>pi</i>/2 through <i>pi</i>/2. Special cases:
    * <ul>
    * <li>If the argument is NaN or its absolute value is greater than 1, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc sine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc sine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal asin(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.asin(new BigDecimal(a), mc);
@@ -236,9 +250,9 @@ public final class SafeMath {
    * Returns the arc tangent of a value; the returned angle is in the range
    * -<i>pi</i>/2 through <i>pi</i>/2. Special cases:
    * <ul>
-   * <li>If the argument is NaN, then the result is NaN.
+   * <li>If the argument is NaN, then the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc tangent is to be returned.
@@ -252,14 +266,17 @@ public final class SafeMath {
    * Returns the arc tangent of a value; the returned angle is in the range
    * -<i>pi</i>/2 through <i>pi</i>/2. Special cases:
    * <ul>
-   * <li>If the argument is NaN, then the result is NaN.
+   * <li>If the argument is NaN, then the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc tangent is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc tangent of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal atan(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.atan(a, mc);
@@ -269,14 +286,17 @@ public final class SafeMath {
    * Returns the arc tangent of a value; the returned angle is in the range
    * -<i>pi</i>/2 through <i>pi</i>/2. Special cases:
    * <ul>
-   * <li>If the argument is NaN, then the result is NaN.
+   * <li>If the argument is NaN, then the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc tangent is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc tangent of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal atan(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.atan(new BigDecimal(a), mc);
@@ -284,51 +304,50 @@ public final class SafeMath {
 
   /**
    * Returns the angle <i>theta</i> from the conversion of rectangular
-   * coordinates ({@code x},&nbsp;{@code y}) to polar coordinates
-   * (r,&nbsp;<i>theta</i>). This method computes the phase <i>theta</i> by
-   * computing an arc tangent of {@code y/x} in the range of -<i>pi</i> to
-   * <i>pi</i>. Special cases:
+   * coordinates ({@code x}, {@code y}) to polar coordinates (r, <i>theta</i>).
+   * This method computes the phase <i>theta</i> by computing an arc tangent of
+   * {@code y/x} in the range of -<i>pi</i> to <i>pi</i>. Special cases:
    * <ul>
-   * <li>If either argument is NaN, then the result is NaN.
+   * <li>If either argument is NaN, then the result is NaN.</li>
    * <li>If the first argument is positive zero and the second argument is
    * positive, or the first argument is positive and finite and the second
-   * argument is positive infinity, then the result is positive zero.
+   * argument is positive infinity, then the result is positive zero.</li>
    * <li>If the first argument is negative zero and the second argument is
    * positive, or the first argument is negative and finite and the second
-   * argument is positive infinity, then the result is negative zero.
+   * argument is positive infinity, then the result is negative zero.</li>
    * <li>If the first argument is positive zero and the second argument is
    * negative, or the first argument is positive and finite and the second
    * argument is negative infinity, then the result is the {@code double} value
-   * closest to <i>pi</i>.
+   * closest to <i>pi</i>.</li>
    * <li>If the first argument is negative zero and the second argument is
    * negative, or the first argument is negative and finite and the second
    * argument is negative infinity, then the result is the {@code double} value
-   * closest to -<i>pi</i>.
+   * closest to -<i>pi</i>.</li>
    * <li>If the first argument is positive and the second argument is positive
    * zero or negative zero, or the first argument is positive infinity and the
    * second argument is finite, then the result is the {@code double} value
-   * closest to <i>pi</i>/2.
+   * closest to <i>pi</i>/2.</li>
    * <li>If the first argument is negative and the second argument is positive
    * zero or negative zero, or the first argument is negative infinity and the
    * second argument is finite, then the result is the {@code double} value
-   * closest to -<i>pi</i>/2.
+   * closest to -<i>pi</i>/2.</li>
    * <li>If both arguments are positive infinity, then the result is the
-   * {@code double} value closest to <i>pi</i>/4.
+   * {@code double} value closest to <i>pi</i>/4.</li>
    * <li>If the first argument is positive infinity and the second argument is
    * negative infinity, then the result is the {@code double} value closest to
-   * 3*<i>pi</i>/4.
+   * 3*<i>pi</i>/4.</li>
    * <li>If the first argument is negative infinity and the second argument is
    * positive infinity, then the result is the {@code double} value closest to
-   * -<i>pi</i>/4.
+   * -<i>pi</i>/4.</li>
    * <li>If both arguments are negative infinity, then the result is the
    * {@code double} value closest to -3*<i>pi</i>/4.
    * </ul>
    *
    * @param y The ordinate coordinate.
    * @param x The abscissa coordinate.
-   * @return The <i>theta</i> component of the point
-   *         (<i>r</i>,&nbsp;<i>theta</i>) in polar coordinates that corresponds
-   *         to the point (<i>x</i>,&nbsp;<i>y</i>) in Cartesian coordinates.
+   * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in
+   *         polar coordinates that corresponds to the point (<i>x</i>,
+   *         <i>y</i>) in Cartesian coordinates.
    */
   public static double atan2(final double y, final double x) {
     return StrictMath.atan2(y, x);
@@ -336,52 +355,55 @@ public final class SafeMath {
 
   /**
    * Returns the angle <i>theta</i> from the conversion of rectangular
-   * coordinates ({@code x},&nbsp;{@code y}) to polar coordinates
-   * (r,&nbsp;<i>theta</i>). This method computes the phase <i>theta</i> by
-   * computing an arc tangent of {@code y/x} in the range of -<i>pi</i> to
-   * <i>pi</i>. Special cases:
+   * coordinates ({@code x}, {@code y}) to polar coordinates (r, <i>theta</i>).
+   * This method computes the phase <i>theta</i> by computing an arc tangent of
+   * {@code y/x} in the range of -<i>pi</i> to <i>pi</i>. Special cases:
    * <ul>
-   * <li>If either argument is NaN, then the result is NaN.
+   * <li>If either argument is NaN, then the result is NaN.</li>
    * <li>If the first argument is positive zero and the second argument is
    * positive, or the first argument is positive and finite and the second
-   * argument is positive infinity, then the result is positive zero.
+   * argument is positive infinity, then the result is positive zero.</li>
    * <li>If the first argument is negative zero and the second argument is
    * positive, or the first argument is negative and finite and the second
-   * argument is positive infinity, then the result is negative zero.
+   * argument is positive infinity, then the result is negative zero.</li>
    * <li>If the first argument is positive zero and the second argument is
    * negative, or the first argument is positive and finite and the second
    * argument is negative infinity, then the result is the {@code double} value
-   * closest to <i>pi</i>.
+   * closest to <i>pi</i>.</li>
    * <li>If the first argument is negative zero and the second argument is
    * negative, or the first argument is negative and finite and the second
    * argument is negative infinity, then the result is the {@code double} value
-   * closest to -<i>pi</i>.
+   * closest to -<i>pi</i>.</li>
    * <li>If the first argument is positive and the second argument is positive
    * zero or negative zero, or the first argument is positive infinity and the
    * second argument is finite, then the result is the {@code double} value
-   * closest to <i>pi</i>/2.
+   * closest to <i>pi</i>/2.</li>
    * <li>If the first argument is negative and the second argument is positive
    * zero or negative zero, or the first argument is negative infinity and the
    * second argument is finite, then the result is the {@code double} value
-   * closest to -<i>pi</i>/2.
+   * closest to -<i>pi</i>/2.</li>
    * <li>If both arguments are positive infinity, then the result is the
-   * {@code double} value closest to <i>pi</i>/4.
+   * {@code double} value closest to <i>pi</i>/4.</li>
    * <li>If the first argument is positive infinity and the second argument is
    * negative infinity, then the result is the {@code double} value closest to
-   * 3*<i>pi</i>/4.
+   * 3*<i>pi</i>/4.</li>
    * <li>If the first argument is negative infinity and the second argument is
    * positive infinity, then the result is the {@code double} value closest to
-   * -<i>pi</i>/4.
+   * -<i>pi</i>/4.</li>
    * <li>If both arguments are negative infinity, then the result is the
-   * {@code double} value closest to -3*<i>pi</i>/4.
+   * {@code double} value closest to -3*<i>pi</i>/4.</li>
    * </ul>
    *
    * @param y The ordinate coordinate.
    * @param x The abscissa coordinate.
    * @param mc The {@link MathContext} used for the result.
-   * @return The <i>theta</i> component of the point
-   *         (<i>r</i>,&nbsp;<i>theta</i>) in polar coordinates that corresponds
-   *         to the point (<i>x</i>,&nbsp;<i>y</i>) in Cartesian coordinates.
+   * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in
+   *         polar coordinates that corresponds to the point (<i>x</i>,
+   *         <i>y</i>) in Cartesian coordinates.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If {@code y}, {@code x}, or the
+   *           {@link MathContext} is null.
    */
   public static BigDecimal atan2(final BigDecimal y, final BigDecimal x, final MathContext mc) {
     if (y.signum() == 1)
@@ -458,11 +480,11 @@ public final class SafeMath {
    * mathematical integer. Special cases:
    * <ul>
    * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.
+   * the result is the same as the argument.</li>
    * <li>If the argument is NaN or an infinity or positive zero or negative
-   * zero, then the result is the same as the argument.
+   * zero, then the result is the same as the argument.</li>
    * <li>If the argument value is less than zero but greater than -1.0, then the
-   * result is negative zero.
+   * result is negative zero.</li>
    * </ul>
    * Note that the value of {@code StrictMath.ceil(x)} is exactly the value of
    * {@code -StrictMath.floor(-x)}.
@@ -482,11 +504,11 @@ public final class SafeMath {
    * mathematical integer. Special cases:
    * <ul>
    * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.
+   * the result is the same as the argument.</li>
    * <li>If the argument is NaN or an infinity or positive zero or negative
-   * zero, then the result is the same as the argument.
+   * zero, then the result is the same as the argument.</li>
    * <li>If the argument value is less than zero but greater than -1.0, then the
-   * result is negative zero.
+   * result is negative zero.</li>
    * </ul>
    * Note that the value of {@code StrictMath.ceil(x)} is exactly the value of
    * {@code -StrictMath.floor(-x)}.
@@ -531,7 +553,7 @@ public final class SafeMath {
   /**
    * Returns the trigonometric cosine of an angle. Special cases:
    * <ul>
-   * <li>If the argument is NaN or an infinity, then the result is NaN.
+   * <li>If the argument is NaN or an infinity, then the result is NaN.</li>
    * </ul>
    *
    * @param a An angle, in radians.
@@ -547,6 +569,9 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The cosine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal cos(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.cos(a, mc);
@@ -558,6 +583,9 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The cosine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal cos(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.cos(new BigDecimal(a), mc);
@@ -567,10 +595,11 @@ public final class SafeMath {
    * Returns Euler's number <i>e</i> raised to the power of a {@code double}
    * value. Special cases:
    * <ul>
-   * <li>If the argument is NaN, the result is NaN.
+   * <li>If the argument is NaN, the result is NaN.</li>
    * <li>If the argument is positive infinity, then the result is positive
-   * infinity.
-   * <li>If the argument is negative infinity, then the result is positive zero.
+   * infinity.</li>
+   * <li>If the argument is negative infinity, then the result is positive
+   * zero.</li>
    * </ul>
    *
    * @param a The exponent to raise <i>e</i> to.
@@ -589,6 +618,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base
    *         of the natural logarithms.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal exp(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.exp(a, mc);
@@ -602,6 +634,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base
    *         of the natural logarithms.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the value or {@link MathContext} is null.
    */
   public static BigDecimal exp(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.exp(new BigDecimal(a), mc);
@@ -668,9 +703,9 @@ public final class SafeMath {
    * integer. Special cases:
    * <ul>
    * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.
+   * the result is the same as the argument.</li>
    * <li>If the argument is NaN or an infinity or positive zero or negative
-   * zero, then the result is the same as the argument.
+   * zero, then the result is the same as the argument.</li>
    * </ul>
    *
    * @param a The value.
@@ -688,9 +723,9 @@ public final class SafeMath {
    * integer. Special cases:
    * <ul>
    * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.
+   * the result is the same as the argument.</li>
    * <li>If the argument is NaN or an infinity or positive zero or negative
-   * zero, then the result is the same as the argument.
+   * zero, then the result is the same as the argument.</li>
    * </ul>
    *
    * @param a The value.
@@ -735,101 +770,100 @@ public final class SafeMath {
    * argument. Special cases:
    * <ul>
    * <li>If the second argument is positive or negative zero, then the result is
-   * 1.0.
+   * 1.0.</li>
    * <li>If the second argument is 1.0, then the result is the same as the first
-   * argument.
-   * <li>If the second argument is NaN, then the result is NaN.
+   * argument.</li>
+   * <li>If the second argument is NaN, then the result is NaN.</li>
    * <li>If the first argument is NaN and the second argument is nonzero, then
-   * the result is NaN.
+   * the result is NaN.</li>
    * <li>If
    * <ul>
    * <li>the absolute value of the first argument is greater than 1 and the
-   * second argument is positive infinity, or
+   * second argument is positive infinity, or</li>
    * <li>the absolute value of the first argument is less than 1 and the second
-   * argument is negative infinity,
+   * argument is negative infinity,</li>
    * </ul>
-   * then the result is positive infinity.
+   * then the result is positive infinity.</li>
    * <li>If
    * <ul>
    * <li>the absolute value of the first argument is greater than 1 and the
-   * second argument is negative infinity, or
+   * second argument is negative infinity, or</li>
    * <li>the absolute value of the first argument is less than 1 and the second
-   * argument is positive infinity,
+   * argument is positive infinity,</li>
    * </ul>
-   * then the result is positive zero.
+   * then the result is positive zero.</li>
    * <li>If the absolute value of the first argument equals 1 and the second
-   * argument is infinite, then the result is NaN.
+   * argument is infinite, then the result is NaN.</li>
    * <li>If
    * <ul>
    * <li>the first argument is positive zero and the second argument is greater
-   * than zero, or
+   * than zero, or</li>
    * <li>the first argument is positive infinity and the second argument is less
-   * than zero,
+   * than zero,</li>
    * </ul>
-   * then the result is positive zero.
+   * then the result is positive zero.</li>
    * <li>If
    * <ul>
    * <li>the first argument is positive zero and the second argument is less
-   * than zero, or
+   * than zero, or</li>
    * <li>the first argument is positive infinity and the second argument is
-   * greater than zero,
+   * greater than zero,</li>
    * </ul>
-   * then the result is positive infinity.
+   * then the result is positive infinity.</li>
    * <li>If
    * <ul>
    * <li>the first argument is negative zero and the second argument is greater
-   * than zero but not a finite odd integer, or
+   * than zero but not a finite odd integer, or</li>
    * <li>the first argument is negative infinity and the second argument is less
-   * than zero but not a finite odd integer,
+   * than zero but not a finite odd integer,</li>
    * </ul>
-   * then the result is positive zero.
+   * then the result is positive zero.</li>
    * <li>If
    * <ul>
    * <li>the first argument is negative zero and the second argument is a
-   * positive finite odd integer, or
+   * positive finite odd integer, or</li>
    * <li>the first argument is negative infinity and the second argument is a
-   * negative finite odd integer,
+   * negative finite odd integer,</li>
    * </ul>
-   * then the result is negative zero.
+   * then the result is negative zero.</li>
    * <li>If
    * <ul>
    * <li>the first argument is negative zero and the second argument is less
-   * than zero but not a finite odd integer, or
+   * than zero but not a finite odd integer, or</li>
    * <li>the first argument is negative infinity and the second argument is
-   * greater than zero but not a finite odd integer,
+   * greater than zero but not a finite odd integer,</li>
    * </ul>
-   * then the result is positive infinity.
+   * then the result is positive infinity.</li>
    * <li>If
    * <ul>
    * <li>the first argument is negative zero and the second argument is a
-   * negative finite odd integer, or
+   * negative finite odd integer, or</li>
    * <li>the first argument is negative infinity and the second argument is a
-   * positive finite odd integer,
+   * positive finite odd integer,</li>
    * </ul>
-   * then the result is negative infinity.
+   * then the result is negative infinity.</li>
    * <li>If the first argument is finite and less than zero
    * <ul>
    * <li>if the second argument is a finite even integer, the result is equal to
    * the result of raising the absolute value of the first argument to the power
-   * of the second argument
+   * of the second argument</li>
    * <li>if the second argument is a finite odd integer, the result is equal to
    * the negative of the result of raising the absolute value of the first
-   * argument to the power of the second argument
+   * argument to the power of the second argument</li>
    * <li>if the second argument is finite and not an integer, then the result is
-   * NaN.
+   * NaN.</li>
    * </ul>
    * <li>If both arguments are integers, then the result is exactly equal to the
    * mathematical result of raising the first argument to the power of the
    * second argument if that result can in fact be represented exactly as a
-   * {@code double} value.
+   * {@code double} value.</li>
    * </ul>
    * <p>
    * (In the foregoing descriptions, a floating-point value is considered to be
    * an integer if and only if it is finite and a fixed point of the method
-   * {@link #ceil ceil} or, equivalently, a fixed point of the method
-   * {@link #floor floor}. A value is a fixed point of a one-argument method if
-   * and only if the result of applying the method to the value is equal to the
-   * value.)
+   * {@link #ceil} or, equivalently, a fixed point of the method {@link #floor}.
+   * A value is a fixed point of a one-argument method if and only if the result
+   * of applying the method to the value is equal to the value.)
    *
    * @param a The base.
    * @param b The exponent.
@@ -847,6 +881,17 @@ public final class SafeMath {
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
+   * @throws ArithmeticException If {@code b} is negative and the result is
+   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
+   *           or {@code mc.precision == 0} and the quotient has a
+   *           non-terminating decimal expansion.
+   * @throws ArithmeticException If the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
+   *           operation would require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the {@code a}, {@code b}, or
+   *           {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigDecimal b, final MathContext mc) {
     return BigDecimalMath.pow(a, b, mc);
@@ -860,6 +905,17 @@ public final class SafeMath {
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
+   * @throws ArithmeticException If {@code b} is negative and the result is
+   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
+   *           or {@code mc.precision == 0} and the quotient has a
+   *           non-terminating decimal expansion.
+   * @throws ArithmeticException If the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
+   *           operation would require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the {@code a}, {@code b}, or
+   *           {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigInteger a, final BigDecimal b, final MathContext mc) {
     return BigDecimalMath.pow(new BigDecimal(a), b, mc);
@@ -873,6 +929,17 @@ public final class SafeMath {
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
+   * @throws ArithmeticException If {@code b} is negative and the result is
+   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
+   *           or {@code mc.precision == 0} and the quotient has a
+   *           non-terminating decimal expansion.
+   * @throws ArithmeticException If the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
+   *           operation would require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the {@code a}, {@code b}, or
+   *           {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigInteger b, final MathContext mc) {
     return BigDecimalMath.pow(a, new BigDecimal(b), mc);
@@ -886,6 +953,17 @@ public final class SafeMath {
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
+   * @throws ArithmeticException If {@code b} is negative and the result is
+   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
+   *           or {@code mc.precision == 0} and the quotient has a
+   *           non-terminating decimal expansion.
+   * @throws ArithmeticException If the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
+   *           operation would require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the {@code a}, {@code b}, or
+   *           {@link MathContext} is null.
    */
   public static BigInteger pow(final BigInteger a, final BigInteger b, final MathContext mc) {
     return BigDecimalMath.pow(new BigDecimal(a), new BigDecimal(b), mc).toBigInteger();
@@ -998,6 +1076,7 @@ public final class SafeMath {
    * @return The value of the argument rounded to the nearest {@link BigDecimal}
    *         value at {@code scale}.
    * @throws IllegalArgumentException If scale is less than 0.
+   * @throws NullPointerException If {@code a} is null.
    */
   public static BigDecimal round(final BigDecimal a, final int scale) {
     if (scale < 0)
@@ -1118,9 +1197,9 @@ public final class SafeMath {
   /**
    * Returns the trigonometric sine of an angle. Special cases:
    * <ul>
-   * <li>If the argument is NaN or an infinity, then the result is NaN.
+   * <li>If the argument is NaN or an infinity, then the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a An angle, in radians.
@@ -1136,6 +1215,10 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The sine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified angle or {@link MathContext}
+   *           is null.
    */
   public static BigDecimal sin(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.sin(a, mc);
@@ -1147,6 +1230,10 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The sine of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified angle or {@link MathContext}
+   *           is null.
    */
   public static BigDecimal sin(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.sin(new BigDecimal(a), mc);
@@ -1156,11 +1243,11 @@ public final class SafeMath {
    * Returns the correctly rounded positive square root of a {@code double}
    * value. Special cases:
    * <ul>
-   * <li>If the argument is NaN or less than zero, then the result is NaN.
+   * <li>If the argument is NaN or less than zero, then the result is NaN.</li>
    * <li>If the argument is positive infinity, then the result is positive
-   * infinity.
+   * infinity.</li>
    * <li>If the argument is positive zero or negative zero, then the result is
-   * the same as the argument.
+   * the same as the argument.</li>
    * </ul>
    * Otherwise, the result is the {@code double} value closest to the true
    * mathematical square root of the argument value.
@@ -1179,6 +1266,10 @@ public final class SafeMath {
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
    * @return The positive square root of {@code a}.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
    */
   public static BigDecimal sqrt(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.sqrt(a, mc);
@@ -1191,6 +1282,10 @@ public final class SafeMath {
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
    * @return The positive square root of {@code a}.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
    */
   public static BigDecimal sqrt(final BigInteger a, final MathContext mc) {
     return sqrt(new BigDecimal(a), mc);
@@ -1199,9 +1294,9 @@ public final class SafeMath {
   /**
    * Returns the trigonometric tangent of an angle. Special cases:
    * <ul>
-   * <li>If the argument is NaN or an infinity, then the result is NaN.
+   * <li>If the argument is NaN or an infinity, then the result is NaN.</li>
    * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.
+   * as the argument.</li>
    * </ul>
    *
    * @param a An angle, in radians.
@@ -1217,6 +1312,10 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The tangent of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified angle or {@link MathContext}
+   *           is null.
    */
   public static BigDecimal tan(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.tan(a, mc);
@@ -1228,6 +1327,10 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The tangent of the argument.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified angle or {@link MathContext}
+   *           is null.
    */
   public static BigDecimal tan(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.tan(new BigDecimal(a), mc);
@@ -1237,15 +1340,15 @@ public final class SafeMath {
    * Returns the natural logarithm (base <i>e</i>) of a {@code double} value.
    * Special cases:
    * <ul>
-   * <li>If the argument is NaN or less than zero, then the result is NaN.
+   * <li>If the argument is NaN or less than zero, then the result is NaN.</li>
    * <li>If the argument is positive infinity, then the result is positive
-   * infinity.
+   * infinity.</li>
    * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.
+   * negative infinity.</li>
    * </ul>
    *
    * @param a The value.
-   * @return The value ln&nbsp;{@code a}, the natural logarithm of {@code a}.
+   * @return The value {@code ln(a)} (i.e. the natural logarithm of {@code a}).
    */
   public static double log(final double a) {
     return StrictMath.log(a);
@@ -1254,11 +1357,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1275,11 +1379,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1296,11 +1401,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1317,11 +1423,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1338,11 +1445,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1359,11 +1467,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1380,11 +1489,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1401,11 +1511,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1422,11 +1533,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1443,11 +1555,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1464,11 +1577,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1485,11 +1599,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1506,11 +1621,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1527,11 +1643,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1548,11 +1665,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1569,11 +1687,12 @@ public final class SafeMath {
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1591,29 +1710,34 @@ public final class SafeMath {
    * Returns the natural logarithm (base <i>e</i>) of a {@link BigDecimal}
    * value. Special cases:
    * <ul>
-   * <li>If the argument is NaN or less than zero, then the result is NaN.
+   * <li>If the argument is NaN or less than zero, then the result is NaN.</li>
    * <li>If the argument is positive infinity, then the result is positive
-   * infinity.
+   * infinity.</li>
    * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.
+   * negative infinity.</li>
    * </ul>
    *
    * @param a The value.
-   * @param mathContext The {@link MathContext} used for the result.
-   * @return The value ln&nbsp;{@code a}, the natural logarithm of {@code a}.
+   * @param mc The {@link MathContext} used for the result.
+   * @return The value {@code ln(a)}, (i.e. the natural logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
    */
-  public static BigDecimal log(final BigDecimal a, final MathContext mathContext) {
-    return BigDecimalMath.log(a, mathContext);
+  public static BigDecimal log(final BigDecimal a, final MathContext mc) {
+    return BigDecimalMath.log(a, mc);
   }
 
   /**
    * Returns the logarithm base {@code b} of value {@code a}. Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.
-   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.
-   * <li>If {@code a} is 0, then the result is negative infinity.
-   * <li>If {@code b} is 1, then the result is positive infinity.
-   * <li>If {@code b} is equal to {@code a}, then the result is 1.
+   * <li>If {@code b} or {@code a} is less than zero, then the result is
+   * NaN.</li>
+   * <li>If {@code b} and {@code a} are 0 or 1, then the result is NaN.</li>
+   * <li>If {@code a} is 0, then the result is negative infinity.</li>
+   * <li>If {@code b} is 1, then the result is positive infinity.</li>
+   * <li>If {@code b} is equal to {@code a}, then the result is 1.</li>
    * </ul>
    * <p>
    * The computed result must be within 1 ulp of the exact result. Results must
@@ -1621,11 +1745,15 @@ public final class SafeMath {
    *
    * @param b The base.
    * @param a The value.
-   * @param mathContext The {@link MathContext} used for the result.
+   * @param mc The {@link MathContext} used for the result.
    * @return The value logarithm base {@code b} of {@code a}.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the {@code a}, {@code b}, or
+   *           {@link MathContext} is null.
    */
-  public static BigDecimal log(final BigDecimal b, final BigDecimal a, final MathContext mathContext) {
-    return BigDecimalMath.log(a, mathContext).divide(BigDecimalMath.log(b, mathContext), mathContext);
+  public static BigDecimal log(final BigDecimal b, final BigDecimal a, final MathContext mc) {
+    return BigDecimalMath.log(a, mc).divide(BigDecimalMath.log(b, mc), mc);
   }
 
   private SafeMath() {

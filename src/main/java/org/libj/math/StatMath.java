@@ -35,7 +35,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
-    double rms = 0.0D;
+    double rms = 0d;
     for (int i = 0; i < values.length; ++i)
       rms += values[i] * values[i];
 
@@ -54,7 +54,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
-    double rms = 0.0D;
+    double rms = 0d;
     for (int i = 0; i < values.length; ++i)
       rms += values[i] * values[i];
 
@@ -73,7 +73,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
-    double rms = 0.0D;
+    double rms = 0d;
     for (int i = 0; i < values.length; ++i)
       rms += values[i] * values[i];
 
@@ -92,7 +92,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
-    double rms = 0.0D;
+    double rms = 0d;
     for (int i = 0; i < values.length; ++i)
       rms += values[i] * values[i];
 
@@ -111,7 +111,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
-    double rms = 0.0D;
+    double rms = 0d;
     for (int i = 0; i < values.length; ++i)
       rms += values[i] * values[i];
 
@@ -329,7 +329,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static short threshold(final short value, final short min, final short max) {
-    return value < min ? min : (max < value ? max : value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -343,7 +343,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static int threshold(final int value, final int min, final int max) {
-    return value < min ? min : (max < value ? max : value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -357,7 +357,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static long threshold(final long value, final long min, final long max) {
-    return value < min ? min : (max < value ? max : value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -371,7 +371,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static float threshold(final float value, final float min, final float max) {
-    return value < min ? min : (max < value ? max : value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -385,7 +385,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static double threshold(final double value, final double min, final double max) {
-    return value < min ? min : (max < value ? max : value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**

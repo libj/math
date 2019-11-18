@@ -31,6 +31,7 @@ public class MovingAverage extends Number {
    * Creates a {@link MovingAverage} with the specified initial values.
    *
    * @param values The initial values.
+   * @throws NullPointerException If {@code values} is null.
    */
   public MovingAverage(final double ... values) {
     add(values);
@@ -55,6 +56,7 @@ public class MovingAverage extends Number {
    * Add the specified values to this instance, and adjust the moving average.
    *
    * @param values The values to add.
+   * @throws NullPointerException If {@code values} is null.
    */
   public void add(final double ... values) {
     for (final double value : values)
