@@ -17,13 +17,14 @@
 package org.libj.math;
 
 import java.math.BigInteger;
-import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Utility functions for operations pertaining to {@link BigInteger}.
  */
 public final class BigIntegers {
-  private static final HashMap<String,BigInteger> instances = new HashMap<>();
+  private static final ConcurrentHashMap<String,BigInteger> instances = new ConcurrentHashMap<>();
 
   /** The {@link BigInteger} constant two. */
   public static final BigInteger TWO = init("2", BigInteger.valueOf(2));
@@ -37,9 +38,17 @@ public final class BigIntegers {
    *         the specified string value.
    */
   public static BigInteger of(final String val) {
-    BigInteger instance = instances.get(val);
-    if (instance == null)
+    BigInteger instance = instances.get(Objects.requireNonNull(val));
+    if (instance != null)
+      return instance;
+
+    synchronized (val.intern()) {
+      instance = instances.get(val);
+      if (instance != null)
+        return instance;
+
       init(val, instance = new BigInteger(val));
+    }
 
     return instance;
   }

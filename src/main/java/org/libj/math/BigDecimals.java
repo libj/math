@@ -17,29 +17,29 @@
 package org.libj.math;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Utility functions for operations pertaining to {@link BigDecimal}.
  */
 public final class BigDecimals {
-  private static final HashMap<String,BigDecimal> instances = new HashMap<>();
+  private static final ConcurrentHashMap<String,BigDecimal> instances = new ConcurrentHashMap<>();
 
   /** The value 2, with a scale of 0. */
-  public static BigDecimal TWO = init("2", BigDecimal.valueOf(2l));
+  public static final BigDecimal TWO = init("2", BigDecimal.valueOf(2l));
 
   /** The value {@code #E}, with a scale of 15. */
-  public static BigDecimal E = init(String.valueOf(Math.E), BigDecimal.valueOf(Math.E));
+  public static final BigDecimal E = init(String.valueOf(Math.E), BigDecimal.valueOf(Math.E));
 
   /** The value {@link #PI}, with a scale of 15. */
-  public static BigDecimal PI = init(String.valueOf(Math.PI), BigDecimal.valueOf(Math.PI));
+  public static final BigDecimal PI = init(String.valueOf(Math.PI), BigDecimal.valueOf(Math.PI));
 
   /** The value {@code log(2)}, with a scale of 15. */
-  public static BigDecimal LOG_2 = init(String.valueOf(Constants.LOG_2), BigDecimal.valueOf(Constants.LOG_2));
+  public static final BigDecimal LOG_2 = init(String.valueOf(Constants.LOG_2), BigDecimal.valueOf(Constants.LOG_2));
 
   /** The value {@code log(10)}, with a scale of 15. */
-  public static BigDecimal LOG_10 = init(String.valueOf(Constants.LOG_10), BigDecimal.valueOf(Constants.LOG_10));
+  public static final BigDecimal LOG_10 = init(String.valueOf(Constants.LOG_10), BigDecimal.valueOf(Constants.LOG_10));
 
   /**
    * Returns a cached reference to the {@link BigDecimal} object representing
@@ -52,8 +52,16 @@ public final class BigDecimals {
    */
   public static BigDecimal of(final String val) {
     BigDecimal instance = instances.get(Objects.requireNonNull(val));
-    if (instance == null)
+    if (instance != null)
+      return instance;
+
+    synchronized (val.intern()) {
+      instance = instances.get(val);
+      if (instance != null)
+        return instance;
+
       init(val, instance = new BigDecimal(val));
+    }
 
     return instance;
   }
