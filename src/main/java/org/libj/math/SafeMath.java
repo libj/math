@@ -407,10 +407,10 @@ public final class SafeMath {
    */
   public static BigDecimal atan2(final BigDecimal y, final BigDecimal x, final MathContext mc) {
     if (y.signum() == 1)
-      return BigDecimals.TWO.multiply(BigDecimalMath.atan(x.divide(BigDecimalMath.sqrt(y.multiply(y).add(x.multiply(x)), mc).add(y)), mc));
+      return BigDecimals.TWO.multiply(BigDecimalMath.atan(x.divide(BigDecimalMath.sqrt(y.multiply(y).add(x.multiply(x)), mc).add(y), mc), mc));
 
     if (y.signum() <= 0 && x.signum() != 0)
-      return BigDecimals.TWO.multiply(BigDecimalMath.atan(BigDecimalMath.sqrt(y.multiply(y).add(x.multiply(x)), mc).subtract(y).divide(x), mc));
+      return BigDecimals.TWO.multiply(BigDecimalMath.atan(BigDecimalMath.sqrt(y.multiply(y).add(x.multiply(x)), mc).subtract(y).divide(x, mc), mc));
 
     if (y.signum() == -1 && x.signum() == 0)
       return BigDecimals.PI;
@@ -986,7 +986,7 @@ public final class SafeMath {
     if (scale == 0)
       return Math.round(a);
 
-    final float pow = (float)Math.pow(10, scale);
+    final float pow = (float)StrictMath.pow(10, scale);
     return Math.round(a * pow) / pow;
   }
 
@@ -1007,7 +1007,7 @@ public final class SafeMath {
     if (scale == 0)
       return Math.round(a);
 
-    final double pow = Math.pow(10, scale);
+    final double pow = StrictMath.pow(10, scale);
     return Math.round(a * pow) / pow;
   }
 
@@ -1135,7 +1135,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static int signum(final int a) {
-    return a < 0 ? -1 : a == 0 ? 0 : 1;
+    return Integer.compare(a, 0);
   }
 
   /**

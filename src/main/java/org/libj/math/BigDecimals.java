@@ -27,12 +27,12 @@ public final class BigDecimals {
   private static final ConcurrentHashMap<String,BigDecimal> instances = new ConcurrentHashMap<>();
 
   /** The value 2, with a scale of 0. */
-  public static final BigDecimal TWO = init("2", BigDecimal.valueOf(2l));
+  public static final BigDecimal TWO = init("2", BigDecimal.valueOf(2L));
 
-  /** The value {@code #E}, with a scale of 15. */
+  /** The value {@code E}, with a scale of 15. */
   public static final BigDecimal E = init(String.valueOf(Math.E), BigDecimal.valueOf(Math.E));
 
-  /** The value {@link #PI}, with a scale of 15. */
+  /** The value {@code PI}, with a scale of 15. */
   public static final BigDecimal PI = init(String.valueOf(Math.PI), BigDecimal.valueOf(Math.PI));
 
   /** The value {@code log(2)}, with a scale of 15. */

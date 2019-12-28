@@ -24,8 +24,8 @@ package org.libj.math;
 public class MovingAverage extends Number {
   private static final long serialVersionUID = 1631326433117019519L;
 
-  private volatile double average = 0;
-  private volatile long count = 0;
+  private double average;
+  private long count;
 
   /**
    * Creates a {@link MovingAverage} with the specified initial values.

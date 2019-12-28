@@ -20,11 +20,11 @@ package org.libj.math;
  * A mutable class that represents the moving normal algorithm.
  */
 public class MovingNormal {
-  private volatile double mean = 0d;
-  private volatile double sum = 0d;
-  private volatile double sumSq = 0d;
-  private volatile double scale = 1d;
-  private volatile double count = 0d;
+  private double mean = 0d;
+  private double sum = 0d;
+  private double sumSq = 0d;
+  private double scale = 1d;
+  private double count = 0d;
 
   /**
    * Normalizes the specified array of {@code double} values between the
