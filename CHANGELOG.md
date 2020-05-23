@@ -1,6 +1,8 @@
 # Changes by Version
 
-## [v0.6.6](https://github.com/libj/math/compare/e4c6262e88a009172d8d700e39871be1575ccc5e..HEAD) (2020-05-23)
+## [v0.6.7-SNAPSHOT](https://github.com/libj/math/compare/0c41e394a3b238a3a329ebd80753c0fe58ebae02..HEAD)
+
+## [v0.6.6](https://github.com/libj/math/compare/e4c6262e88a009172d8d700e39871be1575ccc5e..0c41e394a3b238a3a329ebd80753c0fe58ebae02) (2020-05-23)
 * Upgrade `ch.obermuhlner:big-math` from `v2.1.0` to `v2.3.0`.
 * Apply concurrency considerations to `BigDecimals.instances` and `BigIntegers.instances`.
 * Improve javadocs.

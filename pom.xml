@@ -22,10 +22,10 @@
   <parent>
     <groupId>org.libj</groupId>
     <artifactId>libj</artifactId>
-    <version>0.9.7</version>
+    <version>0.9.8-SNAPSHOT</version>
   </parent>
   <artifactId>math</artifactId>
-  <version>0.6.6</version>
+  <version>0.6.7-SNAPSHOT</version>
   <name>LibJ Math</name>
   <description>
     Supplementary extensions to the java.math package.
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.libj</groupId>
       <artifactId>test</artifactId>
-      <version>0.7.1</version>
+      <version>0.7.2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
