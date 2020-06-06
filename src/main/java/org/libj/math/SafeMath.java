@@ -36,7 +36,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static byte abs(final byte a) {
-    return a;
+    return (byte)(a < 0 ? -a : a);
   }
 
   /**
@@ -46,7 +46,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static short abs(final short a) {
-    return a;
+    return (short)(a < 0 ? -a : a);
   }
 
   /**
@@ -56,7 +56,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static int abs(final int a) {
-    return a;
+    return Math.abs(a);
   }
 
   /**
@@ -66,7 +66,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static long abs(final long a) {
-    return a;
+    return Math.abs(a);
   }
 
   /**
@@ -118,7 +118,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static BigInteger abs(final BigInteger a) {
-    return a;
+    return a.abs();
   }
 
   /**
