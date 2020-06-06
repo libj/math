@@ -14,10 +14,19 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.libj.lang.Buffers;
-import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 
 public class LongDecimalTest {
+  private static byte testBits = -1;
+  private static long testLD1 = -1;
+  private static long testLD2 = -1;
+
+  static {
+//    testBits = 15;
+//    testLD1 = -2305843009213702061L;
+//    testLD2 = -2305843009213705729L;
+  }
+
   private static final boolean debug = false;
   private static final Random random = new Random();
   private static final int numTests = 100000;
@@ -47,8 +56,8 @@ public class LongDecimalTest {
     return new BigDecimal(str);
   }
 
-  private static byte maxPowForBits(final byte bits) {
-    return (byte)(bits == 6 ? 55 : bits == 5 ? 43 : bits == 4 ? 36 : bits == 3 ? 33 : bits == 2 ? 31 : 30);
+  private static short maxScale(final byte bits) {
+    return (short)(bits == 0 ? 0 : pow2[bits - 1] / 2);
   }
 
   private abstract static class Operation {
@@ -60,9 +69,43 @@ public class LongDecimalTest {
       this.operator = operator;
     }
 
-    abstract BigDecimal[] epsilon();
+    abstract BigDecimal epsilon(byte bits);
+    abstract BigDecimal bounded(byte bits);
+    abstract byte maxValue(byte bits);
     abstract BigDecimal control(BigDecimal a, BigDecimal b, long[] time);
-    abstract long test(long d1, long d2, byte bits, long defaultValue, long[] time);
+    abstract long test(long ld1, long ld2, byte bits, long defaultValue, long[] time);
+
+    final long randomEncoded(final byte bits, final long defaultValue, final boolean bounded) {
+      return encode(randomValue(bits, bounded), randomScale(bits, bounded), bits, defaultValue);
+    }
+
+    final long randomValue(final byte bits, final boolean bounded) {
+      long maxValue = pow2[maxValue(bits)];
+      if (bounded)
+        maxValue = (short)(Short.MAX_VALUE * (double)(maxValue % 100000) / 100000);
+
+      return (long)((Math.random() < 0.5 ? -1 : 1) * random.nextDouble() * maxValue);
+    }
+
+    static short randomScale(final byte bits, final boolean bounded) {
+      if (bits == 0)
+        return 0;
+
+      if (bits == 1)
+        return (short)(Math.random() < 0.5 ? -1 : 0);
+
+      final short maxScale = maxScale(bits);
+      if (bounded) {
+        final double r = Math.random();
+        return (short)((r < 0.3 ? -2 : r < 0.6 ? -1 : 0) + maxScale);
+      }
+
+      double scale = random.nextDouble() * (pow2[bits - 1] - 1);
+      if (maxScale != -1 && Math.abs(scale) > maxScale)
+        scale /= maxScale;
+
+      return (short)((Math.random() < 0.5 ? -1 : 1) * scale);
+    }
 
     final void print(final long[] time, final BigDecimal[] errors) {
       final StringBuilder builder = new StringBuilder();
@@ -88,8 +131,8 @@ public class LongDecimalTest {
     }
   }
 
-  private abstract static class AddOperation extends Operation {
-    private AddOperation(final String label, final String operator) {
+  private abstract static class AdditiveOperation extends Operation {
+    private AdditiveOperation(final String label, final String operator) {
       super(label, operator);
     }
 
@@ -113,12 +156,22 @@ public class LongDecimalTest {
     };
 
     @Override
-    final BigDecimal[] epsilon() {
-      return epsilon;
+    final BigDecimal epsilon(final byte bits) {
+      return epsilon[bits];
+    }
+
+    @Override
+    BigDecimal bounded(final byte bits) {
+      return BigDecimal.ZERO;
+    }
+
+    @Override
+    byte maxValue(final byte bits) {
+      return (byte)(63 - bits);
     }
   }
 
-  private static final class MulOperation extends Operation {
+  private static final class MulOperation extends MultiplicativeOperation {
     private MulOperation(final String label, final String operator) {
       super(label, operator);
     }
@@ -143,8 +196,13 @@ public class LongDecimalTest {
     };
 
     @Override
-    BigDecimal[] epsilon() {
-      return epsilon;
+    BigDecimal epsilon(final byte bits) {
+      return epsilon[bits];
+    }
+
+    @Override
+    BigDecimal bounded(final byte bits) {
+      return BigDecimal.ONE;
     }
 
     @Override
@@ -157,9 +215,9 @@ public class LongDecimalTest {
     }
 
     @Override
-    long test(final long d1, final long d2, final byte bits, final long defaultValue, final long[] time) {
+    long test(final long ld1, final long ld2, final byte bits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = mul(d1, d2, bits, defaultValue);
+      final long result = mul(ld1, ld2, bits, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -168,7 +226,19 @@ public class LongDecimalTest {
     }
   }
 
-  private static final class DivOperation extends Operation {
+  private abstract static class MultiplicativeOperation extends Operation {
+    private MultiplicativeOperation(final String label, final String operator) {
+      super(label, operator);
+    }
+
+    @Override
+    byte maxValue(final byte bits) {
+      // For multiply and divide, the maxValue should not be so big as to cause the result to overrun max/min value
+      return (byte)(bits == 6 ? 55 : bits == 5 ? 43 : bits == 4 ? 36 : bits == 3 ? 33 : bits == 2 ? 31 : 30);
+    }
+  }
+
+  private static final class DivOperation extends MultiplicativeOperation {
     private DivOperation(final String label, final String operator) {
       super(label, operator);
     }
@@ -193,8 +263,13 @@ public class LongDecimalTest {
     };
 
     @Override
-    final BigDecimal[] epsilon() {
-      return epsilon;
+    final BigDecimal epsilon(final byte bits) {
+      return epsilon[bits];
+    }
+
+    @Override
+    BigDecimal bounded(final byte bits) {
+      return epsilon(bits);
     }
 
     @Override
@@ -210,9 +285,9 @@ public class LongDecimalTest {
     }
 
     @Override
-    long test(final long d1, final long d2, final byte bits, final long defaultValue, final long[] time) {
+    long test(final long ld1, final long ld2, final byte bits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = div(d1, d2, bits, defaultValue);
+      final long result = div(ld1, ld2, bits, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -221,11 +296,11 @@ public class LongDecimalTest {
     }
   }
 
-  private static final Operation add = new AddOperation("add", "+") {
+  private static final Operation add = new AdditiveOperation("add", "+") {
     @Override
-    long test(final long d1, final long d2, final byte bits, final long defaultValue, final long[] time) {
+    long test(final long ld1, final long ld2, final byte bits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = add(d1, d2, bits, defaultValue);
+      final long result = add(ld1, ld2, bits, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -243,11 +318,11 @@ public class LongDecimalTest {
     }
   };
 
-  private static final Operation sub = new AddOperation("sub", "-") {
+  private static final Operation sub = new AdditiveOperation("sub", "-") {
     @Override
-    long test(final long d1, final long d2, final byte bits, final long defaultValue, final long[] time) {
+    long test(final long ld1, final long ld2, final byte bits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = sub(d1, d2, bits, defaultValue);
+      final long result = sub(ld1, ld2, bits, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -305,7 +380,7 @@ public class LongDecimalTest {
     assertEquals("value=" + value + ", scale=" + scale + ", bits=" + bits, scale, decodedScale);
   }
 
-  private static boolean testOperation(final long ld1, final long ld2, final byte bits, final Operation operation, final long[] time, final BigDecimal[] errors) {
+  private static boolean testOperation(final long ld1, final long ld2, final byte bits, final Operation operation, final boolean bounded, final long[] time, final BigDecimal[] errors) {
     final BigDecimal bd1 = toBidDecimal(ld1, bits);
     final BigDecimal bd2 = toBidDecimal(ld2, bits);
     final BigDecimal expected = operation.control(bd1, bd2, time);
@@ -353,39 +428,15 @@ public class LongDecimalTest {
     final BigDecimal error = expected.subtract(actual).abs().divide(expected, precision34);
     errors[bits] = errors[bits] == null ? error : errors[bits].max(error);
 
-    pass &= error.signum() == 0 || error.compareTo(operation.epsilon()[bits]) < 0;
+    pass &= error.signum() == 0 || error.compareTo(bounded ? operation.bounded(bits) : operation.epsilon(bits)) <= 0;
     if (!pass) {
       System.err.println("----------------------------------------\nd1: " + ld1 + " (" + decodeScale(ld1, bits) + ") d2: " + ld2 + " (" + decodeScale(ld2, bits) + ") bits: " + bits);
       System.err.println("Expected: " + bd1 + " " + operation.operator + " " + bd2 + " = " + expectedFormatter.format(expected) + "\n  Actual: " + bd1 + " " + operation.operator + " " + bd2 + " = " + actual + "\n Error: " + error);
       operation.test(ld1, ld2, bits, defaultValue, time);
-//          assertTrue(pass);
+      assertTrue(error.compareTo(BigDecimal.ONE) < 0);
     }
 
     return true;
-  }
-
-  private static long randomValue(final byte bits, final boolean forMul) {
-    // For multiply and divide, the maxValue should not be so big as to cause the result to overrun max/min value
-    final long maxValue = pow2[forMul ? maxPowForBits(bits) : 63 - bits];
-    return (long)(random.nextDouble() * maxValue);
-  }
-
-  private static short randomScale(final byte bits, final int maxScale) {
-    if (bits == 0)
-      return 0;
-
-    if (bits == 1)
-      return (short)(Math.random() < 0.5 ? -1 : 0);
-
-    double scale = random.nextDouble() * (pow2[bits - 1] - 1);
-    if (maxScale != -1 && Math.abs(scale) > maxScale)
-      scale /= maxScale;
-
-    return (short)((Math.random() < 0.5 ? -1 : 1) * scale);
-  }
-
-  private static long randomEncoded(final byte bits, final int maxScale, final long defaultValue, final boolean forMul) {
-    return encode(randomValue(bits, forMul), randomScale(bits, maxScale), bits, defaultValue);
   }
 
   @Test
@@ -406,70 +457,59 @@ public class LongDecimalTest {
     System.err.println("LongDecimal.testEncodeDecode(): encode=" + (time[0] / count) + "ns, decode=" + (count / time[1]) + "/ns");
   }
 
-  @Test
-  public void testAdd() {
+  public void testUnbounded(final Operation operation, final boolean bounded) {
     final long[] time = new long[2];
     final BigDecimal[] errors = new BigDecimal[16];
     for (int i = 0; i < numTests; ++i) {
       for (byte b = 0; b < maxBits; ++b) {
         final long defaultValue = random.nextLong();
-        final long d1 = randomEncoded(b, -1, defaultValue, false);
-        final long d2 = randomEncoded(b, -1, defaultValue, false);
-        testOperation(d1, d2, b, add, time, errors);
+        final long ld1 = testLD1 != -1 ? testLD1 : operation.randomEncoded(b, defaultValue, bounded);
+        final long ld2 = testLD2 != -1 ? testLD2 :operation.randomEncoded(b, defaultValue, bounded);
+        testOperation(ld1, ld2, testBits != -1 ? testBits : b, operation, bounded, time, errors);
       }
     }
 
-    add.print(time, errors);
+    operation.print(time, errors);
   }
 
   @Test
-  public void testSub() {
-    final long[] time = new long[2];
-    final BigDecimal[] errors = new BigDecimal[16];
-    for (int i = 0; i < numTests; ++i) {
-      for (byte b = 0; b < maxBits; ++b) {
-        final long defaultValue = random.nextLong();
-        final long d1 = randomEncoded(b, -1, defaultValue, false);
-        final long d2 = randomEncoded(b, -1, defaultValue, false);
-        testOperation(d1, d2, b, sub, time, errors);
-      }
-    }
-
-    sub.print(time, errors);
+  public void testAddBounded() {
+    testUnbounded(add, true);
   }
 
   @Test
-  public void testMul() {
-    final long[] time = new long[2];
-    final BigDecimal[] errors = new BigDecimal[maxBits];
-    for (int i = 0; i < numTests; ++i) {
-      for (byte b = 0; b < maxBits; ++b) {
-        final int maxBits = b == 0 ? 0 : (int)pow2[b - 1] / 2;
-        final long defaultValue = random.nextLong();
-        final long d1 = randomEncoded(b, maxBits, defaultValue, true);
-        final long d2 = randomEncoded(b, maxBits, defaultValue, true);
-        testOperation(d1, d2, b, mul, time, errors);
-      }
-    }
-
-    mul.print(time, errors);
+  public void testSubBounded() {
+    testUnbounded(sub, true);
   }
 
   @Test
-  public void testDiv() {
-    final long[] time = new long[2];
-    final BigDecimal[] errors = new BigDecimal[maxBits];
-    for (int i = 0; i < numTests; ++i) {
-      for (byte b = 0; b < maxBits; ++b) {
-        final int maxBits = b == 0 ? 0 : (int)pow2[b - 1] / 2;
-        final long defaultValue = random.nextLong();
-        final long d1 = randomEncoded(b, maxBits, defaultValue, true);
-        final long d2 = randomEncoded(b, maxBits, defaultValue, true);
-        testOperation(d1, d2, b, div, time, errors);
-      }
-    }
+  public void testMulBounded() {
+    testUnbounded(mul, true);
+  }
 
-    div.print(time, errors);
+  @Test
+  public void testDivBounded() {
+    testUnbounded(div, true);
+  }
+
+  @Test
+  public void testAddUnbounded() {
+    testUnbounded(add, false);
+  }
+
+  @Test
+  public void testSubUnbounded() {
+    testUnbounded(sub, false);
+  }
+
+  @Test
+  public void testMulUnbounded() {
+    testUnbounded(mul, false);
+  }
+
+  @Test
+  public void testDivUnbounded() {
+    testUnbounded(div, false);
   }
 
   @Test
