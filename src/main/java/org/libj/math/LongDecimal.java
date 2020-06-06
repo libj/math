@@ -123,7 +123,8 @@ public final class LongDecimal {
       return encoded;
 
     final long scaleMask = mask(bits);
-//    System.out.println("Smask: " + Buffers.toString(scaleMask));
+//    System.out.println("encoded: " + Buffers.toString(encoded));
+//    System.out.println("sleMask: " + Buffers.toString(scaleMask));
     return encoded < 0 ? encoded | scaleMask : encoded & ~scaleMask;
   }
 
@@ -223,7 +224,7 @@ public final class LongDecimal {
    * @see #decodeScale(long,byte)
    */
   public static long sub(final long ld1, final long ld2, final byte bits, final long defaultValue) {
-    return add(ld1, ld2, -decodeValue(ld2, bits), decodeScale(ld2, bits), bits, defaultValue);
+    return ld1 == 0 ? neg(ld2, bits) : ld2 == 0 ? ld1 : add0(ld1, neg(ld2, bits), bits, defaultValue);
   }
 
   /**
@@ -249,14 +250,22 @@ public final class LongDecimal {
    * @see #decodeScale(long,byte)
    */
   public static long add(final long ld1, final long ld2, final byte bits, final long defaultValue) {
-    return add(ld1, ld2, decodeValue(ld2, bits), decodeScale(ld2, bits), bits, defaultValue);
+    return ld1 == 0 ? ld2 : ld2 == 0 ? ld1 : add0(ld1, ld2, bits, defaultValue);
   }
 
-  private static long add(long ld1, long ld2, long v2, short s2, final byte bits, final long defaultValue) {
+  private static long add0(long ld1, long ld2, final byte bits, final long defaultValue) {
+    long v1 = decodeValue(ld1, bits);
+    if (v1 == 0)
+      return ld2;
+
+    long v2 = decodeValue(ld2, bits);
+    if (v2 == 0)
+      return ld1;
+
     final long maxValue = LongDecimal.maxValue[bits];
     final long minValue = LongDecimal.minValue[bits];
-    long v1 = decodeValue(ld1, bits);
     short s1 = decodeScale(ld1, bits);
+    short s2 = decodeScale(ld2, bits);
     short s = 0;
     if (s1 == s2) {
       s = s1;
@@ -283,7 +292,7 @@ public final class LongDecimal {
       if (v1 > 0 ? 0 > test || test > maxValue : 0 < test || test < minValue)
         --avail;
 
-      if (diff >= Numbers.digits(v2))
+      if (diff > Numbers.digits(maxValue))
         return ld1;
 
       if (diff > avail) {
