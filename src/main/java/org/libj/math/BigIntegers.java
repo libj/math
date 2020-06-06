@@ -58,6 +58,21 @@ public final class BigIntegers {
     return val;
   }
 
+  private static final ConcurrentHashMap<String,BigInteger> interns = new ConcurrentHashMap<>();
+
+  /**
+   * Returns a canonical representation for the {@link BigInteger} object.
+   *
+   * @param n The {@link BigInteger} to intern.
+   * @return A {@link BigInteger} that has the same contents as the specified
+   *         {@link BigInteger}, but is guaranteed to be from a pool of unique
+   *         instances.
+   */
+  public static BigInteger intern(final BigInteger n) {
+    final BigInteger intern = interns.putIfAbsent(n.toString(), n);
+    return intern != null ? intern : n;
+  }
+
   private BigIntegers() {
   }
 }

@@ -17,6 +17,7 @@
 package org.libj.math;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,6 +70,21 @@ public final class BigDecimals {
   private static BigDecimal init(final String str, final BigDecimal val) {
     instances.put(str, val);
     return val;
+  }
+
+  private static final ConcurrentHashMap<String,BigDecimal> interns = new ConcurrentHashMap<>();
+
+  /**
+   * Returns a canonical representation for the {@link BigDecimal} object.
+   *
+   * @param n The {@link BigDecimal} to intern.
+   * @return A {@link BigDecimal} that has the same contents as the specified
+   *         {@link BigDecimal}, but is guaranteed to be from a pool of unique
+   *         instances.
+   */
+  public static BigDecimal intern(final BigDecimal n) {
+    final BigDecimal intern = interns.putIfAbsent(n.toString(), n);
+    return intern != null ? intern : n;
   }
 
   private BigDecimals() {
