@@ -31,8 +31,8 @@ public final class LongDecimal {
   }
 
   private static boolean willProductOverflow(final long x, final long y) {
-    return Math.multiplyHigh(x, y) != 0;
-//    return (double)x * (double)y >= Long.MAX_VALUE;
+//    return Math.multiplyHigh(x, y) != 0;
+    return (double)x * (double)y >= Long.MAX_VALUE;
   }
 
   /**
