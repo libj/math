@@ -21,6 +21,8 @@ package org.libj.math;
  * offer higher performance algorithms.
  */
 public final class FastMath {
+  static final long[] e10 = {1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L, 10000000000L, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L};
+
   /**
    * Returns the base 2 logarithm of positive {@code int} values, and {@code 0}
    * for negative values.
@@ -49,6 +51,20 @@ public final class FastMath {
    */
   public static byte log2(final long n) {
     return (byte)(n <= 0 ? 0 : 63 - Long.numberOfLeadingZeros(n - 1));
+  }
+
+  /**
+   * Returns the value of <code>1x10<sup>n</sup></code> for {@code n} between
+   * {@code 0} and {@code 18}.
+   *
+   * @param n The value.
+   * @return The value of <code>1x10<sup>n</sup></code> for {@code n} between
+   *         {@code 0} and {@code 18}.
+   * @throws ArrayIndexOutOfBoundsException If {@code n} is smaller than
+   *           {@code 0} or greater than {@code 18}.
+   */
+  public static long e10(final byte n) {
+    return e10[n];
   }
 
   private FastMath() {

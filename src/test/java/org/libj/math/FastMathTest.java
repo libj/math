@@ -40,4 +40,24 @@ public class FastMathTest {
       assertEquals(String.valueOf(n), (byte)(Math.log(n) / Math.log(2)), FastMath.log2(n));
     }
   }
+
+  @Test
+  public void testE10() {
+    try {
+      FastMath.e10((byte)-1);
+      fail("Expected ArrayIndexOutOfBoundsException");
+    }
+    catch (final ArrayIndexOutOfBoundsException e) {
+    }
+
+    for (byte i = 0; i < 19; ++i)
+      assertEquals((long)Math.pow(10, i), FastMath.e10(i));
+
+    try {
+      FastMath.e10((byte)19);
+      fail("Expected ArrayIndexOutOfBoundsException");
+    }
+    catch (final ArrayIndexOutOfBoundsException e) {
+    }
+  }
 }
