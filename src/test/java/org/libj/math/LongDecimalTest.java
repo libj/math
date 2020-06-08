@@ -144,8 +144,8 @@ public abstract class LongDecimalTest {
           ld2 = operation.randomEncoded(b);
         }
 
-        final BigDecimal bd1 = toBidDecimal(ld1, b);
-        final BigDecimal bd2 = toBidDecimal(ld2, b);
+        final BigDecimal bd1 = toBigDecimal(ld1, b);
+        final BigDecimal bd2 = toBigDecimal(ld2, b);
         Object actual = defaultValue;
         Object expected = defaultValue;
         BigDecimal error = BigDecimal.ZERO;

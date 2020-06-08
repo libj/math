@@ -23,6 +23,76 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 public class LongDecimalPredicateTest extends LongDecimalTest {
+  private static final Operation<Short,Short> precision = new Operation<Short,Short>("precision", long.class, "~") {
+    @Override
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Short expected, final Short actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+      return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
+    }
+
+    @Override
+    Short test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+      final long ts = System.nanoTime();
+      final short result = LongDecimal.precision(ld1, bits);
+      time[0] += System.nanoTime() - ts;
+      return result;
+    }
+
+    @Override
+    Short control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
+      final long ts = System.nanoTime();
+      final short result = (short)bd1.precision();
+      time[1] += System.nanoTime() - ts;
+      return result;
+    }
+  };
+
+  private static final Operation<BigDecimal,BigDecimal> toBigDecimal = new Operation<BigDecimal,BigDecimal>("toBigDecimal", long.class, "~") {
+    @Override
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final BigDecimal actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+      return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
+    }
+
+    @Override
+    BigDecimal test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+      final long ts = System.nanoTime();
+      final BigDecimal result = LongDecimal.toBigDecimal(ld1, bits);
+      time[0] += System.nanoTime() - ts;
+      return result;
+    }
+
+    @Override
+    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
+      final String str = bd1.toString();
+      final long ts = System.nanoTime();
+      final BigDecimal result = new BigDecimal(str);
+      time[1] += System.nanoTime() - ts;
+      return result;
+    }
+  };
+
+  private static final Operation<Double,Double> toDouble = new Operation<Double,Double>("toDouble", long.class, "~") {
+    @Override
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Double expected, final Double actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+      return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
+    }
+
+    @Override
+    Double test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+      final long ts = System.nanoTime();
+      final double result = LongDecimal.toDouble(ld1, bits);
+      time[0] += System.nanoTime() - ts;
+      return result;
+    }
+
+    @Override
+    Double control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
+      final long ts = System.nanoTime();
+      final double result = bd1.doubleValue();
+      time[1] += System.nanoTime() - ts;
+      return result;
+    }
+  };
+
   private static final Operation<Integer,Integer> compare = new Operation<Integer,Integer>("compare", long.class, "<>") {
     @Override
     BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Integer expected, final Integer actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
@@ -53,7 +123,7 @@ public class LongDecimalPredicateTest extends LongDecimalTest {
 
     @Override
     BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final Long actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected.compareTo(toBidDecimal(actual, bits)) == 0 ? null : BigDecimal.ONE;
+      return expected.compareTo(toBigDecimal(actual, bits)) == 0 ? null : BigDecimal.ONE;
     }
   }
 
@@ -260,5 +330,20 @@ public class LongDecimalPredicateTest extends LongDecimalTest {
   @Test
   public void testToString() {
     test(toString);
+  }
+
+  @Test
+  public void testToBigDecimal() {
+    test(toBigDecimal);
+  }
+
+  @Test
+  public void testToDouble() {
+    test(toDouble);
+  }
+
+  @Test
+  public void testPrecision() {
+    test(precision);
   }
 }

@@ -233,7 +233,7 @@ public final class LongDecimal {
    *         {@link LongDecimal#encode(long,short,byte,long) encoded} value and
    *         and sign {@code bits}.
    */
-  public static BigDecimal toBidDecimal(final long encoded, final byte bits) {
+  public static BigDecimal toBigDecimal(final long encoded, final byte bits) {
     final long value = decodeValue(encoded, bits);
     final short scale = decodeScale(encoded, bits);
     return BigDecimal.valueOf(value, scale);

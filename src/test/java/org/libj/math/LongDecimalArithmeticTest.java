@@ -207,7 +207,7 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
       final short s = decodeScale(result, bits);
       final BigDecimal expectedScaled = expected.setScale(s, RoundingMode.FLOOR);
 
-      final BigDecimal actual = toBidDecimal(result, bits);
+      final BigDecimal actual = toBigDecimal(result, bits);
       final BigDecimal error = expectedScaled.subtract(actual).abs().divide(expected, precision16);
       errors[bits] = errors[bits] == null ? error : errors[bits].max(error);
 
@@ -260,6 +260,27 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
       return BigDecimal.ZERO;
     }
   }
+
+  private static final ArithmeticOperation neg = new FunctionOperation("neg", long.class) {
+    @Override
+    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+      long ts = System.nanoTime();
+      final long result = neg(ld1, bits, defaultValue);
+      ts = System.nanoTime() - ts;
+      if (result != defaultValue)
+        time[0] += ts;
+
+      return result;
+    }
+
+    @Override
+    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
+      final long ts = System.nanoTime();
+      final BigDecimal result = bd1.negate();
+      time[1] += System.nanoTime() - ts;
+      return result;
+    }
+  };
 
   private static final ArithmeticOperation encodeBigDecimal = new FunctionOperation("encode", BigDecimal.class) {
     @Override
@@ -384,6 +405,11 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
   @Test
   public void testEncodeString() {
     test(encodeString);
+  }
+
+  @Test
+  public void testNeg() {
+    test(neg);
   }
 
   @Test
