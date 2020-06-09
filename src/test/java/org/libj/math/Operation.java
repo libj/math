@@ -133,7 +133,7 @@ abstract class Operation<T,C> {
     perf = color(Strings.padLeft(timePerf > 0 ? "+" + perf : perf, 7) + "%", timePerf <= 0);
 
     final String f = Strings.padLeft(label + "(" + arg.getSimpleName() + ")", 18);
-    final String l = Strings.padRight("LongDecimal=" + timeLongDecimal, 16);
+    final String l = Strings.padRight("LongDecimal=" + timeLongDecimal, 17);
     final String b = Strings.padRight("BigDecimal=" + timeBigDecimal, 16);
     final String c = Strings.padRight(String.valueOf(count), 7);
     final String e = Strings.padRight(epsilonFormatter.format(error), 5);

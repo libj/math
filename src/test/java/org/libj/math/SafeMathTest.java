@@ -45,11 +45,6 @@ public class SafeMathTest {
     return (Math.random() < 0.5 ? -1 : 1) * (random.nextDouble() + 1);
   }
 
-  private static double d1() {
-    final double d = random.nextDouble();
-    return (Math.random() < 0.5 ? -1 : 1) * (d == 0 ? 0.1 + d : d);
-  }
-
   private static double d0() {
     return (Math.random() < 0.5 ? -1 : 1) * random.nextDouble();
   }
