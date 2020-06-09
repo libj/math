@@ -21,23 +21,40 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MovingAverageTest {
+  private static final double epsilon = 0.0001;
+  private static final double[] vals = {1, 2, 4, 1, 2, 3, 7};
+  private static final double[] averages = {
+    1.0,
+    1.5,
+    2.3333333333333335,
+    2.0,
+    2.0,
+    2.1666666666666665,
+    2.857142857142857
+  };
+
+  private static void add(final MovingAverage a, final int i) {
+    a.add(vals[i]);
+    assertEquals(averages[i], a.doubleValue(), epsilon);
+  }
+
+  private static void test(final MovingAverage a, final MovingAverage b) {
+    for (int i = 0; i < vals.length; ++i) {
+      add(a, i);
+      add(b, i);
+      assertEquals(a.byteValue(), b.byteValue());
+      assertEquals(a.shortValue(), b.shortValue());
+      assertEquals(a.intValue(), b.intValue());
+      assertEquals(a.longValue(), b.longValue());
+      assertEquals(a.floatValue(), b.floatValue(), epsilon);
+      assertEquals(a.toString(), b.toString());
+    }
+
+    assertEquals(vals.length, a.getCount());
+  }
+
   @Test
   public void testMovingAverage() {
-    final double[] vals = {1, 2, 4, 1, 2, 3, 7};
-    final double[] averages = {
-      1.0,
-      1.5,
-      2.3333333333333335,
-      2.0,
-      2.0,
-      2.1666666666666665,
-      2.857142857142857
-    };
-
-    final MovingAverage movingAverage = new MovingAverage();
-    for (int i = 0; i < vals.length; ++i) {
-      movingAverage.add(vals[i]);
-      assertEquals(averages[i], movingAverage.doubleValue(), 0.0001d);
-    }
+    test(new MovingAverage(), new MovingAverage(0));
   }
 }
