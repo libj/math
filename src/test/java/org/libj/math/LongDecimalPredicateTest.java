@@ -70,7 +70,7 @@ public class LongDecimalPredicateTest extends LongDecimalTest {
     }
   };
 
-  private static final Operation<Double,Double> toDouble = new Operation<Double,Double>("toDouble", long.class, "~") {
+  private static final Operation<Double,Double> doubleValue = new Operation<Double,Double>("doubleValue", long.class, "~") {
     @Override
     BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Double expected, final Double actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
@@ -79,7 +79,7 @@ public class LongDecimalPredicateTest extends LongDecimalTest {
     @Override
     Double test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final double result = LongDecimal.toDouble(ld1, bits);
+      final double result = LongDecimal.doubleValue(ld1, bits);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -338,8 +338,8 @@ public class LongDecimalPredicateTest extends LongDecimalTest {
   }
 
   @Test
-  public void testToDouble() {
-    test(toDouble);
+  public void testDoubleValue() {
+    test(doubleValue);
   }
 
   @Test

@@ -30,13 +30,15 @@ public final class LongDecimal {
   private static final Logger logger = LoggerFactory.getLogger(LongDecimal.class);
   static final byte maxScaleBits = 17;
   private static final long[] pow2 = new long[maxScaleBits];
+  static final byte[] minPrecision = new byte[maxScaleBits];
+  static final byte[] maxPrecision = new byte[maxScaleBits];
   static final short[] minScale = new short[maxScaleBits];
   static final short[] maxScale = new short[maxScaleBits];
-  static final byte[] minDigits = new byte[maxScaleBits];
-  static final byte[] maxDigits = new byte[maxScaleBits];
 
   static {
     for (byte b = 0; b < maxScaleBits; ++b) {
+      minPrecision[b] = Numbers.precision(minValue(b));
+      maxPrecision[b] = Numbers.precision(maxValue(b));
       pow2[b] = (long)Math.pow(2, b);
       if (b <= 1) {
         minScale[b] = 0;
@@ -47,9 +49,6 @@ public final class LongDecimal {
         minScale[b] = (short)-scale;
         maxScale[b] = (short)(scale - 1);
       }
-
-      minDigits[b] = Numbers.digits(minValue(b));
-      maxDigits[b] = Numbers.digits(maxValue(b));
     }
   }
 
@@ -149,32 +148,32 @@ public final class LongDecimal {
     if (scale == 0)
       return String.valueOf(value);
 
-    final byte digits = Numbers.digits(value);
+    final byte precision = Numbers.precision(value);
     int dot;
     if (scale > 0) {
-      if (scale >= digits) {
+      if (scale >= precision) {
         dot = -1;
       }
       else {
-        dot = digits - scale + 1;
+        dot = precision - scale + 1;
         scale = 0;
       }
     }
     else {
       dot = 2;
-      scale -= (digits - 1);
+      scale -= (precision - 1);
     }
 
     final int scaleLen;
     final int scalePart;
     final boolean scaleNeg;
     if (scale > 0) {
-      scaleLen = Numbers.digits(scale);
+      scaleLen = Numbers.precision(scale);
       scalePart = scaleLen + 2;
       scaleNeg = false;
     }
     else if (scale < 0) {
-      scaleLen = Numbers.digits(scale);
+      scaleLen = Numbers.precision(scale);
       scalePart = scaleLen + 1;
       scaleNeg = true;
       scale = (short)-scale;
@@ -185,7 +184,7 @@ public final class LongDecimal {
       scaleNeg = false;
     }
 
-    final char[] buf = new char[digits + (dot <= 0 ? 0 : 1) + (value < 0 ? 1 : 0) + scalePart];
+    final char[] buf = new char[precision + (dot <= 0 ? 0 : 1) + (value < 0 ? 1 : 0) + scalePart];
     final int lim;
     if (value < 0) {
       lim = 1;
@@ -251,7 +250,7 @@ public final class LongDecimal {
    *         {@link LongDecimal#encode(long,short,byte,long) encoded} value and
    *         and sign {@code bits}.
    */
-  public static double toDouble(final long encoded, final byte bits) {
+  public static double doubleValue(final long encoded, final byte bits) {
     final long value = decodeValue(encoded, bits);
     final short scale = decodeScale(encoded, bits);
     return value * StrictMath.pow(10, -scale);
@@ -335,7 +334,7 @@ public final class LongDecimal {
     // Make sure we don't overflow the scale bits
     if (s > maxScale) {
       int adj = s - maxScale;
-      if (adj >= Numbers.digits(val)) {
+      if (adj >= Numbers.precision(val)) {
         if (logger.isDebugEnabled())
           logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + bits + " scale bits");
 
@@ -359,7 +358,7 @@ public final class LongDecimal {
       final int minScale = LongDecimal.minScale[bits];
       if (s < minScale) {
         int adj = minScale - s;
-        if (adj >= 20 - Numbers.digits(val)) {
+        if (adj >= 20 - Numbers.precision(val)) {
           if (logger.isDebugEnabled())
             logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + bits + " scale bits");
 
@@ -550,12 +549,12 @@ public final class LongDecimal {
     if (val == 0)
       return encode(val, scale, bits, defaultValue);
 
-    final byte digits = Numbers.digits(val);
-    if (scale < s - digits + 1)
+    final byte precision = Numbers.precision(val);
+    if (scale < s - precision + 1)
       return encode(0, scale, bits, defaultValue);
 
     final int diff = s - scale;
-    if (diff > digits || diff < -18 || digits - diff > 19) {
+    if (diff > precision || diff < -18 || precision - diff > 19) {
       if (logger.isDebugEnabled())
         logger.debug("The scale of " + toString(encoded, bits) + " cannot be set to " + scale + " with " + bits + " scale bits");
 
@@ -600,7 +599,7 @@ public final class LongDecimal {
    * @see #decodeValue(long,byte)
    */
   public static short precision(final long encoded, final byte bits) {
-    return encoded == 0 ? 1 : Numbers.digits(decodeValue(encoded, bits));
+    return encoded == 0 ? 1 : Numbers.precision(decodeValue(encoded, bits));
   }
 
   /**
@@ -703,8 +702,8 @@ public final class LongDecimal {
     if (s1 == s2 || v1 < 0 != v2 < 0)
       return v1 < v2 ? -1 : 1;
 
-    s1 -= Numbers.digits(v1);
-    s2 -= Numbers.digits(v2);
+    s1 -= Numbers.precision(v1);
+    s2 -= Numbers.precision(v2);
     if (s1 != s2)
       return (v1 < 0 ? s1 < s2 : s1 > s2) ? -1 : 1;
 
@@ -831,6 +830,58 @@ public final class LongDecimal {
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
+  /**
+   * Returns the absolute value of a
+   * {@link LongDecimal#encode(long,short,byte,long) LongDecimal}-encoded
+   * {@code long} value.
+   * <p>
+   * If the argument is not negative, the argument is returned.
+   * <p>
+   * If the argument is negative, the negation of the argument is returned.
+   * <p>
+   * <b>Note</b>: If the argument is equal to the most negative representable
+   * value for the specified {@code bits} (i.e.
+   * {@link LongDecimal#minValue(byte) minValue(bits)}), {@code defaultValue} is
+   * returned.
+   *
+   * @param d The {@link LongDecimal#encode(long,short,byte,long)
+   *          LongDecimal}-encoded value.
+   * @param bits The number of bits in the encoded {@code long} values reserved
+   *          for the scale.
+   * @param defaultValue The value to be returned if the result cannot be
+   *          represented in {@link LongDecimal} encoding with the provided
+   *          {@code bits}.
+   * @return The absolute value of the argument.
+   */
+  public static long abs(final long d, final byte bits, final long defaultValue) {
+    final long value = decodeValue(d, bits);
+    return value >= 0 ? d : encode(-value, decodeScale(d, bits), bits, defaultValue);
+  }
+
+  /**
+   * Returns the result of the negation of {@code d}, i.e.:
+   *
+   * <pre>
+   * {@code result = -d}
+   * </pre>
+   *
+   * <b>Note</b>: If the argument is equal to the most negative representable
+   * value for the specified {@code bits} (i.e.
+   * {@link LongDecimal#minValue(byte) minValue(bits)}), {@code defaultValue} is
+   * returned.
+   *
+   * @param d The {@link LongDecimal#encode(long,short,byte,long)
+   *          LongDecimal}-encoded value to negate.
+   * @param bits The number of bits in the encoded {@code long} values reserved
+   *          for the scale.
+   * @param defaultValue The value to be returned if the result cannot be
+   *          represented in {@link LongDecimal} encoding with the provided
+   *          {@code bits}.
+   * @return The result of the negation of {@code d}, i.e.: {@code - d}
+   * @see #encode(long,short,byte,long)
+   * @see #decodeValue(long,byte)
+   * @see #decodeScale(long,byte)
+   */
   public static long neg(final long d, final byte bits, final long defaultValue) {
     return encode(-decodeValue(d, bits), decodeScale(d, bits), bits, defaultValue);
   }
@@ -924,13 +975,13 @@ public final class LongDecimal {
       }
 
       int diff = s2 - s1;
-      byte avail = (byte)(maxDigits[bits] - Numbers.digits(v1));
+      byte avail = (byte)(maxPrecision[bits] - Numbers.precision(v1));
       // Test for overflow (exclude if avail already == 0?)
       final long test = v1 * FastMath.e10[avail];
       if (v1 > 0 ? 0 > test || test > maxValue : 0 < test || test < minValue)
         --avail;
 
-      if (diff > Numbers.digits(maxValue))
+      if (diff > Numbers.precision(maxValue))
         return ld1;
 
       if (diff > avail) {
@@ -1080,8 +1131,8 @@ public final class LongDecimal {
     // How many digits are available before overflow?
     // If not enough, then degrade precision of each
     // value, degrading higher precision first.
-    final byte l1 = Numbers.digits(v1);
-    final byte l2 = Numbers.digits(v2);
+    final byte l1 = Numbers.precision(v1);
+    final byte l2 = Numbers.precision(v2);
     byte avail = (byte)(19 - l1 - l2);
     if (avail >= 0) {
       while (expectedPositive != (val = v1 * v2) > 0) {
@@ -1176,7 +1227,7 @@ public final class LongDecimal {
     // Make sure we don't overflow the scale bits
     if (s > maxScale) {
       int adj = s - maxScale;
-      if (adj >= Numbers.digits(val)) {
+      if (adj >= Numbers.precision(val)) {
         if (logger.isDebugEnabled())
           logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + bits + " scale bits");
 
@@ -1200,7 +1251,7 @@ public final class LongDecimal {
       final int minScale = LongDecimal.minScale[bits];
       if (s < minScale) {
         int adj = minScale - s;
-        if (adj >= 20 - Numbers.digits(val)) {
+        if (adj >= 20 - Numbers.precision(val)) {
           if (logger.isDebugEnabled())
             logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + bits + " scale bits");
 
@@ -1270,7 +1321,7 @@ public final class LongDecimal {
     short s2 = decodeScale(ld2, bits);
 
     // How many decimals do we have until overflow of long?
-    byte l1 = (byte)(19 - Numbers.digits(v1));
+    byte l1 = (byte)(19 - Numbers.precision(v1));
     // Expand the value to max precision available
     if (l1 > 0) {
       long test = v1 * FastMath.e10[l1];
@@ -1305,7 +1356,7 @@ public final class LongDecimal {
     // Make sure we don't overflow the scale bits
     if (s > maxScale) {
       int adj = s - maxScale;
-      if (adj >= Numbers.digits(val)) {
+      if (adj >= Numbers.precision(val)) {
         if (logger.isDebugEnabled())
           logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + bits + " scale bits");
 
@@ -1329,7 +1380,7 @@ public final class LongDecimal {
       final int minScale = LongDecimal.minScale[bits];
       if (s < minScale) {
         int adj = minScale - s;
-        if (adj >= 20 - Numbers.digits(val)) {
+        if (adj >= 20 - Numbers.precision(val)) {
           if (logger.isDebugEnabled())
             logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + bits + " scale bits");
 

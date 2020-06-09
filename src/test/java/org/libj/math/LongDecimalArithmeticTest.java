@@ -38,7 +38,7 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
     D("7E-13"),
     D("1E-11"),
     D("2E-11"),
-    D("5E-13"),
+    D("1E-12"),
     D("2E-11"),
     D("6E-12"),
     D("7E-12"),
@@ -164,7 +164,7 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
       int scale = expected.scale();
       int len;
       if (!lockScale()) {
-        len = Numbers.digits(unscaled);
+        len = Numbers.precision(unscaled);
         if (len > 19) {
           final int negOffset = unscaled.signum() < 0 ? 1 : 0;
           unscaled = new BigInteger(unscaled.toString().substring(negOffset, 19 + negOffset));
@@ -192,7 +192,7 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
           expectDefaultValue = false;
         }
         else {
-          len = Numbers.digits(unscaled);
+          len = Numbers.precision(unscaled);
           final int diffScale = scale - (scale < 0 ? minScale : maxScale);
           expectDefaultValue = diffScale < 0 || len - diffScale <= 0;
         }
@@ -277,6 +277,27 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
     BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
       final long ts = System.nanoTime();
       final BigDecimal result = bd1.negate();
+      time[1] += System.nanoTime() - ts;
+      return result;
+    }
+  };
+
+  private static final ArithmeticOperation abs = new FunctionOperation("abs", long.class) {
+    @Override
+    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+      long ts = System.nanoTime();
+      final long result = abs(ld1, bits, defaultValue);
+      ts = System.nanoTime() - ts;
+      if (result != defaultValue)
+        time[0] += ts;
+
+      return result;
+    }
+
+    @Override
+    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
+      final long ts = System.nanoTime();
+      final BigDecimal result = bd1.abs();
       time[1] += System.nanoTime() - ts;
       return result;
     }
@@ -410,6 +431,11 @@ public class LongDecimalArithmeticTest extends LongDecimalTest {
   @Test
   public void testNeg() {
     test(neg);
+  }
+
+  @Test
+  public void testAbs() {
+    test(abs);
   }
 
   @Test

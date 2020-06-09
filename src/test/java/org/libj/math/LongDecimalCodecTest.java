@@ -198,7 +198,7 @@ public class LongDecimalCodecTest extends LongDecimalTest {
   public void testMaxDigits() {
     final byte[] maxDigits = new byte[LongDecimal.minScale.length];
     for (byte b = 0; b < maxValue.length; ++b)
-      maxDigits[b] = Numbers.digits(LongDecimal.maxValue(b));
+      maxDigits[b] = Numbers.precision(LongDecimal.maxValue(b));
 
     long ts;
     byte tmp = 0;
@@ -217,7 +217,7 @@ public class LongDecimalCodecTest extends LongDecimalTest {
           final byte b = (byte)(i % maxValue.length);
           final long maxValue = LongDecimal.maxValue(b);
           ts = System.nanoTime();
-          tmp = Numbers.digits(maxValue);
+          tmp = Numbers.precision(maxValue);
           time2 += System.nanoTime() - ts;
         }
       }
