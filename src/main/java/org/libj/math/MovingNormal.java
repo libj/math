@@ -16,15 +16,17 @@
 
 package org.libj.math;
 
+import org.libj.lang.Assertions;
+
 /**
  * A mutable class that represents the moving normal algorithm.
  */
 public class MovingNormal {
-  private double mean = 0d;
-  private double sum = 0d;
-  private double sumSq = 0d;
-  private double scale = 1d;
-  private double count = 0d;
+  protected double mean = 0d;
+  protected double sum = 0d;
+  protected double sumSq = 0d;
+  protected double scale = 1d;
+  protected double count = 0d;
 
   /**
    * Normalizes the specified array of {@code double} values between the
@@ -40,14 +42,7 @@ public class MovingNormal {
    * @throws NullPointerException If {@code values} is null.
    */
   public void normalize(final int fromIndex, final int toIndex, final double ... values) {
-    if (fromIndex < 0)
-      throw new ArrayIndexOutOfBoundsException(fromIndex);
-
-    if (toIndex > values.length)
-      throw new ArrayIndexOutOfBoundsException(toIndex);
-
-    if (fromIndex > toIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+    Assertions.assertRange(fromIndex, toIndex, values.length);
 
     for (int i = fromIndex; i < toIndex; ++i, ++count) {
       sum += values[i];

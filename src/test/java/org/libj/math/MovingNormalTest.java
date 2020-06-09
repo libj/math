@@ -21,27 +21,31 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MovingNormalTest {
+  private static final double epsilon = 0.0001;
+  private static final double[] vals = {1, 2, 4, 1, 2, 3, 4, 2};
+  private static final double[] normals = {
+    -1.0,
+    1.0,
+    1.6329931618554523,
+    -0.8164965809277261,
+    -0.15617376188860588,
+    0.7808688094430303,
+    1.462614271203831,
+    -0.3375263702778072
+  };
+
   @Test
   public void testMovingNormal() {
-    final double[] vals = {1, 2, 4, 1, 2, 3, 4, 2};
-    final double[] normals = {
-      -1.0,
-      1.0,
-      1.6329931618554523,
-      -0.8164965809277261,
-      -0.15617376188860588,
-      0.7808688094430303,
-      1.462614271203831,
-      -0.3375263702778072
-    };
-
     StatMath.normalize(vals);
     final MovingNormal movingNormal = new MovingNormal();
     movingNormal.normalize(0, 2, vals);
     movingNormal.normalize(2, 4, vals);
     movingNormal.normalize(4, 6, vals);
     movingNormal.normalize(6, 8, vals);
-    for (int i = 0; i < vals.length; ++i)
-      assertEquals(normals[i], vals[i], .00001);
+    for (int i = 0; i < vals.length; ++i) {
+      assertEquals(normals[i], vals[i], epsilon);
+      assertNotEquals(0, movingNormal.getMean());
+      assertNotEquals(0, movingNormal.getScale());
+    }
   }
 }
