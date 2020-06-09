@@ -426,16 +426,7 @@ public final class SafeMath {
    *           {@link MathContext} is null.
    */
   public static BigDecimal atan2(final BigDecimal y, final BigDecimal x, final MathContext mc) {
-    if (y.signum() == 1)
-      return BigDecimals.TWO.multiply(BigDecimalMath.atan(x.divide(BigDecimalMath.sqrt(y.multiply(y).add(x.multiply(x)), mc).add(y), mc), mc));
-
-    if (y.signum() <= 0 && x.signum() != 0)
-      return BigDecimals.TWO.multiply(BigDecimalMath.atan(BigDecimalMath.sqrt(y.multiply(y).add(x.multiply(x)), mc).subtract(y).divide(x, mc), mc));
-
-    if (y.signum() == -1 && x.signum() == 0)
-      return BigDecimals.PI;
-
-    return null;
+    return BigDecimalMath.atan2(y, x, mc);
   }
 
   /**
@@ -1162,8 +1153,8 @@ public final class SafeMath {
    * @param a The short value whose signum is to be returned
    * @return The signum function of the argument.
    */
-  public static short signum(final short a) {
-    return a < 0 ? (short)-1 : a == 0 ? 0 : (short)1;
+  public static byte signum(final short a) {
+    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
   }
 
   /**
@@ -1174,8 +1165,8 @@ public final class SafeMath {
    * @param a The int value whose signum is to be returned.
    * @return The signum function of the argument.
    */
-  public static int signum(final int a) {
-    return Integer.compare(a, 0);
+  public static byte signum(final int a) {
+    return (byte)Integer.compare(a, 0);
   }
 
   /**
@@ -1186,8 +1177,8 @@ public final class SafeMath {
    * @param a The long value whose signum is to be returned
    * @return The signum function of the argument.
    */
-  public static long signum(final long a) {
-    return a < 0 ? -1 : a == 0 ? 0 : 1;
+  public static byte signum(final long a) {
+    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
   }
 
   /**
@@ -1198,8 +1189,8 @@ public final class SafeMath {
    * @param a The floating-point value whose signum is to be returned
    * @return The signum function of the argument.
    */
-  public static float signum(final float a) {
-    return a < 0 ? -1 : a == 0 ? 0 : 1;
+  public static byte signum(final float a) {
+    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
   }
 
   /**
@@ -1210,8 +1201,8 @@ public final class SafeMath {
    * @param a The floating-point value whose signum is to be returned
    * @return The signum function of the argument.
    */
-  public static double signum(final double a) {
-    return a < 0 ? -1 : a == 0 ? 0 : 1;
+  public static byte signum(final double a) {
+    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
   }
 
   /**
@@ -1220,8 +1211,8 @@ public final class SafeMath {
    * @param a The {@link BigInteger} value whose signum is to be returned
    * @return The signum function of the argument.
    */
-  public static int signum(final BigInteger a) {
-    return a.signum();
+  public static byte signum(final BigInteger a) {
+    return (byte)a.signum();
   }
 
   /**
@@ -1230,8 +1221,8 @@ public final class SafeMath {
    * @param a The {@link BigDecimal} value whose signum is to be returned
    * @return The signum function of the argument.
    */
-  public static int signum(final BigDecimal a) {
-    return a.signum();
+  public static byte signum(final BigDecimal a) {
+    return (byte)a.signum();
   }
 
   /**
@@ -1963,7 +1954,7 @@ public final class SafeMath {
    * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural
    *         logarithm of {@code a}).
    */
-  public static double ln(final int a) {
+  public static double log(final float a) {
     return StrictMath.log(a);
   }
 
@@ -1985,51 +1976,7 @@ public final class SafeMath {
    * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural
    *         logarithm of {@code a}).
    */
-  public static double ln(final long a) {
-    return StrictMath.log(a);
-  }
-
-  /**
-   * Returns the value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   * logarithm of {@code a}).
-   * <p>
-   * Special cases:
-   * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * </ul>
-   *
-   * @param a The value.
-   * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   *         logarithm of {@code a}).
-   */
-  public static double ln(final float a) {
-    return StrictMath.log(a);
-  }
-
-  /**
-   * Returns the value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   * logarithm of {@code a}).
-   * <p>
-   * Special cases:
-   * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * </ul>
-   *
-   * @param a The value.
-   * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   *         logarithm of {@code a}).
-   */
-  public static double ln(final double a) {
+  public static double log(final double a) {
     return StrictMath.log(a);
   }
 
@@ -2056,7 +2003,7 @@ public final class SafeMath {
    * @throws NullPointerException If the specified value or {@link MathContext}
    *           is null.
    */
-  public static BigDecimal ln(final BigInteger a, final MathContext mc) {
+  public static BigDecimal log(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.log(new BigDecimal(a), mc);
   }
 
@@ -2083,56 +2030,8 @@ public final class SafeMath {
    * @throws NullPointerException If the specified value or {@link MathContext}
    *           is null.
    */
-  public static BigDecimal ln(final BigDecimal a, final MathContext mc) {
+  public static BigDecimal log(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.log(a, mc);
-  }
-
-  /**
-   * Returns the value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   * {@code 10} logarithm of {@code a}).
-   * <p>
-   * Special cases:
-   * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
-   * </ul>
-   *
-   * @param a The value.
-   * @return The value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   *         {@code 10} logarithm of {@code a}).
-   */
-  public static double log10(final int a) {
-    return StrictMath.log10(a);
-  }
-
-  /**
-   * Returns the value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   * {@code 10} logarithm of {@code a}).
-   * <p>
-   * Special cases:
-   * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
-   * </ul>
-   *
-   * @param a The value.
-   * @return The value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   *         {@code 10} logarithm of {@code a}).
-   */
-  public static double log10(final long a) {
-    return StrictMath.log10(a);
   }
 
   /**
@@ -2237,54 +2136,6 @@ public final class SafeMath {
    */
   public static BigDecimal log10(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.log10(a, mc);
-  }
-
-  /**
-   * Returns the value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   * logarithm of {@code a}).
-   * <p>
-   * Special cases:
-   * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
-   * </ul>
-   *
-   * @param a The value.
-   * @return The value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   *         logarithm of {@code a}).
-   */
-  public static double log2(final int a) {
-    return StrictMath.log(a) / StrictMath.log(2);
-  }
-
-  /**
-   * Returns the value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   * logarithm of {@code a}).
-   * <p>
-   * Special cases:
-   * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
-   * </ul>
-   *
-   * @param a The value.
-   * @return The value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   *         logarithm of {@code a}).
-   */
-  public static double log2(final long a) {
-    return StrictMath.log(a) / StrictMath.log(2);
   }
 
   /**
