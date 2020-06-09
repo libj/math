@@ -60,17 +60,17 @@ For example, consider the following table with scale **`bits`** as the variable:
 The following illustrates the way `LongDecimal` encodes the **`value`** and **`scale`** inside a `long` primitive:
 
 ```
-        . scale sign bit (for bits > 0)
+        scale sign bit (for bits > 0)
        /
       1
-.---+-------- // --------+------------------------------------ // -------------------------------------.
-|   |---.----------------|                                                                             |
-|   |   |     scale      |                                   value                                     |
-|   |---'----------------|                                                                             |
+.---+---+---- // --------+------------------------------------ // -------------------------------------.
+|   |   '                |                                                                             |
+|   |   '   scale        |                                   value                                     |
+|   |   '                |                                                                             |
 '---+---+---- // --------+----------------------------------- // --------------------------------------'
   0      [1, bits+1]                                   [bits+1, 63-bits]
    \
-    ` value sign bit
+    value sign bit
 ```
 
 The `LongDecimal` implements the following encoding functions:
