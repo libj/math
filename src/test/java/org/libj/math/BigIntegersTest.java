@@ -35,4 +35,15 @@ public class BigIntegersTest {
       assertSame(b, BigIntegers.intern(new BigInteger("122414")));
     }
   }
+
+  @Test
+  public void testOf() {
+    for (int i = 0; i < 100; ++i) {
+      new Thread(() -> {
+        for (int j = 0; j < 1000; ++j) {
+          BigIntegers.of(String.valueOf(j));
+        }
+      }).start();
+    }
+  }
 }
