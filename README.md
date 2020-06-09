@@ -73,6 +73,45 @@ The following illustrates the way `LongDecimal` encodes the **`value`** and **`s
     ` value sign bit
 ```
 
+The `LongDecimal` implements the following encoding functions:
+
+| | `BigDecimal` | `LongDecimal` |
+|:-|:-:|:-:|
+| doubleValue() | :white_check_mark: | :white_check_mark: |
+| fromLong() | :white_check_mark: | :white_check_mark: |
+| fromString() | :white_check_mark: | :white_check_mark: |
+| precision() | :white_check_mark: | :white_check_mark: |
+| scale() | :white_check_mark: | :white_check_mark: |
+| toString() | :white_check_mark: | :white_check_mark: |
+
+The `LongDecimal` implements the following arithmetic functions:
+
+| | `BigDecimal` | `LongDecimal` |
+|:-|:-:|:-:|
+| add()       | :white_check_mark: | :white_check_mark: |
+| divide() | :white_check_mark: | :white_check_mark: |
+| multiply() | :white_check_mark: | :white_check_mark: |
+| negate() | :white_check_mark: | :white_check_mark: |
+| [pow()](https://github.com/libj/math/issues/8) | :white_check_mark: | :x: |
+| [remainder()](https://github.com/libj/math/issues/9) | :white_check_mark: | :x: |
+| [round()](https://github.com/libj/math/issues/10) | :white_check_mark: | :x: |
+| setScale() | :white_check_mark: | :white_check_mark: |
+| subtract() | :white_check_mark: | :white_check_mark: |
+
+The `LongDecimal` implements the following predicate functions:
+
+| | `BigDecimal` | `LongDecimal` |
+|:-|:-:|:-:|
+| abs()       | :white_check_mark: | :white_check_mark: |
+| compareTo() | :white_check_mark: | :white_check_mark: |
+| equals() | :white_check_mark: | :white_check_mark: |
+| gt() | :x: | :white_check_mark: |
+| gte() | :x: | :white_check_mark: |
+| lt() | :x: | :white_check_mark: |
+| lte() | :x: | :white_check_mark: |
+| max() | :white_check_mark: | :white_check_mark: |
+| min() | :white_check_mark: | :white_check_mark: |
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please [open an issue](../../issues) first to discuss what you would like to change.
