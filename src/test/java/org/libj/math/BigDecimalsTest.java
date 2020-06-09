@@ -35,4 +35,15 @@ public class BigDecimalsTest {
       assertSame(b, BigDecimals.intern(new BigDecimal("12.2414")));
     }
   }
+
+  @Test
+  public void testOf() {
+    for (int i = 0; i < 100; ++i) {
+      new Thread(() -> {
+        for (int j = 0; j < 1000; ++j) {
+          BigDecimals.of(String.valueOf(j));
+        }
+      }).start();
+    }
+  }
 }
