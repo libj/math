@@ -51,8 +51,8 @@ public abstract class LongDecimalTest {
   static final NumberFormat expectedFormatter = new DecimalFormat("0E0");
   static final NumberFormat epsilonFormatter = new DecimalFormat("0E0");
   static final long[] pow2 = new long[64];
-  static final BigInteger[] minValue = new BigInteger[maxScaleBits];
-  static final BigInteger[] maxValue = new BigInteger[maxScaleBits];
+  static final BigInteger[] minValue = new BigInteger[MAX_SCALE_BITS + 1];
+  static final BigInteger[] maxValue = new BigInteger[MAX_SCALE_BITS + 1];
 
   static {
     for (byte i = 0; i < minValue.length; ++i) {

@@ -28,15 +28,21 @@ import org.slf4j.LoggerFactory;
  */
 public final class LongDecimal {
   private static final Logger logger = LoggerFactory.getLogger(LongDecimal.class);
-  static final byte maxScaleBits = 17;
-  private static final long[] pow2 = new long[maxScaleBits];
-  static final byte[] minPrecision = new byte[maxScaleBits];
-  static final byte[] maxPrecision = new byte[maxScaleBits];
-  static final short[] minScale = new short[maxScaleBits];
-  static final short[] maxScale = new short[maxScaleBits];
+
+  /** The minimum allowed number of scale bits (inclusive). */
+  public static final byte MIN_SCALE_BITS = 0;
+  /** The maximum allowed number of scale bits (inclusive). */
+  public static final byte MAX_SCALE_BITS = 16;
+
+  private static final byte noScaleBits = MAX_SCALE_BITS + 1;
+  private static final long[] pow2 = new long[noScaleBits];
+  static final byte[] minPrecision = new byte[noScaleBits];
+  static final byte[] maxPrecision = new byte[noScaleBits];
+  static final short[] minScale = new short[noScaleBits];
+  static final short[] maxScale = new short[noScaleBits];
 
   static {
-    for (byte b = 0; b < maxScaleBits; ++b) {
+    for (byte b = 0; b < noScaleBits; ++b) {
       minPrecision[b] = Numbers.precision(minValue(b));
       maxPrecision[b] = Numbers.precision(maxValue(b));
       pow2[b] = (long)Math.pow(2, b);
