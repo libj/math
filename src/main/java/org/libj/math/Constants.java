@@ -20,11 +20,14 @@ package org.libj.math;
  * Common numerical constants.
  */
 public final class Constants {
-  /** The {@code double} constant log(2) */
+  /** The {@code double} constant {@code log(2)}. */
   public static final double LOG_2 = 0.6931471805599453;
 
-  /** The {@code double} constant log(10) */
+  /** The {@code double} constant {@code log(10)}. */
   public static final double LOG_10 = 2.302585092994046;
+
+  /** The {@code double} constant {@code sqrt(2)}. */
+  public static final double SQRT_2 = 1.414213562373095;
 
   private Constants() {
   }
