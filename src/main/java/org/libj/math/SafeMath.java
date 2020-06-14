@@ -2240,6 +2240,138 @@ public final class SafeMath {
     return BigDecimalMath.log2(a, mc);
   }
 
+  /**
+   * Returns the larger of two {@code byte} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static byte max(final byte a, final byte b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@code short} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static short max(final short a, final short b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@code int} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static int max(final int a, final int b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@code long} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final long a, final long b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@code float} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final float a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@code double} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final double a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@code byte} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final byte a, final byte b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@code short} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static short min(final short a, final short b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@code int} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static int min(final int a, final int b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@code long} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static long min(final long a, final long b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@code float} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final float a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@code double} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final double a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
   private SafeMath() {
   }
 }

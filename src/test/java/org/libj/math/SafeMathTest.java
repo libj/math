@@ -26,7 +26,6 @@ import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -35,11 +34,6 @@ public class SafeMathTest {
   private static final int numTests = 10000;
   private static final Random random = new Random();
   private static final MathContext mc = MathContext.DECIMAL64;
-
-  @Test
-  @Ignore("FIXME: Implement this")
-  public void testNumberFunctions() {
-  }
 
   private static double d10() {
     return (Math.random() < 0.5 ? -1 : 1) * (random.nextDouble() + 1);
@@ -82,12 +76,10 @@ public class SafeMathTest {
     test(value, cls, cls, test, control);
   }
 
-  @SuppressWarnings("unused")
   private static <I extends Number,O extends Number>void test(final double value, final Class<I> in, final Class<O> out, final Function<I,O> test, final Function<I,O> control) {
     test0(true, value, in, out, test, control);
   }
 
-  @SuppressWarnings("unused")
   private static <I extends Number,O extends Number>void test1(final double value, final Class<I> in, final Class<O> out, final Function<I,O> test, final Function<I,O> control) {
     test0(false, value, in, out, test, control);
   }
@@ -751,6 +743,114 @@ public class SafeMathTest {
     test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(n, mc));
     for (int i = 0; i < numTests; ++i)
       test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(n, mc));
+  }
+
+  @Test
+  public void testMaxByte() {
+    test(0, 0, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
+    test(1, 1, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
+    test(-1, -1, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
+  }
+
+  @Test
+  public void testMaxShort() {
+    test(0, 0, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
+    test(1, 1, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
+    test(-1, -1, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
+  }
+
+  @Test
+  public void testMaxInt() {
+    test(0, 0, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
+    test(1, 1, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
+    test(-1, -1, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
+  }
+
+  @Test
+  public void testMaxLong() {
+    test(0, 0, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
+    test(1, 1, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
+    test(-1, -1, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
+  }
+
+  @Test
+  public void testMaxFloat() {
+    test(0, 0, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> (float)Math.max(n1, n2));
+    test(1, 1, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> (float)Math.max(n1, n2));
+    test(-1, -1, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> (float)Math.max(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> (float)Math.max(n1, n2));
+  }
+
+  @Test
+  public void testMaxDouble() {
+    test(0, 0, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> (double)Math.max(n1, n2));
+    test(1, 1, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> (double)Math.max(n1, n2));
+    test(-1, -1, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> (double)Math.max(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> (double)Math.max(n1, n2));
+  }
+
+  @Test
+  public void testMinByte() {
+    test(0, 0, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
+    test(1, 1, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
+    test(-1, -1, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
+  }
+
+  @Test
+  public void testMinShort() {
+    test(0, 0, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
+    test(1, 1, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
+    test(-1, -1, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
+  }
+
+  @Test
+  public void testMinInt() {
+    test(0, 0, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
+    test(1, 1, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
+    test(-1, -1, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
+  }
+
+  @Test
+  public void testMinLong() {
+    test(0, 0, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
+    test(1, 1, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
+    test(-1, -1, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
+  }
+
+  @Test
+  public void testMinFloat() {
+    test(0, 0, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> (float)Math.min(n1, n2));
+    test(1, 1, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> (float)Math.min(n1, n2));
+    test(-1, -1, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> (float)Math.min(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> (float)Math.min(n1, n2));
+  }
+
+  @Test
+  public void testMinDouble() {
+    test(0, 0, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> (double)Math.min(n1, n2));
+    test(1, 1, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> (double)Math.min(n1, n2));
+    test(-1, -1, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> (double)Math.min(n1, n2));
+    for (int i = 0; i < numTests; ++i)
+      test(d0() * 10, d0() * 10, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> (double)Math.min(n1, n2));
   }
 
   @Test
