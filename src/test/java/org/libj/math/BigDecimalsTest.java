@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class BigDecimalsTest {
   @Test
-  public void testIntern() {
+  public void testInternBigDecimal() {
     final BigDecimal a = new BigDecimal("589.21");
     final BigDecimal b = new BigDecimal("12.2414");
     assertSame(a, BigDecimals.intern(a));
@@ -37,11 +37,11 @@ public class BigDecimalsTest {
   }
 
   @Test
-  public void testOf() {
+  public void testInternString() {
     for (int i = 0; i < 100; ++i) {
       new Thread(() -> {
         for (int j = 0; j < 1000; ++j) {
-          BigDecimals.of(String.valueOf(j));
+          BigDecimals.intern(String.valueOf(j));
         }
       }).start();
     }

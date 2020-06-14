@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class BigIntegersTest {
   @Test
-  public void testIntern() {
+  public void testInternBigInteger() {
     final BigInteger a = new BigInteger("58921");
     final BigInteger b = new BigInteger("122414");
     assertSame(a, BigIntegers.intern(a));
@@ -37,11 +37,11 @@ public class BigIntegersTest {
   }
 
   @Test
-  public void testOf() {
+  public void testInternString() {
     for (int i = 0; i < 100; ++i) {
       new Thread(() -> {
         for (int j = 0; j < 1000; ++j) {
-          BigIntegers.of(String.valueOf(j));
+          BigIntegers.intern(String.valueOf(j));
         }
       }).start();
     }
