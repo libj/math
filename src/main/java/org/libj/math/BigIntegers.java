@@ -26,39 +26,36 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BigIntegers {
   private static final ConcurrentHashMap<String,BigInteger> instances = new ConcurrentHashMap<>();
 
-  /** The {@link BigInteger} constant two. */
+  /** The {@link BigInteger} constant zero ({@code 0}). */
+  public static final BigInteger ZERO = init("0", BigInteger.ZERO);
+
+  /** The {@link BigInteger} constant one ({@code 1}). */
+  public static final BigInteger ONE = init("1", BigInteger.ONE);
+
+  /** The {@link BigInteger} constant two ({@code 2}). */
   public static final BigInteger TWO = init("2", BigInteger.valueOf(2));
 
-  /**
-   * Returns a cached reference to the {@link BigInteger} object representing
-   * the specified string value.
-   *
-   * @param val The value of the desired {@link BigInteger} instance.
-   * @return A cached reference to the {@link BigInteger} object representing
-   *         the specified string value.
-   */
-  public static BigInteger of(final String val) {
-    BigInteger instance = instances.get(Objects.requireNonNull(val));
-    if (instance != null)
-      return instance;
-
-    synchronized (val.intern()) {
-      instance = instances.get(val);
-      if (instance != null)
-        return instance;
-
-      init(val, instance = new BigInteger(val));
-    }
-
-    return instance;
-  }
+  /** The {@link BigInteger} constant ten ({@code 10}). */
+  public static final BigInteger TEN = init("10", BigInteger.TEN);
 
   private static BigInteger init(final String str, final BigInteger val) {
     instances.put(str, val);
     return val;
   }
 
-  private static final ConcurrentHashMap<String,BigInteger> interns = new ConcurrentHashMap<>();
+  /**
+   * Returns a canonical representation of the {@link BigInteger} object
+   * representing the specified string value.
+   *
+   * @param val The value of the desired {@link BigInteger} instance.
+   * @return A canonical representation of the {@link BigInteger} object
+   *         representing the specified string value.
+   * @throws NullPointerException If the specified string value is null.
+   */
+  public static BigInteger intern(final String val) {
+    final BigInteger intern = instances.get(Objects.requireNonNull(val));
+    return intern != null ? intern : init(val, new BigInteger(val));
+  }
 
   /**
    * Returns a canonical representation for the {@link BigInteger} object.
@@ -67,10 +64,11 @@ public final class BigIntegers {
    * @return A {@link BigInteger} that has the same contents as the specified
    *         {@link BigInteger}, but is guaranteed to be from a pool of unique
    *         instances.
+   * @throws NullPointerException If {@code n} is null.
    */
   public static BigInteger intern(final BigInteger n) {
-    final BigInteger intern = interns.putIfAbsent(n.toString(), n);
-    return intern != null ? intern : n;
+    final BigInteger instance = instances.putIfAbsent(n.toString(), n);
+    return instance != null ? instance : n;
   }
 
   private BigIntegers() {

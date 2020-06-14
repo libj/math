@@ -26,52 +26,48 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BigDecimals {
   private static final ConcurrentHashMap<String,BigDecimal> instances = new ConcurrentHashMap<>();
 
-  /** The value 2, with a scale of 0. */
+  /** The {@link BigDecimal} constant {@code 0}, with a scale of {@code 0}. */
+  public static final BigDecimal ZERO = init("0", BigDecimal.ZERO);
+
+  /** The {@link BigDecimal} constant {@code 1}, with a scale of {@code 0}. */
+  public static final BigDecimal ONE = init("1", BigDecimal.ONE);
+
+  /** The {@link BigDecimal} constant {@code 2}, with a scale of {@code 0}. */
   public static final BigDecimal TWO = init("2", BigDecimal.valueOf(2L));
 
-  /** The value {@code E}, with a scale of 15. */
+  /** The {@link BigDecimal} constant <i><code>e</code></i>, with a scale of {@code 15}. */
   public static final BigDecimal E = init(String.valueOf(Math.E), BigDecimal.valueOf(Math.E));
 
-  /** The value {@code PI}, with a scale of 15. */
+  /** The {@link BigDecimal} constant <i><code>pi</code></i>, with a scale of {@code 15}. */
   public static final BigDecimal PI = init(String.valueOf(Math.PI), BigDecimal.valueOf(Math.PI));
 
-  /** The value {@code log(2)}, with a scale of 15. */
+  /** The {@link BigDecimal} constant {@code log(2)}, with a scale of {@code 15}. */
   public static final BigDecimal LOG_2 = init(String.valueOf(Constants.LOG_2), BigDecimal.valueOf(Constants.LOG_2));
 
-  /** The value {@code log(10)}, with a scale of 15. */
+  /** The {@link BigDecimal} constant {@code log(10)}, with a scale of {@code 15}. */
   public static final BigDecimal LOG_10 = init(String.valueOf(Constants.LOG_10), BigDecimal.valueOf(Constants.LOG_10));
 
-  /**
-   * Returns a cached reference to the {@link BigDecimal} object representing
-   * the specified string value.
-   *
-   * @param val The value of the desired {@link BigDecimal} instance.
-   * @return A cached reference to the {@link BigDecimal} object representing
-   *         the specified string value.
-   * @throws NullPointerException If the specified string value is null.
-   */
-  public static BigDecimal of(final String val) {
-    BigDecimal instance = instances.get(Objects.requireNonNull(val));
-    if (instance != null)
-      return instance;
-
-    synchronized (val.intern()) {
-      instance = instances.get(val);
-      if (instance != null)
-        return instance;
-
-      init(val, instance = new BigDecimal(val));
-    }
-
-    return instance;
-  }
+  /** The {@link BigDecimal} constant {@code sqrt(2)}, with a scale of {@code 15}. */
+  public static final BigDecimal SQRT_2 = init(String.valueOf(Constants.SQRT_2), BigDecimal.valueOf(Constants.SQRT_2));
 
   private static BigDecimal init(final String str, final BigDecimal val) {
     instances.put(str, val);
     return val;
   }
 
-  private static final ConcurrentHashMap<String,BigDecimal> interns = new ConcurrentHashMap<>();
+  /**
+   * Returns a canonical representation of the {@link BigDecimal} object
+   * representing the specified string value.
+   *
+   * @param val The value of the desired {@link BigDecimal} instance.
+   * @return A canonical representation of the {@link BigDecimal} object
+   *         representing the specified string value.
+   * @throws NullPointerException If the specified string value is null.
+   */
+  public static BigDecimal intern(final String val) {
+    final BigDecimal instance = instances.get(Objects.requireNonNull(val));
+    return instance != null ? instance : init(val, new BigDecimal(val));
+  }
 
   /**
    * Returns a canonical representation for the {@link BigDecimal} object.
@@ -80,10 +76,11 @@ public final class BigDecimals {
    * @return A {@link BigDecimal} that has the same contents as the specified
    *         {@link BigDecimal}, but is guaranteed to be from a pool of unique
    *         instances.
+   * @throws NullPointerException If {@code n} is null.
    */
   public static BigDecimal intern(final BigDecimal n) {
-    final BigDecimal intern = interns.putIfAbsent(n.toString(), n);
-    return intern != null ? intern : n;
+    final BigDecimal instance = instances.putIfAbsent(n.toString(), n);
+    return instance != null ? instance : n;
   }
 
   private BigDecimals() {
