@@ -50,7 +50,7 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the absolute value of a {@code int} value.
+   * Returns the absolute value of an {@code int} value.
    *
    * @param a The argument whose absolute value is to be determined.
    * @return The absolute value of the argument.
@@ -2248,7 +2248,73 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static byte max(final byte a, final byte b) {
-    return (a <= b) ? a : b;
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code byte} and a {@code short}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code short}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static short max(final byte a, final short b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code byte} and an {@code int}.
+   *
+   * @param a A {@code byte}.
+   * @param b An {@code int}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static int max(final byte a, final int b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code byte} and a {@code long}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code long}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final byte a, final long b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code byte} and a {@code float}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code float}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final byte a, final float b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code byte} and a {@code double}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code double}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final byte a, final double b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code short} and a {@code byte}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code byte}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static short max(final short a, final byte b) {
+    return (a >= b) ? a : b;
   }
 
   /**
@@ -2259,7 +2325,73 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static short max(final short a, final short b) {
-    return (a <= b) ? a : b;
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code short} and an {@code int}.
+   *
+   * @param a A {@code short}.
+   * @param b An {@code int}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static int max(final short a, final int b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code short} and a {@code long}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code long}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final short a, final long b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code short} and a {@code float}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code float}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final short a, final float b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code short} and a {@code double}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code double}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final short a, final double b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@code int} and an {@code byte}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code byte}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static int max(final int a, final byte b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@code int} and a {@code short}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code short}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static int max(final int a, final short b) {
+    return (a >= b) ? a : b;
   }
 
   /**
@@ -2270,7 +2402,73 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static int max(final int a, final int b) {
-    return (a <= b) ? a : b;
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@code int} and a {@code long}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code long}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final int a, final long b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@code int} and a {@code float}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code float}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final int a, final float b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@code int} and a {@code double}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code double}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final int a, final double b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code long} and a {@code byte}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code byte}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final long a, final byte b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code long} and a {@code short}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code short}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final long a, final short b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code long} and an {@code int}.
+   *
+   * @param a A {@code long}.
+   * @param b An {@code int}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static long max(final long a, final int b) {
+    return (a >= b) ? a : b;
   }
 
   /**
@@ -2281,7 +2479,73 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final long a, final long b) {
-    return (a <= b) ? a : b;
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code long} and a {@code float}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code float}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final long a, final float b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code long} and a {@code double}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code double}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final long a, final double b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code float} and a {@code byte}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code byte}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final float a, final byte b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code float} and a {@code short}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code short}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final float a, final short b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code float} and an {@code int}.
+   *
+   * @param a A {@code float}.
+   * @param b An {@code int}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final float a, final int b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code float} and a {@code long}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code long}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static float max(final float a, final long b) {
+    return (a >= b) ? a : b;
   }
 
   /**
@@ -2292,7 +2556,73 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final float a, final float b) {
-    return (a <= b) ? a : b;
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code float} and a {@code double}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code double}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final float a, final double b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code double} and a {@code byte}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code byte}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final double a, final byte b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code double} and a {@code short}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code short}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final double a, final short b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code double} and an {@code int}.
+   *
+   * @param a A {@code double}.
+   * @param b An {@code int}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final double a, final int b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code double} and a {@code long}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code long}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final double a, final long b) {
+    return (a >= b) ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@code double} and a {@code float}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code float}.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static double max(final double a, final float b) {
+    return (a >= b) ? a : b;
   }
 
   /**
@@ -2303,7 +2633,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final double b) {
-    return (a <= b) ? a : b;
+    return (a >= b) ? a : b;
   }
 
   /**
@@ -2318,6 +2648,72 @@ public final class SafeMath {
   }
 
   /**
+   * Returns the smaller of a {@code byte} and a {@code short}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code short}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final byte a, final short b) {
+    return (byte)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code byte} and an {@code int}.
+   *
+   * @param a A {@code byte}.
+   * @param b An {@code int}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final byte a, final int b) {
+    return (byte)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code byte} and a {@code long}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code long}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final byte a, final long b) {
+    return (byte)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code byte} and a {@code float}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code float}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final byte a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code byte} and a {@code double}.
+   *
+   * @param a A {@code byte}.
+   * @param b A {@code double}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final byte a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code short} and a {@code byte}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code byte}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final short a, final byte b) {
+    return (byte)((a <= b) ? a : b);
+  }
+
+  /**
    * Returns the smaller of two {@code short} values.
    *
    * @param a The first value.
@@ -2326,6 +2722,72 @@ public final class SafeMath {
    */
   public static short min(final short a, final short b) {
     return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code short} and an {@code int}.
+   *
+   * @param a A {@code short}.
+   * @param b An {@code int}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static short min(final short a, final int b) {
+    return (short)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code short} and a {@code long}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code long}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static short min(final short a, final long b) {
+    return (short)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code short} and a {@code float}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code float}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final short a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code short} and a {@code double}.
+   *
+   * @param a A {@code short}.
+   * @param b A {@code double}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final short a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of an {@code int} and an {@code byte}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code byte}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final int a, final byte b) {
+    return (byte)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of an {@code int} and a {@code short}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code short}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static short min(final int a, final short b) {
+    return (short)((a <= b) ? a : b);
   }
 
   /**
@@ -2340,6 +2802,72 @@ public final class SafeMath {
   }
 
   /**
+   * Returns the smaller of an {@code int} and a {@code long}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code long}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static int min(final int a, final long b) {
+    return (int)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of an {@code int} and a {@code float}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code float}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final int a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of an {@code int} and a {@code double}.
+   *
+   * @param a An {@code int}.
+   * @param b A {@code double}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final int a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code long} and a {@code byte}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code byte}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static byte min(final long a, final byte b) {
+    return (byte)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code long} and a {@code short}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code short}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static short min(final long a, final short b) {
+    return (short)((a <= b) ? a : b);
+  }
+
+  /**
+   * Returns the smaller of a {@code long} and an {@code int}.
+   *
+   * @param a A {@code long}.
+   * @param b An {@code int}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static int min(final long a, final int b) {
+    return (int)((a <= b) ? a : b);
+  }
+
+  /**
    * Returns the smaller of two {@code long} values.
    *
    * @param a The first value.
@@ -2351,6 +2879,72 @@ public final class SafeMath {
   }
 
   /**
+   * Returns the smaller of a {@code long} and a {@code float}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code float}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final long a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code long} and a {@code double}.
+   *
+   * @param a A {@code long}.
+   * @param b A {@code double}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final long a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code float} and a {@code byte}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code byte}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final float a, final byte b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code float} and a {@code short}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code short}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final float a, final short b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code float} and an {@code int}.
+   *
+   * @param a A {@code float}.
+   * @param b An {@code int}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final float a, final int b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code float} and a {@code long}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code long}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static float min(final float a, final long b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
    * Returns the smaller of two {@code float} values.
    *
    * @param a The first value.
@@ -2358,6 +2952,72 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final float a, final float b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code float} and a {@code double}.
+   *
+   * @param a A {@code float}.
+   * @param b A {@code double}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final float a, final double b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code double} and a {@code byte}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code byte}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final double a, final byte b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code double} and a {@code short}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code short}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final double a, final short b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code double} and an {@code int}.
+   *
+   * @param a A {@code double}.
+   * @param b An {@code int}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final double a, final int b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code double} and a {@code long}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code long}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final double a, final long b) {
+    return (a <= b) ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@code double} and a {@code float}.
+   *
+   * @param a A {@code double}.
+   * @param b A {@code float}.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static double min(final double a, final float b) {
     return (a <= b) ? a : b;
   }
 
