@@ -17,7 +17,8 @@
 package org.libj.math;
 
 import static org.junit.Assert.*;
-import static org.libj.math.LongDecimal.*;
+import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 
@@ -28,8 +29,9 @@ import org.libj.lang.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LongDecimalCodecTest extends LongDecimalTest {
-  private static final Logger logger = LoggerFactory.getLogger(LongDecimalCodecTest.class);
+public class FixedPointTest extends DecimalTest {
+  private static final Logger logger = LoggerFactory.getLogger(FixedPointTest.class);
+  private static final boolean debug = false;
 
   private static void testEncodeDecode(final long value, final short scale, final byte bits, final long[] time) {
     final long maxValue = pow2[63 - bits];
@@ -68,7 +70,7 @@ public class LongDecimalCodecTest extends LongDecimalTest {
     assertEquals("value=" + value + ", scale=" + scale + ", bits=" + bits, scale, decodedScale);
   }
 
-  private static String formatOverrunPoint(final BigDecimal val, final int cut) {
+  private static String formatOverflowPoint(final BigDecimal val, final int cut) {
     final String str = val.toString();
     if (str.length() <= cut)
       return str;
@@ -79,12 +81,12 @@ public class LongDecimalCodecTest extends LongDecimalTest {
   }
 
   @Test
-  public void testMulOverrunPoints() {
+  public void testMulOverflowPoints() {
     boolean flip = false;
     for (int i = 63, j = 63; i >= 1;) {
       final BigDecimal a = BigDecimals.TWO.pow(i);
       final BigDecimal b = BigDecimals.TWO.pow(j);
-      logger.info(Strings.padLeft(i + " + " + j, 8) + " " + Strings.padLeft(String.valueOf(i + j), 4) + " " + formatOverrunPoint(a.multiply(b), i <= 55 ? 18 : 17));
+      logger.info(Strings.padLeft(i + " + " + j, 8) + " " + Strings.padLeft(String.valueOf(i + j), 4) + " " + formatOverflowPoint(a.multiply(b), i <= 55 ? 18 : 17));
       if (flip)
         --i;
       else
@@ -97,18 +99,18 @@ public class LongDecimalCodecTest extends LongDecimalTest {
   @Test
   public void testEncodeDecode() {
     final long[] time = new long[2];
-    final long value = 415720947668033403L;
-    final short scale = -1;
-    final byte bits = 3;
+    final long value = 20769187434139310L;
+    final short scale = -18;
+    final byte bits = 6;
     testEncodeDecode(value, scale, bits, time);
 
-    int count = 0;
-    for (byte b = 0; b < 16; ++b)
-      for (short s = 0; s <= maxScale[b]; s += Math.random() * 10)
-        for (int i = 0; i < numTests / 100; ++i, ++count)
-          testEncodeDecode(random.nextLong(), s, b, time);
-
-    logger.info("LongDecimal.testEncodeDecode(): encode=" + (time[0] / count) + "ns, decode=" + (count / time[1]) + "/ns");
+//    int count = 0;
+//    for (byte b = 0; b < 16; ++b)
+//      for (short s = 0; s <= maxScale[b]; s += Math.random() * 10)
+//        for (int i = 0; i < numTests / 10; ++i, ++count)
+//          testEncodeDecode(random.nextLong(), s, b, time);
+//
+//    logger.info("Decimal.testEncodeDecode(): encode=" + (time[0] / count) + "ns, decode=" + (count / time[1]) + "/ns");
   }
 
   private static final int count = 2000000;
@@ -159,9 +161,9 @@ public class LongDecimalCodecTest extends LongDecimalTest {
 
   @Test
   public void testMaxValue() {
-    final long[] maxValue = new long[LongDecimal.minScale.length];
-    for (byte b = 0; b < maxValue.length; ++b)
-      maxValue[b] = LongDecimal.maxValue(b);
+    final long[] maxValue = new long[Long.SIZE];
+    for (byte v = 0; v < maxValue.length; ++v)
+      maxValue[v] = Decimal.maxValue(v);
 
     long ts;
     long tmp = 0L;
@@ -177,7 +179,7 @@ public class LongDecimalCodecTest extends LongDecimalTest {
         }
         else {
           ts = System.nanoTime();
-          tmp = LongDecimal.maxValue((byte)(i % maxValue.length));
+          tmp = Decimal.maxValue((byte)(i % maxValue.length));
           time2 += System.nanoTime() - ts;
         }
       }
@@ -196,9 +198,9 @@ public class LongDecimalCodecTest extends LongDecimalTest {
 
   @Test
   public void testMaxDigits() {
-    final byte[] maxDigits = new byte[LongDecimal.minScale.length];
-    for (byte b = 0; b < maxValue.length; ++b)
-      maxDigits[b] = Numbers.precision(LongDecimal.maxValue(b));
+    final byte[] maxDigits = new byte[Long.SIZE];
+    for (byte v = 0; v < maxDigits.length; ++v)
+      maxDigits[v] = Numbers.precision(Decimal.maxValue(v));
 
     long ts;
     byte tmp = 0;
@@ -215,7 +217,7 @@ public class LongDecimalCodecTest extends LongDecimalTest {
         }
         else {
           final byte b = (byte)(i % maxValue.length);
-          final long maxValue = LongDecimal.maxValue(b);
+          final long maxValue = Decimal.maxValue(b);
           ts = System.nanoTime();
           tmp = Numbers.precision(maxValue);
           time2 += System.nanoTime() - ts;
@@ -232,5 +234,37 @@ public class LongDecimalCodecTest extends LongDecimalTest {
     logger.info("array: " + time1);
     logger.info("funct: " + time2);
     assertTrue(time1 < time2);
+  }
+
+  @Test
+  public void testMinScaleBits1() {
+    for (int i = 0; i < count; ++i) {
+      for (byte b = 2; b <= MAX_SCALE_BITS; ++b) {
+        final short maxScale = (short)(maxScale(b) + 1);
+        final short minScale = SafeMath.min(maxScale((byte)(b - 1)) + 2, maxScale);
+        final short randomScale = (short)(((maxScale - minScale) * random.nextDouble()) + minScale);
+        if (randomScale != 0)
+          assertEquals(randomScale + " [" + minScale + "," + maxScale + "]", b, minScaleBits(randomScale));
+      }
+    }
+  }
+
+  @Test
+  public void testMinScaleBits2() {
+    for (int i = 0; i < count; ++i) {
+      final short randomScale = (short)((random.nextBoolean() ? -1 : 0) * random.nextDouble() * 32768);
+      final byte bits = minScaleBits(randomScale);
+      final short minScale = minScale(bits);
+      final short maxScale = maxScale(bits);
+      assertTrue("scale=" + randomScale + " bits=" + bits + " [" + minScale + "," + maxScale + "]", minScale <= randomScale);
+      assertTrue("scale=" + randomScale + " bits=" + bits + " [" + minScale + "," + maxScale + "]", randomScale <= maxScale);
+    }
+  }
+
+  @Test
+  public void testBinaryPrecisionRequiredForValue() {
+    assertEquals(0, Decimal.binaryPrecisionRequiredForValue(0));
+    for (int i = 1; i < Long.SIZE; ++i)
+      assertEquals(String.valueOf(i), i, Decimal.binaryPrecisionRequiredForValue((long)Math.pow(2, i - 1)));
   }
 }

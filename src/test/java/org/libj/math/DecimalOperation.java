@@ -16,23 +16,24 @@
 
 package org.libj.math;
 
-import static org.libj.math.LongDecimal.*;
-import static org.libj.math.LongDecimalTest.*;
+import static org.libj.math.DecimalTest.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 
 import org.libj.lang.Strings;
+import org.libj.lang.Ansi.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class Operation<T,C> {
-  static final Logger logger = LoggerFactory.getLogger(Operation.class);
+abstract class DecimalOperation<T,C> {
+  static final Logger logger = LoggerFactory.getLogger(DecimalOperation.class);
 
   private final String label;
   private final Class<?> arg;
-  final String operator;
+  private final String operator;
 
-  Operation(final String label, final Class<?> arg, final String operator) {
+  DecimalOperation(final String label, final Class<?> arg, final String operator) {
     this.label = label;
     this.arg = arg;
     this.operator = operator;
@@ -46,24 +47,25 @@ abstract class Operation<T,C> {
     return false;
   }
 
-  byte maxValuePower(final byte bits) {
-    return (byte)(63 - bits);
+  byte maxValuePower(final byte scaleBits) {
+    return valueBits(scaleBits);
   }
 
-  final long randomBounded(final long min, final long max, final short scale, final byte bits) {
+  final long randomBounded(final long min, final long max, final short scale, final byte scaleBits) {
     if (min > max)
       throw new IllegalArgumentException();
 
+    final byte valueBits = valueBits(scaleBits);
     long value = min != max ? (long)(random.nextDouble() * (max - min)) + min : min;
-    if (value < LongDecimal.minValue(bits))
-      value = LongDecimal.minValue(bits);
-    else if (value > LongDecimal.maxValue(bits))
-      value = LongDecimal.maxValue(bits);
+    if (value < Decimal.minValue(valueBits))
+      value = Decimal.minValue(valueBits);
+    else if (value > Decimal.maxValue(valueBits))
+      value = Decimal.maxValue(valueBits);
 
     final long defaultValue = random.nextLong();
-    final long result = encode(value, scale, bits, defaultValue);
+    final long result = encode(value, scale, scaleBits, defaultValue);
     if (result == defaultValue) {
-      encode(value, scale, bits, defaultValue);
+      encode(value, scale, scaleBits, defaultValue);
       throw new IllegalStateException();
     }
 
@@ -91,7 +93,7 @@ abstract class Operation<T,C> {
     if (bits == 2)
       return (short)(Math.random() < 0.5 ? -1 : 0);
 
-    final short maxScale = LongDecimal.maxScale[bits];
+    final short maxScale = Decimal.maxScale[bits];
     final double scale = random.nextDouble() * maxScale;
     return (short)((Math.random() < 0.5 ? -1 : 1) * scale);
   }
@@ -113,11 +115,11 @@ abstract class Operation<T,C> {
         if (i > 0)
           builder.append(",\n");
 
-        final boolean failure = failures[i];
+        final Color color = failures[i] ? Color.RED : Color.GREEN;
         if (errors[i] == null)
-          builder.append(color("null", failure));
+          builder.append(c(color, "null"));
         else
-          builder.append(color("D(\"" + epsilonFormatter.format(errors[i]) + "\")", failure));
+          builder.append(c(color, "D(\"" + epsilonFormatter.format(errors[i]) + "\")"));
       }
 
       Strings.replace(builder, "\n", "\n    ");
@@ -125,18 +127,30 @@ abstract class Operation<T,C> {
       builder.append("\n  };");
     }
 
-    final long timeLongDecimal = time[0] / numTests;
+    final long timeDecimal = time[0] / numTests;
     final long timeBigDecimal = time[1] / numTests;
-    final long timePerf = ((timeBigDecimal - timeLongDecimal) * 1000) / timeLongDecimal;
+    final long timePerf = timeDecimal == 0 ? 0 : ((timeBigDecimal - timeDecimal) * 1000) / timeDecimal;
     String perf = String.valueOf(timePerf);
     perf = perf.substring(0, perf.length() - 1) + "." + perf.substring(perf.length() - 1);
-    perf = color(Strings.padLeft(timePerf > 0 ? "+" + perf : perf, 7) + "%", timePerf <= 0);
+    perf = c(timePerf <= 0 ? Color.RED : Color.GREEN, Strings.padLeft(timePerf > 0 ? "+" + perf : perf, 8) + "%");
 
     final String f = Strings.padLeft(label + "(" + arg.getSimpleName() + ")", 18);
-    final String l = Strings.padRight("LongDecimal=" + timeLongDecimal, 17);
-    final String b = Strings.padRight("BigDecimal=" + timeBigDecimal, 16);
-    final String c = Strings.padRight(String.valueOf(count), 7);
-    final String e = Strings.padRight(epsilonFormatter.format(error), 5);
+    final String l = Strings.padRight("Decimal=" + timeDecimal, 17);
+    final String b = Strings.padRight("BigDecimal=" + timeBigDecimal, 20);
+    final String c = Strings.padRight(String.valueOf(count), 12);
+    final String e = Strings.padRight(epsilonFormatter.format(error), 6);
     logger.info(f + " | " + l + " | " + b  + " | count=" + c + " | perf=" + perf + " | error=" + e + builder);
+  }
+
+  String format1(final long value, final short scale) {
+    return Decimal.toString(value, scale);
+  }
+
+  String format2(final long value, final short scale) {
+    return Decimal.toString(value, scale);
+  }
+
+  final String toString(final long v1, final short s1, final long v2, final short s2) {
+    return String.format(operator, format1(v1, s1), format2(v2, s2));
   }
 }

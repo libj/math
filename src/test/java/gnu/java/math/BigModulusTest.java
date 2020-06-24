@@ -1,0 +1,38 @@
+/* Copyright (c) 2020 LibJ
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * You should have received a copy of The MIT License (MIT) along with this
+ * program. If not, see <http://opensource.org/licenses/MIT/>.
+ */
+
+package gnu.java.math;
+
+import java.math.BigInteger;
+
+import org.junit.Test;
+import org.libj.math.AbstractTest;
+
+public class BigModulusTest extends AbstractTest {
+  @Override
+  public double rangeCoverage() {
+    return 0.00000000008;
+  }
+
+  // FIXME: BigInteger is faster.
+  @Test
+  public void testString() {
+    testRange(
+      s("BigInt", BigInt::new, b -> new BigInt(abs(b)).add(1), (BigInt a, BigInt b) -> a.mod(b), String::valueOf),
+      s("BigInteger", BigInteger::new, b -> new BigInteger(abs(b)).add(BigInteger.ONE), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf)
+    );
+  }
+}

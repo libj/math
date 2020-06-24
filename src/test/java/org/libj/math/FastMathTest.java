@@ -18,16 +18,13 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
-import java.util.Random;
-
 import org.junit.Test;
+import org.libj.lang.Strings;
 
-public class FastMathTest {
-  private static final Random random = new Random();
-
+public class FastMathTest extends AbstractTest {
   @Test
   public void testLog2Int() {
-    for (int i = 0; i < 100000; ++i) {
+    for (int i = 0; i < numTests; ++i) {
       final int n = Math.abs(random.nextInt());
       assertEquals(String.valueOf(n), (byte)(Math.log(n) / Math.log(2)), FastMath.log2(n));
     }
@@ -35,7 +32,7 @@ public class FastMathTest {
 
   @Test
   public void testLog2Long() {
-    for (int i = 0; i < 100000; ++i) {
+    for (int i = 0; i < numTests; ++i) {
       final long n = Math.abs(random.nextLong());
       assertEquals(String.valueOf(n), (byte)(Math.log(n) / Math.log(2)), FastMath.log2(n));
     }
@@ -43,21 +40,43 @@ public class FastMathTest {
 
   @Test
   public void testE10() {
-    try {
-      FastMath.e10((byte)-1);
-      fail("Expected ArrayIndexOutOfBoundsException");
-    }
-    catch (final ArrayIndexOutOfBoundsException e) {
-    }
-
     for (byte i = 0; i < 19; ++i)
-      assertEquals((long)Math.pow(10, i), FastMath.e10(i));
+      assertEquals((long)Math.pow(10, i), FastMath.e10[i]);
+  }
 
-    try {
-      FastMath.e10((byte)19);
-      fail("Expected ArrayIndexOutOfBoundsException");
+  @Test
+  public void testDivideUnsignedLong() {
+    testRange(
+      l("FastMath", (long a, long b) -> FastMath.divideUnsigned(a, b)),
+      l("Long", (long a, long b) -> Long.divideUnsigned(a, b))
+    );
+  }
+
+  @Test
+  public void testRemainderUnsignedLong() {
+    testRange(
+      l("FastMath", (long a, long b) -> FastMath.remainderUnsigned(a, b)),
+      l("Long", (long a, long b) -> Long.remainderUnsigned(a, b))
+    );
+  }
+
+  @Test
+  public void testX() {
+    final Long[] time = {0L, 0L};
+    for (int i = 0; i < numTests; ++i) {
+      final long dividend = -7232583056709551616L;
+      final long divisor = 3376106979L;
+      long ts = System.nanoTime();
+      final long e = Long.remainderUnsigned(dividend, divisor);
+      time[0] += System.nanoTime() - ts;
+      ts = System.nanoTime();
+      final long q = FastMath.remainderUnsigned(dividend, divisor);
+      time[1] += System.nanoTime() - ts;
+      assertEquals(e, q);
     }
-    catch (final ArrayIndexOutOfBoundsException e) {
-    }
+
+    time[0] /= numTests * 30;
+    time[1] /= numTests * 30;
+    System.out.println(Strings.printTable(true, true, time, "Long", "FastMath"));
   }
 }
