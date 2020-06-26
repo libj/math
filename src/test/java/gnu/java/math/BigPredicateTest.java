@@ -30,32 +30,32 @@ public class BigPredicateTest extends AbstractTest {
   @Test
   public void testByteValue() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.byteValue(), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.byteValue(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.byteValue(), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.byteValue(), String::valueOf)
     );
   }
 
   @Test
   public void testShortValue() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.shortValue(), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.shortValue(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.shortValue(), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.shortValue(), String::valueOf)
     );
   }
 
   @Test
   public void testIntValue() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.intValue(), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.intValue(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.intValue(), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.intValue(), String::valueOf)
     );
   }
 
   @Test
   public void testLongValue() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.longValue(), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.longValue(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.longValue(), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.longValue(), String::valueOf)
     );
   }
 
@@ -63,56 +63,56 @@ public class BigPredicateTest extends AbstractTest {
   @Test
   public void testFloatValue() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.floatValue(), null),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.floatValue(), null)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.floatValue(), null),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.floatValue(), null)
     );
   }
 
   @Test
   public void testDoubleValue() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.doubleValue(), null),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.doubleValue(), null)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.doubleValue(), null),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.doubleValue(), null)
     );
   }
 
   @Test
   public void testToString() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.toString(), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.toString(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.toString(), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.toString(), String::valueOf)
     );
   }
 
   @Test
   public void testCompareTo() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.compareTo(new BigInt(b)), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.compareTo(new BigInteger(b)), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.compareTo(new BigInteger(b)), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.compareTo(new BigInt(b)), String::valueOf)
     );
   }
 
   @Test
   public void testEquals() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.equals(new BigInt(b)), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.equals(new BigInteger(b)), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.equals(new BigInteger(b)), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.equals(new BigInt(b)), String::valueOf)
     );
   }
 
   @Test
   public void testHashCode() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> {a.hashCode(); return 0;}, String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> {a.hashCode(); return 0;}, String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> {a.hashCode(); return 0;}, String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> {a.hashCode(); return 0;}, String::valueOf)
     );
   }
 
   @Test
   public void testAbs() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.abs(), String::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.abs(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.abs(), String::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.abs(), String::valueOf)
     );
   }
 
@@ -120,8 +120,8 @@ public class BigPredicateTest extends AbstractTest {
   @Test
   public void testMax() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.max(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.max(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.max(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.max(b), String::valueOf)
     );
   }
 
@@ -129,8 +129,8 @@ public class BigPredicateTest extends AbstractTest {
   @Test
   public void testMin() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.min(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.min(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.min(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.min(b), String::valueOf)
     );
   }
 }

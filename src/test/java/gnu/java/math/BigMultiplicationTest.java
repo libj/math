@@ -30,16 +30,16 @@ public class BigMultiplicationTest extends AbstractTest {
   @Test
   public void testInt() {
     testRange(
-      i("BigInt", BigInt::new, (BigInt a, int b) -> a.mul(b), String::valueOf),
-      i("BigInteger", BigInteger::valueOf, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf)
     );
   }
 
   @Test
   public void testLong() {
     testRange(
-      l("BigInt", BigInt::new, (BigInt a, long b) -> a.mul(b), String::valueOf),
-      l("BigInteger", BigInteger::valueOf, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf)
     );
   }
 
@@ -47,8 +47,8 @@ public class BigMultiplicationTest extends AbstractTest {
   @Test
   public void testString() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf)
     );
   }
 
@@ -58,14 +58,6 @@ public class BigMultiplicationTest extends AbstractTest {
     final int[] x = new int[4];
     final int[] y = new int[1];
     testRange(
-      l("BigInt", a -> {
-        x[0] = (int)(a & 0xFFFFFFFFL);
-        x[1] = (int)(a >>> 32);
-        return x;
-      }, (int[] a, long b) -> {
-        BigMultiplication.umul(x, 2, (int)b);
-        return x;
-      }, a -> BigNumber.longValue(a, 2)),
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
@@ -76,7 +68,15 @@ public class BigMultiplicationTest extends AbstractTest {
       }, (int[] a, int[] b) -> {
         MPN.mul(zds, a, 2, b, 1);
         return zds;
-      }, a -> BigNumber.longValue(a, 3))
+      }, a -> BigNumber.longValue(a, 0, 3)),
+      l("BigInt", a -> {
+        x[0] = (int)(a & 0xFFFFFFFFL);
+        x[1] = (int)(a >>> 32);
+        return x;
+      }, (int[] a, long b) -> {
+        BigMultiplication.umul(x, 0, 2, (int)b);
+        return x;
+      }, a -> BigNumber.longValue(a, 0, 2))
     );
   }
 
@@ -86,14 +86,6 @@ public class BigMultiplicationTest extends AbstractTest {
     final int[] x = new int[4];
     final int[] y = new int[2];
     testRange(
-      l("BigInt", a -> {
-        x[0] = (int)(a & 0xFFFFFFFFL);
-        x[1] = (int)(a >>> 32);
-        return x;
-      }, (int[] a, long b) -> {
-        BigMultiplication.umul(x, 2, b);
-        return x;
-      }, a -> BigNumber.longValue(a, 2)),
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
@@ -105,7 +97,15 @@ public class BigMultiplicationTest extends AbstractTest {
       }, (int[] a, int[] b) -> {
         MPN.mul(zds, a, 2, b, 2);
         return zds;
-      }, a -> BigNumber.longValue(a, 3))
+      }, a -> BigNumber.longValue(a, 0, 3)),
+      l("BigInt", a -> {
+        x[0] = (int)(a & 0xFFFFFFFFL);
+        x[1] = (int)(a >>> 32);
+        return x;
+      }, (int[] a, long b) -> {
+        BigMultiplication.umul(x, 0, 2, b);
+        return x;
+      }, a -> BigNumber.longValue(a, 0, 2))
     );
   }
 }

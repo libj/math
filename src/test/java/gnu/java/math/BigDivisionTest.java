@@ -30,24 +30,24 @@ public class BigDivisionTest extends AbstractTest {
   @Test
   public void testInt() {
     testRange(
-      i("BigInt", BigInt::new, (BigInt a, int b) -> {if (b == 0) return 0; a.div(b); return a;}, String::valueOf),
-      i("BigInteger", BigInteger::valueOf, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> {if (b == 0) return 0; a.div(b); return a;}, String::valueOf)
     );
   }
 
   @Test
   public void testLong() {
     testRange(
-      l("BigInt", BigInt::new, (BigInt a, long b) -> {if (b == 0) return 0; a.div(b); return a;}, String::valueOf),
-      l("BigInteger", BigInteger::valueOf, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> {if (b == 0) return 0; a.div(b); return a;}, String::valueOf)
     );
   }
 
   @Test
   public void testString() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.div(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.div(b), String::valueOf)
     );
   }
 }

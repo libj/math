@@ -154,7 +154,7 @@ public final class FastMath {
     if (len > 1 && dividend[len - 1] == 0)
       --len;
 
-    result[0] = BigInt.longValue(dividend, len);
+    result[0] = BigInt.longValue(dividend, 0, len);
   }
 
   // FIXME: Implement tests and document.
@@ -162,17 +162,17 @@ public final class FastMath {
     if ((int)(divisor >>> 32) == 0)
       return divideUnsigned(dividend, (int)divisor, len);
 
-    BigInt.udiv(dividend, len, divisor, divisor >>> 32);
+    BigInt.udiv(dividend, 0, len, divisor, divisor >>> 32);
     --len;
     if (len > 1 && dividend[len - 1] == 0)
       --len;
 
-    return BigInt.longValue(dividend, len);
+    return BigInt.longValue(dividend, 0, len);
   }
 
   // FIXME: Implement tests and document.
   static long remainderUnsigned(final int[] dividend, final int len, final long divisor) {
-    return BigInt.udiv(dividend, len, divisor, divisor >>> 32);
+    return BigInt.udiv(dividend, 0, len, divisor, divisor >>> 32);
   }
 
   private FastMath() {

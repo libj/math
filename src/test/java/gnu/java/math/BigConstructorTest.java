@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import org.junit.Test;
 import org.libj.math.AbstractTest;
 
-public class BigAdditionTest extends AbstractTest {
+public class BigConstructorTest extends AbstractTest {
   @Override
   public double rangeCoverage() {
     return 0.00000000008;
@@ -30,24 +30,24 @@ public class BigAdditionTest extends AbstractTest {
   @Test
   public void testInt() {
     testRange(
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf)
+      i("BigInteger", (int a, int b) -> BigInteger.valueOf(a), String::valueOf),
+      i("BigInt", (int a, int b) -> new BigInt(a), String::valueOf)
     );
   }
 
   @Test
   public void testLong() {
     testRange(
-      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf)
+      l("BigInteger", (long a, long b) -> BigInteger.valueOf(a), String::valueOf),
+      l("BigInt", (long a, long b) -> new BigInt(a), String::valueOf)
     );
   }
 
   @Test
   public void testString() {
     testRange(
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf)
+      s("BigInteger", (String a, String b) -> new BigInteger(a), String::valueOf),
+      s("BigInt", (String a, String b) -> new BigInt(a), String::valueOf)
     );
   }
 }

@@ -22,14 +22,13 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import org.junit.Test;
+import org.libj.test.TestAide;
 
 public class BasicTest {
   static Random rnd = new Random();
 
   @Test
   public void testAddInt() {
-    int x = 0 ^ 74;
-    System.out.println(x);
     final BigInt a = new BigInt(0);
     a.uadd((int)3972540614L);
     assertEquals("3972540614", a.toString());
@@ -69,16 +68,10 @@ public class BasicTest {
     assertEquals("Zero string", "0", me.toString());
     me = new BigInt("0");
     assertEquals("Zero string2", "0", me.toString());
-    byte[] littleEndian = {
-      35, 47, 32, 45, 93, 0, 1, 0, 0, 0, 0, 0
-    };
-    byte[] bigEndian = {
-      1, 0, 93, 45, 32, 47, 35
-    };
-    assertEquals("Byte[] constructor", new BigInteger(1, bigEndian).toString(), new BigInt(1, littleEndian, 10).toString());
-    assertEquals("Byte[] 0 constructor", "0", new BigInt(1, new byte[] {
-      0, 0, 0
-    }, 3).toString());
+    byte[] littleEndian = {35, 47, 32, 45, 93, 0, 1, 0, 0, 0, 0, 0};
+    byte[] bigEndian = {1, 0, 93, 45, 32, 47, 35};
+    assertEquals("Byte[] constructor", new BigInteger(1, bigEndian).toString(), new BigInt(1, 10, littleEndian).toString());
+    assertEquals("Byte[] 0 constructor", "0", new BigInt(1, 3, new byte[] {0, 0, 0}).toString());
     // Add test case covering length-increase due to add in mulAdd().
   }
 
@@ -185,15 +178,9 @@ public class BasicTest {
     me.mul(new BigInt(t));
     assertEquals("Mul2", facit.toString(), me.toString());
 
-    facit = new BigInteger(1, new byte[] {
-      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-    });
-    me = new BigInt(1, new int[] {
-      -1, -1, -1, -1
-    }, 4);
-    BigInteger ulong = new BigInteger(1, new byte[] {
-      -1, -1, -1, -1, -1, -1, -1, -1
-    });
+    facit = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
+    me = new BigInt(new int[] {6, 1, -1, -1, -1, -1});
+    BigInteger ulong = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1});
     for (int i = 0; i < 256; i++) {
       facit = facit.multiply(ulong);
       me.umul(-1L);
@@ -237,60 +224,24 @@ public class BasicTest {
     me.div(new BigInt(t));
     assertEquals("Div5 ", facit.toString(), me.toString());
 
-    final int[] m = {
-      2, 2, 2, 2
-    }, n = {
-      1, 2, 2, 2
-    };
-    final int[][] u = {
-      {
-        0xfffe0000, 0x8000
-      }, {
-        0x00000003, 0x8000
-      }, {
-        0, 0x7fff8000
-      }, {
-        0xfffe0000, 0x80000000
-      }
-    };
-    final int[][] v = {
-      {
-        0x8000ffff
-      }, {
-        0x00000001, 0x2000
-      }, {
-        1, 0x8000
-      }, {
-        0xffff, 0x8000
-      }
-    };
-    final int[][] q = {
-      {
-        0xffff
-      }, {
-        0x0003
-      }, {
-        0xfffe
-      }, {
-        0xffff
-      }
-    };
-    final int[][] r = {
-      {
-        0x7fffffff
-      }, {
-        0, 0x2000
-      }, {
-        0xffff0002, 0x7fff
-      }, {
-        0xffffffff, 0x7fff
-      }
-    };
+    final int[] m = {2, 2, 2, 2};
+    final int[] n = {1, 2, 2, 2};
+    final int[][] u = {{4, 1, 0xfffe0000, 0x8000}, {4, 1, 0x00000003, 0x8000}, {4, 1, 0, 0x7fff8000}, {4, 1, 0xfffe0000, 0x80000000}};
+    final int[][] v = {{3, 1, 0x8000ffff}, {4, 1, 0x00000001, 0x2000}, {4, 1, 1, 0x8000}, {4, 1, 0xffff, 0x8000}};
+    final int[][] q = {{3, 1, 0xffff}, {3, 1, 0x0003}, {3, 1, 0xfffe}, {3, 1, 0xffff}};
+    final int[][] r = {{3, 1, 0x7fffffff}, {4, 1, 0, 0x2000}, {4, 1, 0xffff0002, 0x7fff}, {4, 1, 0xffffffff, 0x7fff}};
+
     for (int i = 0; i < 4; i++) {
-      BigInt a = new BigInt(1, u[i], m[i]), b = new BigInt(1, v[i], n[i]);
+      int[] x = u[i].clone();
+      x[0] = m[i] + 2;
+      int[] y = v[i].clone();
+      y[0] = n[i] + 2;
+      BigInt a = new BigInt(x), b = new BigInt(y);
       BigInt rem = a.divRem(b);
-      assertEquals("Hack div " + i, new BigInt(1, q[i], q[i].length).toString(), a.toString());
-      assertEquals("Hack rem " + i, new BigInt(1, r[i], r[i].length).toString(), rem.toString());
+      x = q[i].clone();
+      y = r[i].clone();
+      assertEquals("Hack div " + i, new BigInt(x).toString(), a.toString());
+      assertEquals("Hack rem " + i, new BigInt(y).toString(), rem.toString());
     }
 
     s = "170141183460469231750134047781003722752";
@@ -299,40 +250,29 @@ public class BasicTest {
                         // int[]{0,0xfffffffe,0,0x80000000}, 4);
     tmp = new BigInt(t); // tmp = new BigInt(1, new
                          // int[]{0xffffffff,0,0x80000000}, 3);
-    BigInt rr = me.divRem(tmp);
+
     facit = new BigInteger(s).divide(new BigInteger(t));
+    BigInt rr = me.divRem(tmp);
     assertEquals("Div shift-32 ", facit.toString(), me.toString());
     facit = new BigInteger(s).remainder(new BigInteger(t));
     assertEquals("Rem shift-32 ", facit.toString(), rr.toString());
 
-    me = new BigInt(1, new int[] {
-      0, 0, 0x80000000, 0x7fffffff
-    }, 4);
-    tmp = new BigInt(1, new int[] {
-      1, 0, 0x80000000
-    }, 3);
+    me = new BigInt(new int[] {6, 1, 0, 0, 0x80000000, 0x7fffffff});
+    tmp = new BigInt(new int[] {5, 1, 1, 0, 0x80000000});
     BigInteger[] ans = new BigInteger(me.toString()).divideAndRemainder(new BigInteger(tmp.toString()));
     rr = me.divRem(tmp);
     assertEquals("Div addback ", ans[0].toString(), me.toString());
     assertEquals("Rem addback ", ans[1].toString(), rr.toString());
 
-    me = new BigInt(1, new int[] {
-      0x0003, 0x0000, 0x80000000
-    }, 3);
-    tmp = new BigInt(1, new int[] {
-      0x0001, 0x0000, 0x20000000
-    }, 3);
+    me = new BigInt(new int[] {5, 1, 0x0003, 0x0000, 0x80000000});
+    tmp = new BigInt(new int[] {5, 1, 0x0001, 0x0000, 0x20000000});
     ans = new BigInteger(me.toString()).divideAndRemainder(new BigInteger(tmp.toString()));
     rr = me.divRem(tmp);
     assertEquals("Div addback2 ", ans[0].toString(), me.toString());
     assertEquals("Rem addback2 ", ans[1].toString(), rr.toString());
 
-    me = new BigInt(1, new int[] {
-      0x0000, 0xfffffffe, 0x80000000
-    }, 3);
-    tmp = new BigInt(1, new int[] {
-      0xffffffff, 0x80000000
-    }, 2);
+    me = new BigInt(new int[] {5, 1, 0x0000, 0xfffffffe, 0x80000000});
+    tmp = new BigInt(new int[] {4, 1, 0xffffffff, 0x80000000});
     ans = new BigInteger(me.toString()).divideAndRemainder(new BigInteger(tmp.toString()));
     rr = me.divRem(tmp);
     assertEquals("Div qhat=b+1 ", ans[0].toString(), me.toString());
@@ -432,10 +372,13 @@ public class BasicTest {
   public void testDivAndRem() {
     // Check divRem
     {
-      BigInt p = new BigInt(104608886616216589L), q = new BigInt(104608886616125069L);
-      assertEquals("divRem", "91520", p.divRem(q).toString());
-      assertEquals("divRem", "1", p.toString());
-      assertEquals("divRem", "104608886616125069", q.toString());
+      final long a = 104608886616216589L;
+      final long b = 104608886616125069L;
+      BigInt p = new BigInt(a), q = new BigInt(b);
+      BigInteger m = BigInteger.valueOf(a), n = BigInteger.valueOf(b);
+      assertEquals("divRem", m.remainder(n).toString(), p.divRem(q).toString());
+      assertEquals("divRem", m.divide(n).toString(), p.toString());
+      assertEquals("divRem", String.valueOf(b), q.toString());
     }
     // Check div
     {
@@ -528,12 +471,34 @@ public class BasicTest {
       a.flipBit(bit);
       assertEquals("Random flip", facit.toString(), a.toString());
     }
+
+    BigInteger x = BigInteger.valueOf(-1);
     a.assign(-1);
+
+    x = x.shiftLeft(31 + 512);
     a.shiftLeft(31 + 512);
+
+    x = x.flipBit(31 + 512);
     a.flipBit(31 + 512);
+
+    BigInteger y = BigInteger.valueOf(-1);
     b.assign(-1);
+
+    y = y.shiftLeft(32 + 512);
     b.shiftLeft(32 + 512);
+
     assertEquals("Edge flip", b.toString(), a.toString());
+  }
+
+  private static void t(final BigInt a, final char[] s, final char[] t, final int sh1, final int sh2) {
+    a.assign(s);
+    a.shiftLeft(sh1);
+    BigInteger facit = new BigInteger(new String(s)).shiftLeft(sh1);
+    final BigInt b = new BigInt(t);
+    b.shiftLeft(sh2);
+    a.and(b);
+    facit = facit.and(new BigInteger(new String(t)).shiftLeft(sh2));
+    assertEquals(" Random and", facit.toString(), a.toString());
   }
 
   @Test
@@ -544,26 +509,49 @@ public class BasicTest {
     for (int i = 0; i < 1024; i++) {
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
-      a.assign(s);
-      a.shiftLeft(sh1);
-      BigInteger facit = new BigInteger(new String(s)).shiftLeft(sh1);
-      BigInt b = new BigInt(t);
-      b.shiftLeft(sh2);
-      a.and(b);
-      facit = facit.and(new BigInteger(new String(t)).shiftLeft(sh2));
-      assertEquals("Random and", facit.toString(), a.toString());
+      final BigInt c = a.clone();
+      while (true) {
+        try {
+          t(a, s, t, sh1, sh2);
+          BigInteger x = BigInteger.valueOf(-11);
+          a.assign(-11);
+
+          BigInteger y = BigInteger.valueOf(-6);
+          BigInt b = new BigInt(-6);
+
+          x = x.and(y);
+          a.and(b);
+          assertEquals(x.toString(), a.toString());
+          assertEquals("-11 & -6 == ", "-16", a.toString());
+
+          x = BigInteger.valueOf(-11);
+          a.assign(-11);
+
+          x = x.shiftLeft(28);
+          a.shiftLeft(28);
+          assertEquals(x.toString(), a.toString());
+
+          y = y.shiftLeft(28);
+          b.shiftLeft(28);
+          assertEquals(y.toString(), b.toString());
+
+          x = x.and(y);
+          a.and(b);
+          assertEquals(x.toString(), a.toString());
+
+          b.assign(-1);
+          b.shiftLeft(32);
+          assertEquals("-11<<28 & -6<<28 == -1<<32", b.toString(), a.toString());
+          break;
+        }
+        catch (final Throwable e) {
+          if (!TestAide.isInDebug())
+            throw e;
+
+          a = c;
+        }
+      }
     }
-    a.assign(-11);
-    BigInt b = new BigInt(-6);
-    a.and(b);
-    assertEquals("-11 & -6 == ", "-16", a.toString());
-    a.assign(-11);
-    a.shiftLeft(28);
-    b.shiftLeft(28);
-    a.and(b);
-    b.assign(-1);
-    b.shiftLeft(32);
-    assertEquals("-11<<28 & -6<<28 == -1<<32", b.toString(), a.toString());
   }
 
   @Test
@@ -701,6 +689,7 @@ public class BasicTest {
         b.mul(-1);
         b.add(1);
       }
+
       a.mod(b);
       assertEquals("Random mod", aa.mod(bb).toString(), a.toString());
     }

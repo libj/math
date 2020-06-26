@@ -40,122 +40,138 @@ public class BigBitwiseTest extends AbstractTest {
   }
 
   @Test
+  public void testShiftLeft() {
+    testRange(
+      i("BigInteger", this::scaledBigInteger, (a, b) -> b % 512, (BigInteger a, int b) -> a.shiftLeft(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (a, b) -> b % 512, (BigInt a, int b) -> a.shiftLeft(b), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testShiftRight() {
+    testRange(
+      i("BigInteger", this::scaledBigInteger, (a, b) -> b % 512, (BigInteger a, int b) -> a.shiftRight(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (a, b) -> b % 512, (BigInt a, int b) -> a.shiftRight(b), String::valueOf)
+    );
+  }
+
+  @Test
   public void testClearBitInt() {
     testRange(
-      i("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.clearBit(b), String::valueOf),
-      i("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.clearBit(b), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.clearBit(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.clearBit(b), String::valueOf)
     );
   }
 
   @Test
   public void testFlipBitInt() {
     testRange(
-      i("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.flipBit(b), String::valueOf),
-      i("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.flipBit(b), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.flipBit(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.flipBit(b), String::valueOf)
     );
   }
 
   @Test
   public void testSetBitInt() {
     testRange(
-      i("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.setBit(b), String::valueOf),
-      i("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.setBit(b), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.setBit(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.setBit(b), String::valueOf)
     );
   }
 
   @Test
   public void testTestBitInt() {
     testRange(
-      i("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.testBit(b), Boolean::valueOf),
-      i("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.testBit(b), Boolean::valueOf)
+      i("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.testBit(b), Boolean::valueOf),
+      i("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.testBit(b), Boolean::valueOf)
     );
   }
 
   @Test
   public void testBitCountInt() {
     testRange(
-      i("BigInt", BigInt::new, (BigInt a, int b) -> a.bitCount(), Integer::valueOf),
-      i("BigInteger", BigInteger::valueOf, (BigInteger a, int b) -> a.bitCount(), Integer::valueOf)
+      i("BigInteger", this::scaledBigInteger, (BigInteger a, int b) -> a.bitCount(), Integer::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.bitCount(), Integer::valueOf)
     );
   }
 
   @Test
   public void testClearBitLong() {
     testRange(
-      l("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.clearBit((int)b), String::valueOf),
-      l("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.clearBit((int)b), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.clearBit((int)b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.clearBit((int)b), String::valueOf)
     );
   }
 
   @Test
   public void testFlipBitLong() {
     testRange(
-      l("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.flipBit((int)b), String::valueOf),
-      l("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.flipBit((int)b), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.flipBit((int)b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.flipBit((int)b), String::valueOf)
     );
   }
 
   @Test
   public void testSetBitLong() {
     testRange(
-      l("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.setBit((int)b), String::valueOf),
-      l("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.setBit((int)b), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.setBit((int)b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.setBit((int)b), String::valueOf)
     );
   }
 
   @Test
   public void testTestBitLong() {
     testRange(
-      l("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.testBit((int)b), Boolean::valueOf),
-      l("BigInteger", BigInteger::valueOf, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.testBit((int)b), Boolean::valueOf)
+      l("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.testBit((int)b), Boolean::valueOf),
+      l("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.testBit((int)b), Boolean::valueOf)
     );
   }
 
   @Test
   public void testBitCountLong() {
     testRange(
-      l("BigInt", BigInt::new, (BigInt a, long b) -> a.bitCount(), Integer::valueOf),
-      l("BigInteger", BigInteger::valueOf, (BigInteger a, long b) -> a.bitCount(), Integer::valueOf)
+      l("BigInteger", this::scaledBigInteger, (BigInteger a, long b) -> a.bitCount(), Integer::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.bitCount(), Integer::valueOf)
     );
   }
 
   @Test
   public void testClearBitString() {
     testRange(
-      s("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.clearBit((int)b), String::valueOf),
-      s("BigInteger", BigInteger::new, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.clearBit((int)b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.clearBit((int)b), String::valueOf),
+      s("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.clearBit((int)b), String::valueOf)
     );
   }
 
   @Test
   public void testFlipBitString() {
     testRange(
-      s("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.flipBit((int)b), String::valueOf),
-      s("BigInteger", BigInteger::new, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.flipBit((int)b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.flipBit((int)b), String::valueOf),
+      s("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.flipBit((int)b), String::valueOf)
     );
   }
 
   @Test
   public void testSetBitString() {
     testRange(
-      s("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.setBit((int)b), String::valueOf),
-      s("BigInteger", BigInteger::new, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.setBit((int)b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.setBit((int)b), String::valueOf),
+      s("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.setBit((int)b), String::valueOf)
     );
   }
 
   @Test
   public void testTestBitString() {
     testRange(
-      s("BigInt", BigInt::new, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.testBit((int)b), Boolean::valueOf),
-      s("BigInteger", BigInteger::new, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.testBit((int)b), Boolean::valueOf)
+      s("BigInteger", this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.testBit((int)b), Boolean::valueOf),
+      s("BigInt", this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.testBit((int)b), Boolean::valueOf)
     );
   }
 
   @Test
   public void testBitCountString() {
     testRange(
-      s("BigInt", BigInt::new, (BigInt a, String b) -> a.bitCount(), Integer::valueOf),
-      s("BigInteger", BigInteger::new, (BigInteger a, String b) -> a.bitCount(), Integer::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.bitCount(), Integer::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.bitCount(), Integer::valueOf)
     );
   }
 }

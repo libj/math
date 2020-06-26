@@ -27,26 +27,21 @@ abstract class BigAddition extends BigMagnitude {
    * @complexity O(n)
    * @amortized O(1)
    */
-  public static int[] uadd(int[] mag, int len, final int signum, final int a) {
+  public static int[] uadd(int[] val, final int a) {
+    final int len = val[0];
+    final int signum = val[1];
     if (signum >= 0) {
-      final int i = uaddMag(mag, len, a);
-      if (i == len) {
-        if (len == mag.length)
-          mag = realloc(mag, len);
-
-        mag[len++] = 1;
-      }
+      val = uaddMag(val, a);
     }
-    else if (len > 1 || (mag[0] & LONG_INT_MASK) > (a & LONG_INT_MASK)) {
-      len = usubMag(mag, len, a);
+    else if (len > 3 || (val[2] & LONG_INT_MASK) > (a & LONG_INT_MASK)) {
+      usubMag(val, a);
     }
     else {
-      // signum = 1; // Handled by caller, left for reference
-      mag[0] = a - mag[0];
+      val[1] = 1;
+      val[2] = a - val[2];
     }
 
-    clear(mag, len);
-    return mag;
+    return val;
   }
 
   /**
@@ -56,26 +51,24 @@ abstract class BigAddition extends BigMagnitude {
    * @complexity O(n)
    * @amortized O(1)
    */
-  public static int[] usub(int[] mag, int len, final int signum, final int s) {
+  public static int[] usub(int[] val, final int s) {
+    final int len = val[0];
+    final int signum = val[1];
     if (signum < 0) {
-      final int i = uaddMag(mag, len, s);
-      if (i == len) {
-        if (len == mag.length)
-          mag = realloc(mag, len);
-
-        mag[len++] = 1;
-      }
+//      if (len == 3 && (val[2] & LONG_INT_MASK) == (s & LONG_INT_MASK))
+//        setToZero(val);
+//      else
+      val = uaddMag(val, s);
     }
-    else if (len == 1 && (mag[0] & LONG_INT_MASK) < (s & LONG_INT_MASK)) {
-      // signum = -1; // Handled by caller, left for reference
-      mag[0] = s - mag[0];
+    else if (len == 3 && (val[2] & LONG_INT_MASK) < (s & LONG_INT_MASK)) {
+      val[1] = -1;
+      val[2] = s - val[2];
     }
     else {
-      len = usubMag(mag, len, s);
+      usubMag(val, s);
     }
 
-    clear(mag, len);
-    return mag;
+    return val;
   }
 
   /**
@@ -85,12 +78,18 @@ abstract class BigAddition extends BigMagnitude {
    * @complexity O(n)
    * @amortized O(1)
    */
-  public static int[] uadd(int[] mag, int len, final int signum, final long a, final boolean positive) {
+  public static int[] uadd(int[] val, final long a, final boolean positive) {
     final long al = a & LONG_INT_MASK;
     final long ah = a >>> 32;
-    final long mag0l = mag[0] & LONG_INT_MASK;
-    final long mag1l = len == 1 ? 0 : mag[1] & LONG_INT_MASK;
-    return uadd(mag, mag0l, mag1l, len, signum, al, ah, positive);
+    return uadd(val, al, ah, positive);
+  }
+
+  static int[] uadd(int[] val, final long al, final long ah, final boolean positive) {
+    final int len = val[0];
+
+    final long val0l = val[2] & LONG_INT_MASK;
+    final long val1l = len == 3 ? 0 : val[3] & LONG_INT_MASK;
+    return uadd(val, val0l, val1l, al, ah, positive);
   }
 
   /**
@@ -100,77 +99,92 @@ abstract class BigAddition extends BigMagnitude {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uadd(int[] mag, final long mag0l, final long mag1l, int len, final int signum, final long al, final long ah, final boolean positive) {
+  static int[] uadd(int[] val, final long val0l, final long val1l, final long al, final long ah, final boolean positive) {
+    final int signum = val[1];
     if (positive ? signum >= 0 : signum <= 0) {
-      mag = uaddMag(mag, mag0l, mag1l, len, al, ah);
+      val = uaddMag(val, val0l, val1l, al, ah);
     }
     else {
-      if (mag.length == 1)
-        mag = realloc(mag, len, 2);
+      if (val.length == 3)
+        val = realloc(val, 4);
 
-      if (len > 2 || len == 2 && (mag1l > ah || mag1l == ah && mag0l >= al) || ah == 0 && mag0l >= al) {
-        len = usubMag(mag, mag0l, mag1l, len, al, ah);
+      int len = val[0];
+      if (len > 4 || len == 4 && (val1l > ah || val1l == ah && val0l >= al) || ah == 0 && val0l >= al) {
+        usubMag(val, val0l, val1l, al, ah);
       }
       else {
-        if (len == 1)
-          mag[len++] = 0;
+        if (len == 3) {
+          val[len++] = 0;
+          val[0] = len;
+        }
 
-        long dif = al - mag0l;
-        mag[0] = (int)dif;
+        long dif = al - val0l;
+        val[2] = (int)dif;
         dif >>= 32;
-        dif = ah - mag1l + dif;
-        mag[1] = (int)dif;
+        dif = ah - val1l + dif;
+        val[3] = (int)dif;
         // dif >> 32 != 0 should be impossible
-        // if (dif == 0) --len; // Handled by caller, left for reference
-        // signum = positive ? 1 : -1; // Handled by caller, left for reference
+        if (dif == 0)
+          val[0] = len - 1;
+
+        val[1] = positive ? 1 : -1;
       }
     }
 
-    return mag;
+    return val;
   }
 
-  public static int[] add(int[] mag1, int len1, final int[] mag2, final int len2) {
-    if (compareAbsTo(mag1, len1, mag2, len2) >= 0) {
-      len1 = subMag(mag1, len1, mag2, len2);
+  public static int[] add(int[] val1, final int[] val2) {
+    if (compareAbsTo(val1, val2) >= 0) {
+      subMag(val1, val2);
       // if(len==1 && dig[0]==0) sign = 1;
     }
     else {
-      final int[] v = mag2;
+      int len1 = val1[0];
+      final int len2 = val2[0];
+      final int[] v = val2; // FIXME: Why create v?
       final int vlen = len2;
-      if (mag1.length < vlen)
-        mag1 = realloc(mag1, len1, vlen + 1);
+      if (val1.length < vlen)
+        val1 = realloc(val1, vlen + 1);
 
-      // signum1 = -signum1; // Handled by caller, left for reference
+      val1[1] = -val1[1];
       long dif = 0;
-      int i = 0;
+      int i = 2;
       for (; i < len1; ++i) {
-        dif = (v[i] & LONG_INT_MASK) - (mag1[i] & LONG_INT_MASK) + dif;
-        mag1[i] = (int)dif;
+        dif = (v[i] & LONG_INT_MASK) - (val1[i] & LONG_INT_MASK) + dif;
+        val1[i] = (int)dif;
         dif >>= 32;
       }
 
       if (vlen > len1) {
-        System.arraycopy(v, len1, mag1, len1, vlen - len1);
-        len1 = vlen;
+        System.arraycopy(v, len1, val1, len1, vlen - len1);
+        val1[0] = len1 = vlen;
       }
 
       if (dif != 0) {
-        for (; i < vlen && mag1[i] == 0; ++i)
-          --mag1[i];
+        for (; i < vlen && val1[i] == 0; ++i)
+          --val1[i];
 
-        if (--mag1[i] == 0 && i + 1 == len1)
+        if (--val1[i] == 0 && i + 1 == len1)
           --len1;
+
+        val1[0] = len1;
+      }
+      else if (val1[len1 - 1] == 0) {
+        val1[0] = len1 - 1;
       }
     }
 
     // if(i==vlen) should be impossible
-    return mag1;
+    return val1;
   }
 
-  public static int[] add(int[] mag1, final int len1, final int signum1, final int[] mag2, final int len2, final int signum2, final boolean positive) {
+  public static int[] add(int[] val1, final int[] val2, final boolean positive) {
+    final int signum1 = val1[1];
+    final int signum2 = val2[1];
     if (positive ? signum1 == signum2 : signum1 != signum2)
-      return addMag(mag1, len1, mag2, len2);
+      return addMag(val1, val2, positive);
 
-    return add(mag1, len1, mag2, len2);
+    return add(val1, val2);
   }
 }

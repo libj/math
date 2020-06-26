@@ -30,16 +30,25 @@ public class BigRemainderTest extends AbstractTest {
   @Test
   public void testInt() {
     testRange(
-      i("BigInt", BigInt::new, (BigInt a, int b) -> b == 0 ? 0 : a.div(b), String::valueOf),
-      i("BigInteger", BigInteger::valueOf, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> b == 0 ? 0 : a.div(b), String::valueOf)
     );
   }
 
   @Test
   public void testLong() {
     testRange(
-      l("BigInt", BigInt::new, (BigInt a, long b) -> b == 0 ? 0 : a.div(b), String::valueOf),
-      l("BigInteger", BigInteger::valueOf, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> b == 0 ? 0 : a.div(b), String::valueOf)
+    );
+  }
+
+  // FIXME: BigInteger is faster.
+  @Test
+  public void testDivRem() {
+    testRange(
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.divRem(b), String::valueOf)
     );
   }
 
@@ -47,8 +56,10 @@ public class BigRemainderTest extends AbstractTest {
   @Test
   public void testString() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.rem(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.rem(b), String::valueOf)
     );
   }
+
+  // FIXME: Add tests for urem
 }

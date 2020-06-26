@@ -31,8 +31,8 @@ public class BigModulusTest extends AbstractTest {
   @Test
   public void testString() {
     testRange(
-      s("BigInt", BigInt::new, b -> new BigInt(abs(b)).add(1), (BigInt a, BigInt b) -> a.mod(b), String::valueOf),
-      s("BigInteger", BigInteger::new, b -> new BigInteger(abs(b)).add(BigInteger.ONE), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, b -> new BigInteger(abs(b)).add(BigInteger.ONE), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, b -> new BigInt(abs(b)).add(1), (BigInt a, BigInt b) -> a.mod(b), String::valueOf)
     );
   }
 }

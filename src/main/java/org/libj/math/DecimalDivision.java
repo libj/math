@@ -43,17 +43,17 @@ abstract class DecimalDivision extends FixedPoint {
 
     q[0] = (int)(v1 & 0xFFFFFFFFL);
     q[1] = (int)(v1 >>> 32);
-    BigInt.umul(q, 2, f);
+    BigInt.umul(q, 0, 2, f);
 
     final long divisorHigh = v2 >>> 32;
     long remainder;
     if (divisorHigh == 0)
-      remainder = BigInt.udiv(q, 3, (int)v2);
+      remainder = BigInt.udiv(q, 0, 3, (int)v2);
     else
-      remainder = BigInt.udiv(q, 4, v2, divisorHigh);
+      remainder = BigInt.udiv(q, 0, 4, v2, divisorHigh);
 
     // Put the result in v1
-    v1 = BigInt.longValue(q, 2);
+    v1 = BigInt.longValue(q, 0, 2);
 
     // If v1 is bigger than the signed limit, scale it down
     if (v1 < 0) {

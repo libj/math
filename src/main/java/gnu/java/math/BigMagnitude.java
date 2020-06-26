@@ -27,12 +27,12 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  public static int usubMag(final int[] mag, final int len, final long s) {
+  public static void usubMag(final int[] val, final long s) {
     final long sl = s & LONG_INT_MASK;
     final long sh = s >>> 32;
-    final long mag0l = mag[0] & LONG_INT_MASK;
-    final long mag1l = mag[1] & LONG_INT_MASK;
-    return usubMag(mag, mag0l, mag1l, len, sl, sh);
+    final long val0l = val[1] & LONG_INT_MASK;
+    final long val1l = val[0] & LONG_INT_MASK;
+    usubMag(val, val0l, val1l, sl, sh);
   }
 
   /**
@@ -42,80 +42,93 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int usubMag(final int[] mag, final long mag0l, final long mag1l, int len, final long sl, final long sh) {
-    long dif = mag0l - sl;
-    mag[0] = (int)dif;
+  static void usubMag(final int[] val, final long val0, final long val1, final long sl, final long sh) {
+    int len = val[0];
+    long dif = val0 - sl;
+    val[2] = (int)dif;
     dif >>= 32;
-    dif = mag1l - sh + dif;
-    mag[1] = (int)dif;
-    if ((dif >> 32) != 0) {
-      int i = 2;
-      for (; mag[i] == 0; ++i)
-        --mag[i];
+    dif = val1 - sh + dif;
+    val[3] = (int)dif;
 
-      if (--mag[i] == 0 && i + 1 == len)
-        --len;
+    // Subtract remainder of longer number while borrow propagates
+    boolean borrow = dif >> 32 != 0;
+    for (int i = 3; i < len && borrow;)
+      borrow = --val[++i] == -1;
+
+    if (len == 4 && val[3] == 0)
+      --len;
+
+    val[0] = len;
+    if (len == 3 && val[2] == 0)
+      val[1] = 0;
+  }
+
+  /**
+   * Decreases the magnitude of this number. If s > this behavior is undefined.
+   *
+   * @param s The amount of the decrease (unsigned).
+   * @complexity O(n)
+   * @amortized O(1)
+   */
+  public static void usubMag(final int[] val, final int s) {
+    long dif = (val[2] & LONG_INT_MASK) - (s & LONG_INT_MASK);
+    val[2] = (int)dif;
+    if ((dif >> 32) == 0) {
+      if (isZero(val))
+        val[1] = 0;
+
+      return;
     }
 
-    if (len == 2 && mag[1] == 0)
+    int len = val[0];
+    int i = 3;
+    for (; val[i] == 0; ++i)
+      --val[i];
+
+    if (--val[i] == 0 && i + 1 == len)
       --len;
 
-    return len;
-  }
-
-  /**
-   * Decreases the magnitude of this number. If s > this behavior is undefined.
-   *
-   * @param s The amount of the decrease (unsigned).
-   * @complexity O(n)
-   * @amortized O(1)
-   */
-  public static int usubMag(final int[] mag, int len, final int s) {
-    long dif = (mag[0] & LONG_INT_MASK) - (s & LONG_INT_MASK);
-    mag[0] = (int)dif;
-    if ((dif >> 32) == 0)
-      return len;
-
-    int i = 1;
-    for (; mag[i] == 0; ++i)
-      --mag[i];
-
-    if (--mag[i] == 0 && i + 1 == len)
-      --len;
-
-    return len;
+    val[0] = len;
   }
 
   /**
    * Decreases the magnitude of this number by the given magnitude array.
    * Behavior is undefined if u > |this|.
    *
-   * @param u The magnitude array of the decrease.
+   * @param val2 The magnitude array of the decrease.
    * @param vlen The length (number of digits) of the decrease.
    * @complexity O(n)
    */
-  public static int subMag(final int[] mag, int len, final int[] u, final int ulen) {
-    final int[] v = mag; // ulen <= vlen
+  public static int subMag(final int[] val1, final int[] val2) {
+    int len1 = val1[0];
+    final int len2 = val2[0];
+    final int[] v = val1; // ulen <= vlen // FIXME: Why v?!
 
     // Assumes vlen=len and v=dig
     long dif = 0;
-    int i = 0;
-    for (; i < ulen; ++i) {
-      dif = (v[i] & LONG_INT_MASK) - (u[i] & LONG_INT_MASK) + dif;
-      mag[i] = (int)dif;
+    int i = 2;
+    for (; i < len2; ++i) {
+      dif = (v[i] & LONG_INT_MASK) - (val2[i] & LONG_INT_MASK) + dif;
+      val1[i] = (int)dif;
       dif >>= 32;
     }
+
     if (dif != 0) {
-      for (; mag[i] == 0; ++i)
-        --mag[i];
-      if (--mag[i] == 0 && i + 1 == len)
-        len = ulen;
+      for (; val1[i] == 0; ++i)
+        --val1[i];
+
+      if (--val1[i] == 0 && i + 1 == len1)
+        len1 = len2;
     }
 
-    while (len > 1 && mag[len - 1] == 0)
-      --len;
+    while (len1 > 3 && val1[len1 - 1] == 0)
+      --len1;
 
-    return len;
+    val1[0] = len1;
+    if (len1 == 3 && val1[2] == 0)
+      val1[1] = 0;
+
+    return len1;
   }
 
   /**
@@ -125,15 +138,23 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  public static int uaddMag(final int[] mag, final int len, final int a) {
-    long tmp = (mag[0] & LONG_INT_MASK) + (a & LONG_INT_MASK);
-    mag[0] = (int)tmp;
-    if ((tmp >>> 32) == 0)
-      return 0;
+  public static int[] uaddMag(int[] val, final int a) {
+    long tmp = (val[2] & LONG_INT_MASK) + (a & LONG_INT_MASK);
+    val[2] = (int)tmp;
+    if ((tmp >>> 32) != 0) {
+      int len = val[0];
+      int i = 3;
+      for (; i < len && ++val[i] == 0; ++i);
+      if (i == len) {
+        if (len == val.length)
+          val = realloc(val);
 
-    int i = 1;
-    for (; i < len && ++mag[i] == 0; ++i);
-    return i;
+        val[len] = 1;
+        val[0] = len + 1;
+      }
+    }
+
+    return val;
   }
 
   /**
@@ -143,17 +164,17 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  public static int[] uaddMag(int[] mag, int len, final long a) {
-    if (mag.length <= 2) {
-      mag = realloc(mag, len, 3);
-      len = 2;
+  public static int[] uaddMag(int[] val, final long a) {
+    if (val.length <= 2) {
+      val = realloc(val, 3);
+      val[0] = 4; // FIXME: Why is this being set here?!
     }
 
     final long al = a & LONG_INT_MASK;
     final long ah = a >>> 32;
-    final long mag0l = mag[0] & LONG_INT_MASK;
-    final long mag1l = mag[1] & LONG_INT_MASK;
-    return uaddMag(mag, mag0l, mag1l, len, al, ah);
+    final long val0l = val[1] & LONG_INT_MASK;
+    final long val1l = val[0] & LONG_INT_MASK;
+    return uaddMag(val, val0l, val1l, al, ah);
   }
 
   /**
@@ -163,80 +184,87 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddMag(int[] mag, final long mag0l, final long mag1l, int len, final long al, final long ah) {
-    if (mag.length <= 2) {
-      mag = realloc(mag, len, 3);
-      len = 2;
-    }
+  static int[] uaddMag(int[] val, final long val0l, final long val1l, final long al, final long ah) {
+    int len = val[0];
+    if (val.length <= 4)
+      val = realloc(val, 5);
 
-    long carry = mag0l + al;
-    mag[0] = (int)carry;
+    long carry = val0l + al;
+    val[2] = (int)carry;
     carry >>>= 32;
-    carry = mag1l + ah + carry;
-    mag[1] = (int)carry;
-    if (len == 1 && mag[1] != 0)
-      len = 2; // KL(m) change (new line)
+    carry = val1l + ah + carry;
+    val[3] = (int)carry;
+    if (len == 3 && val[3] != 0)
+      len = 4; // KL(m) change (new line)
 
     if ((carry >> 32) != 0) {
-      int i = 2;
-      for (; i < len && ++mag[i] == 0; ++i);
+      int i = 4;
+      for (; i < len && ++val[i] == 0; ++i);
       if (i == len) {
-        if (len == mag.length)
-          mag = realloc(mag, len);
+        if (len == val.length)
+          val = realloc(val, len);
 
-        mag[len++] = 1;
+        val[len++] = 1;
       }
     }
-    else if (len == 2 && mag[1] == 0) {
+    else if (len == 2 && val[3] == 0) {
       --len;
     }
 
-    return mag;
+    val[0] = len;
+    return val;
   }
 
   /**
    * Increases the magnitude of this number by the given magnitude array.
    *
-   * @param v The magnitude array of the increase.
-   * @param vlen The length (number of digits) of the increase.
+   * @param val2 The magnitude array of the increase.
+   * @param len2 The length (number of digits) of the increase.
    * @complexity O(n)
    */
-  public static int[] addMag(int[] mag, int len, int[] v, int vlen) {
-    int ulen = len;
-    int[] u = mag; // ulen <= vlen
-    if (vlen < ulen) {
-      u = v;
-      v = mag;
-      ulen = vlen;
-      vlen = len;
+  public static int[] addMag(int[] val1, int[] val2, final boolean positive) {
+    int len1 = val1[0];
+    int len2 = val2[0];
+
+    int len0 = len1;
+    int[] val0 = val1; // ulen <= vlen
+    if (len2 < len0) {
+      val0 = val2;
+      val2 = val1;
+      len0 = len2;
+      len2 = len1;
     }
 
-    if (vlen > mag.length)
-      mag = realloc(mag, len, vlen + 1);
+    if (len2 > val1.length)
+      val1 = realloc(val1, len2 + 1);
 
     long carry = 0;
-    int i = 0;
-    for (; i < ulen; ++i) {
-      carry = (u[i] & LONG_INT_MASK) + (v[i] & LONG_INT_MASK) + carry;
-      mag[i] = (int)carry;
+    int i = 2;
+    for (; i < len0; ++i) {
+      carry = (val0[i] & LONG_INT_MASK) + (val2[i] & LONG_INT_MASK) + carry;
+      val1[i] = (int)carry;
       carry >>>= 32;
     }
 
-    if (vlen > len) {
-      System.arraycopy(v, len, mag, len, vlen - len);
-      len = vlen;
+    if (len2 > len1) {
+      System.arraycopy(val2, len1, val1, len1, len2 - len1);
+      val1[0] = len1 = len2;
     }
 
     if (carry != 0) { // carry==1
-      for (; i < len && ++mag[i] == 0; ++i);
-      if (i == len) { // vlen==len
-        if (len == mag.length)
-          mag = realloc(mag, len);
+      for (; i < len1 && ++val1[i] == 0; ++i);
+      if (i == len1) { // vlen==len
+        if (len1 == val1.length)
+          val1 = realloc(val1);
 
-        mag[len++] = 1;
+        val1[len1] = 1;
+        val1[0] = len1 + 1;
       }
     }
 
-    return mag;
+    if (val1[1] == 0)
+      val1[1] = positive ? val2[1] : -val2[1];
+
+    return val1;
   }
 }

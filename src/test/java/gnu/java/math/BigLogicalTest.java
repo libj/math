@@ -30,40 +30,40 @@ public class BigLogicalTest extends AbstractTest {
   @Test
   public void testAnd() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf)
     );
   }
 
   @Test
   public void testOr() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf)
     );
   }
 
   @Test
   public void testNot() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.not(), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.not(), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf)
     );
   }
 
   @Test
   public void testXor() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf)
     );
   }
 
   @Test
   public void testAndNot() {
     testRange(
-      s("BigInt", BigInt::new, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf),
-      s("BigInteger", BigInteger::new, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf)
     );
   }
 }
