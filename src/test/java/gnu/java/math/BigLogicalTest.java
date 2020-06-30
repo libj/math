@@ -22,14 +22,9 @@ import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigLogicalTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   @Test
   public void testAnd() {
-    testRange(
+    testRange("and(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf)
     );
@@ -37,7 +32,7 @@ public class BigLogicalTest extends AbstractTest {
 
   @Test
   public void testOr() {
-    testRange(
+    testRange("or(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf)
     );
@@ -45,7 +40,7 @@ public class BigLogicalTest extends AbstractTest {
 
   @Test
   public void testNot() {
-    testRange(
+    testRange("not(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.not(), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf)
     );
@@ -53,7 +48,7 @@ public class BigLogicalTest extends AbstractTest {
 
   @Test
   public void testXor() {
-    testRange(
+    testRange("xor(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf)
     );
@@ -61,7 +56,7 @@ public class BigLogicalTest extends AbstractTest {
 
   @Test
   public void testAndNot() {
-    testRange(
+    testRange("andNot(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf)
     );

@@ -22,14 +22,9 @@ import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigPredicateTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   @Test
   public void testByteValue() {
-    testRange(
+    testRange("byeValue()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.byteValue(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.byteValue(), String::valueOf)
     );
@@ -37,7 +32,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testShortValue() {
-    testRange(
+    testRange("shortValue()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.shortValue(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.shortValue(), String::valueOf)
     );
@@ -45,7 +40,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testIntValue() {
-    testRange(
+    testRange("intValue()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.intValue(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.intValue(), String::valueOf)
     );
@@ -53,7 +48,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testLongValue() {
-    testRange(
+    testRange("longValue()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.longValue(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.longValue(), String::valueOf)
     );
@@ -62,7 +57,7 @@ public class BigPredicateTest extends AbstractTest {
   // FIXME: BigInteger is faster.
   @Test
   public void testFloatValue() {
-    testRange(
+    testRange("floatValue()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.floatValue(), null),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.floatValue(), null)
     );
@@ -70,7 +65,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testDoubleValue() {
-    testRange(
+    testRange("doubleValue()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.doubleValue(), null),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.doubleValue(), null)
     );
@@ -78,7 +73,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testToString() {
-    testRange(
+    testRange("toString()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.toString(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.toString(), String::valueOf)
     );
@@ -86,7 +81,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testCompareTo() {
-    testRange(
+    testRange("compareTo(T)",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.compareTo(new BigInteger(b)), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.compareTo(new BigInt(b)), String::valueOf)
     );
@@ -94,7 +89,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testEquals() {
-    testRange(
+    testRange("equals(T)",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.equals(new BigInteger(b)), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.equals(new BigInt(b)), String::valueOf)
     );
@@ -102,7 +97,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testHashCode() {
-    testRange(
+    testRange("hashCode()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> {a.hashCode(); return 0;}, String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> {a.hashCode(); return 0;}, String::valueOf)
     );
@@ -110,7 +105,7 @@ public class BigPredicateTest extends AbstractTest {
 
   @Test
   public void testAbs() {
-    testRange(
+    testRange("abs()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.abs(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.abs(), String::valueOf)
     );
@@ -119,7 +114,7 @@ public class BigPredicateTest extends AbstractTest {
   // FIXME: BigInteger is faster.
   @Test
   public void testMax() {
-    testRange(
+    testRange("max(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.max(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.max(b), String::valueOf)
     );
@@ -128,7 +123,7 @@ public class BigPredicateTest extends AbstractTest {
   // FIXME: BigInteger is faster.
   @Test
   public void testMin() {
-    testRange(
+    testRange("min(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.min(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.min(b), String::valueOf)
     );

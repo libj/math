@@ -22,7 +22,7 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigIntegersTest {
+public class BigIntegersTest extends AbstractTest {
   @Test
   public void testInternBigInteger() {
     final BigInteger a = new BigInteger("58921");
@@ -45,5 +45,28 @@ public class BigIntegersTest {
         }
       }).start();
     }
+  }
+
+  /**
+   * Unsigned long to bytes
+   *
+   * @param v
+   * @return
+   */
+  public static byte[] toByteArray(long v) {
+    final byte[] b = new byte[8];
+    for (int j = 7; j >= 0; --j, v >>>= 8)
+      b[j] = (byte)(v & 0xFF);
+
+    return b;
+  }
+
+  // FIXME: BigInteger is faster.
+  @Test
+  public void testUnsignedBigInteger() {
+    testRange("unsigned BigInteger via byte[] vs shift",
+      l("byte[]", (long a, long b) -> new BigInteger(1, toByteArray(a)), String::valueOf),
+      l("shift", (long a, long b) -> BigIntegers.toUnsigned(a), String::valueOf)
+    );
   }
 }

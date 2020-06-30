@@ -22,15 +22,10 @@ import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigModulusTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   // FIXME: BigInteger is faster.
   @Test
-  public void testString() {
-    testRange(
+  public void testBig() {
+    testRange("mod(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(abs(b)).add(BigInteger.ONE), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(abs(b)).add(1), (BigInt a, BigInt b) -> a.mod(b), String::valueOf)
     );

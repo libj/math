@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
+  // FIXME: Rewrite this javadoc
   /**
    * The value array with the following encoding:<br>
    * <blockquote> <b>{@code val[1]}</b>: <ins>signum</ins>:
@@ -54,7 +55,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * &nbsp;&nbsp;&nbsp;&nbsp;The base 2^32 digits of the number in
    * <i>little-endian</i> order. </blockquote>
    */
-  private int[] val;
+  int[] val;
 
   /**
    * Creates a BigInt from the given parameters. The input-array will be used as
@@ -73,22 +74,18 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * will be copied.
    *
    * @param signum The sign of the number.
-   * @param val The magnitude of the number, the first position gives the least
+   * @param v The magnitude of the number, the first position gives the least
    *          significant 8 bits.
    * @param len The (first) number of entries of v that are considered part of
    *          the number.
    * @complexity O(n)
    */
-  public BigInt(final int signum, int len, final byte[] val) {
-    if (signum == 0) {
-      setToZero();
-      return;
-    }
+  public BigInt(final int signum, final byte[] v, int len) {
+    assign(signum, v, len);
+  }
 
-    while (len > 1 && val[len - 1] == 0)
-      --len;
-
-    assign0(signum, len, val);
+  public BigInt(final int signum, final byte[] v) {
+    assign(signum, v, v.length);
   }
 
   /**
@@ -96,12 +93,12 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * interpreted as unsigned.
    *
    * @param signum The sign of the number.
-   * @param val The magnitude of the number.
+   * @param v The magnitude of the number.
    * @complexity O(1)
    */
-  public BigInt(final int signum, final int val) {
-    this.val = new int[3];
-    uassign(signum, val);
+  public BigInt(final int signum, final int v) {
+    this.val = alloc(2);
+    uassign(signum, v);
   }
 
   /**
@@ -109,36 +106,36 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * interpreted as unsigned.
    *
    * @param sign The sign of the number.
-   * @param val The magnitude of the number.
+   * @param v The magnitude of the number.
    * @complexity O(1)
    */
-  public BigInt(final int sign, final long val) {
-    this.val = new int[4];
-    uassign(sign, val);
+  public BigInt(final int sign, final long v) {
+    this.val = alloc(3);
+    uassign(sign, v);
   }
 
   /**
    * Creates a BigInt from the given int. The input-value will be interpreted a
    * signed value.
    *
-   * @param val The value of the number.
+   * @param v The value of the number.
    * @complexity O(1)
    */
-  public BigInt(final int val) {
-    this.val = new int[3];
-    assign(val);
+  public BigInt(final int v) {
+    this.val = alloc(2);
+    assign(v);
   }
 
   /**
    * Creates a BigInt from the given long. The input-value will be interpreted a
    * signed value.
    *
-   * @param val The value of the number.
+   * @param v The value of the number.
    * @complexity O(1)
    */
-  public BigInt(final long val) {
-    this.val = new int[4];
-    assign(val);
+  public BigInt(final long v) {
+    this.val = alloc(3);
+    assign(v);
   }
 
   /**
@@ -161,25 +158,6 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     assign(s);
   }
 
-  private boolean checkSetZero() {
-    if (val[1] != 0)
-      return false;
-
-    val[1] = 0;
-    val[0] = 3;
-    return true;
-  }
-
-  private BigInt assertZeroSignum() {
-    if (val[0] <= 2 || (isZero(val) ? val[1] != 0 : val[1] == 0))
-      throw new IllegalStateException();
-
-    if (val[1] != 0 && val[val[0] - 1] == 0)
-      throw new IllegalStateException();
-
-    return this;
-  }
-
   /**
    * Creates a copy of this number.
    *
@@ -187,8 +165,9 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   @Override
+  // FIXME: Test this
   public BigInt clone() {
-    return new BigInt(Arrays.copyOf(val, val[0]));
+    return new BigInt(Arrays.copyOf(val, Math.abs(val[0]) + 1));
   }
 
   /**
@@ -197,9 +176,9 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @param The BigInt to copy/assign to this BigInt.
    * @complexity O(n)
    */
-  // FIXME: This is not a clone!
-  public BigInt assign(final BigInt other) {
-    return assign(other.val);
+  // FIXME: Javadoc?!: This is not a clone!
+  public BigInt assign(final BigInt v) {
+    return assign(v.val);
   }
 
   /**
@@ -212,12 +191,13 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   // FIXME: 0 or 1 min len?
   private BigInt assignCopy(final int[] val) {
-    final int len = val[0]; // FIXME: What if val[0] > val.length?!?!!
+    final int len = Math.abs(val[0]) + 1; // FIXME: What if val[0] > val.length?!?!!
     if (len > this.val.length)
-      this.val = new int[len + 2]; // FIXME: Add 2 just for shits and giggles?
+      this.val = alloc(len); // FIXME: Add 2 just for shits and giggles?
 
     System.arraycopy(val, 0, this.val, 0, len);
-    return assertZeroSignum();
+    _debugLenSig(this.val);
+    return this;
   }
 
   /**
@@ -231,7 +211,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt assign(final int[] val) {
     this.val = val;
-    return assertZeroSignum();
+    _debugLenSig(val);
+    return this;
   }
 
   /**
@@ -240,38 +221,13 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * vlen==1.
    *
    * @param signum The sign of the number.
-   * @param dig The magnitude of the number.
+   * @param v The magnitude of the number.
    * @param len The length of the magnitude array to be used.
    * @complexity O(n)
    */
-  public BigInt assign(final int signum, final int len, final byte[] dig) {
-    return signum == 0 ? setToZero() : assign0(signum, len, dig);
-  }
-
-  private BigInt assign0(final int signum, final int len, final byte[] val) {
-    final int newLen = (len + 3) / 4;
-    if (this.val == null || newLen > this.val.length)
-      this.val = new int[newLen + 4]; // FIXME: Add 2 just for shits and giggles?
-
-    int tmp = len / 4;
-    int j = 0;
-    for (int i = 0; i < tmp; ++i, j += 4)
-      this.val[i + 2] = val[j + 3] << 24 | (val[j + 2] & 0xFF) << 16 | (val[j + 1] & 0xFF) << 8 | val[j] & 0xFF;
-
-    if (tmp != newLen) {
-      tmp = val[j++] & 0xFF;
-      if (j < len) {
-        tmp |= (val[j++] & 0xFF) << 8;
-        if (j < len)
-          tmp |= (val[j] & 0xFF) << 16;
-      }
-
-      this.val[newLen + 1] = tmp;
-    }
-
-    this.val[0] = newLen + 2;
-    this.val[1] = isZero() ? 0 : signum;
-    return assertZeroSignum();
+  public BigInt assign(final int signum, final byte[] v, final int len) {
+    this.val = assign(val, signum, v, len);
+    return this;
   }
 
   /**
@@ -281,29 +237,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt assign(final char[] s) {
-    final int signum = s[0] == '-' ? -1 : 1;
-
-    final int length = s.length;
-    final int from = signum - 1 >> 1;
-    int len = length + from;
-    // 3402 = bits per digit * 1024
-    int alloc = len < 10 ? 1 : (int)(len * 3402L >>> 10) + 32 >>> 5;
-    alloc += 2;
-    if (val == null || alloc > val.length)
-      val = new int[alloc];
-
-    int j = len % 9;
-    if (j == 0)
-      j = 9;
-
-    j -= from;
-
-    val[2] = parse(s, -from, j);
-    for (val[0] = 3; j < length;)
-      mulAdd(val, 1_000_000_000, parse(s, j, j += 9));
-
-    val[1] = isZero(val) ? 0 : signum;
-    return assertZeroSignum();
+    val = assign(val, s);
+    return this;
   }
 
   /**
@@ -313,71 +248,74 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt assign(final String s) {
-    return assign(s.toCharArray());
+    val = assign(val, s);
+    return this;
   }
 
   /**
    * Assigns the given number to this BigInt object.
    *
    * @param signum The sign of the number.
-   * @param val The magnitude of the number (will be interpreted as unsigned).
+   * @param v The magnitude of the number (will be interpreted as unsigned).
    * @complexity O(1)
    */
-  public BigInt uassign(final int signum, final int val) {
-    return new BigInt(uassign(this.val, signum, val));
+  public BigInt uassign(final int signum, final int v) {
+    val = uassign(val, signum, v);
+    return this;
   }
 
   /**
    * Assigns the given number to this BigInt object.
    *
    * @param signum The sign of the number.
-   * @param val The magnitude of the number (will be interpreted as unsigned).
+   * @param v The magnitude of the number (will be interpreted as unsigned).
    * @complexity O(1)
    */
-  public BigInt uassign(final int signum, final long val) {
-    this.val = uassign(this.val, signum, val);
-    return assertZeroSignum();
+  public BigInt uassign(final int signum, final long v) {
+    val = uassign(val, signum, v);
+    return this;
   }
 
   /**
    * Assigns the given non-negative number to this BigInt object.
    *
-   * @param val The number interpreted as unsigned.
+   * @param v The number interpreted as unsigned.
    * @complexity O(1)
    */
-  public BigInt uassign(final int val) {
-    return uassign(1, val);
+  public BigInt uassign(final int v) {
+    return uassign(1, v);
   }
 
   /**
    * Assigns the given non-negative number to this BigInt object.
    *
-   * @param val The number interpreted as unsigned.
+   * @param v The number interpreted as unsigned.
    * @complexity O(1)
    */
-  public BigInt uassign(final long val) {
-    return uassign(1, val);
+  public BigInt uassign(final long v) {
+    return uassign(1, v);
   }
 
   /**
    * Assigns the given number to this BigInt object.
    *
-   * @param val The number to be assigned.
+   * @param v The number to be assigned.
    * @complexity O(1)
    */
-  public BigInt assign(final int val) {
-    return val == 0 ? setToZero() : val == Integer.MIN_VALUE ? uassign(-1, val) : val < 0 ? uassign(-1, -val) : uassign(1, val);
+  public BigInt assign(final int v) {
+    this.val = assign(val, v);
+    return this;
   }
 
   /**
    * Assigns the given number to this BigInt object.
    *
-   * @param val The number to be assigned.
+   * @param v The number to be assigned.
    * @complexity O(1)
    */
-  public BigInt assign(final long val) {
-    // FIXME: Long.MIN_VALUE
-    return val < 0 ? uassign(-1, -val) : uassign(1, val);
+  public BigInt assign(final long v) {
+    this.val = assign(val, v);
+    return this;
   }
 
   /**
@@ -391,7 +329,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt abs() {
     abs(val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -427,7 +365,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt setToZero() {
     setToZero(val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -443,7 +381,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
 
   private BigInt uadd0(final int a) {
     val = BigAddition.uadd(val, a);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -455,7 +393,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt uadd(final long a) {
     if (a == 0)
-      return assertZeroSignum();
+      return this;
 
     if (isZero())
       return uassign(a);
@@ -465,11 +403,13 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt uadd0(final long a, final long ah) {
+    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
     final long al = a & LONG_INT_MASK;
-    final long val0l = val[2] & LONG_INT_MASK;
-    final long val0h = val[0] == 3 ? 0 : val[3] & LONG_INT_MASK;
-    val = BigAddition.uadd(val, val0l, val0h, al, ah, true);
-    return assertZeroSignum();
+    // FIXME: This will fail for 0 value
+    final long val0l = val[1] & LONG_INT_MASK;
+    final long val0h = len <= 1 ? 0 : val[2] & LONG_INT_MASK;
+    val = BigAddition.uadd(val, val0l, val0h, al, ah, len, signum, true);
+    return this;
   }
 
   /**
@@ -485,7 +425,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
 
   private BigInt usub0(final int s) {
     val = BigAddition.usub(val, s);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -497,7 +437,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt usub(final long s) {
     if (s == 0)
-      return assertZeroSignum();
+      return this;
 
     if (isZero())
       return uassign(-1, s);
@@ -509,7 +449,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   private BigInt usub0(final long s, final long sh) {
     final long sl = s & LONG_INT_MASK;
     val = BigAddition.uadd(val, sl, sh, false);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -523,11 +463,16 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt umul0(final int m) {
-    if (val[0] == val.length)
+    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    if (len + 1 >= val.length)
       val = realloc(val);
 
-    val[0] = BigMultiplication.umul(val, 2, val[0], m);
-    return assertZeroSignum();
+    val[0] = BigMultiplication.umul(val, 1, len + 1, m) - 1;
+    if (signum < 0)
+      val[0] = -val[0];
+
+    _debugLenSig(val);
+    return this;
   }
 
   /**
@@ -546,12 +491,17 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt umul0(final long ml, final long mh) {
-    final int len = val[0];
-    if (len + 2 >= val.length)
-      val = realloc(val, 2 * len + 1);
+    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
+    ++len;
+    if (len + 1 >= val.length)
+      val = realloc(val, 2 * len);
 
-    val[0] = BigMultiplication.umul(val, 2, val[0], ml, mh);
-    return assertZeroSignum();
+    val[0] = BigMultiplication.umul(val, 1, len, ml, mh) - 1;
+    if (!signum)
+      val[0] = -val[0];
+
+    _debugLenSig(val);
+    return this;
   }
 
   /**
@@ -565,7 +515,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   BigInt karatsuba(final BigInt m, final boolean p) throws ExecutionException, InterruptedException {
     val = karatsuba(val, m.val, p);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -576,17 +526,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @return The absolute value of the remainder as an unsigned int.
    * @complexity O(n)
    */
-  public int udiv(final int d) {
-    if (isZero())
-      return 0;
-
-    return udiv0(d);
-  }
-
-  private int udiv0(final int d) {
-    final int r = BigDivision.udiv(val, d);
-    assertZeroSignum();
-    return r;
+  public int udivRem(final int d) {
+    return isZero() ? 0 : BigDivision.udiv(val, d);
   }
 
   /**
@@ -597,21 +538,13 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @return The absolute value of the remainder as an unsigned long.
    * @complexity O(n)
    */
-  public long udiv(final long d) {
+  public long udivRem(final long d) {
     return isZero() ? 0 : udiv0(d);
   }
 
   private long udiv0(final long d) {
     final long dh = d >>> 32;
-    final long r = dh == 0 ? udiv((int)d) & LONG_INT_MASK : udiv0(d, dh);
-    assertZeroSignum();
-    return r;
-  }
-
-  private long udiv0(final long d, final long dh) {
-    final long r = BigDivision.udiv(val, d, dh);
-    assertZeroSignum();
-    return r;
+    return dh == 0 ? udivRem((int)d) & LONG_INT_MASK : BigDivision.udiv(val, d, dh);
   }
 
   /**
@@ -622,12 +555,10 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt urem(final int m) {
-    val[2] = (int)BigDivision.urem(val, m);
-    val[0] = 3;
-    if (isZero())
-      val[1] = 0;
-
-    return assertZeroSignum();
+    val[1] = (int)BigDivision.urem(val, m);
+    val[0] = 1; // FIXME: Can this be put into BigDivision#urem(...)?
+    _debugLenSig(val);
+    return this;
   }
 
   /**
@@ -639,7 +570,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt urem(final long mod) {
     BigDivision.urem(val, mod);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -660,7 +591,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     else if (a < 0)
       usub0(-a);
 
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -679,12 +610,13 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     }
 
     if (a < 0) {
+      // FIXME: What about Long.MIN_VALUE?!
       a = -a;
       final long ah = a >>> 32;
       return ah == 0 ? usub0((int)a) : usub0(a, ah);
     }
 
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -701,7 +633,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return this;
 
     val = BigAddition.add(val, a.val, true);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -721,7 +653,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     else if (s < 0)
       uadd0(-s);
 
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -746,7 +678,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return ah == 0 && !isMinInt ? uadd0((int)s) : uadd0(s, ah);
     }
 
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -761,7 +693,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
         return this;
 
       assignCopy(s.val);
-      val[1] = -val[1];
+      val[0] = -val[0];
       return this;
     }
 
@@ -769,7 +701,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return this;
 
     val = BigAddition.add(val, s.val, false);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -783,12 +715,12 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return setToZero();
 
     if (isZero())
-      return assertZeroSignum();
+      return this;
 
     if (m > 0)
       return umul0(m);
 
-    val[1] = -val[1];
+    val[0] = -val[0];
     if (m != Integer.MIN_VALUE)
       return umul0(-m);
 
@@ -807,7 +739,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return setToZero();
 
     if (isZero())
-      return assertZeroSignum();
+      return this;
 
     final long mh = m >>> 32;
     if (mh == 0)
@@ -817,9 +749,9 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (m > 0)
       return umul0(ml, mh);
 
-    val[1] = -val[1];
+    val[0] = -val[0];
     if (m == Long.MIN_VALUE)
-      return umul0(ml, mh);
+      return umul0(ml, mh); // FIXME: Is this actually happening?
 
     m = -m;
     return umul0(m & LONG_INT_MASK, m >>> 32);
@@ -840,10 +772,10 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return setToZero();
 
     if (isZero(val1))
-      return assertZeroSignum();
+      return this;
 
     val = BigMultiplication.mul(val, m.val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -853,19 +785,24 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    * @return The signed remainder.
    */
-  public int div(final int d) {
+  public int divRem(final int d) {
     if (isZero())
       return 0;
 
-    final int signum = val[1];
-    if (d >= 0)
-      return signum * udiv0(d);
+    final boolean signum = val[0] >= 0;
+    final int r;
+    if (d >= 0) {
+      r = BigDivision.udiv(val, d);
+    }
+    else {
+      val[0] = -val[0];
+      if (d == Integer.MIN_VALUE)
+        r = (int)udivRem(-(long)d);
+      else
+        r = BigDivision.udiv(val, -d);
+    }
 
-    val[1] = -signum;
-    if (d == Integer.MIN_VALUE)
-      return signum * (int)udiv(-(long)d);
-
-    return signum * udiv0(-d);
+    return signum ? r : -r;
   }
 
   /**
@@ -875,38 +812,80 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    * @return The signed remainder.
    */
-  public long div(final long d) {
+  public long divRem(final long d) {
     if (isZero())
       return 0;
 
+    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
     final long dh = d >>> 32;
-    if (dh == 0)
-      return udiv0((int)d);
+    if (dh == 0) {
+      long r = BigDivision.udiv(val, (int)d);
+      if (r >= 0 != signum)
+        r = -r;
 
-    final int signum = val[1];
-    if (d > 0)
-      return signum * udiv0(d, dh);
+      return r;
+    }
 
-    if (d == Long.MIN_VALUE) {
-      if (val[0] <= 3) {
-        final long r = longValue();
+    final long r;
+    if (d > 0) {
+      r = BigDivision.udiv(val, d, dh);
+    }
+    else if (d == Long.MIN_VALUE) {
+      if (len <= 1) {
+        r = longValue();
         setToZero();
         return r == Long.MIN_VALUE ? 0 : r;
       }
 
+      // FIXME: There has to be an easier way!
       final int[] val2 = {
-        4,
-        d < 0 ? -1 : 1,
+        -2,
         (int)(d & LONG_INT_MASK),
-        (int)(d >>> 32)
+        (int)dh
       };
 
-      final int[] r = divRem(val, val2);
-      return signum * longValue(r, 2, r[0]);
+      final int[] rem = divRem(val, val2);
+      r = longValue(rem, 1, Math.abs(rem[0]) + 1);
+    }
+    else {
+      val[0] = -val[0];
+      r = udiv0(-d);
+      // FIXME: Assert the result of the division (not just the remainder) is correct! There may be a sign issue here.
     }
 
-    val[1] = -signum;
-    return signum * udiv0(-d);
+    return signum ? r : -r;
+  }
+
+  /**
+   * Divides this number by an {@code int}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param d The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt div(final int d) {
+    if (isZero())
+      return this;
+
+//    val = BigDivision.div(val, d);
+    return this;
+  }
+
+  /**
+   * Divides this number by a {@code long}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param d The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt div(final long d) {
+    if (isZero())
+      return this;
+
+//    val = BigDivision.div(val, d);
+    return this;
   }
 
   /**
@@ -919,24 +898,67 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt div(final BigInt d) {
     if (isZero())
-      return assertZeroSignum();
-
-//    final int newSignum;
-//    if (d.len == 1) {
-//      newSignum = signum * d.signum;
-//    }
-//    else {
-//      final int c = compareAbsTo(val, len, d.val, d.len);
-//      if (c < 0)
-//        newSignum = 0;
-//      else if (c == 0)
-//        newSignum = 1;
-//      else
-//        newSignum = signum * d.signum;
-//    }
+      return this;
 
     val = BigDivision.div(val, d.val);
-    return assertZeroSignum();
+    return this;
+  }
+
+
+  /**
+   * Divides this number by an unsigned {@code int}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param d The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt udiv(final int d) {
+    if (isZero())
+      return this;
+
+    BigDivision.udiv(val, d);
+    return this;
+  }
+
+  /**
+   * Divides this number by an unsigned {@code long}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param d The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt udiv(final long d) {
+    if (isZero())
+      return this;
+
+    BigDivision.udiv(val, d, d >>> 32);
+    return this;
+  }
+
+  /**
+   * Sets this number to the remainder r satisfying q*div + r = this, where q =
+   * floor(this/div).
+   *
+   * @param d The number to use in the division causing the remainder.
+   * @complexity O(n^2)
+   */
+  public BigInt rem(final int d) {
+//    val = BigDivision.rem(val, d);
+    return this;
+  }
+
+  /**
+   * Sets this number to the remainder r satisfying q*div + r = this, where q =
+   * floor(this/div).
+   *
+   * @param d The number to use in the division causing the remainder.
+   * @complexity O(n^2)
+   */
+  public BigInt rem(final long d) {
+//    val = BigDivision.rem(val, d);
+    return this;
   }
 
   /**
@@ -948,7 +970,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt rem(final BigInt d) {
     val = BigDivision.rem(val, d.val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -975,7 +997,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt mod(final BigInt d) {
     val = BigDivision.mod(val, d.val);
-    return assertZeroSignum();
+    return this;
   }
 
   // Negative numbers are imagined in their two's complement form with infinite
@@ -992,7 +1014,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt shiftLeft(final int s) {
     val = BigBinary.shiftLeft(val, s);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1003,7 +1025,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt shiftRight(final int s) {
     val = BigBinary.shiftRight(val, s);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1032,7 +1054,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
     val = BigBinary.setBit(val, i);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1046,7 +1068,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
     val = BigBinary.clearBit(val, i);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1060,7 +1082,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
     val = BigBinary.flipBit(val, i);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1074,7 +1096,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return setToZero();
 
     val = BigBinary.and(val, mask.val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1091,7 +1113,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return assign(mask);
 
     val = BigBinary.or(val, mask.val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1108,7 +1130,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       return assign(mask);
 
     val = BigBinary.xor(val, mask.val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1119,7 +1141,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt andNot(final BigInt m) {
     val = BigBinary.andNot(val, m.val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1130,7 +1152,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   public BigInt not() {
     val = BigBinary.not(val);
-    return assertZeroSignum();
+    return this;
   }
 
   /**
@@ -1140,7 +1162,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   @Override
   public byte byteValue() {
-    return byteValue(val, 2, val[1]);
+    return byteValue(val, 1, val[0] >= 0);
   }
 
   /**
@@ -1150,7 +1172,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   @Override
   public short shortValue() {
-    return shortValue(val, 2, val[1]);
+    return shortValue(val, 1, val[0] >= 0);
   }
 
   /**
@@ -1160,7 +1182,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   @Override
   public int intValue() {
-    return intValue(val, 2);
+    return intValue(val, 1, val[0] >= 0);
   }
 
   /**
@@ -1170,7 +1192,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   @Override
   public long longValue() {
-    return longValue(val, 2, val[0], val[1]);
+    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
+    return longValue(val, 1, len + 1, signum);
   }
 
   /**
@@ -1184,7 +1207,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   @Override
   public float floatValue() {
-    return floatValue(val, 2, val[0], val[1]);
+    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
+    return floatValue(val, 1, len + 1, signum);
   }
 
   /**
@@ -1198,7 +1222,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    */
   @Override
   public double doubleValue() {
-    return doubleValue(val, 2, val[0], val[1]);
+    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
+    return doubleValue(val, 1, len + 1, signum);
   }
 
   /**
@@ -1267,19 +1292,19 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    *         {@link BigInt} that differ from its sign bit.
    */
   // FIXME: Implement "dirty" state
+  // FIXME: Move to static function
   public int bitCount() {
     int bits = 0;
     int i;
 
-    final int signum = val[1];
-    final int len = val[0];
+    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
     // Count the bits in the magnitude
-    for (i = 2; i < len; ++i)
+    for (i = 1; i <= len; ++i)
       bits += Integer.bitCount(val[i]);
 
     if (signum < 0) {
       // Count the trailing zeros in the magnitude
-      for (i = 2; i < len && val[i] == 0; ++i)
+      for (i = 1; i <= len && val[i] == 0; ++i)
         bits += 32;
 
       bits += Integer.numberOfTrailingZeros(val[i]) - 1;

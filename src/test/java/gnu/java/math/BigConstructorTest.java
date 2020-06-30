@@ -22,14 +22,9 @@ import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigConstructorTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   @Test
   public void testInt() {
-    testRange(
+    testRange("<init>(int)",
       i("BigInteger", (int a, int b) -> BigInteger.valueOf(a), String::valueOf),
       i("BigInt", (int a, int b) -> new BigInt(a), String::valueOf)
     );
@@ -37,15 +32,15 @@ public class BigConstructorTest extends AbstractTest {
 
   @Test
   public void testLong() {
-    testRange(
+    testRange("<init>(long)",
       l("BigInteger", (long a, long b) -> BigInteger.valueOf(a), String::valueOf),
       l("BigInt", (long a, long b) -> new BigInt(a), String::valueOf)
     );
   }
 
   @Test
-  public void testString() {
-    testRange(
+  public void testBig() {
+    testRange("<init>(String)",
       s("BigInteger", (String a, String b) -> new BigInteger(a), String::valueOf),
       s("BigInt", (String a, String b) -> new BigInt(a), String::valueOf)
     );

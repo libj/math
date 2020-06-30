@@ -19,6 +19,7 @@ package gnu.java.math;
 import static org.junit.Assert.*;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.Test;
@@ -70,8 +71,8 @@ public class BasicTest {
     assertEquals("Zero string2", "0", me.toString());
     byte[] littleEndian = {35, 47, 32, 45, 93, 0, 1, 0, 0, 0, 0, 0};
     byte[] bigEndian = {1, 0, 93, 45, 32, 47, 35};
-    assertEquals("Byte[] constructor", new BigInteger(1, bigEndian).toString(), new BigInt(1, 10, littleEndian).toString());
-    assertEquals("Byte[] 0 constructor", "0", new BigInt(1, 3, new byte[] {0, 0, 0}).toString());
+    assertEquals("Byte[] constructor", new BigInteger(1, bigEndian).toString(), new BigInt(1, littleEndian, 10).toString());
+    assertEquals("Byte[] 0 constructor", "0", new BigInt(1, new byte[] {0, 0, 0}).toString());
     // Add test case covering length-increase due to add in mulAdd().
   }
 
@@ -149,7 +150,7 @@ public class BasicTest {
     assertEquals("From 0 to -1", "-1", me.toString());
     me.mul(-16);
     assertEquals("From -1 to 16", "16", me.toString());
-    me.div(-4);
+    me.divRem(-4);
     assertEquals("From 16 to -4", "-4", me.toString());
   }
 
@@ -179,7 +180,7 @@ public class BasicTest {
     assertEquals("Mul2", facit.toString(), me.toString());
 
     facit = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
-    me = new BigInt(new int[] {6, 1, -1, -1, -1, -1});
+    me = new BigInt(new int[] {4, -1, -1, -1, -1});
     BigInteger ulong = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1});
     for (int i = 0; i < 256; i++) {
       facit = facit.multiply(ulong);
@@ -194,12 +195,12 @@ public class BasicTest {
     String t = "2374283475698324756873245832748";
     BigInteger facit = new BigInteger(s).divide(BigInteger.valueOf(1337));
     BigInt me = new BigInt(s);
-    me.udiv(1337);
+    me.udivRem(1337);
     assertEquals("Div ", facit.toString(), me.toString());
 
     facit = new BigInteger(s + t + s).divide(BigInteger.valueOf((1L << 32) - 1));
     me = new BigInt(s + t + s);
-    me.udiv(-1);
+    me.udivRem(-1);
     assertEquals("Div2 ", facit.toString(), me.toString());
 
     facit = new BigInteger(s).divide(new BigInteger(t));
@@ -226,16 +227,16 @@ public class BasicTest {
 
     final int[] m = {2, 2, 2, 2};
     final int[] n = {1, 2, 2, 2};
-    final int[][] u = {{4, 1, 0xfffe0000, 0x8000}, {4, 1, 0x00000003, 0x8000}, {4, 1, 0, 0x7fff8000}, {4, 1, 0xfffe0000, 0x80000000}};
-    final int[][] v = {{3, 1, 0x8000ffff}, {4, 1, 0x00000001, 0x2000}, {4, 1, 1, 0x8000}, {4, 1, 0xffff, 0x8000}};
-    final int[][] q = {{3, 1, 0xffff}, {3, 1, 0x0003}, {3, 1, 0xfffe}, {3, 1, 0xffff}};
-    final int[][] r = {{3, 1, 0x7fffffff}, {4, 1, 0, 0x2000}, {4, 1, 0xffff0002, 0x7fff}, {4, 1, 0xffffffff, 0x7fff}};
+    final int[][] u = {{2, 0xfffe0000, 0x8000}, {2, 0x00000003, 0x8000}, {2, 0, 0x7fff8000}, {2, 0xfffe0000, 0x80000000}};
+    final int[][] v = {{1, 0x8000ffff}, {2, 0x00000001, 0x2000}, {2, 1, 0x8000}, {2, 0xffff, 0x8000}};
+    final int[][] q = {{1, 0xffff}, {1, 0x0003}, {1, 0xfffe}, {1, 0xffff}};
+    final int[][] r = {{1, 0x7fffffff}, {2, 0, 0x2000}, {2, 0xffff0002, 0x7fff}, {2, 0xffffffff, 0x7fff}};
 
     for (int i = 0; i < 4; i++) {
       int[] x = u[i].clone();
-      x[0] = m[i] + 2;
+      x[0] = m[i];
       int[] y = v[i].clone();
-      y[0] = n[i] + 2;
+      y[0] = n[i];
       BigInt a = new BigInt(x), b = new BigInt(y);
       BigInt rem = a.divRem(b);
       x = q[i].clone();
@@ -257,22 +258,22 @@ public class BasicTest {
     facit = new BigInteger(s).remainder(new BigInteger(t));
     assertEquals("Rem shift-32 ", facit.toString(), rr.toString());
 
-    me = new BigInt(new int[] {6, 1, 0, 0, 0x80000000, 0x7fffffff});
-    tmp = new BigInt(new int[] {5, 1, 1, 0, 0x80000000});
+    me = new BigInt(new int[] {4, 0, 0, 0x80000000, 0x7fffffff});
+    tmp = new BigInt(new int[] {3, 1, 0, 0x80000000});
     BigInteger[] ans = new BigInteger(me.toString()).divideAndRemainder(new BigInteger(tmp.toString()));
     rr = me.divRem(tmp);
     assertEquals("Div addback ", ans[0].toString(), me.toString());
     assertEquals("Rem addback ", ans[1].toString(), rr.toString());
 
-    me = new BigInt(new int[] {5, 1, 0x0003, 0x0000, 0x80000000});
-    tmp = new BigInt(new int[] {5, 1, 0x0001, 0x0000, 0x20000000});
+    me = new BigInt(new int[] {3, 0x0003, 0x0000, 0x80000000});
+    tmp = new BigInt(new int[] {3, 0x0001, 0x0000, 0x20000000});
     ans = new BigInteger(me.toString()).divideAndRemainder(new BigInteger(tmp.toString()));
     rr = me.divRem(tmp);
     assertEquals("Div addback2 ", ans[0].toString(), me.toString());
     assertEquals("Rem addback2 ", ans[1].toString(), rr.toString());
 
-    me = new BigInt(new int[] {5, 1, 0x0000, 0xfffffffe, 0x80000000});
-    tmp = new BigInt(new int[] {4, 1, 0xffffffff, 0x80000000});
+    me = new BigInt(new int[] {3, 0x0000, 0xfffffffe, 0x80000000});
+    tmp = new BigInt(new int[] {2, 0xffffffff, 0x80000000});
     ans = new BigInteger(me.toString()).divideAndRemainder(new BigInteger(tmp.toString()));
     rr = me.divRem(tmp);
     assertEquals("Div qhat=b+1 ", ans[0].toString(), me.toString());
@@ -311,7 +312,7 @@ public class BasicTest {
 
   @Test
   public void longDivTest() { // Division test using long as parameter.
-    for (int i = 0; i < 100; i++) {// System.err.println(i+" divs");
+    for (int i = 0; i < 100; ++i) {// System.err.println(i+" divs");
       final char[] s = getRndNumber(1 + i * 10);
       BigInteger facit = new BigInteger(new String(s));
       final BigInt dividend = new BigInt(s);
@@ -319,19 +320,26 @@ public class BasicTest {
         final long d = rnd.nextLong();
         if (d == 0)
           continue;
+
         final byte[] div = new byte[8];
         long tmp = d;
-        for (int j = 7; j >= 0; j--, tmp >>>= 8)
+        for (int j = 7; j >= 0; --j, tmp >>>= 8)
           div[j] = (byte)(tmp & 0xFF);
+
         BigInteger prv = facit;
         facit = facit.divide(new BigInteger(1, div));
-        dividend.udiv(d);
+        dividend.udivRem(d);
+        if (!facit.toString().equals(dividend.toString())) {
+          final BigInt x = new BigInt(s);
+          x.udivRem(d);
+        }
+
         assertEquals("" + prv + "/" + d + "", facit.toString(), dividend.toString());
       }
     }
   }
 
-  private static char[] getRndNumber(final int len) {
+  static char[] getRndNumber(final int len) {
     final int sign = rnd.nextInt(2);
     final char[] num = new char[len + sign];
     if (sign > 0)
@@ -397,7 +405,7 @@ public class BasicTest {
     // Check udiv
     {
       BigInt p = new BigInt(104608886616216589L);
-      long r = p.udiv(104608886616125069L);
+      long r = p.udivRem(104608886616125069L);
       assertEquals("udiv", 91520L, r);
       assertEquals("udiv", "1", p.toString());
     }
@@ -455,21 +463,66 @@ public class BasicTest {
     for (int i = 0; i < 2048; i++) {
       char[] s = getRndNumber(1 + rnd.nextInt(100));
       int bit = rnd.nextInt(600);
+
       a.assign(s);
-      facit = new BigInteger(new String(s));
-      assertEquals("Random test", facit.testBit(bit), a.testBit(bit));
+
+      while (true) {
+        try {
+          facit = new BigInteger(new String(s));
+          assertEquals("Random test", facit.testBit(bit), a.testBit(bit));
+          break;
+        }
+        catch (final Throwable t) {
+        }
+      }
+
       bit = rnd.nextInt(600);
       facit = facit.setBit(bit);
-      a.setBit(bit);
-      assertEquals("Random set", facit.toString(), a.toString());
+      int[] x = a.val.clone();
+      while (true) {
+        try {
+          a.setBit(bit);
+          assertEquals("Random set", facit.toString(), a.toString());
+          break;
+        }
+        catch (final Throwable t) {
+          System.err.println(Arrays.toString(BigNumber.assign(null, facit.toString())));
+          System.err.println(Arrays.toString(BigNumber.assign(null, a.toString())));
+          a = new BigInt(x.clone());
+        }
+      }
+
       bit = rnd.nextInt(600);
       facit = facit.clearBit(bit);
-      a.clearBit(bit);
-      assertEquals("Random clear", facit.toString(), a.toString());
+      x = a.val.clone();
+      while (true) {
+        try {
+          a.clearBit(bit);
+          assertEquals("Random clear", facit.toString(), a.toString());
+          break;
+        }
+        catch (final Throwable t) {
+          System.err.println(Arrays.toString(BigNumber.assign(null, facit.toString())));
+          System.err.println(Arrays.toString(BigNumber.assign(null, a.toString())));
+          a = new BigInt(x.clone());
+        }
+      }
+
       bit = rnd.nextInt(600);
       facit = facit.flipBit(bit);
-      a.flipBit(bit);
-      assertEquals("Random flip", facit.toString(), a.toString());
+      x = a.val.clone();
+      while (true) {
+        try {
+          a.flipBit(bit);
+          assertEquals("Random flip", facit.toString(), a.toString());
+          break;
+        }
+        catch (final Throwable t) {
+          System.err.println(Arrays.toString(BigNumber.assign(null, facit.toString())));
+          System.err.println(Arrays.toString(BigNumber.assign(null, a.toString())));
+          a = new BigInt(x.clone());
+        }
+      }
     }
 
     BigInteger x = BigInteger.valueOf(-1);

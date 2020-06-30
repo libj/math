@@ -22,14 +22,9 @@ import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigAdditionTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   @Test
   public void testInt() {
-    testRange(
+    testRange("add(int)",
       i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
       i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf)
     );
@@ -37,15 +32,15 @@ public class BigAdditionTest extends AbstractTest {
 
   @Test
   public void testLong() {
-    testRange(
+    testRange("add(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
       l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf)
     );
   }
 
   @Test
-  public void testString() {
-    testRange(
+  public void testBig() {
+    testRange("add(String)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf)
     );

@@ -46,7 +46,7 @@ public class FastMathTest extends AbstractTest {
 
   @Test
   public void testDivideUnsignedLong() {
-    testRange(
+    testRange("divideUnsigned(long, long)",
       l("FastMath", (long a, long b) -> FastMath.divideUnsigned(a, b)),
       l("Long", (long a, long b) -> Long.divideUnsigned(a, b))
     );
@@ -54,7 +54,7 @@ public class FastMathTest extends AbstractTest {
 
   @Test
   public void testRemainderUnsignedLong() {
-    testRange(
+    testRange("remainderUnsigned(long, long)",
       l("FastMath", (long a, long b) -> FastMath.remainderUnsigned(a, b)),
       l("Long", (long a, long b) -> Long.remainderUnsigned(a, b))
     );

@@ -22,14 +22,9 @@ import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigMultiplicationTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   @Test
   public void testInt() {
-    testRange(
+    testRange("mul(int)",
       i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf)
     );
@@ -37,7 +32,7 @@ public class BigMultiplicationTest extends AbstractTest {
 
   @Test
   public void testLong() {
-    testRange(
+    testRange("mul(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf)
     );
@@ -45,8 +40,8 @@ public class BigMultiplicationTest extends AbstractTest {
 
   // FIXME: BigInteger is faster.
   @Test
-  public void testString() {
-    testRange(
+  public void testBig() {
+    testRange("mul(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf)
     );
@@ -57,7 +52,7 @@ public class BigMultiplicationTest extends AbstractTest {
     final int[] zds = new int[4];
     final int[] x = new int[4];
     final int[] y = new int[1];
-    testRange(
+    testRange("umul(int[],int[])",
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
@@ -85,7 +80,7 @@ public class BigMultiplicationTest extends AbstractTest {
     final int[] zds = new int[4];
     final int[] x = new int[4];
     final int[] y = new int[2];
-    testRange(
+    testRange("umul(long[],long[])",
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);

@@ -71,6 +71,29 @@ public final class BigIntegers {
     return instance != null ? instance : n;
   }
 
+  /**
+   * Return a BigInteger equal to the unsigned value of the
+   * argument.
+   */
+  public static BigInteger toUnsigned(final int v) {
+    return BigInteger.valueOf(Integer.toUnsignedLong(v));
+  }
+
+  /**
+   * Return a BigInteger equal to the unsigned value of the
+   * argument.
+   */
+  public static BigInteger toUnsigned(final long v) {
+    if (v >= 0L)
+      return BigInteger.valueOf(v);
+
+    final int upper = (int)(v >>> 32);
+    final int lower = (int)v;
+
+    // return (upper << 32) + lower
+    return BigInteger.valueOf(Integer.toUnsignedLong(upper)).shiftLeft(32).add(BigInteger.valueOf(Integer.toUnsignedLong(lower)));
+  }
+
   private BigIntegers() {
   }
 }

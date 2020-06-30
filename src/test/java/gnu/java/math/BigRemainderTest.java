@@ -18,48 +18,58 @@ package gnu.java.math;
 
 import java.math.BigInteger;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.libj.math.AbstractTest;
 
 public class BigRemainderTest extends AbstractTest {
-  @Override
-  public double rangeCoverage() {
-    return 0.00000000008;
-  }
-
   @Test
-  public void testInt() {
-    testRange(
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> b == 0 ? 0 : a.div(b), String::valueOf)
+  @Ignore
+  public void testRemInt() {
+    testRange("rem(T)",
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> b == 0 ? 0 : a.rem(b), String::valueOf)
     );
   }
 
   @Test
-  public void testLong() {
-    testRange(
-      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> b == 0 ? 0 : a.div(b), String::valueOf)
+  @Ignore
+  public void testRemLong() {
+    testRange("rem(T)",
+      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> b == 0 ? 0 : a.rem(b), String::valueOf)
     );
   }
 
-  // FIXME: BigInteger is faster.
   @Test
-  public void testDivRem() {
-    testRange(
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.divRem(b), String::valueOf)
-    );
-  }
-
-  // FIXME: BigInteger is faster.
-  @Test
-  public void testString() {
-    testRange(
+  public void testRemBig() {
+    testRange("rem(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.rem(b), String::valueOf)
     );
   }
 
-  // FIXME: Add tests for urem
+  @Test
+  public void testDivRemInt() {
+    testRange("divRem(int)",
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> b == 0 ? 0 : a.divRem(b), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testDivRemLong() {
+    testRange("divRem(long)",
+      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b).longValue(), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> b == 0 ? 0 : a.divRem(b), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testDivRemBig() {
+    testRange("divRem(T)",
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.remainder(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> b.isZero() ? 0 : a.divRem(b), String::valueOf)
+    );
+  }
 }
