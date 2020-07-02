@@ -20,15 +20,23 @@ package gnu.java.math;
 abstract class BigDivision extends BigMultiplication {
   private static final long serialVersionUID = -4156041218135948540L;
 
-  public static int rem(final int[] val, final int signum, int mod) {
-    int signum1, len = val[0]; if (len < 0) { len = -len; signum1 = -1; } else { signum1 = 1; }
-    val[1] = mod = urem(val, 1, len, mod);
-    val[0] = val[1] == 0 ? 0 : signum1;
-    _debugLenSig(val);
-    return mod;
+  // FIXME: Implement this
+  public static void rem(final int[] val, final int mod) {
   }
 
-  public static int urem(final int[] mag, final int off, final int len, final int mod) {
+  public static void rem(final int[] val, final int sig, final int mod) {
+    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    val[1] = rem(val, 1, len, sig, mod);
+    val[0] = val[1] == 0 ? 0 : signum;
+    _debugLenSig(val);
+  }
+
+  // FIXME: Implement this
+  public static int rem(final int[] mag, final int off, final int len, final int mod) {
+    return 0;
+  }
+
+  public static int rem(final int[] mag, final int off, final int len, final int sig, final int mod) {
     final int toIndex = len + off - 1;
     long r = 0;
     if (mod < 0) {
@@ -62,10 +70,16 @@ abstract class BigDivision extends BigMultiplication {
     return (int)r;
   }
 
-  public static long rem(final int[] val, final int signum, long mod) {
+  // FIXME: Implement this
+  public static void rem(final int[] val, long mod) {
+  }
+
+  public static void rem(final int[] val, final int sig, long mod) {
     long modh = mod >>> 32;
-    if (modh == 0)
-      return rem(val, 1, (int)mod);
+    if (modh == 0) {
+      rem(val, sig, (int)mod);
+      return;
+    }
 
     final boolean signum1 = val[0] >= 0;
     mod = udiv(val, mod, modh);
@@ -80,7 +94,16 @@ abstract class BigDivision extends BigMultiplication {
     }
 
     _debugLenSig(val);
-    return mod;
+  }
+
+  // FIXME: Implement this
+  public static int rem(final int[] mag, final int off, final int len, final long mod) {
+    return 0;
+  }
+
+  // FIXME: Implement this
+  public static long rem(final int[] mag, final int off, final int len, final int sig, final long mod) {
+    return 0;
   }
 
   /**
@@ -97,8 +120,8 @@ abstract class BigDivision extends BigMultiplication {
    */
   // FIXME: Javadoc: Assumes div > 0.
   public static int udiv(final int[] val, final int d) {
-    int[] val$ = to$(val);
-    final long x = udiv$(val$, d);
+//    int[] val$ = to$(val);
+//    final long x = udiv$(val$, d);
 
     int len = val[0]; if (len < 0) { len = -len; }
     long r = 0;
