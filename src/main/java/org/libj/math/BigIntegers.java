@@ -75,22 +75,36 @@ public final class BigIntegers {
    * Return a BigInteger equal to the unsigned value of the
    * argument.
    */
-  public static BigInteger toUnsigned(final int v) {
-    return BigInteger.valueOf(Integer.toUnsignedLong(v));
+  public static BigInteger valueOf(final int signum, final int v) {
+    final long signed = Integer.toUnsignedLong(v);
+    return BigInteger.valueOf(signum < 0 ? -signed : signed);
   }
 
   /**
    * Return a BigInteger equal to the unsigned value of the
    * argument.
    */
-  public static BigInteger toUnsigned(final long v) {
-    if (v >= 0L)
-      return BigInteger.valueOf(v);
+  public static BigInteger valueOf(final int signum, final long v) {
+    if (signum < -1 || signum > 1)
+      throw new NumberFormatException("Invalid signum value");
 
+    if (signum == 0) {
+      if (v != 0)
+        throw new NumberFormatException("signum-magnitude mismatch");
+
+      return BigInteger.ZERO;
+    }
+
+    if (v >= 0L)
+      return BigInteger.valueOf(signum == -1 ? -v : v);
+
+    // (upper << 32) + lower
     final int upper = (int)(v >>> 32);
     final int lower = (int)v;
 
-    // return (upper << 32) + lower
+    if (signum == -1)
+      return BigInteger.valueOf(-Integer.toUnsignedLong(upper)).shiftLeft(32).add(BigInteger.valueOf(-Integer.toUnsignedLong(lower)));
+
     return BigInteger.valueOf(Integer.toUnsignedLong(upper)).shiftLeft(32).add(BigInteger.valueOf(Integer.toUnsignedLong(lower)));
   }
 

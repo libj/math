@@ -22,6 +22,8 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
+import gnu.java.math.BigInt;
+
 public class BigIntegersTest extends AbstractTest {
   @Test
   public void testInternBigInteger() {
@@ -61,12 +63,35 @@ public class BigIntegersTest extends AbstractTest {
     return b;
   }
 
-  // FIXME: BigInteger is faster.
+  public static byte[] toByteArray(int v) {
+    final byte[] b = new byte[4];
+    for (int j = 3; j >= 0; --j, v >>>= 8)
+      b[j] = (byte)(v & 0xFF);
+
+    return b;
+  }
+
   @Test
-  public void testUnsignedBigInteger() {
-    testRange("unsigned BigInteger via byte[] vs shift",
-      l("byte[]", (long a, long b) -> new BigInteger(1, toByteArray(a)), String::valueOf),
-      l("shift", (long a, long b) -> BigIntegers.toUnsigned(a), String::valueOf)
+  public void testUnsignedBigIntegerInt() {
+    testRange("new unsigned BigInteger: byte[] vs shift",
+      i("byte[]", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> new BigInteger(a, toByteArray(b)), String::valueOf),
+      i("shift", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigIntegers.valueOf(a, b), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testUnsignedBigIntegerLong() {
+    testRange("new unsigned BigInteger: byte[] vs shift",
+      l ("byte[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInteger((int)a, toByteArray(b)), String::valueOf),
+      l("shift", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testUnsignedBigInteger2() {
+    testRange("signum * value: '*' vs '? :'",
+      l("s * v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a * b),
+      l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
     );
   }
 }

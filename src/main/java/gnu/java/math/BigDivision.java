@@ -20,8 +20,16 @@ package gnu.java.math;
 abstract class BigDivision extends BigMultiplication {
   private static final long serialVersionUID = -4156041218135948540L;
 
-  public static long urem(final int[] val, final int mod) {
-    int len = val[0]; if (len < 0) { len = -len; }
+  public static int rem(final int[] val, final int signum, int mod) {
+    int signum1, len = val[0]; if (len < 0) { len = -len; signum1 = -1; } else { signum1 = 1; }
+    val[1] = mod = urem(val, 1, len, mod);
+    val[0] = val[1] == 0 ? 0 : signum1;
+    _debugLenSig(val);
+    return mod;
+  }
+
+  public static int urem(final int[] mag, final int off, final int len, final int mod) {
+    final int toIndex = len + off - 1;
     long r = 0;
     if (mod < 0) {
       final long d = mod & LONG_INT_MASK;
@@ -32,8 +40,8 @@ abstract class BigDivision extends BigMultiplication {
       if (++hrem == d)
         hrem = 0;
 
-      for (int i = len; i >= 1; --i) {
-        r = (r << 32) + (val[i] & LONG_INT_MASK);
+      for (int i = toIndex; i >= off; --i) {
+        r = (r << 32) + (mag[i] & LONG_INT_MASK);
         // Calculate rem %= d.
         // Do this by calculating the lower 63 bits and highest bit separately.
         // The highest bit remainder only gets added if it's set.
@@ -44,28 +52,35 @@ abstract class BigDivision extends BigMultiplication {
       }
     }
     else {
-      long d = mod & LONG_INT_MASK;
-      for (int i = len; i >= 1; --i) {
+      final long d = mod & LONG_INT_MASK;
+      for (int i = toIndex; i >= off; --i) {
         r <<= 32;
-        r = (r + (val[i] & LONG_INT_MASK)) % d;
+        r = (r + (mag[i] & LONG_INT_MASK)) % d;
       }
     }
 
-    return r;
+    return (int)r;
   }
 
-  public static void urem(final int[] val, final long mod) {
-    final long rem = udiv(val, mod, mod >>> 32);
-    val[1] = (int)rem;
-    if (rem == (rem & LONG_INT_MASK)) {
-      val[0] = val[0] < 0 ? -1 : 1;
+  public static long rem(final int[] val, final int signum, long mod) {
+    long modh = mod >>> 32;
+    if (modh == 0)
+      return rem(val, 1, (int)mod);
+
+    final boolean signum1 = val[0] >= 0;
+    mod = udiv(val, mod, modh);
+    modh = mod >>> 32;
+    val[1] = (int)mod;
+    if (modh == 0) {
+      val[0] = mod == 0 ? 0 : signum1 ? 1 : -1;
     }
     else {
-      val[0] = val[0] < 0 ? -2 : 2;
-      val[2] = (int)(rem >>> 32);
+      val[0] = signum1 ? 2 : -2;
+      val[2] = (int)(modh);
     }
 
     _debugLenSig(val);
+    return mod;
   }
 
   /**
@@ -199,8 +214,8 @@ abstract class BigDivision extends BigMultiplication {
     if (d == (d & LONG_INT_MASK))
       return udiv(val, (int)d) & LONG_INT_MASK;
 
-    int[] val$ = to$(val);
-    final long x = udiv$(val$, d, dh);
+//    int[] val$ = to$(val);
+//    final long x = udiv$(val$, d, dh);
 
     int len = val[0]; if (len < 0) { len = -len; }
     if (len <= 1) {
@@ -521,7 +536,7 @@ abstract class BigDivision extends BigMultiplication {
     int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
 
     if (len2 <= 1) {
-      val1[1] = (int)urem(val1, val2[1]);
+      rem(val1, 1, val2[1]);
       val1[0] = val1[1] == 0 ? 0 : val1[0] < 0 ? -1 : 1;
     }
     else {

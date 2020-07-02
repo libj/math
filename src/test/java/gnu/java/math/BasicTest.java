@@ -286,12 +286,12 @@ public class BasicTest {
     String t = "2374283475698324756873245832748";
     BigInteger facit = new BigInteger(s).remainder(BigInteger.valueOf(1337));
     BigInt me = new BigInt(s);
-    me.urem(1337);
+    me.rem(1, 1337);
     assertEquals("Rem ", facit.toString(), me.toString());
 
     facit = new BigInteger(s + t + s).remainder(BigInteger.valueOf((1L << 32) - 1));
     me = new BigInt(s + t + s);
-    me.urem(-1);
+    me.rem(1, -1);
     assertEquals("Rem2 ", facit.toString(), me.toString());
 
     facit = new BigInteger(s).remainder(new BigInteger(t));

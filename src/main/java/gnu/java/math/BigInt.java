@@ -463,6 +463,11 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt umul0(final int m) {
+    val = umul0(val, m);
+    return this;
+  }
+
+  private static int[] umul0(int[] val, final int m) {
     int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
     if (len + 1 >= val.length)
       val = realloc(val);
@@ -472,7 +477,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       val[0] = -val[0];
 
     _debugLenSig(val);
-    return this;
+    return val;
   }
 
   /**
@@ -491,6 +496,11 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt umul0(final long ml, final long mh) {
+    val = umul0(val, ml, mh);
+    return this;
+  }
+
+  public static int[] umul0(int[] val, final long ml, final long mh) {
     boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
     ++len;
     if (len + 1 >= val.length)
@@ -501,7 +511,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
       val[0] = -val[0];
 
     _debugLenSig(val);
-    return this;
+    return val;
   }
 
   /**
@@ -554,10 +564,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @param m The amount by which to modulo (unsigned).
    * @complexity O(n)
    */
-  public BigInt urem(final int m) {
-    val[1] = (int)BigDivision.urem(val, m);
-    val[0] = 1; // FIXME: Can this be put into BigDivision#urem(...)?
-    _debugLenSig(val);
+  public BigInt rem(final int signum, final int m) {
+    BigDivision.rem(val, signum, m);
     return this;
   }
 
@@ -565,11 +573,11 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * Applies the modulus of this number by an unsigned {@code long} (i.e.
    * {@code this = (this % mod)}).
    *
-   * @param mod The amount by which to modulo (unsigned).
+   * @param m The amount by which to modulo (unsigned).
    * @complexity O(n)
    */
-  public BigInt urem(final long mod) {
-    BigDivision.urem(val, mod);
+  public BigInt rem(final int signum, final long m) {
+    BigDivision.rem(val, signum, m);
     return this;
   }
 
@@ -735,26 +743,31 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt mul(long m) {
-    if (m == 0)
-      return setToZero();
+    val = mul(val, m);
+    return this;
+  }
 
-    if (isZero())
-      return this;
+  public static int[] mul(final int[] val, long m) {
+    if (m == 0)
+      return setToZero(val);
+
+    if (isZero(val))
+      return val;
 
     final long mh = m >>> 32;
     if (mh == 0)
-      return umul0((int)m);
+      return umul0(val, (int)m);
 
     final long ml = m & LONG_INT_MASK;
     if (m > 0)
-      return umul0(ml, mh);
+      return umul0(val, ml, mh);
 
     val[0] = -val[0];
     if (m == Long.MIN_VALUE)
-      return umul0(ml, mh); // FIXME: Is this actually happening?
+      return umul0(val, ml, mh); // FIXME: Is this actually happening?
 
     m = -m;
-    return umul0(m & LONG_INT_MASK, m >>> 32);
+    return umul0(val, m & LONG_INT_MASK, m >>> 32);
   }
 
   /**

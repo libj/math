@@ -35,6 +35,8 @@ import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;
 import org.libj.util.function.BiLongToLongFunction;
 import org.libj.util.function.BiObjToLongFunction;
+import org.libj.util.function.IntToIntFunction;
+import org.libj.util.function.LongToLongFunction;
 import org.libj.util.function.ObjIntFunction;
 import org.libj.util.function.ObjIntToIntFunction;
 import org.libj.util.function.ObjLongFunction;
@@ -80,6 +82,20 @@ public abstract class AbstractTest {
 
   private static BigInt newBigInt() {
     return shouldInflate ? new BigInt(new int[random.nextInt(1024) + 1]) : new BigInt(0);
+  }
+
+  private static int[] newVal(final int size) {
+    return shouldInflate ? new int[random.nextInt(1024) + 1] : new int[size];
+  }
+
+  public int[] scaledVal(final int a) {
+    final int[] b = BigInt.assign(newVal(2), a);
+    return shoudlScale ? BigInt.mul(b, intScale()) : b;
+  }
+
+  public int[] scaledVal(final long a) {
+    final int[] b = BigInt.assign(newVal(2), a);
+    return shoudlScale ? BigInt.mul(b, intScale()) : b;
   }
 
   public BigInt scaledBigInt(final int a) {
@@ -208,12 +224,16 @@ public abstract class AbstractTest {
             assertEquals(message.append('\n').toString(), previous, o);
           }
         }
-
-        if (++count > 0)
-          times[c] += time;
       }
 
+      times[c] += time;
       previous = o;
+    }
+
+    void onSuccess(final AbstractTest abstractTest, final Long[] times) {
+      abstractTest.onSuccess();
+      if (++count < 0)
+        Arrays.fill(times, 0L);
     }
   }
 
@@ -222,10 +242,16 @@ public abstract class AbstractTest {
     private static final int NUM_RANDOM = 4000000;
     private final int[] inputs = {0, 0};
 
-    final IntFunction<A> aToA;
+    final Object aToA;
     final Object bToB;
 
     IntCase(final String name, final IntFunction<A> aToA, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+      super(name, test, out);
+      this.aToA = aToA;
+      this.bToB = null;
+    }
+
+    IntCase(final String name, final IntToIntFunction aToA, final BiIntFunction<R> test, final Function<R,O> out) {
       super(name, test, out);
       this.aToA = aToA;
       this.bToB = null;
@@ -282,13 +308,16 @@ public abstract class AbstractTest {
           long time;
           final IntCase intCase = (IntCase)cse;
           if (cse.test instanceof BiIntFunction) {
+            if (intCase.aToA != null)
+              a = ((IntToIntFunction)intCase.aToA).applyAsInt(a);
+
             final BiIntFunction test = (BiIntFunction)cse.test;
 
             time = System.nanoTime();
             t = test.apply(a, b);
           }
           else {
-            final Object a0 = intCase.aToA == null ? Integer.valueOf(a) : intCase.aToA.apply(a);
+            final Object a0 = intCase.aToA == null ? Integer.valueOf(a) : ((IntFunction)intCase.aToA).apply(a);
             if (cse.test instanceof ObjIntFunction) {
               final ObjIntFunction test = (ObjIntFunction)cse.test;
               if (intCase.bToB != null)
@@ -315,7 +344,7 @@ public abstract class AbstractTest {
         }
       }
 
-      abstractTest.onSuccess();
+      onSuccess(abstractTest, times);
     }
   }
 
@@ -324,10 +353,10 @@ public abstract class AbstractTest {
     private static final int NUM_RANDOM = 3000000;
     private final long[] inputs = {0, 0};
 
-    final LongFunction<A> aToA;
+    final Object aToA;
     final Object bToB;
 
-    LongCase(final String name, final LongFunction<A> aToA, final BiLongToLongFunction test, final Function<R,O> out) {
+    LongCase(final String name, final Object aToA, final BiLongToLongFunction test, final Function<R,O> out) {
       super(name, test, out);
       this.aToA = aToA;
       this.bToB = null;
@@ -339,9 +368,9 @@ public abstract class AbstractTest {
       this.bToB = null;
     }
 
-    LongCase(final String name, final BiLongFunction<R> test, final Function<R,O> out) {
+    LongCase(final String name, final Object aToA, final BiLongFunction<R> test, final Function<R,O> out) {
       super(name, test, out);
-      this.aToA = null;
+      this.aToA = aToA;
       this.bToB = null;
     }
 
@@ -384,25 +413,31 @@ public abstract class AbstractTest {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
-          final long a = inputs[0];
+          long a = inputs[0];
           long b = inputs[1];
           final Object t;
           long time;
           final LongCase longCase = (LongCase)cse;
           if (cse.test instanceof BiLongToLongFunction) {
+            if (longCase.aToA != null)
+              a = ((LongToLongFunction)longCase.aToA).applyAsLong(a);
+
             final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
 
             time = System.nanoTime();
             t = test.applyAsLong(a, b);
           }
           else if (cse.test instanceof BiLongFunction) {
+            if (longCase.aToA != null)
+              a = ((LongToLongFunction)longCase.aToA).applyAsLong(a);
+
             final BiLongFunction test = (BiLongFunction)cse.test;
 
             time = System.nanoTime();
             t = test.apply(a, b);
           }
           else {
-            final Object a0 = longCase.aToA == null ? a : longCase.aToA.apply(a);
+            final Object a0 = longCase.aToA == null ? a : ((LongFunction)longCase.aToA).apply(a);
             if (cse.test instanceof ObjLongFunction) {
               final ObjLongFunction test = (ObjLongFunction)cse.test;
               if (longCase.bToB != null)
@@ -429,7 +464,7 @@ public abstract class AbstractTest {
         }
       }
 
-      abstractTest.onSuccess();
+      onSuccess(abstractTest, times);
     }
   }
 
@@ -512,7 +547,7 @@ public abstract class AbstractTest {
         }
       }
 
-      abstractTest.onSuccess();
+      onSuccess(abstractTest, times);
     }
   }
 
@@ -534,6 +569,10 @@ public abstract class AbstractTest {
     return new IntCase<>(name, aToA, test, out);
   }
 
+  public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntToIntFunction aToA, final BiIntFunction<R> test, final Function<R,O> out) {
+    return new IntCase<>(name, aToA, test, out);
+  }
+
   public static <R,O>IntCase<Integer,Integer,R,O> i(final String name, final BiIntFunction<R> test, final Function<R,O> out) {
     return new IntCase<>(name, test, out);
   }
@@ -543,7 +582,11 @@ public abstract class AbstractTest {
   }
 
   public static <R,O>LongCase<Long,Long,R,O> l(final String name, final BiLongFunction<R> test, final Function<R,O> out) {
-    return new LongCase<>(name, test, out);
+    return new LongCase<>(name, null, test, out);
+  }
+
+  public static <R,O>LongCase<Long,Long,R,O> l(final String name, final LongToLongFunction aToA, final BiLongFunction<R> test, final Function<R,O> out) {
+    return new LongCase<>(name, aToA, test, out);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final ObjLongToLongFunction<A> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
@@ -552,6 +595,14 @@ public abstract class AbstractTest {
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final ObjLongFunction<A,R> test, final Function<R,O> out) {
     return new LongCase<>(name, aToA, test, out);
+  }
+
+  public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongToLongFunction aToA, final BiLongToLongFunction test, final Function<R,O> out) {
+    return new LongCase<>(name, aToA, test, out);
+  }
+
+  public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongToLongFunction aToA, final BiLongToLongFunction test) {
+    return new LongCase<>(name, aToA, test, null);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final BiLongToLongFunction test) {
@@ -598,10 +649,9 @@ public abstract class AbstractTest {
     prototype.test(this, label, cases, times);
     ts = System.currentTimeMillis() - ts;
 
-    if (prototype.count > 0) {
-      times[0] /= prototype.count;
-      times[1] /= prototype.count;
-    }
+    if (prototype.count > 0)
+      for (int i = 0; i < cases.length; ++i)
+        times[i] /= prototype.count;
 
     print(label, prototype.count, ts, times, headings);
   }
@@ -615,17 +665,17 @@ public abstract class AbstractTest {
   }
 
   private static void print(final String label, final int count, final long ts, final Long[] times, final String ... headings) {
-    int min = 0;
+    long min = Long.MAX_VALUE;
     for (int i = 0; i < times.length; ++i)
-      if (times[i] < times[min])
-        min = i;
+      if (times[i] < min)
+        min = times[i];
 
     final String[] strings = new String[times.length];
     for (int i = 0; i < times.length; ++i) {
       strings[i] = String.valueOf(times[i]);
-      if (i == min)
+      if (times[i] == min)
         strings[i] = Ansi.apply(strings[i], Intensity.BOLD, Color.GREEN);
-      else if (i == times.length - 1)
+      else if (times.length > 2 ? i >= times.length - 2 : i >= times.length - 1)
         strings[i] = Ansi.apply(strings[i], Intensity.BOLD, Color.RED);
     }
 
