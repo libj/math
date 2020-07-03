@@ -48,7 +48,7 @@ abstract class DecimalDivision extends FixedPoint {
     final long divisorHigh = v2 >>> 32;
     long remainder;
     if (divisorHigh == 0)
-      remainder = BigInt.udiv(q, 0, 3, (int)v2);
+      remainder = BigInt.div(q, 0, 3, (int)v2);
     else
       remainder = BigInt.udiv(q, 0, 4, v2, divisorHigh);
 

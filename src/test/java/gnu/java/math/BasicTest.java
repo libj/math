@@ -150,7 +150,7 @@ public class BasicTest {
     assertEquals("From 0 to -1", "-1", me.toString());
     me.mul(-16);
     assertEquals("From -1 to 16", "16", me.toString());
-    me.divRem(-4);
+    me.divRem(1, -4);
     assertEquals("From 16 to -4", "-4", me.toString());
   }
 
@@ -195,12 +195,12 @@ public class BasicTest {
     String t = "2374283475698324756873245832748";
     BigInteger facit = new BigInteger(s).divide(BigInteger.valueOf(1337));
     BigInt me = new BigInt(s);
-    me.udivRem(1337);
+    me.udivRem(1, 1337);
     assertEquals("Div ", facit.toString(), me.toString());
 
     facit = new BigInteger(s + t + s).divide(BigInteger.valueOf((1L << 32) - 1));
     me = new BigInt(s + t + s);
-    me.udivRem(-1);
+    me.udivRem(1, -1);
     assertEquals("Div2 ", facit.toString(), me.toString());
 
     facit = new BigInteger(s).divide(new BigInteger(t));
@@ -328,10 +328,10 @@ public class BasicTest {
 
         BigInteger prv = facit;
         facit = facit.divide(new BigInteger(1, div));
-        dividend.udivRem(d);
+        dividend.udivRem(1, d);
         if (!facit.toString().equals(dividend.toString())) {
           final BigInt x = new BigInt(s);
-          x.udivRem(d);
+          x.udivRem(1, d);
         }
 
         assertEquals("" + prv + "/" + d + "", facit.toString(), dividend.toString());
@@ -405,7 +405,7 @@ public class BasicTest {
     // Check udiv
     {
       BigInt p = new BigInt(104608886616216589L);
-      long r = p.udivRem(104608886616125069L);
+      long r = p.udivRem(1, 104608886616125069L);
       assertEquals("udiv", 91520L, r);
       assertEquals("udiv", "1", p.toString());
     }

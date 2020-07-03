@@ -532,53 +532,29 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * Divides this number with an unsigned {@code int} and returns the unsigned
    * remainder.
    *
-   * @param d The amount by which to divide (unsigned).
+   * @param div The amount by which to divide (unsigned).
    * @return The absolute value of the remainder as an unsigned int.
    * @complexity O(n)
    */
-  public int udivRem(final int d) {
-    return isZero() ? 0 : BigDivision.udiv(val, d);
+  public int udivRem(final int sig, final int div) {
+    return isZero() ? 0 : BigDivision.div(val, sig, div);
   }
 
   /**
    * Divides this number with an unsigned {@code long} and returns the
    * remainder.
    *
-   * @param d The amount by which to divide (unsigned).
+   * @param div The amount by which to divide (unsigned).
    * @return The absolute value of the remainder as an unsigned long.
    * @complexity O(n)
    */
-  public long udivRem(final long d) {
-    return isZero() ? 0 : udiv0(d);
+  public long udivRem(final int sig, final long div) {
+    return isZero() ? 0 : udiv0(sig, div);
   }
 
-  private long udiv0(final long d) {
-    final long dh = d >>> 32;
-    return dh == 0 ? udivRem((int)d) & LONG_INT_MASK : BigDivision.udiv(val, d, dh);
-  }
-
-  /**
-   * Applies the modulus of this number by an unsigned {@code int} (i.e.
-   * {@code this = (this % mod)}).
-   *
-   * @param m The amount by which to modulo (unsigned).
-   * @complexity O(n)
-   */
-  public BigInt rem(final int signum, final int m) {
-    BigDivision.rem(val, signum, m);
-    return this;
-  }
-
-  /**
-   * Applies the modulus of this number by an unsigned {@code long} (i.e.
-   * {@code this = (this % mod)}).
-   *
-   * @param m The amount by which to modulo (unsigned).
-   * @complexity O(n)
-   */
-  public BigInt rem(final int signum, final long m) {
-    BigDivision.rem(val, signum, m);
-    return this;
+  private long udiv0(final int sig, final long div) {
+    final long divh = div >>> 32;
+    return divh == 0 ? udivRem(sig, (int)div) & LONG_INT_MASK : BigDivision.div(val, sig, div, divh);
   }
 
   /**
@@ -798,21 +774,21 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    * @return The signed remainder.
    */
-  public int divRem(final int d) {
+  public int divRem(final int sig, final int d) {
     if (isZero())
       return 0;
 
     final boolean signum = val[0] >= 0;
     final int r;
     if (d >= 0) {
-      r = BigDivision.udiv(val, d);
+      r = BigDivision.div(val, sig, d);
     }
     else {
       val[0] = -val[0];
       if (d == Integer.MIN_VALUE)
-        r = (int)udivRem(-(long)d);
+        r = (int)udivRem(sig, -(long)d);
       else
-        r = BigDivision.udiv(val, -d);
+        r = BigDivision.div(val, sig, -d);
     }
 
     return signum ? r : -r;
@@ -825,14 +801,14 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    * @return The signed remainder.
    */
-  public long divRem(final long d) {
+  public long divRem(final int sig, final long d) {
     if (isZero())
       return 0;
 
     boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
     final long dh = d >>> 32;
     if (dh == 0) {
-      long r = BigDivision.udiv(val, (int)d);
+      long r = BigDivision.div(val, sig, (int)d);
       if (r >= 0 != signum)
         r = -r;
 
@@ -841,7 +817,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
 
     final long r;
     if (d > 0) {
-      r = BigDivision.udiv(val, d, dh);
+      r = BigDivision.div(val, sig, d, dh);
     }
     else if (d == Long.MIN_VALUE) {
       if (len <= 1) {
@@ -862,7 +838,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     }
     else {
       val[0] = -val[0];
-      r = udiv0(-d);
+      r = udiv0(sig, -d);
       // FIXME: Assert the result of the division (not just the remainder) is correct! There may be a sign issue here.
     }
 
@@ -906,14 +882,14 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * <p>
    * Division by zero is undefined.
    *
-   * @param d The number by which to divide.
+   * @param div The number by which to divide.
    * @complexity O(n^2)
    */
-  public BigInt div(final BigInt d) {
+  public BigInt div(final BigInt div) {
     if (isZero())
       return this;
 
-    val = BigDivision.div(val, d.val);
+    val = BigDivision.div(val, div.val);
     return this;
   }
 
@@ -923,14 +899,14 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * <p>
    * Division by zero is undefined.
    *
-   * @param d The number by which to divide.
+   * @param div The number by which to divide.
    * @complexity O(n^2)
    */
-  public BigInt udiv(final int d) {
+  public BigInt div(final int sig, final int div) {
     if (isZero())
       return this;
 
-    BigDivision.udiv(val, d);
+    BigDivision.div(val, sig, div);
     return this;
   }
 
@@ -939,14 +915,14 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * <p>
    * Division by zero is undefined.
    *
-   * @param d The number by which to divide.
+   * @param div The number by which to divide.
    * @complexity O(n^2)
    */
-  public BigInt udiv(final long d) {
+  public BigInt div(final int sig, final long div) {
     if (isZero())
       return this;
 
-    BigDivision.udiv(val, d, d >>> 32);
+    BigDivision.div(val, sig, div);
     return this;
   }
 
@@ -958,7 +934,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt rem(final int d) {
-//    val = BigDivision.rem(val, d);
+    BigDivision.rem(val, d);
     return this;
   }
 
@@ -970,7 +946,31 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt rem(final long d) {
-//    val = BigDivision.rem(val, d);
+    BigDivision.rem(val, d);
+    return this;
+  }
+
+  /**
+   * Applies the modulus of this number by an unsigned {@code int} (i.e.
+   * {@code this = (this % mod)}).
+   *
+   * @param m The amount by which to modulo (unsigned).
+   * @complexity O(n)
+   */
+  public BigInt rem(final int signum, final int m) {
+    BigDivision.rem(val, signum, m);
+    return this;
+  }
+
+  /**
+   * Applies the modulus of this number by an unsigned {@code long} (i.e.
+   * {@code this = (this % mod)}).
+   *
+   * @param m The amount by which to modulo (unsigned).
+   * @complexity O(n)
+   */
+  public BigInt rem(final int signum, final long m) {
+    BigDivision.rem(val, signum, m);
     return this;
   }
 

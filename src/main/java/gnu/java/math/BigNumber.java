@@ -484,6 +484,14 @@ abstract class BigNumber extends Number {
     return r;
   }
 
+  public static int[] fromString(final char[] s) {
+    return assign(null, s);
+  }
+
+  public static int[] fromString(final String s) {
+    return assign(null, s);
+  }
+
   /**
    * Converts this number into a string of radix 10.
    *

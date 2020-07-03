@@ -35,9 +35,11 @@ public class BigDivisionTest extends AbstractTest {
 
   @Test
   public void testUnsignedDivInt() {
+    final int[] signum = {0};
     testRange("udivRem(int)",
-      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> b == 0 ? 0 : a.udiv(b), String::valueOf)
+      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> b == 0 ? 0 : a.div(signum[0], b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> {if (b == 0) return ZERO; BigInt.div(a, signum[0], b); return a;}, BigInt::toString)
     );
   }
 
@@ -52,9 +54,11 @@ public class BigDivisionTest extends AbstractTest {
 
   @Test
   public void testUnsignedDivLong() {
+    final int[] signum = {0};
     testRange("udiv(long)",
-      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> b == 0 ? 0 : a.udiv(b), String::valueOf)
+      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> b == 0 ? 0 : a.div(signum[0], b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> {if (b == 0) return ZERO; BigInt.div(a, signum[0], b); return a;}, BigInt::toString)
     );
   }
 
@@ -68,33 +72,37 @@ public class BigDivisionTest extends AbstractTest {
 
   @Test
   public void testSignedDivRemInt() {
+    final int[] signum = {0};
     testRange("divRem(int)",
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> {if (b == 0) return 0; a.divRem(b); return a;}, String::valueOf)
+      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> {if (b == 0) return 0; a.divRem(signum[0], b); return a;}, String::valueOf)
     );
   }
 
   @Test
   public void testUnsignedDivRemInt() {
+    final int[] signum = {0};
     testRange("udivRem(int)",
-      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> {if (b == 0) return 0; a.udivRem(b); return a;}, String::valueOf)
+      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> {if (b == 0) return 0; a.udivRem(signum[0], b); return a;}, String::valueOf)
     );
   }
 
   @Test
   public void testSignedDivRemLong() {
+    final int[] signum = {0};
     testRange("divRem(long)",
-      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> {if (b == 0) return 0; a.divRem(b); return a;}, String::valueOf)
+      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> {if (b == 0) return 0; a.divRem(signum[0], b); return a;}, String::valueOf)
     );
   }
 
   @Test
   public void testUnsignedDivRemLong() {
+    final int[] signum = {0};
     testRange("udiv(long)",
-      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> {if (b == 0) return 0; a.udivRem(b); return a;}, String::valueOf)
+      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> b.signum() == 0 ? 0 : a.divide(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> {if (b == 0) return 0; a.udivRem(signum[0], b); return a;}, String::valueOf)
     );
   }
 

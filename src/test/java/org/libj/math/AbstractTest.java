@@ -45,6 +45,8 @@ import org.libj.util.function.ObjLongToLongFunction;
 import gnu.java.math.BigInt;
 
 public abstract class AbstractTest {
+  public static final int IRRELEVANT = 1;
+  public static final int[] ZERO = {0};
   static final Random random = new Random();
   static final int numTests = 1000000;
   private static final double scaleFactor = 0.2;
@@ -96,6 +98,10 @@ public abstract class AbstractTest {
   public int[] scaledVal(final long a) {
     final int[] b = BigInt.assign(newVal(2), a);
     return shoudlScale ? BigInt.mul(b, intScale()) : b;
+  }
+
+  public int[] scaledVal(final String a) {
+    return BigInt.fromString(shoudlScale ? stringScale(a) : a);
   }
 
   public BigInt scaledBigInt(final int a) {
@@ -238,7 +244,7 @@ public abstract class AbstractTest {
   }
 
   public static class IntCase<A,B,R,O> extends Case<int[],Integer,R,O> {
-    private static final int[] SPECIAL = {0, -1, 1, Byte.MIN_VALUE, Byte.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE};
+    private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE};
     private static final int NUM_RANDOM = 4000000;
     private final int[] inputs = {0, 0};
 
@@ -349,7 +355,7 @@ public abstract class AbstractTest {
   }
 
   public static class LongCase<A,B,R,O> extends Case<long[],Long,R,O> {
-    private static final long[] SPECIAL = {0, -1, 1, Byte.MIN_VALUE, Byte.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, Long.MIN_VALUE, Long.MAX_VALUE};
+    private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, Long.MIN_VALUE, Long.MAX_VALUE};
     private static final int NUM_RANDOM = 3000000;
     private final long[] inputs = {0, 0};
 
@@ -666,9 +672,11 @@ public abstract class AbstractTest {
 
   private static void print(final String label, final int count, final long ts, final Long[] times, final String ... headings) {
     long min = Long.MAX_VALUE;
-    for (int i = 0; i < times.length; ++i)
-      if (times[i] < min)
-        min = times[i];
+    long max = Long.MIN_VALUE;
+    for (int i = 0; i < times.length; ++i) {
+      min = Math.min(min, times[i]);
+      max = Math.max(max, times[i]);
+    }
 
     final String[] strings = new String[times.length];
     for (int i = 0; i < times.length; ++i) {
@@ -676,7 +684,7 @@ public abstract class AbstractTest {
       if (times[i] == min)
         strings[i] = Ansi.apply(strings[i], Intensity.BOLD, Color.GREEN);
       else if (times.length > 2 ? i >= times.length - 2 : i >= times.length - 1)
-        strings[i] = Ansi.apply(strings[i], Intensity.BOLD, Color.RED);
+        strings[i] = Ansi.apply(strings[i], Intensity.BOLD, times[i] == max ? Color.RED : Color.YELLOW);
     }
 
     System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Strings.printTable(true, true, strings, headings));

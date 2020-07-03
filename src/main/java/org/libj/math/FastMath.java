@@ -149,7 +149,7 @@ public final class FastMath {
       return;
     }
 
-    result[1] = BigInt.udiv(dividend, len, divisor, divisor >>> 32);
+    result[1] = BigInt.div(dividend, len, divisor, divisor >>> 32);
     --len;
     if (len > 1 && dividend[len - 1] == 0)
       --len;
