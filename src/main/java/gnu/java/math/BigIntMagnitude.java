@@ -17,7 +17,7 @@
 package gnu.java.math;
 
 @SuppressWarnings("javadoc")
-abstract class BigMagnitude extends BigNumber {
+abstract class BigIntMagnitude extends BigIntValue {
   private static final long serialVersionUID = 734086338662551150L;
 
   /**
@@ -27,7 +27,7 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static void usubMag(final int[] val, final long val0, final long val1, final long sl, final long sh) {
+  static void usubVal(final int[] val, final long val0, final long val1, final long sl, final long sh) {
     int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
 
     long dif = val0 - sl;
@@ -56,7 +56,7 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static void usubMag(final int[] val, final int s) {
+  static void usubVal(final int[] val, final int s) {
     int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
     long dif = (val[1] & LONG_INT_MASK) - (s & LONG_INT_MASK);
     val[1] = (int)dif;
@@ -88,7 +88,7 @@ abstract class BigMagnitude extends BigNumber {
    * @param vlen The length (number of digits) of the decrease.
    * @complexity O(n)
    */
-  static void subMag(final int[] val1, final int[] val2) {
+  static void subVal(final int[] val1, final int[] val2) {
     int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
     int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
 
@@ -125,7 +125,7 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddMag(int[] val, final int a) {
+  static int[] uaddVal(int[] val, final int a) {
     final long tmp = (val[1] & LONG_INT_MASK) + (a & LONG_INT_MASK);
     val[1] = (int)tmp;
     if ((tmp >>> 32) != 0) {
@@ -156,7 +156,7 @@ abstract class BigMagnitude extends BigNumber {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddMag(int[] val, int len, final int signum, final long val0l, final long val1l, final long al, final long ah) {
+  static int[] uaddVal(int[] val, int len, final int signum, final long val0l, final long val1l, final long al, final long ah) {
     // FIXME: Change int signum to boolean signum
     if (val.length <= 3)
       val = realloc(val, 4); // FIXME: 4 or 3?
@@ -196,7 +196,7 @@ abstract class BigMagnitude extends BigNumber {
    * @param len2 The length (number of digits) of the increase.
    * @complexity O(n)
    */
-  static int[] addMag(int[] val1, int[] val2, final boolean positive) {
+  static int[] addVal(int[] val1, int[] val2, final boolean positive) {
     int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
     int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
 

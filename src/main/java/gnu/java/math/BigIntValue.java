@@ -19,7 +19,7 @@ package gnu.java.math;
 import java.util.Arrays;
 
 @SuppressWarnings("javadoc")
-abstract class BigNumber extends Number {
+abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
 
   public static final int INT_MASK = 0xFFFFFFFF;

@@ -17,7 +17,7 @@
 package gnu.java.math;
 
 @SuppressWarnings("javadoc")
-abstract class BigDivision extends BigMultiplication {
+abstract class BigIntDivision extends BigIntMultiplication {
   private static final long serialVersionUID = -4156041218135948540L;
   static int IRRELEVANT = 1;
 
@@ -757,7 +757,7 @@ abstract class BigDivision extends BigMultiplication {
     System.arraycopy(val1, 0, q, 0, len1);
 
     // Do the div, with results going to val1 (which is where we want it to end up)
-    BigDivision.div(q, val2, val1);
+    BigIntDivision.div(q, val2, val1);
     return q;
   }
 

@@ -486,8 +486,8 @@ public class BasicTest {
           break;
         }
         catch (final Throwable t) {
-          System.err.println(Arrays.toString(BigNumber.assign(null, facit.toString())));
-          System.err.println(Arrays.toString(BigNumber.assign(null, a.toString())));
+          System.err.println(Arrays.toString(BigIntValue.assign(null, facit.toString())));
+          System.err.println(Arrays.toString(BigIntValue.assign(null, a.toString())));
           a = new BigInt(x.clone());
         }
       }
@@ -502,8 +502,8 @@ public class BasicTest {
           break;
         }
         catch (final Throwable t) {
-          System.err.println(Arrays.toString(BigNumber.assign(null, facit.toString())));
-          System.err.println(Arrays.toString(BigNumber.assign(null, a.toString())));
+          System.err.println(Arrays.toString(BigIntValue.assign(null, facit.toString())));
+          System.err.println(Arrays.toString(BigIntValue.assign(null, a.toString())));
           a = new BigInt(x.clone());
         }
       }
@@ -518,8 +518,8 @@ public class BasicTest {
           break;
         }
         catch (final Throwable t) {
-          System.err.println(Arrays.toString(BigNumber.assign(null, facit.toString())));
-          System.err.println(Arrays.toString(BigNumber.assign(null, a.toString())));
+          System.err.println(Arrays.toString(BigIntValue.assign(null, facit.toString())));
+          System.err.println(Arrays.toString(BigIntValue.assign(null, a.toString())));
           a = new BigInt(x.clone());
         }
       }

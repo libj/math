@@ -17,7 +17,7 @@
 package gnu.java.math;
 
 @SuppressWarnings("javadoc")
-abstract class BigAddition extends BigMagnitude {
+abstract class BigIntAddition extends BigIntMagnitude {
   private static final long serialVersionUID = 2873086066678372875L;
 
   /**
@@ -30,10 +30,10 @@ abstract class BigAddition extends BigMagnitude {
   public static int[] uadd(int[] val, final int a) {
     int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
     if (signum >= 0) {
-      val = uaddMag(val, a);
+      val = uaddVal(val, a);
     }
     else if (len > 1 || (val[1] & LONG_INT_MASK) > (a & LONG_INT_MASK)) {
-      usubMag(val, a);
+      usubVal(val, a);
     }
     else {
       if ((val[1] = a - val[1]) == 0)
@@ -56,14 +56,14 @@ abstract class BigAddition extends BigMagnitude {
   public static int[] usub(int[] val, final int s) {
     int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
     if (signum < 0) {
-      val = uaddMag(val, s);
+      val = uaddVal(val, s);
     }
     else if (len == 1 && (val[1] & LONG_INT_MASK) < (s & LONG_INT_MASK)) {
       val[0] = -len;
       val[1] = s - val[1];
     }
     else {
-      usubMag(val, s);
+      usubVal(val, s);
     }
 
     _debugLenSig(val);
@@ -87,14 +87,14 @@ abstract class BigAddition extends BigMagnitude {
    */
   static int[] uadd(int[] val, final long val0l, final long val1l, final long al, final long ah, int len, int signum, final boolean positive) {
     if (positive ? signum >= 0 : signum <= 0) {
-      val = uaddMag(val, len, signum, val0l, val1l, al, ah);
+      val = uaddVal(val, len, signum, val0l, val1l, al, ah);
     }
     else {
       if (val.length <= 2)
         val = realloc(val, 3);
 
       if (len > 2 || len == 2 && (val1l > ah || val1l == ah && val0l >= al) || ah == 0 && val0l >= al) {
-        usubMag(val, val0l, val1l, al, ah); // FIXME: Pass len, signum, positive?
+        usubVal(val, val0l, val1l, al, ah); // FIXME: Pass len, signum, positive?
       }
       else {
         if (len == 1)
@@ -120,7 +120,7 @@ abstract class BigAddition extends BigMagnitude {
 
   public static int[] add(int[] val1, final int[] val2) {
     if (compareAbsTo(val1, val2) >= 0) {
-      subMag(val1, val2);
+      subVal(val1, val2);
     }
     else {
       int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
@@ -163,7 +163,7 @@ abstract class BigAddition extends BigMagnitude {
 
   public static int[] add(int[] val1, final int[] val2, final boolean positive) {
     if (positive == (val1[0] < 0 == val2[0] < 0))
-      return addMag(val1, val2, positive);
+      return addVal(val1, val2, positive);
 
     return add(val1, val2);
   }

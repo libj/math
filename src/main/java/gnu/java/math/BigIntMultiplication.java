@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @SuppressWarnings("javadoc")
-abstract class BigMultiplication extends BigAddition {
+abstract class BigIntMultiplication extends BigIntAddition {
   private static final long serialVersionUID = -4907342078241892616L;
 
   /**
@@ -455,13 +455,13 @@ abstract class BigMultiplication extends BigAddition {
         if (len1 + 2 >= val1.length)
           val1 = realloc(val1, 2 * len1 + 1);
 
-        len1 = BigMultiplication.umul(val1, 1, len1 + 1, val2[1]) - 1;
+        len1 = BigIntMultiplication.umul(val1, 1, len1 + 1, val2[1]) - 1;
       }
       else if (len1 == 1) {
         final int m = val1[1];
         val1 = val2.clone();
         val1 = assignCopy(val1, val2, len2 + 1, len2 + 2);
-        len1 = BigMultiplication.umul(val1, 1, len2 + 1, m) - 1;
+        len1 = BigIntMultiplication.umul(val1, 1, len2 + 1, m) - 1;
       }
       else {
         final long ml;
@@ -480,7 +480,7 @@ abstract class BigMultiplication extends BigAddition {
           len1 = len2;
         }
 
-        len1 = BigMultiplication.umul(val1, 1, len1 + 1, ml, mh) - 1;
+        len1 = BigIntMultiplication.umul(val1, 1, len1 + 1, ml, mh) - 1;
       }
 
       val1[0] = flipSig ? -len1 : len1;
@@ -502,7 +502,7 @@ abstract class BigMultiplication extends BigAddition {
 
       try {
         // FIXME: Tune thresholds
-        val1 = BigMultiplication.karatsuba(val1, val2, Math.max(len1, len2) > 20000);
+        val1 = BigIntMultiplication.karatsuba(val1, val2, Math.max(len1, len2) > 20000);
       }
       catch (final ExecutionException | InterruptedException e) {
         throw new RuntimeException(e);

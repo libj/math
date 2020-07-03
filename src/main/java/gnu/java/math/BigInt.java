@@ -16,7 +16,6 @@
 
 package gnu.java.math;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -38,7 +37,7 @@ import java.util.concurrent.ExecutionException;
  * @version 0.7
  */
 @SuppressWarnings("javadoc")
-public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
+public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
   // FIXME: Rewrite this javadoc
@@ -165,9 +164,8 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   @Override
-  // FIXME: Test this
   public BigInt clone() {
-    return new BigInt(Arrays.copyOf(val, Math.abs(val[0]) + 1));
+    return new BigInt(val.clone());
   }
 
   /**
@@ -380,7 +378,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt uadd0(final int a) {
-    val = BigAddition.uadd(val, a);
+    val = BigIntAddition.uadd(val, a);
     return this;
   }
 
@@ -408,7 +406,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     // FIXME: This will fail for 0 value
     final long val0l = val[1] & LONG_INT_MASK;
     final long val0h = len <= 1 ? 0 : val[2] & LONG_INT_MASK;
-    val = BigAddition.uadd(val, val0l, val0h, al, ah, len, signum, true);
+    val = BigIntAddition.uadd(val, val0l, val0h, al, ah, len, signum, true);
     return this;
   }
 
@@ -424,7 +422,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   private BigInt usub0(final int s) {
-    val = BigAddition.usub(val, s);
+    val = BigIntAddition.usub(val, s);
     return this;
   }
 
@@ -448,7 +446,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
 
   private BigInt usub0(final long s, final long sh) {
     final long sl = s & LONG_INT_MASK;
-    val = BigAddition.uadd(val, sl, sh, false);
+    val = BigIntAddition.uadd(val, sl, sh, false);
     return this;
   }
 
@@ -472,7 +470,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (len + 1 >= val.length)
       val = realloc(val);
 
-    val[0] = BigMultiplication.umul(val, 1, len + 1, m) - 1;
+    val[0] = BigIntMultiplication.umul(val, 1, len + 1, m) - 1;
     if (signum < 0)
       val[0] = -val[0];
 
@@ -506,7 +504,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (len + 1 >= val.length)
       val = realloc(val, 2 * len);
 
-    val[0] = BigMultiplication.umul(val, 1, len, ml, mh) - 1;
+    val[0] = BigIntMultiplication.umul(val, 1, len, ml, mh) - 1;
     if (!signum)
       val[0] = -val[0];
 
@@ -537,11 +535,11 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public long divRem(final int sig, final int div) {
-    return BigDivision.divRem(val, sig, div);
+    return BigIntDivision.divRem(val, sig, div);
   }
 
   public long divRem(final int div) {
-    return BigDivision.divRem(val, div);
+    return BigIntDivision.divRem(val, div);
   }
 
   /**
@@ -553,11 +551,11 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public long divRem(final int sig, final long div) {
-    return BigDivision.divRem(val, sig, div);
+    return BigIntDivision.divRem(val, sig, div);
   }
 
   public long divRem(final long div) {
-    return BigDivision.divRem(val, div);
+    return BigIntDivision.divRem(val, div);
   }
 
   /**
@@ -619,7 +617,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (a.isZero())
       return this;
 
-    val = BigAddition.add(val, a.val, true);
+    val = BigIntAddition.add(val, a.val, true);
     return this;
   }
 
@@ -687,7 +685,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (s.isZero())
       return this;
 
-    val = BigAddition.add(val, s.val, false);
+    val = BigIntAddition.add(val, s.val, false);
     return this;
   }
 
@@ -766,7 +764,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (isZero(val1))
       return this;
 
-    val = BigMultiplication.mul(val, m.val);
+    val = BigIntMultiplication.mul(val, m.val);
     return this;
   }
 
@@ -779,7 +777,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final int sig, final int div) {
-    BigDivision.divRem(val, sig, div);
+    BigIntDivision.divRem(val, sig, div);
     return this;
   }
 
@@ -792,7 +790,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final int sig, final long div) {
-    BigDivision.divRem(val, sig, div);
+    BigIntDivision.divRem(val, sig, div);
     return this;
   }
 
@@ -805,7 +803,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final int d) {
-    BigDivision.divRem(val, d);
+    BigIntDivision.divRem(val, d);
     return this;
   }
 
@@ -818,7 +816,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final long d) {
-    BigDivision.divRem(val, d);
+    BigIntDivision.divRem(val, d);
     return this;
   }
 
@@ -831,7 +829,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final BigInt div) {
-    val = BigDivision.div(val, div.val);
+    val = BigIntDivision.div(val, div.val);
     return this;
   }
 
@@ -843,7 +841,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt rem(final int d) {
-    BigDivision.rem(val, d);
+    BigIntDivision.rem(val, d);
     return this;
   }
 
@@ -855,7 +853,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt rem(final long d) {
-    BigDivision.rem(val, d);
+    BigIntDivision.rem(val, d);
     return this;
   }
 
@@ -867,7 +865,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt rem(final int signum, final int m) {
-    BigDivision.rem(val, signum, m);
+    BigIntDivision.rem(val, signum, m);
     return this;
   }
 
@@ -879,7 +877,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt rem(final int signum, final long m) {
-    BigDivision.rem(val, signum, m);
+    BigIntDivision.rem(val, signum, m);
     return this;
   }
 
@@ -891,7 +889,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt rem(final BigInt d) {
-    val = BigDivision.rem(val, d.val);
+    val = BigIntDivision.rem(val, d.val);
     return this;
   }
 
@@ -918,7 +916,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @see #rem
    */
   public BigInt mod(final BigInt d) {
-    val = BigDivision.mod(val, d.val);
+    val = BigIntDivision.mod(val, d.val);
     return this;
   }
 
@@ -935,7 +933,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt shiftLeft(final int s) {
-    val = BigBinary.shiftLeft(val, s);
+    val = BigIntBinary.shiftLeft(val, s);
     return this;
   }
 
@@ -946,7 +944,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt shiftRight(final int s) {
-    val = BigBinary.shiftRight(val, s);
+    val = BigIntBinary.shiftRight(val, s);
     return this;
   }
 
@@ -962,7 +960,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (i < 0)
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
-    return BigBinary.testBit(val, i);
+    return BigIntBinary.testBit(val, i);
   }
 
   /**
@@ -975,7 +973,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (i < 0)
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
-    val = BigBinary.setBit(val, i);
+    val = BigIntBinary.setBit(val, i);
     return this;
   }
 
@@ -989,7 +987,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (i < 0)
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
-    val = BigBinary.clearBit(val, i);
+    val = BigIntBinary.clearBit(val, i);
     return this;
   }
 
@@ -1003,7 +1001,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (i < 0)
       throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
 
-    val = BigBinary.flipBit(val, i);
+    val = BigIntBinary.flipBit(val, i);
     return this;
   }
 
@@ -1017,7 +1015,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (mask.isZero())
       return setToZero();
 
-    val = BigBinary.and(val, mask.val);
+    val = BigIntBinary.and(val, mask.val);
     return this;
   }
 
@@ -1034,7 +1032,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (isZero())
       return assign(mask);
 
-    val = BigBinary.or(val, mask.val);
+    val = BigIntBinary.or(val, mask.val);
     return this;
   }
 
@@ -1051,7 +1049,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
     if (isZero())
       return assign(mask);
 
-    val = BigBinary.xor(val, mask.val);
+    val = BigIntBinary.xor(val, mask.val);
     return this;
   }
 
@@ -1062,7 +1060,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt andNot(final BigInt m) {
-    val = BigBinary.andNot(val, m.val);
+    val = BigIntBinary.andNot(val, m.val);
     return this;
   }
 
@@ -1073,7 +1071,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n)
    */
   public BigInt not() {
-    val = BigBinary.not(val);
+    val = BigIntBinary.not(val);
     return this;
   }
 

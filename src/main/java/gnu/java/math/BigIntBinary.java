@@ -19,7 +19,7 @@ package gnu.java.math;
 import java.util.Arrays;
 
 @SuppressWarnings("javadoc")
-abstract class BigBinary extends BigDivision {
+abstract class BigIntBinary extends BigIntDivision {
   private static final long serialVersionUID = 6584645376198040730L;
 
   /**
@@ -1147,9 +1147,9 @@ abstract class BigBinary extends BigDivision {
    */
   public static int[] not(int[] val) {
     if (val[0] >= 0)
-      val = uaddMag(val, 1);
+      val = uaddVal(val, 1);
     else
-      usubMag(val, 1);
+      usubVal(val, 1);
 
     val[0] = -val[0];
     _debugLenSig(val);

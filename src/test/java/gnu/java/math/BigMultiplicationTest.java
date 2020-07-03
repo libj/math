@@ -62,15 +62,15 @@ public class BigMultiplicationTest extends BigIntTest {
       }, (int[] a, int[] b) -> {
         MPN.mul(zds, a, 2, b, 1);
         return zds;
-      }, a -> BigNumber.longValue(a, 0, 3)),
+      }, a -> BigIntValue.longValue(a, 0, 3)),
       l("BigInt", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
         return x;
       }, (int[] a, long b) -> {
-        BigMultiplication.umul(x, 0, 2, (int)b);
+        BigIntMultiplication.umul(x, 0, 2, (int)b);
         return x;
-      }, a -> BigNumber.longValue(a, 0, 2))
+      }, a -> BigIntValue.longValue(a, 0, 2))
     );
   }
 
@@ -91,15 +91,15 @@ public class BigMultiplicationTest extends BigIntTest {
       }, (int[] a, int[] b) -> {
         MPN.mul(zds, a, 2, b, 2);
         return zds;
-      }, a -> BigNumber.longValue(a, 0, 3)),
+      }, a -> BigIntValue.longValue(a, 0, 3)),
       l("BigInt", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
         return x;
       }, (int[] a, long b) -> {
-        BigMultiplication.umul(x, 0, 2, b);
+        BigIntMultiplication.umul(x, 0, 2, b);
         return x;
-      }, a -> BigNumber.longValue(a, 0, 2))
+      }, a -> BigIntValue.longValue(a, 0, 2))
     );
   }
 }
