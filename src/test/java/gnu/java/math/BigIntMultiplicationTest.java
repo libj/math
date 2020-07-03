@@ -20,7 +20,7 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigMultiplicationTest extends BigIntTest {
+public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testInt() {
     testRange("mul(int)",

@@ -20,28 +20,28 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigAdditionTest extends BigIntTest {
+public class BigIntSubtractionTest extends BigIntTest {
   @Test
   public void testInt() {
-    testRange("add(int)",
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf)
+    testRange("sub(int)",
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.sub(b), String::valueOf)
     );
   }
 
   @Test
   public void testLong() {
-    testRange("add(long)",
-      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf)
+    testRange("sub(long)",
+      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.sub(b), String::valueOf)
     );
   }
 
   @Test
   public void testBig() {
-    testRange("add(String)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf)
+    testRange("sub(T)",
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.sub(b), String::valueOf)
     );
   }
 }

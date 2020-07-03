@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import org.junit.Test;
 import org.libj.math.BigIntegers;
 
-public class BigRemainderTest extends BigIntTest {
+public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedRemInt() {
     testRange("rem(int,int)",

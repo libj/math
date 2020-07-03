@@ -22,6 +22,24 @@ import java.util.Arrays;
 abstract class BigIntBinary extends BigIntDivision {
   private static final long serialVersionUID = 6584645376198040730L;
 
+  public static int bitCount(final int[] val) {
+    int i, bits = 0;
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+    // Count the bits in the magnitude
+    for (i = 1; i <= len; ++i)
+      bits += Integer.bitCount(val[i]);
+
+    if (signum < 0) {
+      // Count the trailing zeros in the magnitude
+      for (i = 1; i <= len && val[i] == 0; ++i)
+        bits += 32;
+
+      bits += Integer.numberOfTrailingZeros(val[i]) - 1;
+    }
+
+    return bits;
+  }
+
   /**
    * Tests if the given bit in the number is set.
    *
@@ -65,18 +83,18 @@ abstract class BigIntBinary extends BigIntDivision {
     if (shift == 0 || isZero(val))
       return val;
 
-    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     final int shiftBig = shift >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig >= len)
-      return signum ? setToZero(val) : uassign(val, signum, 1);
+      return signum >= 0 ? setToZero(val) : assign(val, signum, 1);
 
 //    int[] val$ = to$(val);
 //    val$ = shiftRight$(val$, shift);
 
     final int shiftSmall = shift & 31;
     boolean oneLost = false;
-    if (!signum) {
+    if (signum < 0) {
       // Find out whether any one-bits will be shifted off the end
       final int j = shiftBig + 1;
       for (int i = 1; i < j && !(oneLost = val[i] != 0); ++i);
@@ -97,7 +115,7 @@ abstract class BigIntBinary extends BigIntDivision {
     // FIXME: What if an overflow happens? Look at Integer#javaIncrement(int[])
     if (oneLost) {
       if (val[0] == 0)
-        val[0] = signum ? 1 : -1;
+        val[0] = signum;
 
       ++val[1];
     }
@@ -217,7 +235,7 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   public static int[] setBit(int[] val, final int bit) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
 
     final int bigBit = (bit >>> 5) + 1;
     final int smallBit = bit & 31;
@@ -278,7 +296,7 @@ abstract class BigIntBinary extends BigIntDivision {
     int[] val$ = to$(val);
     val$ = clearBit$(val$, bit);
 
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
 
     final int bigBit = (bit >>> 5) + 1;
     final int smallBit = bit & 31;
@@ -435,7 +453,7 @@ abstract class BigIntBinary extends BigIntDivision {
     return val;
   }
   public static int[] flipBit(int[] val, final int bit) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
 
     final int bigBit = (bit >>> 5) + 1;
     final int smallBit = bit & 31;
@@ -523,8 +541,8 @@ abstract class BigIntBinary extends BigIntDivision {
    * @complexity O(n)
    */
   public static int[] and(int[] val1, final int[] val2) {
-    int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
 
     if (signum2 == 0 || isZero(val2)) { // FIXME: Defensive check
       setToZero(val1);
@@ -701,8 +719,8 @@ abstract class BigIntBinary extends BigIntDivision {
    * @complexity O(n)
    */
   public static int[] or(int[] val1, final int[] val2) {
-    int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
 
     if (len1 == 0) // FIXME: Defensive check
       return val2;
@@ -846,9 +864,9 @@ abstract class BigIntBinary extends BigIntDivision {
    */
   public static int[] xor(int[] val1, int[] val2) {
     final int fromIndex = 1;
-    int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
+    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
     len1 += fromIndex;
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
     len2 += fromIndex;
 
     if (len1 < len2 || signum1 < signum2) {
@@ -1022,9 +1040,9 @@ abstract class BigIntBinary extends BigIntDivision {
    */
   public static int[] andNot(int[] val1, final int[] val2) {
     final int fromIndex = 1;
-    int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
+    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
     len1 += fromIndex;
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
     len2 += fromIndex;
 
     final int mlen = Math.min(len1, len2);

@@ -20,7 +20,7 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigLogicalTest extends BigIntTest {
+public class BigIntBinaryTest extends BigIntTest {
   @Test
   public void testAnd() {
     testRange("and(T)",

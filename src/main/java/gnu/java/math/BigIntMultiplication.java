@@ -446,8 +446,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   static int[] mul(int[] val1, int[] val2) {
     // FIXME: Determine the actual size necessary for the result before the
     // FIXME: execution of this method, and pass the result array into here.
-    int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
 
     if (len2 <= 2 || len1 <= 2) {
       final boolean flipSig = signum1 != signum2;

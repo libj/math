@@ -20,7 +20,7 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigPredicateTest extends BigIntTest {
+public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testByteValue() {
     testRange("byeValue()",

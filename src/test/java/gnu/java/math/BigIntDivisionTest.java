@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import org.junit.Test;
 import org.libj.math.BigIntegers;
 
-public class BigDivisionTest extends BigIntTest {
+public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivInt() {
     final int[] signum = {0};

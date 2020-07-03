@@ -20,7 +20,7 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigBitwiseTest extends BigIntTest {
+public class BigIntBitwiseTest extends BigIntTest {
   private static long randomBit(final String seed, final int bitCount) {
     return Math.abs(seed.hashCode() % (bitCount + 1));
   }

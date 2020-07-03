@@ -25,30 +25,6 @@ abstract class BigIntValue extends Number {
   public static final int INT_MASK = 0xFFFFFFFF;
   public static final long LONG_INT_MASK = 0xFFFFFFFFL;
 
-  public static int[] uassign(int[] val, final int signum, final int v) {
-    if (v == 0) {
-      val[0] = 0;
-    }
-    else {
-      if (val.length < 2)
-        val = alloc(2);
-
-      val[0] = signum;
-      val[1] = v;
-    }
-
-    _debugLenSig(val);
-    return val;
-  }
-
-  public static int[] uassign(final int[] val, final boolean signum, final long v) {
-    return uassign(val, signum ? 1 : -1, v);
-  }
-
-  public static int[] uassign(final int[] val, final boolean signum, final int v) {
-    return uassign(val, signum ? 1 : -1, v);
-  }
-
   /**
    * Creates a new {@code int[]} that is at least length = {@code len}.
    * <p>
@@ -62,11 +38,54 @@ abstract class BigIntValue extends Number {
     return new int[len];
   }
 
-  public static int[] assign(final int[] val, final int v) {
-    return v == 0 ? setToZero(val) : v == Integer.MIN_VALUE ? uassign(val, -1, v) : v < 0 ? uassign(val, -1, -v) : uassign(val, 1, v);
+  /**
+   * Assigns the content of the given magnitude array and the length to this
+   * number. The contents of the input will be copied.
+   *
+   * @param source The new magnitude array content.
+   * @param len The length of the content, len > 0.
+   * @complexity O(n)
+   */
+  // FIXME: 0 or 1 min len?
+  public static int[] copy(int[] target, final int[] source) {
+    final int len = Math.abs(source[0]) + 1;
+    if (len > target.length)
+      target = alloc(len);
+
+    System.arraycopy(source, 0, target, 0, len);
+    _debugLenSig(target);
+    return target;
   }
 
-  public static int[] assign(int[] val, final int signum, final byte[] v, final int len) {
+  public static int[] assign(int[] val, final int sig, final int mag) {
+    if (mag == 0) {
+      val[0] = 0;
+    }
+    else {
+      if (val.length < 2)
+        val = alloc(2);
+
+      val[0] = sig;
+      val[1] = mag;
+    }
+
+    _debugLenSig(val);
+    return val;
+  }
+
+  public static int[] assign(final int[] val, final boolean sig, final long mag) {
+    return assign(val, sig ? 1 : -1, mag);
+  }
+
+  public static int[] assign(final int[] val, final boolean sig, final int mag) {
+    return assign(val, sig ? 1 : -1, mag);
+  }
+
+  public static int[] assign(final int[] val, final int mag) {
+    return mag == 0 ? setToZero(val) : mag == Integer.MIN_VALUE ? assign(val, -1, mag) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
+  }
+
+  public static int[] assign(int[] val, final int sig, final byte[] mag, final int len) {
     int newLen = (len + 3) / 4;
     if (val == null || newLen > val.length)
       val = alloc(newLen + 2);
@@ -74,14 +93,14 @@ abstract class BigIntValue extends Number {
     int tmp = len / 4;
     int j = 0;
     for (int i = 1; i <= tmp; ++i, j += 4)
-      val[i] = v[j + 3] << 24 | (v[j + 2] & 0xFF) << 16 | (v[j + 1] & 0xFF) << 8 | v[j] & 0xFF;
+      val[i] = mag[j + 3] << 24 | (mag[j + 2] & 0xFF) << 16 | (mag[j + 1] & 0xFF) << 8 | mag[j] & 0xFF;
 
     if (tmp != newLen) {
-      tmp = v[j] & 0xFF;
+      tmp = mag[j] & 0xFF;
       if (++j < len) {
-        tmp |= (v[j] & 0xFF) << 8;
+        tmp |= (mag[j] & 0xFF) << 8;
         if (++j < len)
-          tmp |= (v[j] & 0xFF) << 16;
+          tmp |= (mag[j] & 0xFF) << 16;
       }
 
       val[newLen + 1] = tmp;
@@ -89,36 +108,36 @@ abstract class BigIntValue extends Number {
         --newLen;
     }
 
-    val[0] = signum < 0 ? -newLen : newLen;
+    val[0] = sig < 0 ? -newLen : newLen;
     _debugLenSig(val);
     return val;
   }
 
-  public static int[] assign(final int[] val, final long v) {
+  public static int[] assign(final int[] val, final long mag) {
     // FIXME: Long.MIN_VALUE
-    return v < 0 ? uassign(val, -1, -v) : uassign(val, 1, v);
+    return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
-  public static int[] uassign(int[] val, final int signum, final long v) {
-    if (v == 0)
+  public static int[] assign(int[] val, final int sig, final long mag) {
+    if (mag == 0)
       return setToZero(val);
 
-    final int h = (int)(v >>> 32);
+    final int h = (int)(mag >>> 32);
     if (h != 0) {
       if (val.length < 3)
         val = alloc(3);
 
-      val[0] = signum < 0 ? -2 : 2;
+      val[0] = sig < 0 ? -2 : 2;
       val[2] = h;
     }
     else {
       if (val.length < 2)
         val = alloc(2);
 
-      val[0] = signum;
+      val[0] = sig;
     }
 
-    val[1] = (int)(v & LONG_INT_MASK);
+    val[1] = (int)(mag & LONG_INT_MASK);
     _debugLenSig(val);
     return val;
   }
@@ -135,7 +154,7 @@ abstract class BigIntValue extends Number {
     final int len = length + from;
     // 3402 = bits per digit * 1024
     final int alloc = (len < 10 ? 1 : (int)(len * 3402L >>> 10) + 32 >>> 5) + 1;
-    if (val == null || alloc > val.length)
+    if (alloc > val.length)
       val = alloc(alloc);
 
     int j = len % 9;
@@ -235,6 +254,11 @@ abstract class BigIntValue extends Number {
     return v;
   }
 
+  public static int signum(final int[] val) {
+    final int v = val[0];
+    return v == 0 ? 0 : v < 0 ? -1 : 1;
+  }
+
   /**
    * Tells whether this number is zero or not.
    *
@@ -248,13 +272,13 @@ abstract class BigIntValue extends Number {
   /**
    * Unsigned long to bytes
    *
-   * @param v
+   * @param val
    * @return
    */
-  public static byte[] toByteArray(long v) {
+  public static byte[] toByteArray(long val) {
     final byte[] b = new byte[8];
-    for (int j = 7; j >= 0; --j, v >>>= 8)
-      b[j] = (byte)(v & 0xFF);
+    for (int j = 7; j >= 0; --j, val >>>= 8)
+      b[j] = (byte)(val & 0xFF);
 
     return b;
   }
@@ -270,95 +294,127 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
-  public static byte byteValue(final int[] val, final int fromIndex, final boolean signum) {
-    return (byte)(!signum ? ~val[fromIndex] + 1 : val[fromIndex]);
+  public static byte byteValue(final int[] val) {
+    return byteValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
-  public static short shortValue(final int[] val, final int fromIndex, final boolean signum) {
-    return (short)(!signum ? ~val[fromIndex] + 1 : val[fromIndex]);
+  public static byte byteValue(final int[] mag, final int off, final int sig) {
+    return (byte)(sig < 0 ? ~mag[off] + 1 : mag[off]);
   }
 
-  public static int intValue(final int[] val, final int fromIndex, final boolean signum) {
-    return !signum ? ~val[fromIndex] + 1 : val[fromIndex];
+  public static short shortValue(final int[] val) {
+    return shortValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
-  public static long longValue(final int[] val, final int fromIndex, final int toIndex, final boolean signum) {
-    final long longValue = longValue(val, fromIndex, toIndex);
-    return !signum ? ~longValue + 1 : longValue;
+  public static short shortValue(final int[] mag, final int off, final int sig) {
+    return (short)(sig < 0 ? ~mag[off] + 1 : mag[off]);
+  }
+
+  public static int intValue(final int[] val) {
+    return intValue(val, 1, val[0] < 0 ? -1 : 1);
+  }
+
+  public static int intValue(final int[] mag, final int off, final int sig) {
+    return sig < 0 ? ~mag[off] + 1 : mag[off];
+  }
+
+  public static long longValue(final int[] val) {
+    int signum = 1; int len = val[0]; if (len < 0) { len = -len; signum = -1; }
+    return longValue(val, 1, len, signum);
+  }
+
+  public static long longValueUnsigned(final int[] val) {
+    int len = val[0]; if (len < 0) { len = -len; }
+    return longValue(val, 1, len);
+  }
+
+  public static long longValue(final int[] mag, final int off, final int len, final int sig) {
+    final long longValue = longValue(mag, off, len);
+    return sig < 0 ? ~longValue + 1 : longValue;
   }
 
   /**
    * To unsigned long!
    *
-   * @param val
+   * @param mag
    * @param len
    * @return
    */
-  public static long longValue(final int[] val, int fromIndex, final int toIndex) {
-    final long val0l = val[fromIndex] & LONG_INT_MASK;
-    return ++fromIndex < toIndex ? (long)val[fromIndex] << 32 | val0l : val0l;
+  public static long longValue(final int[] mag, final int off, final int len) {
+    final long val0l = mag[off] & LONG_INT_MASK;
+    return len > 1 ? (long)mag[off + 1] << 32 | val0l : val0l;
   }
 
-  public static float floatValue(final int[] val, final int fromIndex, final int toIndex, final boolean signum) {
-    final int len = toIndex;
-    final int s = Integer.numberOfLeadingZeros(val[len - 1]);
-    if (len == fromIndex + 1 && s >= 8)
-      return signum ? val[fromIndex] : -val[fromIndex];
+  public static float floatValue(final int[] val) {
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+    return floatValue(val, 1, len, signum);
+  }
 
-    final int exponent = ((len - (fromIndex + 1)) << 5) + (32 - s) - 1;
+  public static float floatValue(final int[] mag, final int off, final int len, final int sig) {
+    final int end = len + off - 1;
+    final int s = Integer.numberOfLeadingZeros(mag[end]);
+    if (len == 1 && s >= 8)
+      return sig < 0 ? -mag[off] : mag[off];
+
+    final int exponent = ((len - 1) << 5) + (32 - s) - 1;
     if (exponent < Long.SIZE - 1) // FIXME: Can optimize the "- 1"
-      return longValue(val, fromIndex, toIndex, signum);
+      return longValue(mag, off, len, sig);
 
     if (exponent > Float.MAX_EXPONENT)
-      return signum ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
+      return sig < 0 ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
 
-    int bits = val[len - 1]; // Mask out the 24 MSBits.
+    int bits = mag[end]; // Mask out the 24 MSBits.
     if (s <= 8)
       bits >>>= 8 - s;
     else
-      bits = bits << s - 8 | val[len - 2] >>> 32 - (s - 8); // s-8==additional bits we need.
+      bits = bits << s - 8 | mag[end - 1] >>> 32 - (s - 8); // s-8==additional bits we need.
 
     bits ^= 1L << 23; // The leading bit is implicit, cancel it out.
 
-    final int exp = (int)(((32 - s + 32L * (len - (fromIndex + 1))) - 1 + 127) & 0xFF);
+    final int exp = (int)(((32 - s + 32L * (len - 1)) - 1 + 127) & 0xFF);
     bits |= exp << 23; // Add exponent.
-    bits |= (signum ? 1 : -1) & (1 << 31); // Add sign-bit. // FIXME: Can this be simplified?
+    bits |= sig & (1 << 31); // Add sign-bit. // FIXME: Can this be simplified?
 
     return Float.intBitsToFloat(bits);
   }
 
-  public static double doubleValue(final int[] val, final int fromIndex, final int toIndex, final boolean signum) {
-    final int len = toIndex;
-    if (len == fromIndex + 1) {
-      final double v = val[fromIndex] & LONG_INT_MASK;
-      return signum ? v : -v;
+  public static double doubleValue(final int[] val) {
+    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    return doubleValue(val, 1, len, sig);
+  }
+
+  public static double doubleValue(final int[] val, final int off, final int len, final int sig) {
+    if (len == 1) {
+      final double v = val[off] & LONG_INT_MASK;
+      return sig < 0 ? -v : v;
     }
 
-    final int z = Integer.numberOfLeadingZeros(val[len - 1]);
-    final int exponent = ((len - (fromIndex + 1)) << 5) + (32 - z) - 1;
+    final int end = off + len - 1;
+    final int z = Integer.numberOfLeadingZeros(val[end]);
+    final int exponent = ((len - 1) << 5) + (32 - z) - 1;
     if (exponent < Long.SIZE - 1)
-      return longValue(val, fromIndex, toIndex, signum);
+      return longValue(val, off, len, sig < 0 ? -1 : 1);
 
     if (exponent > Double.MAX_EXPONENT)
-      return signum ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+      return sig < 0 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 
-    if (len == (fromIndex + 2) && 32 - z + 32 <= 53) {
-      final double v = ((long)val[fromIndex + 1] << 32 | (val[fromIndex] & LONG_INT_MASK));
-      return signum ? v : -v;
+    if (len == 2 && 32 - z + 32 <= 53) {
+      final double v = ((long)val[off + 1] << 32 | (val[off] & LONG_INT_MASK));
+      return sig < 0 ? -v : v;
     }
 
-    long bits = (long)val[len - 1] << 32 | (val[len - 2] & LONG_INT_MASK); // Mask out
+    long bits = (long)val[end] << 32 | (val[end - 1] & LONG_INT_MASK); // Mask out
     // the 53 MSBits.
     if (z <= 11)
       bits >>>= 11 - z;
     else
-      bits = bits << z - 11 | val[len - (fromIndex + 3)] >>> 32 - (z - 11); // s-11==additional bits we need.
+      bits = bits << z - 11 | val[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need.
 
     bits ^= 1L << 52; // The leading bit is implicit, cancel it out.
 
-    final long exp = ((32 - z + 32L * (len - (fromIndex + 1))) - 1 + 1023) & 0x7FF;
+    final long exp = ((32 - z + 32L * (len - 1)) - 1 + 1023) & 0x7FF;
     bits |= exp << 52; // Add exponent.
-    bits |= (signum ? 1 : -1) & (1L << 63); // Add sign-bit. // FIXME: Can this be simplified?
+    bits |= sig & (1L << 63); // Add sign-bit. // FIXME: Can this be simplified?
 
     return Double.longBitsToDouble(bits);
   }
@@ -371,11 +427,11 @@ abstract class BigIntValue extends Number {
    *         if it's greater.
    * @complexity O(n)
    */
-  public static int compareAbsTo(final int[] val1, final int[] val2) {
-    return compareAbsTo(val1, Math.abs(val1[0]), val2, Math.abs(val2[0]));
+  public static int compareToAbs(final int[] val1, final int[] val2) {
+    return compareToAbs(val1, Math.abs(val1[0]), val2, Math.abs(val2[0]));
   }
 
-  static int compareAbsTo(final int[] val1, int len1, final int[] val2, int len2) {
+  static int compareToAbs(final int[] val1, int len1, final int[] val2, int len2) {
     if (len1 > len2)
       return 1;
 
@@ -396,22 +452,22 @@ abstract class BigIntValue extends Number {
   }
 
   public static int compareTo(final int[] val1, final int[] val2) {
-    int signum1, len1 = val1[0];
-    if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
+    int sig1, len1 = val1[0];
+    if (len1 < 0) { len1 = -len1; sig1 = -1; } else { sig1 = 1; }
 
-    int signum2, len2 = val2[0];
-    if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int sig2, len2 = val2[0];
+    if (len2 < 0) { len2 = -len2; sig2 = -1; } else { sig2 = 1; }
 
-    if (signum1 < 0)
-      return signum2 < 0 ? compareAbsTo(val2, len2, val1, len1) : -1;
+    if (sig1 < 0)
+      return sig2 < 0 ? compareToAbs(val2, len2, val1, len1) : -1;
 
-    if (signum2 < 0)
+    if (sig2 < 0)
       return 1;
 
     if (len2 == 0)
       return len1 == 0 ? 0 : 1;
 
-    return len1 == 0 ? -1 : compareAbsTo(val1, len1, val2, len2);
+    return len1 == 0 ? -1 : compareToAbs(val1, len1, val2, len2);
   }
 
   /**
@@ -422,11 +478,11 @@ abstract class BigIntValue extends Number {
    * @complexity O(n)
    */
   public static boolean equals(final int[] val1, final int[] val2) {
-    int signum1, len1 = val1[0];
-    if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
+    int sig1, len1 = val1[0];
+    if (len1 < 0) { len1 = -len1; sig1 = -1; } else { sig1 = 1; }
 
-    int signum2, len2 = val2[0];
-    if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int sig2, len2 = val2[0];
+    if (len2 < 0) { len2 = -len2; sig2 = -1; } else { sig2 = 1; }
 
     if (len1 != len2)
       return false;
@@ -434,7 +490,7 @@ abstract class BigIntValue extends Number {
     if (len1 == 0)
       return true;
 
-    if ((signum1 ^ signum2) < 0)
+    if ((sig1 ^ sig2) < 0)
       return false;
 
     for (; len1 >= 1; --len1)
@@ -449,13 +505,13 @@ abstract class BigIntValue extends Number {
     if (len == 0)
       return 0;
 
-    final int signum; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    final int sig; if (len < 0) { len = -len; sig = -1; } else { sig = 1; }
 
     int hash = 0;
     for (; len >= 1; --len)
       hash = 31 * hash + val[len] & INT_MASK;
 
-    return signum * hash;
+    return sig * hash;
   }
 
   // Divides the number by 10^13 and returns the remainder.
@@ -488,8 +544,10 @@ abstract class BigIntValue extends Number {
     return r;
   }
 
+  static final int[] emptyVal = {};
+
   public static int[] fromString(final char[] s) {
-    return assign(null, s);
+    return assign(emptyVal, s);
   }
 
   public static int[] fromString(final String s) {
@@ -507,7 +565,7 @@ abstract class BigIntValue extends Number {
     if (isZero(val))
       return "0";
 
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
 
     int top = len * 10 + 3;
     final char[] cmag = new char[top];
@@ -529,7 +587,7 @@ abstract class BigIntValue extends Number {
       top = j - 13;
     }
 
-    if (signum < 0)
+    if (sig < 0)
       cmag[--top] = '-';
 
     System.arraycopy(cpy, 0, val, 0, cpy.length);
@@ -549,16 +607,16 @@ abstract class BigIntValue extends Number {
   }
 
   public static int[] to$(final int[] val) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
     int[] val$ = new int[val.length + 2];
     System.arraycopy(val, 1, val$, 2, len);
     val$[0] = len + 2;
-    val$[1] = signum;
+    val$[1] = sig;
     return val$;
   }
 
   public static int[] to$$(final int[] val) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
     int[] val$$ = new int[val.length - 1];
     System.arraycopy(val, 1, val$$, 0, len);
     return val$$;
@@ -610,15 +668,15 @@ abstract class BigIntValue extends Number {
     if (shift == 0 || val[0] == 3 && val[2] == 0)
       return val;
 
-    int signum = val[1];
+    int sig = val[1];
     final int shiftBig = shift >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig + 2 >= val[0])
-      return signum >= 0 ? setToZero(val) : uassign(val, signum, 1);
+      return sig >= 0 ? setToZero(val) : assign(val, sig, 1);
 
     final int shiftSmall = shift & 31;
     boolean oneLost = false;
-    if (signum < 0) {
+    if (sig < 0) {
       // Find out whether any one-bits will be shifted off the end
       final int j = 2 + shiftBig;
       for (int i = 2; i < j && !(oneLost = val[i] != 0); ++i);

@@ -28,7 +28,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @amortized O(1)
    */
   public static int[] uadd(int[] val, final int a) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     if (signum >= 0) {
       val = uaddVal(val, a);
     }
@@ -54,7 +54,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @amortized O(1)
    */
   public static int[] usub(int[] val, final int s) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     if (signum < 0) {
       val = uaddVal(val, s);
     }
@@ -71,7 +71,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   static int[] uadd(int[] val, final long al, final long ah, final boolean positive) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
 
     final long val0l = val[1] & LONG_INT_MASK;
     final long val1l = len == 1 ? 0 : val[2] & LONG_INT_MASK;
@@ -119,11 +119,11 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   public static int[] add(int[] val1, final int[] val2) {
-    if (compareAbsTo(val1, val2) >= 0) {
+    if (compareToAbs(val1, val2) >= 0) {
       subVal(val1, val2);
     }
     else {
-      int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
+      int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
       int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
 
       if (len2 >= val1.length)

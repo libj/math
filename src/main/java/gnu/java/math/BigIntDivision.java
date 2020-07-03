@@ -22,7 +22,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
   static int IRRELEVANT = 1;
 
   public static int rem(final int[] val, final int sig, int mod) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     val[1] = mod = rem(val, 1, len, sig, mod);
     val[0] = val[1] == 0 ? 0 : signum;
     _debugLenSig(val);
@@ -125,7 +125,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
    */
   // FIXME: Javadoc: Assumes div > 0.
   public static long divRem(final int[] val, final int sig, final int div) {
-    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     final long r = divRem0(val, sig, div);
     return signum < 0 ? -r : r;
   }
@@ -494,9 +494,9 @@ abstract class BigIntDivision extends BigIntMultiplication {
    */
   // Hacker's Delight's implementation of Knuth's Algorithm D
   public static void div(final int[] val1, final int[] val2, final int[] q) {
-    int signum1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; } else { signum1 = 1; }
+    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
     ++len1;
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
     ++len2;
 
     final int fromIndex = 1;
@@ -647,7 +647,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     }
     else {
       int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
-      final int c = compareAbsTo(val1, val2);
+      final int c = compareToAbs(val1, val2);
       if (c > 0) {
         ++len1;
         if (len1 == val1.length)
@@ -675,7 +675,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     if (isZero(val1))
       return val1;
 
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
     final boolean flipSignum = val1[0] < 0 != val2[0] < 0;
     int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
     if (len2 <= 1) {
@@ -684,7 +684,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
         val1[0] = -val1[0];
     }
     else {
-      final int c = compareAbsTo(val1, val2);
+      final int c = compareToAbs(val1, val2);
       if (c < 0) {
         setToZero(val1);
       }
@@ -712,7 +712,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       return val1;
 
     final boolean signum1 = val1[0] >= 0;
-    int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
+    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
     final boolean pos = val1[0] < 0 == val2[0] < 0;
     if (len2 > 1) {
       val2 = divRem0(val1, val2);
@@ -726,7 +726,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       if (pos != val1[0] >= 0)
         val1[0] = -val1[0];
 
-      val1 = uassign(alloc(2), pos, r);
+      val1 = assign(alloc(2), pos, r);
     }
 
     if (val1[0] >= 0 != signum1)
@@ -736,9 +736,9 @@ abstract class BigIntDivision extends BigIntMultiplication {
   }
 
   static int[] divRem0(int[] val1, final int[] val2) {
-    final int c = compareAbsTo(val1, val2);
+    final int c = compareToAbs(val1, val2);
     if (c == 0) {
-      uassign(val1, 1, 1);
+      assign(val1, 1, 1);
       return alloc(2);
     }
 

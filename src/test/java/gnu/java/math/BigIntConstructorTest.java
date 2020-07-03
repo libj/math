@@ -20,13 +20,28 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-public class BigModulusTest extends BigIntTest {
-  // FIXME: BigInteger is faster.
+public class BigIntConstructorTest extends BigIntTest {
+  @Test
+  public void testInt() {
+    testRange("<init>(int)",
+      i("BigInteger", (int a, int b) -> BigInteger.valueOf(a), String::valueOf),
+      i("BigInt", (int a, int b) -> new BigInt(a), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testLong() {
+    testRange("<init>(long)",
+      l("BigInteger", (long a, long b) -> BigInteger.valueOf(a), String::valueOf),
+      l("BigInt", (long a, long b) -> new BigInt(a), String::valueOf)
+    );
+  }
+
   @Test
   public void testBig() {
-    testRange("mod(T)",
-      s("BigInteger", this::scaledBigInteger, b -> new BigInteger(abs(nz(b))), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, b -> new BigInt(abs(nz(b))), (BigInt a, BigInt b) -> a.mod(b), String::valueOf)
+    testRange("<init>(String)",
+      s("BigInteger", (String a, String b) -> new BigInteger(a), String::valueOf),
+      s("BigInt", (String a, String b) -> new BigInt(a), String::valueOf)
     );
   }
 }

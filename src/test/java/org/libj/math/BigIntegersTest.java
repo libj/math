@@ -22,7 +22,7 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-import gnu.java.math.BigInt;
+import gnu.java.math.BigIntTest;
 
 public class BigIntegersTest extends BigIntTest {
   @Test
@@ -82,7 +82,7 @@ public class BigIntegersTest extends BigIntTest {
   @Test
   public void testUnsignedBigIntegerLong() {
     testRange("new unsigned BigInteger: byte[] vs shift",
-      l ("byte[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInteger((int)a, toByteArray(b)), String::valueOf),
+      l("byte[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInteger((int)a, toByteArray(b)), String::valueOf),
       l("shift", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf)
     );
   }

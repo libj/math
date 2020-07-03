@@ -478,7 +478,7 @@ public class BasicTest {
 
       bit = rnd.nextInt(600);
       facit = facit.setBit(bit);
-      int[] x = a.val.clone();
+      int[] x = a.val().clone();
       while (true) {
         try {
           a.setBit(bit);
@@ -494,7 +494,7 @@ public class BasicTest {
 
       bit = rnd.nextInt(600);
       facit = facit.clearBit(bit);
-      x = a.val.clone();
+      x = a.val().clone();
       while (true) {
         try {
           a.clearBit(bit);
@@ -510,7 +510,7 @@ public class BasicTest {
 
       bit = rnd.nextInt(600);
       facit = facit.flipBit(bit);
-      x = a.val.clone();
+      x = a.val().clone();
       while (true) {
         try {
           a.flipBit(bit);
