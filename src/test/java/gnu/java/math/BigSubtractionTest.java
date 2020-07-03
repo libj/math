@@ -19,9 +19,8 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigSubtractionTest extends AbstractTest {
+public class BigSubtractionTest extends BigIntTest {
   @Test
   public void testInt() {
     testRange("sub(int)",

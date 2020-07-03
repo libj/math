@@ -18,7 +18,6 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -45,78 +44,7 @@ import org.libj.util.function.ObjLongToLongFunction;
 import gnu.java.math.BigInt;
 
 public abstract class AbstractTest {
-  public static final int IRRELEVANT = 1;
-  public static final int[] ZERO = {0};
-  static final Random random = new Random();
-  static final int numTests = 1000000;
-  private static final double scaleFactor = 0.2;
-  private static final double inflateFactor = 0.2;
-  private static final double equalFactor = 0.1;
-  private static boolean shoudlScale;
-  private static boolean shouldInflate;
-  private static boolean shouldBeEqual;
-
-  public static int abs(final int a) {
-    return Math.abs(a);
-  }
-
-  public static long abs(final long a) {
-    return Math.abs(a);
-  }
-
-  public static String abs(final String num) {
-    return num.startsWith("-") ? num.substring(1) : num;
-  }
-
-  public BigInteger scaledBigInteger(final int a) {
-    final BigInteger b = BigInteger.valueOf(a);
-    return shoudlScale ? b.multiply(BigInteger.valueOf(intScale())) : b;
-  }
-
-  public BigInteger scaledBigInteger(final long a) {
-    final BigInteger b = BigInteger.valueOf(a);
-    return shoudlScale ? b.multiply(BigInteger.valueOf(longScale())) : b;
-  }
-
-  public BigInteger scaledBigInteger(final String a) {
-    return new BigInteger(shoudlScale ? stringScale(a) : a);
-  }
-
-  private static BigInt newBigInt() {
-    return shouldInflate ? new BigInt(new int[random.nextInt(1024) + 1]) : new BigInt(0);
-  }
-
-  private static int[] newVal(final int size) {
-    return shouldInflate ? new int[random.nextInt(1024) + 1] : new int[size];
-  }
-
-  public int[] scaledVal(final int a) {
-    final int[] b = BigInt.assign(newVal(2), a);
-    return shoudlScale ? BigInt.mul(b, intScale()) : b;
-  }
-
-  public int[] scaledVal(final long a) {
-    final int[] b = BigInt.assign(newVal(2), a);
-    return shoudlScale ? BigInt.mul(b, intScale()) : b;
-  }
-
-  public int[] scaledVal(final String a) {
-    return BigInt.fromString(shoudlScale ? stringScale(a) : a);
-  }
-
-  public BigInt scaledBigInt(final int a) {
-    final BigInt b = newBigInt().assign(a);
-    return shoudlScale ? b.mul(intScale()) : b;
-  }
-
-  public BigInt scaledBigInt(final long a) {
-    final BigInt b = newBigInt().assign(a);
-    return shoudlScale ? b.mul(longScale()) : b;
-  }
-
-  public BigInt scaledBigInt(final String a) {
-    return newBigInt().assign(shoudlScale ? stringScale(a) : a);
-  }
+  protected static final Random random = new Random();
 
   public long intScale() {
     return 1000000000000000000L;
@@ -151,51 +79,19 @@ public abstract class AbstractTest {
     return new String(num);
   }
 
-  public static int[] randomInputs(final int[] values) {
-    if (shouldBeEqual) {
-      Arrays.fill(values, random.nextInt());
-    }
-    else {
-      for (int i = 0; i < values.length; ++i)
-        values[i] = random.nextInt();
-    }
-
-    return values;
-  }
-
-  public static long[] randomInputs(final long[] values) {
-    if (shouldBeEqual) {
-      Arrays.fill(values, random.nextInt());
-    }
-    else {
-      for (int i = 0; i < values.length; ++i)
-        values[i] = random.nextInt();
-    }
-
-    return values;
-  }
-
-  public static String[] randomInputs(final int len, final String[] values) {
-    if (shouldBeEqual) {
-      Arrays.fill(values, randomBig(random.nextInt(len + 1) + 1, true));
-    }
-    else {
-      for (int i = 0; i < values.length; ++i)
-        values[i] = randomBig(random.nextInt(len + 1) + 1, true);
-    }
-
-    return values;
-  }
-
   public abstract static class Case<T,I,R,O> {
     private int count = -100;
     final String name;
+    final Object aToA;
+    final Object bToB;
     final Object test;
     final Function<R,O> out;
     Object previous;
 
-    Case(final String name, final Object test, final Function<R,O> out) {
+    Case(final String name, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
       this.name = name;
+      this.aToA = aToA;
+      this.bToB = bToB;
       this.test = test;
       this.out = out;
     }
@@ -227,7 +123,7 @@ public abstract class AbstractTest {
             else if (!(o instanceof Boolean))
               throw new UnsupportedOperationException("Unsupported type: " + o.getClass().getName());
 
-            assertEquals(message.append('\n').toString(), previous, o);
+            assertEquals(cse.name + ": " + message.append('\n').toString(), previous, o);
           }
         }
       }
@@ -248,37 +144,8 @@ public abstract class AbstractTest {
     private static final int NUM_RANDOM = 4000000;
     private final int[] inputs = {0, 0};
 
-    final Object aToA;
-    final Object bToB;
-
-    IntCase(final String name, final IntFunction<A> aToA, final ObjIntFunction<A,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = null;
-    }
-
-    IntCase(final String name, final IntToIntFunction aToA, final BiIntFunction<R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = null;
-    }
-
-    IntCase(final String name, final BiIntFunction<R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = null;
-      this.bToB = null;
-    }
-
-    IntCase(final String name, final IntFunction<A> aToA, final IntFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = bToB;
-    }
-
-    IntCase(final String name, final IntFunction<A> aToA, final ObjIntToIntFunction<A> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = bToB;
+    IntCase(final String name, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
+      super(name, aToA, bToB, test, out);
     }
 
     @Override
@@ -292,7 +159,7 @@ public abstract class AbstractTest {
       }
 
       for (int i = 0; i < NUM_RANDOM; ++i) {
-        randomInputs(inputs);
+        abstractTest.randomInputs(inputs);
         test(abstractTest, label, cases, times, inputs);
         inputs[0] *= -1;
         test(abstractTest, label, cases, times, inputs);
@@ -308,41 +175,53 @@ public abstract class AbstractTest {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
-          int a = inputs[0];
-          int b = inputs[1];
-          final Object t;
-          long time;
-          final IntCase intCase = (IntCase)cse;
-          if (cse.test instanceof BiIntFunction) {
-            if (intCase.aToA != null)
-              a = ((IntToIntFunction)intCase.aToA).applyAsInt(a);
+          final IntCase castCase = (IntCase)cse;
 
+          int a = inputs[0];
+          Object a0 = a;
+          if (castCase.aToA instanceof IntToIntFunction)
+            a = ((IntToIntFunction)castCase.aToA).applyAsInt(a);
+          else if (castCase.aToA instanceof IntFunction)
+            a0 = ((IntFunction)castCase.aToA).apply(a);
+          else if (castCase.aToA != null)
+            throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
+
+          int b = inputs[1];
+          Object b0 = b;
+          if (castCase.bToB instanceof IntToIntFunction)
+            b = ((IntToIntFunction)castCase.bToB).applyAsInt(b);
+          else if (castCase.bToB instanceof ObjIntToIntFunction)
+            b = ((ObjIntToIntFunction)castCase.bToB).applyAsInt(a0, b);
+          else if (castCase.bToB instanceof IntFunction)
+            b0 = ((IntFunction)castCase.bToB).apply(b);
+          else if (castCase.bToB instanceof ObjIntFunction)
+            b0 = ((ObjIntFunction)castCase.bToB).apply(a0, b);
+          else if (castCase.bToB != null)
+            throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
+
+          final Object result;
+          long time;
+          if (cse.test instanceof BiIntFunction) {
             final BiIntFunction test = (BiIntFunction)cse.test;
 
             time = System.nanoTime();
-            t = test.apply(a, b);
+            result = test.apply(a, b);
+          }
+          else if (cse.test instanceof ObjIntFunction) {
+            final ObjIntFunction test = (ObjIntFunction)cse.test;
+
+            time = System.nanoTime();
+            result = test.apply(a0, b);
           }
           else {
-            final Object a0 = intCase.aToA == null ? Integer.valueOf(a) : ((IntFunction)intCase.aToA).apply(a);
-            if (cse.test instanceof ObjIntFunction) {
-              final ObjIntFunction test = (ObjIntFunction)cse.test;
-              if (intCase.bToB != null)
-                b = ((ObjIntToIntFunction)intCase.bToB).applyAsInt(a0, b);
+            final BiFunction test = (BiFunction)cse.test;
 
-              time = System.nanoTime();
-              t = test.apply(a0, b);
-            }
-            else {
-              final Object b0 = intCase.bToB == null ? b : ((IntFunction)intCase.bToB).apply(b);
-              final BiFunction test = (BiFunction)cse.test;
-
-              time = System.nanoTime();
-              t = test.apply(a0, b0);
-            }
+            time = System.nanoTime();
+            result = test.apply(a0, b0);
           }
 
           time = System.nanoTime() - time;
-          verify(label, cse, t, c, time, times);
+          verify(label, cse, result, c, time, times);
         }
         catch (final Throwable t) {
           checkDebug(t);
@@ -359,37 +238,8 @@ public abstract class AbstractTest {
     private static final int NUM_RANDOM = 3000000;
     private final long[] inputs = {0, 0};
 
-    final Object aToA;
-    final Object bToB;
-
-    LongCase(final String name, final Object aToA, final BiLongToLongFunction test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = null;
-    }
-
-    LongCase(final String name, final LongFunction<A> aToA, final ObjLongFunction<A,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = null;
-    }
-
-    LongCase(final String name, final Object aToA, final BiLongFunction<R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = null;
-    }
-
-    LongCase(final String name, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = bToB;
-    }
-
-    LongCase(final String name, final LongFunction<A> aToA, final ObjLongToLongFunction<A> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = bToB;
+    LongCase(final String name, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
+      super(name, aToA, bToB, test, out);
     }
 
     @Override
@@ -403,7 +253,7 @@ public abstract class AbstractTest {
       }
 
       for (int i = 0; i < NUM_RANDOM; ++i) {
-        randomInputs(inputs);
+        abstractTest.randomInputs(inputs);
         test(abstractTest, label, cases, times, inputs);
         inputs[0] *= -1;
         test(abstractTest, label, cases, times, inputs);
@@ -419,50 +269,57 @@ public abstract class AbstractTest {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
-          long a = inputs[0];
-          long b = inputs[1];
-          final Object t;
-          long time;
-          final LongCase longCase = (LongCase)cse;
-          if (cse.test instanceof BiLongToLongFunction) {
-            if (longCase.aToA != null)
-              a = ((LongToLongFunction)longCase.aToA).applyAsLong(a);
+          final LongCase castCase = (LongCase)cse;
 
+          long a = inputs[0];
+          Object a0 = a;
+          if (castCase.aToA instanceof LongToLongFunction)
+            a = ((LongToLongFunction)castCase.aToA).applyAsLong(a);
+          else if (castCase.aToA instanceof LongFunction)
+            a0 = ((LongFunction)castCase.aToA).apply(a);
+          else if (castCase.aToA != null)
+            throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
+
+          long b = inputs[1];
+          Object b0 = b;
+          if (castCase.bToB instanceof ObjLongToLongFunction)
+            b = ((ObjLongToLongFunction)castCase.bToB).applyAsLong(a0, b);
+          else if (castCase.bToB instanceof LongToLongFunction)
+            b = ((LongToLongFunction)castCase.bToB).applyAsLong(b);
+          else if (castCase.bToB instanceof LongFunction)
+            b0 = ((LongFunction)castCase.bToB).apply(b);
+          else if (castCase.bToB != null)
+            throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
+
+          final Object result;
+          long time;
+          if (cse.test instanceof BiLongToLongFunction) {
             final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
 
             time = System.nanoTime();
-            t = test.applyAsLong(a, b);
+            result = test.applyAsLong(a, b);
           }
           else if (cse.test instanceof BiLongFunction) {
-            if (longCase.aToA != null)
-              a = ((LongToLongFunction)longCase.aToA).applyAsLong(a);
-
             final BiLongFunction test = (BiLongFunction)cse.test;
 
             time = System.nanoTime();
-            t = test.apply(a, b);
+            result = test.apply(a, b);
+          }
+          else if (cse.test instanceof ObjLongFunction) {
+            final ObjLongFunction test = (ObjLongFunction)cse.test;
+
+            time = System.nanoTime();
+            result = test.apply(a0, b);
           }
           else {
-            final Object a0 = longCase.aToA == null ? a : ((LongFunction)longCase.aToA).apply(a);
-            if (cse.test instanceof ObjLongFunction) {
-              final ObjLongFunction test = (ObjLongFunction)cse.test;
-              if (longCase.bToB != null)
-                b = ((ObjLongToLongFunction)longCase.bToB).applyAsLong(a0, b);
+            final BiFunction test = (BiFunction)this.test;
 
-              time = System.nanoTime();
-              t = test.apply(a0, b);
-            }
-            else {
-              final Object b0 = longCase.bToB == null ? b : ((LongFunction)longCase.bToB).apply(b);
-              final BiFunction test = (BiFunction)this.test;
-
-              time = System.nanoTime();
-              t = test.apply(a0, b0);
-            }
+            time = System.nanoTime();
+            result = test.apply(a0, b0);
           }
 
           time = System.nanoTime() - time;
-          verify(label, cse, t, c, time, times);
+          verify(label, cse, result, c, time, times);
         }
         catch (final Throwable t) {
           checkDebug(t);
@@ -481,19 +338,8 @@ public abstract class AbstractTest {
 
     private final String[] inputs = {null, null};
 
-    final Function<String,A> aToA;
-    final Object bToB;
-
-    StringCase(final String name, final Function<String,A> aToA, final Function<String,B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = bToB;
-    }
-
-    StringCase(final String name, final Function<String,A> aToA, final BiObjToLongFunction<A,String> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
-      super(name, test, out);
-      this.aToA = aToA;
-      this.bToB = bToB;
+    StringCase(final String name, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
+      super(name, aToA, bToB, test, out);
     }
 
     @Override
@@ -507,7 +353,7 @@ public abstract class AbstractTest {
       }
 
       for (int i = 0; i < NUM_RANDOM; ++i) {
-        randomInputs(i % MAX_LENGTH, inputs);
+        abstractTest.randomInputs(i % MAX_LENGTH, inputs);
         test(abstractTest, label, cases, times, inputs);
         inputs[0] = neg(inputs[0]);
         test(abstractTest, label, cases, times, inputs);
@@ -523,25 +369,39 @@ public abstract class AbstractTest {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
-          final String a0 = inputs[0];
-          final String b0 = inputs[1];
+          final StringCase castCase = (StringCase)cse;
+
+          final String a = inputs[0];
+          Object a0 = a;
+          if (castCase.aToA instanceof Function)
+            a0 = ((Function)castCase.aToA).apply(a);
+          else if (castCase.aToA != null)
+            throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
+
+          final String b = inputs[1];
+          Object b0 = b;
+          long b1 = Long.MIN_VALUE;
+
+          if (castCase.bToB instanceof Function)
+            b0 = ((Function)castCase.bToB).apply(b);
+          else if (castCase.bToB instanceof BiObjToLongFunction)
+            b1 = ((BiObjToLongFunction)castCase.bToB).applyAsLong(a0, b);
+          else if (castCase.bToB != null)
+            throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
+
           final Object t;
           long time;
-          final StringCase stringCase = (StringCase)cse;
-          final Object a = stringCase.aToA == null ? a0 : stringCase.aToA.apply(a0);
           if (cse.test instanceof ObjLongFunction) {
             final ObjLongFunction test = (ObjLongFunction)cse.test;
-            final long b = ((BiObjToLongFunction)stringCase.bToB).applyAsLong(a, b0);
 
             time = System.nanoTime();
-            t = test.apply(a, b);
+            t = test.apply(a0, b1);
           }
           else {
-            final BiFunction test = (BiFunction)stringCase.test;
-            final Object b = stringCase.bToB == null ? b0 : ((Function)stringCase.bToB).apply(b0);
+            final BiFunction test = (BiFunction)castCase.test;
 
             time = System.nanoTime();
-            t = test.apply(a, b);
+            t = test.apply(a0, b0);
           }
 
           time = System.nanoTime() - time;
@@ -557,30 +417,38 @@ public abstract class AbstractTest {
     }
   }
 
+
   public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntFunction<A> aToA, final IntFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
     return new IntCase<>(name, aToA, bToB, test, out);
   }
 
-  public void onSuccess() {
-    shoudlScale = random.nextDouble() < scaleFactor;
-    shouldInflate = random.nextDouble() < inflateFactor;
-    shouldBeEqual = random.nextDouble() < equalFactor;
-  }
+  protected abstract String[] randomInputs(int i, String[] inputs);
+  protected abstract long[] randomInputs(long[] inputs);
+  protected abstract int[] randomInputs(int[] inputs);
+  protected abstract void onSuccess();
 
   public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntFunction<A> aToA, final ObjIntToIntFunction<A> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
     return new IntCase<>(name, aToA, bToB, test, out);
   }
 
   public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntFunction<A> aToA, final ObjIntFunction<A,R> test, final Function<R,O> out) {
-    return new IntCase<>(name, aToA, test, out);
+    return new IntCase<>(name, aToA, null, test, out);
+  }
+
+  public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntFunction<A> aToA, final IntToIntFunction bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+    return new IntCase<>(name, aToA, bToB, test, out);
   }
 
   public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntToIntFunction aToA, final BiIntFunction<R> test, final Function<R,O> out) {
-    return new IntCase<>(name, aToA, test, out);
+    return new IntCase<>(name, aToA, null, test, out);
+  }
+
+  public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntToIntFunction aToA, final IntToIntFunction test, final Function<R,O> out) {
+    return new IntCase<>(name, aToA, null, test, out);
   }
 
   public static <R,O>IntCase<Integer,Integer,R,O> i(final String name, final BiIntFunction<R> test, final Function<R,O> out) {
-    return new IntCase<>(name, test, out);
+    return new IntCase<>(name, null, null, test, out);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
@@ -588,11 +456,11 @@ public abstract class AbstractTest {
   }
 
   public static <R,O>LongCase<Long,Long,R,O> l(final String name, final BiLongFunction<R> test, final Function<R,O> out) {
-    return new LongCase<>(name, null, test, out);
+    return new LongCase<>(name, null, null, test, out);
   }
 
   public static <R,O>LongCase<Long,Long,R,O> l(final String name, final LongToLongFunction aToA, final BiLongFunction<R> test, final Function<R,O> out) {
-    return new LongCase<>(name, aToA, test, out);
+    return new LongCase<>(name, aToA, null, test, out);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final ObjLongToLongFunction<A> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
@@ -600,19 +468,23 @@ public abstract class AbstractTest {
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final ObjLongFunction<A,R> test, final Function<R,O> out) {
-    return new LongCase<>(name, aToA, test, out);
+    return new LongCase<>(name, aToA, null, test, out);
+  }
+
+  public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final LongToLongFunction bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
+    return new LongCase<>(name, aToA, bToB, test, out);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongToLongFunction aToA, final BiLongToLongFunction test, final Function<R,O> out) {
-    return new LongCase<>(name, aToA, test, out);
+    return new LongCase<>(name, aToA, null, test, out);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongToLongFunction aToA, final BiLongToLongFunction test) {
-    return new LongCase<>(name, aToA, test, null);
+    return new LongCase<>(name, aToA, null, test, null);
   }
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final BiLongToLongFunction test) {
-    return new LongCase<>(name, null, test, null);
+    return new LongCase<>(name, null, null, test, null);
   }
 
   public static <A,B,R,O>StringCase<A,B,R,O> s(final String name, final Function<String,A> aToA, final Function<String,B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {

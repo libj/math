@@ -17,9 +17,8 @@
 package gnu.java.math;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigIntStudy extends AbstractTest {
+public class BigIntStudy extends BigIntTest {
   /**
    * Tests which is faster:
    * <ol>

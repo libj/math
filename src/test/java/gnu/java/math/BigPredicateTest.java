@@ -19,9 +19,8 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigPredicateTest extends AbstractTest {
+public class BigPredicateTest extends BigIntTest {
   @Test
   public void testByteValue() {
     testRange("byeValue()",

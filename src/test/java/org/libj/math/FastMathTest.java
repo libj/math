@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.libj.lang.Strings;
 
-public class FastMathTest extends AbstractTest {
+public class FastMathTest extends BigIntTest {
   @Test
   public void testLog2Int() {
     for (int i = 0; i < numTests; ++i) {

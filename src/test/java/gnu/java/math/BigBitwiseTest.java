@@ -19,9 +19,8 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigBitwiseTest extends AbstractTest {
+public class BigBitwiseTest extends BigIntTest {
   private static long randomBit(final String seed, final int bitCount) {
     return Math.abs(seed.hashCode() % (bitCount + 1));
   }

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import gnu.java.math.BigInt;
 
-public class BigIntegersTest extends AbstractTest {
+public class BigIntegersTest extends BigIntTest {
   @Test
   public void testInternBigInteger() {
     final BigInteger a = new BigInteger("58921");

@@ -19,9 +19,8 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigLogicalTest extends AbstractTest {
+public class BigLogicalTest extends BigIntTest {
   @Test
   public void testAnd() {
     testRange("and(T)",

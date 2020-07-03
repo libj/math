@@ -21,18 +21,19 @@ abstract class BigDivision extends BigMultiplication {
   private static final long serialVersionUID = -4156041218135948540L;
   static int IRRELEVANT = 1;
 
-  public static void rem(final int[] val, final int sig, final int mod) {
+  public static int rem(final int[] val, final int sig, int mod) {
     int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
-    val[1] = rem(val, 1, len, sig, mod);
+    val[1] = mod = rem(val, 1, len, sig, mod);
     val[0] = val[1] == 0 ? 0 : signum;
     _debugLenSig(val);
+    return mod;
   }
 
-  public static void rem(final int[] val, final int mod) {
+  public static long rem(final int[] val, final int mod) {
     if (mod > 0)
-      rem(val, IRRELEVANT, mod);
-    else
-      rem(val, IRRELEVANT, -mod); // FIXME: Integer.MIN_VALUE does not seem to matter?!
+      return rem(val, IRRELEVANT, mod);
+
+    return rem(val, IRRELEVANT, -mod); // FIXME: Integer.MIN_VALUE does not seem to matter?!
   }
 
   public static int rem(final int[] mag, final int off, final int len, final int sig, final int mod) {
@@ -105,6 +106,11 @@ abstract class BigDivision extends BigMultiplication {
       rem(val, IRRELEVANT, -mod); // FIXME: Long.MIN_VALUE does not seem to matter?!
   }
 
+  public static int[] div(final int[] val, final int sig, final int div) {
+    divRem(val, sig, div);
+    return val;
+  }
+
   /**
    * Divides the unsigned dividend in {@code val} (up to {@code len}) by the
    * unsigned {@code divisor}, and returns the remainder. The quotient will be
@@ -118,7 +124,16 @@ abstract class BigDivision extends BigMultiplication {
    * @throws ArithmeticException If {@code divisor} is 0.
    */
   // FIXME: Javadoc: Assumes div > 0.
-  public static int div(final int[] val, final int sig, final int div) {
+  public static long divRem(final int[] val, final int sig, final int div) {
+    int signum, len = val[0]; if (len < 0) { len = -len; signum = -1; } else { signum = 1; }
+    final long r = divRem0(val, sig, div);
+    return signum < 0 ? -r : r;
+  }
+
+  private static long divRem0(final int[] val, final int sig, final int div) {
+    if (isZero(val))
+      return 0;
+
 //    int[] val$ = to$(val);
 //    final long x = udiv$(val$, d);
 
@@ -158,61 +173,19 @@ abstract class BigDivision extends BigMultiplication {
 
     val[0] = val[0] < 0 != sig < 0 ? -len : len;
     _debugLenSig(val);
-    return (int)r;
+    return r;
   }
 
-  public static int udiv$(final int[] val, final int divisor) {
-    return divisor < 0 ? safeUdiv(val, divisor) : unsafeUdiv(val, divisor);
+  public static int[] div(final int[] val, final int div) {
+    divRem(val, div);
+    return val;
   }
 
-  // Assumes div > 0.
-  private static int unsafeUdiv(final int[] val, final int d) {
-    int len = val[0];
-    final long dl = d & LONG_INT_MASK;
-    long r = 0;
-    for (int i = len - 1; i >= 2; --i) {
-      r <<= 32;
-      r += val[i] & LONG_INT_MASK;
-      if ((val[i] = (int)(r / dl)) == 0)
-        --len;
+  public static long divRem(final int[] val, final int div) {
+    if (div > 0)
+      return divRem(val, 1, div);
 
-      r = r % dl;
-    }
-
-    val[0] = Math.max(3, len);
-    if (isZero(val))
-      val[1] = 0;
-
-    return (int)r;
-  }
-
-  // Assumes div < 0.
-  private static int safeUdiv(final int[] val, final int d) {
-    final long dl = d & LONG_INT_MASK;
-    final long hbit = Long.MIN_VALUE;
-    long hq = (hbit - 1) / dl;
-    if (hq * dl + dl == hbit)
-      ++hq;
-
-    long r = 0, rh;
-    final long rl = hbit - hq * dl;
-    int len = val[0];
-    boolean zeroes = true;
-    for (int i = len - 1; i >= 2; --i) {
-      r = (r << 32) + (val[i] & LONG_INT_MASK);
-      rh = r >> 63;
-      final long q = (hq & rh) + ((r & hbit - 1) + (rl & rh)) / dl;
-      r -= q * dl;
-      val[i] = (int)q;
-      if (zeroes && (zeroes = q == 0))
-        --len;
-    }
-
-    val[0] = Math.max(3, len);
-    if (isZero(val))
-      val[1] = 0;
-
-    return (int)r;
+    return divRem(val, -1, -div); // FIXME: Integer.MIN_VALUE does not seem to matter?!
   }
 
   /**
@@ -229,25 +202,32 @@ abstract class BigDivision extends BigMultiplication {
    */
   /**
    * Divides this number with an unsigned long and returns the remainder.
+   * ABSOLUTE UNSIGNED LONG VALUE OF THE REMAINDER
    *
    * @param div The amount to divide with (treated as unsigned).
    * @return The absolute value of the remainder as an unsigned long.
    * @complexity O(n)
    */
-  public static long div(final int[] val, final int sig, final long div) {
+  public static long divRem(final int[] val, final int sig, final long div) {
     return div(val, sig, div, div >>> 32);
   }
 
+  public static int[] div(final int[] val, final int sig, final long div) {
+    div(val, sig, div, div >>> 32);
+    return val;
+  }
+
   static long div(final int[] val, final int sig, final long div, long divh) {
+    if (isZero(val))
+      return 0;
+
     if (divh == 0)
-      return div(val, sig, (int)div) & LONG_INT_MASK;
+      return divRem0(val, sig, (int)div) & LONG_INT_MASK;
 
-//    int[] val$ = to$(val);
-//    final long x = udiv$(val$, d, dh);
-
+    final long r;
     int len = val[0]; if (len < 0) { len = -len; }
     if (len <= 1) {
-      final long vl = val[1] & LONG_INT_MASK;
+      r = val[1] & LONG_INT_MASK;
       if (div == 1) {
         val[1] = 1;
         if (val[0] < 0 != sig < 0)
@@ -257,7 +237,7 @@ abstract class BigDivision extends BigMultiplication {
         setToZero(val);
       }
 
-      return vl;
+      return r;
     }
 
     final int s = Integer.numberOfLeadingZeros((int)(divh));
@@ -327,7 +307,24 @@ abstract class BigDivision extends BigMultiplication {
     _debugLenSig(val);
 
     final long tmp = u1 << 32 - s | u0 >>> s;
-    return s == 0 ? tmp : u2 << 64 - s | tmp;
+    r = s == 0 ? tmp : u2 << 64 - s | tmp;
+    return r;
+  }
+
+  public static int[] div(final int[] val, final long div) {
+    divRem(val, div);
+    return val;
+  }
+
+  public static long divRem(final int[] val, final long div) {
+    final boolean signum = val[0] >= 0;
+    final long r;
+    if (div > 0)
+      r = divRem(val, 1, div);
+    else
+      r = divRem(val, -1, -div); // FIXME: Long.MIN_VALUE does not seem to matter?!
+
+    return signum ? r : -r;
   }
 
   public static long udiv$(final int[] val, final long divisor, long dh) {
@@ -403,6 +400,80 @@ abstract class BigDivision extends BigMultiplication {
     val[0] = len;
     if (isZero(val))
       val[1] = 0;
+
+    final long tmp = u1 << 32 - s | u0 >>> s;
+    return s == 0 ? tmp : u2 << 64 - s | tmp;
+  }
+
+  public static long udiv$$(final int[] dig, int len, final long div) { // Adaption of general div to long.
+    if (div == (div & LONG_INT_MASK))
+      return udiv$(dig, (int)div) & LONG_INT_MASK;
+
+    if (len == 1) {
+      final long tmp = dig[0] & LONG_INT_MASK;
+      dig[0] = 0;
+      return tmp;
+    }
+
+    final int s = Integer.numberOfLeadingZeros((int)(div >>> 32));
+    final long dh = div >>> 32 - s, dl = (div << s) & LONG_INT_MASK, hbit = Long.MIN_VALUE;
+
+    long u2 = 0, u1 = dig[len - 1] >>> 32 - s, u0 = (dig[len - 1] << s | dig[len - 2] >>> 32 - s) & LONG_INT_MASK;
+    if (s == 0) {
+      u1 = 0;
+      u0 = dig[len - 1] & LONG_INT_MASK;
+    }
+
+    for (int j = len - 2; j >= 0; j--) {
+      u2 = u1;
+      u1 = u0;
+      u0 = s > 0 && j > 0 ? (dig[j] << s | dig[j - 1] >>> 32 - s) & LONG_INT_MASK : (dig[j] << s) & LONG_INT_MASK;
+
+      long k = (u2 << 32) + u1; // Unsigned division is a pain in the ass! ='(
+      long qhat = (k >>> 1) / dh << 1;
+      long t = k - qhat * dh;
+      if (t + hbit >= dh + hbit)
+        qhat++; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];
+
+      long rhat = k - qhat * dh;
+
+      while (qhat + hbit >= (1L << 32) + hbit || qhat * dl + hbit > (rhat << 32) + u0 + hbit) {
+        --qhat;
+        rhat = rhat + dh;
+        if (rhat + hbit >= (1L << 32) + hbit)
+          break;
+      }
+
+      // Multiply and subtract. Unfolded loop.
+      long p = qhat * dl;
+      t = u0 - (p & LONG_INT_MASK);
+      u0 = t & LONG_INT_MASK;
+      k = (p >>> 32) - (t >> 32);
+      p = qhat * dh;
+      t = u1 - k - (p & LONG_INT_MASK);
+      u1 = t & LONG_INT_MASK;
+      k = (p >>> 32) - (t >> 32);
+      t = u2 - k;
+      u2 = t & LONG_INT_MASK;
+
+      dig[j] = (int)qhat; // Store quotient digit. If we subtracted too much,
+                          // add back.
+      if (t < 0) {
+        --dig[j]; // Unfolded loop.
+        t = u0 + dl;
+        u0 = t & LONG_INT_MASK;
+        t >>>= 32;
+        t = u1 + dh + t;
+        u1 = t & LONG_INT_MASK;
+        t >>>= 32;
+        u2 += t & LONG_INT_MASK;
+      }
+    }
+
+    --len;
+    dig[len] = 0;
+    if (len > 1 && dig[len - 1] == 0)
+      --len;
 
     final long tmp = u1 << 32 - s | u0 >>> s;
     return s == 0 ? tmp : u2 << 64 - s | tmp;
@@ -561,6 +632,9 @@ abstract class BigDivision extends BigMultiplication {
    * @complexity O(n^2)
    */
   public static int[] rem(int[] val1, final int[] val2) {
+    if (isZero(val1))
+      return val1;
+
     // -7/-3 = 2, 2*-3 + -1
     // -7/3 = -2, -2*3 + -1
     // 7/-3 = -2, -2*-3 + 1
@@ -598,11 +672,14 @@ abstract class BigDivision extends BigMultiplication {
    * @complexity O(n^2)
    */
   public static int[] div(int[] val1, final int[] val2) {
+    if (isZero(val1))
+      return val1;
+
     int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
     final boolean flipSignum = val1[0] < 0 != val2[0] < 0;
     int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
     if (len2 <= 1) {
-      div(val1, signum2, val2[1]);
+      divRem(val1, signum2, val2[1]);
       if (val1[0] < 0 != flipSignum)
         val1[0] = -val1[0];
     }
@@ -631,6 +708,9 @@ abstract class BigDivision extends BigMultiplication {
   }
 
   public static int[] divRem(int[] val1, int[] val2) {
+    if (isZero(val1))
+      return val1;
+
     final boolean signum1 = val1[0] >= 0;
     int signum2, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; } else { signum2 = 1; }
     final boolean pos = val1[0] < 0 == val2[0] < 0;
@@ -642,7 +722,7 @@ abstract class BigDivision extends BigMultiplication {
       val1 = val2;
     }
     else {
-      final int r = div(val1, signum2, val2[1]);
+      final long r = divRem0(val1, signum2, val2[1]);
       if (pos != val1[0] >= 0)
         val1[0] = -val1[0];
 
@@ -679,5 +759,59 @@ abstract class BigDivision extends BigMultiplication {
     // Do the div, with results going to val1 (which is where we want it to end up)
     BigDivision.div(q, val2, val1);
     return q;
+  }
+
+  public static int udiv$(final int[] val, final int divisor) {
+    return divisor < 0 ? safeUdiv(val, divisor) : unsafeUdiv(val, divisor);
+  }
+
+  // Assumes div > 0.
+  private static int unsafeUdiv(final int[] val, final int d) {
+    int len = val[0];
+    final long dl = d & LONG_INT_MASK;
+    long r = 0;
+    for (int i = len - 1; i >= 2; --i) {
+      r <<= 32;
+      r += val[i] & LONG_INT_MASK;
+      if ((val[i] = (int)(r / dl)) == 0)
+        --len;
+
+      r = r % dl;
+    }
+
+    val[0] = Math.max(3, len);
+    if (isZero(val))
+      val[1] = 0;
+
+    return (int)r;
+  }
+
+  // Assumes div < 0.
+  private static int safeUdiv(final int[] val, final int d) {
+    final long dl = d & LONG_INT_MASK;
+    final long hbit = Long.MIN_VALUE;
+    long hq = (hbit - 1) / dl;
+    if (hq * dl + dl == hbit)
+      ++hq;
+
+    long r = 0, rh;
+    final long rl = hbit - hq * dl;
+    int len = val[0];
+    boolean zeroes = true;
+    for (int i = len - 1; i >= 2; --i) {
+      r = (r << 32) + (val[i] & LONG_INT_MASK);
+      rh = r >> 63;
+      final long q = (hq & rh) + ((r & hbit - 1) + (rl & rh)) / dl;
+      r -= q * dl;
+      val[i] = (int)q;
+      if (zeroes && (zeroes = q == 0))
+        --len;
+    }
+
+    val[0] = Math.max(3, len);
+    if (isZero(val))
+      val[1] = 0;
+
+    return (int)r;
   }
 }

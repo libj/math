@@ -19,15 +19,14 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigModulusTest extends AbstractTest {
+public class BigModulusTest extends BigIntTest {
   // FIXME: BigInteger is faster.
   @Test
   public void testBig() {
     testRange("mod(T)",
-      s("BigInteger", this::scaledBigInteger, b -> new BigInteger(abs(b)).add(BigInteger.ONE), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, b -> new BigInt(abs(b)).add(1), (BigInt a, BigInt b) -> a.mod(b), String::valueOf)
+      s("BigInteger", this::scaledBigInteger, b -> new BigInteger(abs(nz(b))), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
+      s("BigInt", this::scaledBigInt, b -> new BigInt(abs(nz(b))), (BigInt a, BigInt b) -> a.mod(b), String::valueOf)
     );
   }
 }

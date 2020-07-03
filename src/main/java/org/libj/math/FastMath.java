@@ -144,12 +144,13 @@ public final class FastMath {
 
   // FIXME: Implement tests and document.
   static void divideUnsigned(final int[] dividend, int len, final long divisor, final long[] result) {
-    if (divisor >> 32 == 0) {
+    final long divh = divisor >>> 32;
+    if (divh == 0) {
       divideUnsigned(dividend, (int)divisor, len, result);
       return;
     }
 
-    result[1] = BigInt.div(dividend, len, divisor, divisor >>> 32);
+    result[1] = BigInt.div(dividend, len, divisor, divh);
     --len;
     if (len > 1 && dividend[len - 1] == 0)
       --len;

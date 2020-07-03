@@ -19,9 +19,8 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.AbstractTest;
 
-public class BigMultiplicationTest extends AbstractTest {
+public class BigMultiplicationTest extends BigIntTest {
   @Test
   public void testInt() {
     testRange("mul(int)",

@@ -536,8 +536,12 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @return The absolute value of the remainder as an unsigned int.
    * @complexity O(n)
    */
-  public int udivRem(final int sig, final int div) {
-    return isZero() ? 0 : BigDivision.div(val, sig, div);
+  public long divRem(final int sig, final int div) {
+    return BigDivision.divRem(val, sig, div);
+  }
+
+  public long divRem(final int div) {
+    return BigDivision.divRem(val, div);
   }
 
   /**
@@ -548,13 +552,12 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @return The absolute value of the remainder as an unsigned long.
    * @complexity O(n)
    */
-  public long udivRem(final int sig, final long div) {
-    return isZero() ? 0 : udiv0(sig, div);
+  public long divRem(final int sig, final long div) {
+    return BigDivision.divRem(val, sig, div);
   }
 
-  private long udiv0(final int sig, final long div) {
-    final long divh = div >>> 32;
-    return divh == 0 ? udivRem(sig, (int)div) & LONG_INT_MASK : BigDivision.div(val, sig, div, divh);
+  public long divRem(final long div) {
+    return BigDivision.divRem(val, div);
   }
 
   /**
@@ -768,133 +771,6 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
   }
 
   /**
-   * Divides this number by an {@code int}.
-   *
-   * @param d The amount by which to divide.
-   * @complexity O(n)
-   * @return The signed remainder.
-   */
-  public int divRem(final int sig, final int d) {
-    if (isZero())
-      return 0;
-
-    final boolean signum = val[0] >= 0;
-    final int r;
-    if (d >= 0) {
-      r = BigDivision.div(val, sig, d);
-    }
-    else {
-      val[0] = -val[0];
-      if (d == Integer.MIN_VALUE)
-        r = (int)udivRem(sig, -(long)d);
-      else
-        r = BigDivision.div(val, sig, -d);
-    }
-
-    return signum ? r : -r;
-  }
-
-  /**
-   * Divides this number by a {@code long}.
-   *
-   * @param d The amount by which to divide.
-   * @complexity O(n)
-   * @return The signed remainder.
-   */
-  public long divRem(final int sig, final long d) {
-    if (isZero())
-      return 0;
-
-    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
-    final long dh = d >>> 32;
-    if (dh == 0) {
-      long r = BigDivision.div(val, sig, (int)d);
-      if (r >= 0 != signum)
-        r = -r;
-
-      return r;
-    }
-
-    final long r;
-    if (d > 0) {
-      r = BigDivision.div(val, sig, d, dh);
-    }
-    else if (d == Long.MIN_VALUE) {
-      if (len <= 1) {
-        r = longValue();
-        setToZero();
-        return r == Long.MIN_VALUE ? 0 : r;
-      }
-
-      // FIXME: There has to be an easier way!
-      final int[] val2 = {
-        -2,
-        (int)(d & LONG_INT_MASK),
-        (int)dh
-      };
-
-      final int[] rem = divRem(val, val2);
-      r = longValue(rem, 1, Math.abs(rem[0]) + 1);
-    }
-    else {
-      val[0] = -val[0];
-      r = udiv0(sig, -d);
-      // FIXME: Assert the result of the division (not just the remainder) is correct! There may be a sign issue here.
-    }
-
-    return signum ? r : -r;
-  }
-
-  /**
-   * Divides this number by an {@code int}.
-   * <p>
-   * Division by zero is undefined.
-   *
-   * @param d The number by which to divide.
-   * @complexity O(n^2)
-   */
-  public BigInt div(final int d) {
-    if (isZero())
-      return this;
-
-//    val = BigDivision.div(val, d);
-    return this;
-  }
-
-  /**
-   * Divides this number by a {@code long}.
-   * <p>
-   * Division by zero is undefined.
-   *
-   * @param d The number by which to divide.
-   * @complexity O(n^2)
-   */
-  public BigInt div(final long d) {
-    if (isZero())
-      return this;
-
-//    val = BigDivision.div(val, d);
-    return this;
-  }
-
-  /**
-   * Divides this number by a {@link BigInt}.
-   * <p>
-   * Division by zero is undefined.
-   *
-   * @param div The number by which to divide.
-   * @complexity O(n^2)
-   */
-  public BigInt div(final BigInt div) {
-    if (isZero())
-      return this;
-
-    val = BigDivision.div(val, div.val);
-    return this;
-  }
-
-
-  /**
    * Divides this number by an unsigned {@code int}.
    * <p>
    * Division by zero is undefined.
@@ -903,10 +779,7 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final int sig, final int div) {
-    if (isZero())
-      return this;
-
-    BigDivision.div(val, sig, div);
+    BigDivision.divRem(val, sig, div);
     return this;
   }
 
@@ -919,10 +792,46 @@ public class BigInt extends BigBinary implements Comparable<BigInt>, Cloneable {
    * @complexity O(n^2)
    */
   public BigInt div(final int sig, final long div) {
-    if (isZero())
-      return this;
+    BigDivision.divRem(val, sig, div);
+    return this;
+  }
 
-    BigDivision.div(val, sig, div);
+  /**
+   * Divides this number by an {@code int}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param d The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt div(final int d) {
+    BigDivision.divRem(val, d);
+    return this;
+  }
+
+  /**
+   * Divides this number by a {@code long}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param d The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt div(final long d) {
+    BigDivision.divRem(val, d);
+    return this;
+  }
+
+  /**
+   * Divides this number by a {@link BigInt}.
+   * <p>
+   * Division by zero is undefined.
+   *
+   * @param div The number by which to divide.
+   * @complexity O(n^2)
+   */
+  public BigInt div(final BigInt div) {
+    val = BigDivision.div(val, div.val);
     return this;
   }
 

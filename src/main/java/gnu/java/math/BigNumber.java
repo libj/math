@@ -41,6 +41,10 @@ abstract class BigNumber extends Number {
     return val;
   }
 
+  public static int[] uassign(final int[] val, final boolean signum, final long v) {
+    return uassign(val, signum ? 1 : -1, v);
+  }
+
   public static int[] uassign(final int[] val, final boolean signum, final int v) {
     return uassign(val, signum ? 1 : -1, v);
   }
