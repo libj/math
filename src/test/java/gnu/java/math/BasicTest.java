@@ -65,7 +65,7 @@ public class BasicTest {
     assertEquals("Error 4M", "4000000000", new BigInt("4000000000").toString());
     assertEquals("Error", "3928649759", new BigInt("3928649759").toString());
     BigInt me = new BigInt(s);
-    me.umul(0);
+    me.mul(1, 0);
     assertEquals("Zero string", "0", me.toString());
     me = new BigInt("0");
     assertEquals("Zero string2", "0", me.toString());
@@ -145,7 +145,7 @@ public class BasicTest {
     me.add(tmp);
     assertEquals("Sub2", facit.toString(), me.toString());
 
-    me.umul(0);
+    me.mul(1, 0);
     me.usub(1);
     assertEquals("From 0 to -1", "-1", me.toString());
     me.mul(-16);
@@ -157,7 +157,7 @@ public class BasicTest {
   @Test
   public void mulTest() {
     BigInt me = new BigInt("2000000000");
-    me.umul(3);
+    me.mul(1, 3);
     assertEquals("Small", "6000000000", me.toString());
     me = new BigInt("4000000000");
     me.mul(me);
@@ -171,7 +171,7 @@ public class BasicTest {
     me.mul(new BigInt(s));
     assertEquals("Mul ", facit.toString(), me.toString());
 
-    me.umul(0);
+    me.mul(1, 0);
     me.uadd(1);
     assertEquals("0 to 1", "1", me.toString());
     me.mul(new BigInt(s));
@@ -184,7 +184,7 @@ public class BasicTest {
     BigInteger ulong = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1});
     for (int i = 0; i < 256; i++) {
       facit = facit.multiply(ulong);
-      me.umul(-1L);
+      me.mul(1, -1L);
       assertEquals("Long mul " + i, facit.toString(), me.toString());
     }
   }
@@ -362,18 +362,18 @@ public class BasicTest {
   public void testLongZeroAdd() {
     BigInt a = new BigInt(0);
     a.add(0L);
-    assertEquals("add(0L)", true, a.isZero());
+    assertTrue("add(0L)", a.isZero());
     a.uadd(0L);
-    assertEquals("uadd(0L)", true, a.isZero());
+    assertTrue("uadd(0L)", a.isZero());
     a.add(-1L);
     a.add(2L);
     a.add(-1L);
-    assertEquals("-1L + 2L + -1L = 0", true, a.isZero());
+    assertTrue("-1L + 2L + -1L = 0", a.isZero());
     a.usub(7L);
     a.sub(-8L);
-    assertEquals("-7L - -8L != 0", false, a.isZero());
+    assertFalse("-7L - -8L != 0", a.isZero());
     a.sub(1L);
-    assertEquals("1 - 1L = 0", true, a.isZero());
+    assertTrue("1 - 1L = 0", a.isZero());
   }
 
   @Test
@@ -437,15 +437,15 @@ public class BasicTest {
     BigInt b = new BigInt(0);
     b.setBit(1337);
     assertEquals("Set bit", a.toString(), b.toString());
-    assertEquals("Test bit", true, a.testBit(1337));
-    assertEquals("Test bit", false, a.testBit(1336));
+    assertTrue("Test bit", a.testBit(1337));
+    assertFalse("Test bit", a.testBit(1336));
     b.clearBit(1337);
-    assertEquals("Clear bit", true, b.isZero());
-    assertEquals("Test bit", false, b.testBit(1337));
+    assertTrue("Clear bit", b.isZero());
+    assertFalse("Test bit", b.testBit(1337));
     b.flipBit(1337);
     assertEquals("Flip bit", a.toString(), b.toString());
     b.flipBit(1337);
-    assertEquals("Flip bit", true, b.isZero());
+    assertTrue("Flip bit", b.isZero());
     b = new BigInt("24973592847598349867938576938752986459872649249832748");
     BigInteger facit = new BigInteger("24973592847598349867938576938752986459872649249832748");
     b.flipBit(77);
@@ -558,7 +558,7 @@ public class BasicTest {
   public void testAnd() {
     BigInt a = new BigInt(1L << 47);
     a.and(new BigInt(0L));
-    assertEquals("And with 0", true, a.isZero());
+    assertTrue("And with 0", a.isZero());
     for (int i = 0; i < 1024; i++) {
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
@@ -653,7 +653,7 @@ public class BasicTest {
     b.shiftLeft(47);
     assertEquals("Xor with 0", b.toString(), a.toString());
     a.xor(b);
-    assertEquals("Double xor is zero", true, a.isZero());
+    assertTrue("Double xor is zero", a.isZero());
     for (int i = 0; i < 1024; i++) {
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
@@ -676,7 +676,7 @@ public class BasicTest {
     b.shiftLeft(47);
     assertEquals("AndNot with 0", b.toString(), a.toString());
     a.andNot(b);
-    assertEquals("Self andNot is zero", true, a.isZero());
+    assertTrue("Self andNot is zero", a.isZero());
     for (int i = 0; i < 1024; i++) {
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
@@ -708,7 +708,7 @@ public class BasicTest {
     a.not();
     assertEquals("~0 = ", "-1", a.toString());
     a.not();
-    assertEquals("~~0", true, a.isZero());
+    assertTrue("~~0", a.isZero());
     for (int i = 0; i < 1024; i++) {
       final char[] s = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32;

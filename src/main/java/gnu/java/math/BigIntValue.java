@@ -49,10 +49,14 @@ abstract class BigIntValue extends Number {
   // FIXME: 0 or 1 min len?
   public static int[] copy(int[] target, final int[] source) {
     final int len = Math.abs(source[0]) + 1;
-    if (len > target.length)
-      target = alloc(len);
+    return copy(target, source, len, len);
+  }
 
-    System.arraycopy(source, 0, target, 0, len);
+  static int[] copy(int[] target, final int[] source, final int copyLength, final int arrayLength) {
+    if (arrayLength >= target.length)
+      target = alloc(arrayLength);
+
+    System.arraycopy(source, 0, target, 0, copyLength);
     _debugLenSig(target);
     return target;
   }
@@ -120,7 +124,7 @@ abstract class BigIntValue extends Number {
 
   public static int[] assign(int[] val, final int sig, final long mag) {
     if (mag == 0)
-      return setToZero(val);
+      return setToZero(val.length == 0 ? new int[1] : val);
 
     final int h = (int)(mag >>> 32);
     if (h != 0) {
@@ -546,12 +550,20 @@ abstract class BigIntValue extends Number {
 
   static final int[] emptyVal = {};
 
-  public static int[] fromString(final char[] s) {
+  public static int[] valueOf(final int mag) {
+    return assign(emptyVal, mag);
+  }
+
+  public static int[] valueOf(final long mag) {
+    return assign(emptyVal, mag);
+  }
+
+  public static int[] valueOf(final char[] s) {
     return assign(emptyVal, s);
   }
 
-  public static int[] fromString(final String s) {
-    return assign(null, s);
+  public static int[] valueOf(final String s) {
+    return assign(emptyVal, s);
   }
 
   /**

@@ -65,7 +65,7 @@ public class BigIntDivisionTest extends BigIntTest {
     testRange("div(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> a.div(b), String::valueOf),
-      s("int[]", this::scaledVal, b -> BigInt.fromString(nz(b)), (int[] a, int[] b) -> BigInt.div(a, b), BigInt::toString)
+      s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> BigInt.div(a, b), BigInt::toString)
     );
   }
 
@@ -112,7 +112,7 @@ public class BigIntDivisionTest extends BigIntTest {
     testRange("div(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> {a.divRem(b); return a;}, String::valueOf),
-      s("int[]", this::scaledVal, b -> BigInt.fromString(nz(b)), (int[] a, int[] b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
+      s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
     );
   }
 }

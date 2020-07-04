@@ -115,11 +115,11 @@ public abstract class AbstractTest {
             final StringBuilder message = new StringBuilder("\n");
             message.append(label).append('\n');
             if (o instanceof Integer)
-              message.append(Arrays.toString(BigInt.assign(null, ((Integer)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.assign(null, ((Integer)o).intValue())));
+              message.append(Arrays.toString(BigInt.valueOf(((Integer)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Integer)o).intValue())));
             else if (o instanceof Long)
-              message.append(Arrays.toString(BigInt.assign(null, ((Long)previous).longValue()))).append('\n').append(Arrays.toString(BigInt.assign(null, ((Long)o).longValue())));
+              message.append(Arrays.toString(BigInt.valueOf(((Long)previous).longValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Long)o).longValue())));
             else if (o instanceof String)
-              message.append(Arrays.toString(BigInt.assign(null, (String)previous))).append('\n').append(((String)o).isEmpty() ? "" : Arrays.toString(BigInt.assign(null, (String)o)));
+              message.append(Arrays.toString(BigInt.valueOf((String)previous))).append('\n').append(((String)o).isEmpty() ? "" : Arrays.toString(BigInt.valueOf((String)o)));
             else if (!(o instanceof Boolean))
               throw new UnsupportedOperationException("Unsupported type: " + o.getClass().getName());
 

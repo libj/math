@@ -53,7 +53,6 @@ public class BigIntPredicateTest extends BigIntTest {
     );
   }
 
-  // FIXME: BigInteger is faster.
   @Test
   public void testFloatValue() {
     testRange("floatValue()",
@@ -110,7 +109,6 @@ public class BigIntPredicateTest extends BigIntTest {
     );
   }
 
-  // FIXME: BigInteger is faster.
   @Test
   public void testMax() {
     testRange("max(T)",
@@ -119,7 +117,6 @@ public class BigIntPredicateTest extends BigIntTest {
     );
   }
 
-  // FIXME: BigInteger is faster.
   @Test
   public void testMin() {
     testRange("min(T)",

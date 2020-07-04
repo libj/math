@@ -63,7 +63,7 @@ public class BigIntRemainderTest extends BigIntTest {
     testRange("rem(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> b.isZero() ? 0 : a.rem(b), String::valueOf),
-      s("int[]", this::scaledVal, b -> BigInt.fromString(nz(b)), (int[] a, int[] b) -> BigInt.isZero(b) ? ZERO : BigInt.rem(a, b), BigInt::toString)
+      s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> BigInt.isZero(b) ? ZERO : BigInt.rem(a, b), BigInt::toString)
     );
   }
 
@@ -110,7 +110,7 @@ public class BigIntRemainderTest extends BigIntTest {
     testRange("divRem(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> b.isZero() ? 0 : a.divRem(b), String::valueOf),
-      s("int[]", this::scaledVal, b -> BigInt.fromString(nz(b)), (int[] a, int[] b) -> BigInt.isZero(b) ? ZERO : BigInt.divRem(a, b), BigInt::toString)
+      s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> BigInt.isZero(b) ? ZERO : BigInt.divRem(a, b), BigInt::toString)
     );
   }
 }

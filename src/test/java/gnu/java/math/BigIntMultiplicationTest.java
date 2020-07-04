@@ -19,13 +19,35 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
+import org.libj.math.BigIntegers;
 
 public class BigIntMultiplicationTest extends BigIntTest {
+  @Test
+  public void testUnsignedInt() {
+    final int[] signum = {0};
+    testRange("mul(int,int)",
+      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(signum[0], b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> b == 0 ? ZERO : BigInt.mul(a, signum[0], b), BigInt::toString)
+    );
+  }
+
   @Test
   public void testInt() {
     testRange("mul(int)",
       i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf)
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> b == 0 ? ZERO : BigInt.mul(a, b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testUnsignedLong() {
+    final int[] signum = {0};
+    testRange("mul(int,long)",
+      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(signum[0], b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> b == 0 ? ZERO : BigInt.mul(a, signum[0], b), BigInt::toString)
     );
   }
 
@@ -33,21 +55,23 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testLong() {
     testRange("mul(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf)
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> b == 0 ? ZERO : BigInt.mul(a, b), BigInt::toString)
     );
   }
 
-  // FIXME: BigInteger is faster.
   @Test
   public void testBig() {
     testRange("mul(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 
   @Test
   public void testUInt() {
+    final int[] len = {0};
     final int[] zds = new int[4];
     final int[] x = new int[4];
     final int[] y = new int[1];
@@ -68,14 +92,15 @@ public class BigIntMultiplicationTest extends BigIntTest {
         x[1] = (int)(a >>> 32);
         return x;
       }, (int[] a, long b) -> {
-        BigIntMultiplication.umul(x, 0, 2, (int)b);
+        len[0] = BigIntMultiplication.umul(x, 0, 2, (int)b);
         return x;
-      }, a -> BigIntValue.longValue(a, 0, 2))
+      }, a -> BigIntValue.longValue(a, 0, len[0]))
     );
   }
 
   @Test
   public void testULong() {
+    final int[] len = {0};
     final int[] zds = new int[4];
     final int[] x = new int[4];
     final int[] y = new int[2];
@@ -97,9 +122,9 @@ public class BigIntMultiplicationTest extends BigIntTest {
         x[1] = (int)(a >>> 32);
         return x;
       }, (int[] a, long b) -> {
-        BigIntMultiplication.umul(x, 0, 2, b);
+        len[0] = BigIntMultiplication.umul(x, 0, 2, b);
         return x;
-      }, a -> BigIntValue.longValue(a, 0, 2))
+      }, a -> BigIntValue.longValue(a, 0, len[0]))
     );
   }
 }

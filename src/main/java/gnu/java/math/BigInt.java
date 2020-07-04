@@ -538,109 +538,23 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   /**
    * Multiplies this number with an unsigned {@code int}.
    *
-   * @param m The amount by which to multiply (unsigned).
+   * @param mul The amount by which to multiply (unsigned).
    * @complexity O(n)
    */
-  public BigInt umul(final int m) {
-    return isZero() ? this : m == 0 ? setToZero() : umul0(m);
-  }
-
-  private BigInt umul0(final int m) {
-    val = umul0(val, m);
+  public BigInt mul(final int sig, final int mul) {
+    val = mul(val, sig, mul);
     return this;
-  }
-
-  private static int[] umul0(int[] val, final int m) {
-    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
-    if (len + 1 >= val.length)
-      val = realloc(val);
-
-    val[0] = BigIntMultiplication.umul(val, 1, len + 1, m) - 1;
-    if (signum < 0)
-      val[0] = -val[0];
-
-    _debugLenSig(val);
-    return val;
   }
 
   /**
    * Multiplies this number with an unsigned {@code long}.
    *
-   * @param m The amount by which to multiply (unsigned).
+   * @param mul The amount by which to multiply (unsigned).
    * @complexity O(n)
    */
-  public BigInt umul(final long m) {
-    return isZero() ? this : m == 0 ? setToZero() : umul0(m);
-  }
-
-  private BigInt umul0(final long m) {
-    final long mh = m >>> 32;
-    return mh == 0 ? umul0((int)m) : umul0(m & LONG_INT_MASK, mh);
-  }
-
-  private BigInt umul0(final long ml, final long mh) {
-    val = umul0(val, ml, mh);
+  public BigInt mul(final int sig, final long mul) {
+    val = mul(val, sig, mul);
     return this;
-  }
-
-  public static int[] umul0(int[] val, final long ml, final long mh) {
-    boolean signum = true; int len = val[0]; if (len < 0) { len = -len; signum = false; }
-    ++len;
-    if (len + 1 >= val.length)
-      val = realloc(val, 2 * len);
-
-    val[0] = BigIntMultiplication.umul(val, 1, len, ml, mh) - 1;
-    if (!signum)
-      val[0] = -val[0];
-
-    _debugLenSig(val);
-    return val;
-  }
-
-  /**
-   * Multiplies this number by the given {@link BigInt} using the Karatsuba
-   * algorithm.
-   * <p>
-   * NOTE: Size of mag1 and mag2 must be the same!
-   *
-   * @param m The amount to multiply.
-   * @param p Whether to attempt to use the parallel algorithm.
-   */
-  BigInt karatsuba(final BigInt m, final boolean p) throws ExecutionException, InterruptedException {
-    val = karatsuba(val, m.val, p);
-    return this;
-  }
-
-  /**
-   * Divides this number with an unsigned {@code int} and returns the unsigned
-   * remainder.
-   *
-   * @param div The amount by which to divide (unsigned).
-   * @return The absolute value of the remainder as an unsigned int.
-   * @complexity O(n)
-   */
-  public long divRem(final int sig, final int div) {
-    return BigIntDivision.divRem(val, sig, div);
-  }
-
-  public long divRem(final int div) {
-    return BigIntDivision.divRem(val, div);
-  }
-
-  /**
-   * Divides this number with an unsigned {@code long} and returns the
-   * remainder.
-   *
-   * @param div The amount by which to divide (unsigned).
-   * @return The absolute value of the remainder as an unsigned long.
-   * @complexity O(n)
-   */
-  public long divRem(final int sig, final long div) {
-    return BigIntDivision.divRem(val, sig, div);
-  }
-
-  public long divRem(final long div) {
-    return BigIntDivision.divRem(val, div);
   }
 
   /**
@@ -650,21 +564,8 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public BigInt mul(final int m) {
-    if (m == 0)
-      return setToZero();
-
-    if (isZero())
-      return this;
-
-    if (m > 0)
-      return umul0(m);
-
-    val[0] = -val[0];
-    if (m != Integer.MIN_VALUE)
-      return umul0(-m);
-
-    final long l = -(long)m;
-    return umul0(l & LONG_INT_MASK, l >>> 32);
+    val = mul(val, m);
+    return this;
   }
 
   /**
@@ -678,29 +579,6 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
     return this;
   }
 
-  public static int[] mul(final int[] val, long m) {
-    if (m == 0)
-      return setToZero(val);
-
-    if (isZero(val))
-      return val;
-
-    final long mh = m >>> 32;
-    if (mh == 0)
-      return umul0(val, (int)m);
-
-    final long ml = m & LONG_INT_MASK;
-    if (m > 0)
-      return umul0(val, ml, mh);
-
-    val[0] = -val[0];
-    if (m == Long.MIN_VALUE)
-      return umul0(val, ml, mh); // FIXME: Is this actually happening?
-
-    m = -m;
-    return umul0(val, m & LONG_INT_MASK, m >>> 32);
-  }
-
   /**
    * Multiplies this number by a {@link BigInt}.
    * <p>
@@ -710,15 +588,21 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n^2) - O(n log n)
    */
   public BigInt mul(final BigInt m) {
-    final int[] val1 = val;
-    final int[] val2 = m.val;
-    if (isZero(val2))
-      return setToZero();
-
-    if (isZero(val1))
-      return this;
-
     val = BigIntMultiplication.mul(val, m.val);
+    return this;
+  }
+
+  /**
+   * Multiplies this number by the given {@link BigInt} using the Karatsuba
+   * algorithm.
+   * <p>
+   * NOTE: Size of mag1 and mag2 must be the same!
+   *
+   * @param m The amount to multiply.
+   * @param p Whether to attempt to use the parallel algorithm.
+   */
+  BigInt karatsuba(final BigInt m, final boolean p) throws ExecutionException, InterruptedException {
+    val = karatsuba(val, m.val, p);
     return this;
   }
 
@@ -859,6 +743,38 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   // FIXME: I think we can just align div to return the remainder instead of this.
   public BigInt divRem(final BigInt div) {
     return new BigInt(divRem(val, div.val));
+  }
+
+  /**
+   * Divides this number with an unsigned {@code int} and returns the unsigned
+   * remainder.
+   *
+   * @param div The amount by which to divide (unsigned).
+   * @return The absolute value of the remainder as an unsigned int.
+   * @complexity O(n)
+   */
+  public long divRem(final int sig, final int div) {
+    return BigIntDivision.divRem(val, sig, div);
+  }
+
+  public long divRem(final int div) {
+    return BigIntDivision.divRem(val, div);
+  }
+
+  /**
+   * Divides this number with an unsigned {@code long} and returns the
+   * remainder.
+   *
+   * @param div The amount by which to divide (unsigned).
+   * @return The absolute value of the remainder as an unsigned long.
+   * @complexity O(n)
+   */
+  public long divRem(final int sig, final long div) {
+    return BigIntDivision.divRem(val, sig, div);
+  }
+
+  public long divRem(final long div) {
+    return BigIntDivision.divRem(val, div);
   }
 
   /**

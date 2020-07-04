@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 public class BigIntModulusTest extends BigIntTest {
-  // FIXME: BigInteger is faster.
   @Test
   public void testBig() {
     testRange("mod(T)",

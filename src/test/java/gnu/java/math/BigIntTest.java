@@ -89,7 +89,7 @@ public abstract class BigIntTest extends AbstractTest {
   }
 
   public int[] scaledVal(final String a) {
-    return BigInt.fromString(shoudlScale ? stringScale(a) : a);
+    return BigInt.valueOf(shoudlScale ? stringScale(a) : a);
   }
 
   public BigInt scaledBigInt(final int a) {
