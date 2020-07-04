@@ -84,11 +84,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public BigInt(final int sig, final byte[] mag, int len) {
-    this.val = assign(emptyVal, sig, mag, len);
+    val = assign(emptyVal, sig, mag, len);
   }
 
   public BigInt(final int sig, final byte[] mag) {
-    this.val = assign(emptyVal, sig, mag, mag.length);
+    val = assign(emptyVal, sig, mag, mag.length);
   }
 
   /**
@@ -100,7 +100,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt(final int sig, final int mag) {
-    this.val = assign(alloc(2), sig, mag);
+    val = assign(alloc(2), sig, mag);
   }
 
   /**
@@ -112,7 +112,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt(final int sig, final long mag) {
-    this.val = assign(alloc(3), sig, mag);
+    val = assign(alloc(3), sig, mag);
   }
 
   /**
@@ -123,7 +123,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt(final int mag) {
-    this.val = assign(alloc(2), mag);
+    val = assign(alloc(2), mag);
   }
 
   /**
@@ -134,7 +134,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt(final long mag) {
-    this.val = assign(alloc(3), mag);
+    val = assign(alloc(3), mag);
   }
 
   /**
@@ -144,7 +144,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n^2)
    */
   public BigInt(final String s) {
-    this.val = assign(emptyVal, s);
+    val = assign(emptyVal, s);
   }
 
   /**
@@ -154,7 +154,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n^2)
    */
   public BigInt(final char[] s) {
-    this.val = assign(emptyVal, s);
+    val = assign(emptyVal, s);
   }
 
   /**
@@ -188,13 +188,13 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * zeroes of the input-array, i.e. that v[vlen-1]!=0, except for the case when
    * vlen==1.
    *
-   * @param signum The sign of the number.
-   * @param v The magnitude of the number.
+   * @param sig The sign of the number.
+   * @param mag The magnitude of the number.
    * @param len The length of the magnitude array to be used.
    * @complexity O(n)
    */
-  public BigInt assign(final int signum, final byte[] v, final int len) {
-    this.val = assign(val, signum, v, len);
+  public BigInt assign(final int sig, final byte[] mag, final int len) {
+    val = assign(val, sig, mag, len);
     return this;
   }
 
@@ -251,7 +251,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt assign(final int mag) {
-    this.val = assign(val, mag);
+    val = assign(val, mag);
     return this;
   }
 
@@ -262,7 +262,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt assign(final long mag) {
-    this.val = assign(val, mag);
+    val = assign(val, mag);
     return this;
   }
 
@@ -734,6 +734,8 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
 
   /**
    * Tests if the bit at the given index is set.
+   * <p>
+   * NOT DEFINED FOR NEGATIVE INDEXES
    *
    * @param i The index of the bit to test.
    * @return {@code true} if the bit at the given index is {@code 1}, and
@@ -741,50 +743,44 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public boolean testBit(final int i) {
-    if (i < 0)
-      throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
-
     return testBit(val, i);
   }
 
   /**
    * Sets the given bit in the number.
+   * <p>
+   * NOT DEFINED FOR NEGATIVE INDEXES
    *
    * @param i The index of the bit to set.
    * @complexity O(n)
    */
   public BigInt setBit(final int i) {
-    if (i < 0)
-      throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
-
     val = setBit(val, i);
     return this;
   }
 
   /**
    * Clears the given bit in the number.
+   * <p>
+   * NOT DEFINED FOR NEGATIVE INDEXES
    *
    * @param i The index of the bit to clear.
    * @complexity O(n)
    */
   public BigInt clearBit(final int i) {
-    if (i < 0)
-      throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
-
     val = clearBit(val, i);
     return this;
   }
 
   /**
    * Flips the given bit in the number.
+   * <p>
+   * NOT DEFINED FOR NEGATIVE INDEXES
    *
    * @param i The index of the bit to flip.
    * @complexity O(n)
    */
   public BigInt flipBit(final int i) {
-    if (i < 0)
-      throw new IllegalArgumentException("index (" + i + ") must be a positive integer");
-
     val = flipBit(val, i);
     return this;
   }
@@ -796,9 +792,6 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public BigInt and(final BigInt mask) {
-    if (mask.isZero())
-      return setToZero();
-
     val = and(val, mask.val);
     return this;
   }
@@ -810,12 +803,6 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public BigInt or(final BigInt mask) {
-    if (mask.isZero())
-      return this;
-
-    if (isZero())
-      return assign(mask);
-
     val = or(val, mask.val);
     return this;
   }
@@ -827,12 +814,6 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public BigInt xor(final BigInt mask) {
-    if (mask.isZero())
-      return this;
-
-    if (isZero())
-      return assign(mask);
-
     val = xor(val, mask.val);
     return this;
   }

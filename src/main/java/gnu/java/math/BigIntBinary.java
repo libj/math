@@ -719,6 +719,9 @@ abstract class BigIntBinary extends BigIntDivision {
    * @complexity O(n)
    */
   public static int[] or(int[] val1, final int[] val2) {
+    if (isZero(val2))
+      return val1;
+
     int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
     int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
 
@@ -863,6 +866,12 @@ abstract class BigIntBinary extends BigIntDivision {
    * @complexity O(n)
    */
   public static int[] xor(int[] val1, int[] val2) {
+    if (isZero(val2))
+      return val1;
+
+    if (isZero(val1))
+      return val1 = val2.clone();
+
     final int fromIndex = 1;
     int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
     len1 += fromIndex;

@@ -38,18 +38,18 @@ public class BigIntBinaryTest extends BigIntTest {
   }
 
   @Test
-  public void testNot() {
-    testRange("not(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.not(), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf)
-    );
-  }
-
-  @Test
   public void testXor() {
     testRange("xor(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf)
+    );
+  }
+
+  @Test
+  public void testNot() {
+    testRange("not(T)",
+      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.not(), String::valueOf),
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf)
     );
   }
 
