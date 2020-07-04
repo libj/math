@@ -57,26 +57,33 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @amortized O(1)
    */
   static void usubVal(final int[] val, final int s) {
-    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
-    long dif = (val[1] & LONG_INT_MASK) - (s & LONG_INT_MASK);
-    val[1] = (int)dif;
-    if ((dif >> 32) != 0) {
-      int i = 2;
-      for (; val[i] == 0; ++i)
-        --val[i];
+    if (val[0] == 0) {
+      val[0] = -1;
+      val[1] = s;
+    }
+    else {
+      int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+      long dif = (val[1] & LONG_INT_MASK) - (s & LONG_INT_MASK);
+      val[1] = (int)dif;
+      if ((dif >> 32) != 0) {
+        int i = 2;
+        for (; val[i] == 0; ++i)
+          --val[i];
 
-      if (--val[i] != 0 || i != len) {
+        if (--val[i] != 0 || i != len) {
+          _debugLenSig(val);
+          return;
+        }
+      }
+      else if (val[len] != 0) {
         _debugLenSig(val);
         return;
       }
-    }
-    else if (val[len] != 0) {
-      _debugLenSig(val);
-      return;
+
+      --len;
+      val[0] = signum < 0 ? -len : len;
     }
 
-    --len;
-    val[0] = signum < 0 ? -len : len;
     _debugLenSig(val);
   }
 
@@ -126,23 +133,26 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @amortized O(1)
    */
   static int[] uaddVal(int[] val, final int a) {
-    final long tmp = (val[1] & LONG_INT_MASK) + (a & LONG_INT_MASK);
-    val[1] = (int)tmp;
-    if ((tmp >>> 32) != 0) {
-      int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
-      ++len;
-      int i = 2;
-      for (; i < len && ++val[i] == 0; ++i);
-      if (i == len) {
-        if (len == val.length)
-          val = realloc(val, len + 1);
-
-        val[len] = 1;
-        val[0] = signum < 0 ? -len : len;
-      }
-    }
-    else if (tmp != 0 && val[0] == 0) {
+    if (val[0] == 0) {
       val[0] = 1;
+      val[1] = a;
+    }
+    else {
+      final long tmp = (val[1] & LONG_INT_MASK) + (a & LONG_INT_MASK);
+      val[1] = (int)tmp;
+      if ((tmp >>> 32) != 0) {
+        int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+        ++len;
+        int i = 2;
+        for (; i < len && ++val[i] == 0; ++i);
+        if (i == len) {
+          if (len == val.length)
+            val = realloc(val, len + 1);
+
+          val[len] = 1;
+          val[0] = signum < 0 ? -len : len;
+        }
+      }
     }
 
     _debugLenSig(val);

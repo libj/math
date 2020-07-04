@@ -128,7 +128,7 @@ public class BasicTest {
     me.sub(new BigInt(t));
     assertEquals("Sub2 to zero", "0", me.toString());
     me = new BigInt("1337");
-    me.usub(1337);
+    me.usub(1, 1337);
     assertEquals("Small sub", "0", me.toString());
     me = new BigInt("4000000000");
     me.sub(new BigInt("2000000000"));
@@ -146,7 +146,7 @@ public class BasicTest {
     assertEquals("Sub2", facit.toString(), me.toString());
 
     me.mul(1, 0);
-    me.usub(1);
+    me.usub(1, 1);
     assertEquals("From 0 to -1", "-1", me.toString());
     me.mul(-16);
     assertEquals("From -1 to 16", "16", me.toString());
@@ -369,7 +369,7 @@ public class BasicTest {
     a.add(2L);
     a.add(-1L);
     assertTrue("-1L + 2L + -1L = 0", a.isZero());
-    a.usub(7L);
+    a.usub(1, 7L);
     a.sub(-8L);
     assertFalse("-7L - -8L != 0", a.isZero());
     a.sub(1L);
