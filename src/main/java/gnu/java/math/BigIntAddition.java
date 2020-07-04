@@ -46,6 +46,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
+  static int[] uadd0(int[] val, final long a, final long ah) {
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+    final long al = a & LONG_INT_MASK;
+    // FIXME: This will fail for 0 value
+    final long val0l = val[1] & LONG_INT_MASK;
+    final long val0h = len <= 1 ? 0 : val[2] & LONG_INT_MASK;
+    val = BigIntAddition.uadd(val, val0l, val0h, al, ah, len, signum, true);
+    return val;
+  }
+
+  static int[] usub0(final int[] val, final long s, final long sh) {
+    return BigIntAddition.uadd(val, s & LONG_INT_MASK, sh, false);
+  }
+
   /**
    * Subtracts an unsigned {@code int} from this number.
    *

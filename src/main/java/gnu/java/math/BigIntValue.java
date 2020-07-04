@@ -613,6 +613,14 @@ abstract class BigIntValue extends Number {
     _debugLenSig(val);
   }
 
+  public static int[] max(final int[] val1, final int[] val2) {
+    return compareTo(val1, val2) > 0 ? val1 : val2;
+  }
+
+  public static int[] min(final int[] val1, final int[] val2) {
+    return compareTo(val1, val2) < 0 ? val1 : val2;
+  }
+
   static void _debugLenSig(final int[] val) {
     if (!isZero(val) && val[Math.abs(val[0])] == 0)
       throw new IllegalStateException(Arrays.toString(val));

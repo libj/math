@@ -31,7 +31,7 @@ public class BasicTest {
   @Test
   public void testAddInt() {
     final BigInt a = new BigInt(0);
-    a.uadd((int)3972540614L);
+    a.add(1, (int)3972540614L);
     assertEquals("3972540614", a.toString());
   }
 
@@ -106,12 +106,12 @@ public class BasicTest {
     facit = BigInteger.ZERO;
     for (int i = 0; i < 1337; ++i) {
       long tmp = rnd.nextLong() & ((1L << 32) - 1);
-      me.uadd((int)tmp);
+      me.add(1, (int)tmp);
       final BigInteger x = facit;
       facit = facit.add(BigInteger.valueOf(tmp));
       assertEquals("For-loop " + i + ": " + me + " " + x + " Added: " + tmp + "\n", facit.toString(), me.toString());
       tmp = rnd.nextLong() >>> 1;
-      me.uadd(tmp);
+      me.add(1, tmp);
       facit = facit.add(BigInteger.valueOf(tmp));
       assertEquals("For-loop2 " + i + ": " + me + " " + facit + " Added: " + tmp + "\n", facit.toString(), me.toString());
     }
@@ -172,7 +172,7 @@ public class BasicTest {
     assertEquals("Mul ", facit.toString(), me.toString());
 
     me.mul(1, 0);
-    me.uadd(1);
+    me.add(1, 1);
     assertEquals("0 to 1", "1", me.toString());
     me.mul(new BigInt(s));
     assertEquals("1 to s", s, me.toString());
@@ -363,7 +363,7 @@ public class BasicTest {
     BigInt a = new BigInt(0);
     a.add(0L);
     assertTrue("add(0L)", a.isZero());
-    a.uadd(0L);
+    a.add(1, 0L);
     assertTrue("uadd(0L)", a.isZero());
     a.add(-1L);
     a.add(2L);

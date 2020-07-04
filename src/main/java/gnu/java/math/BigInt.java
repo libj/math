@@ -323,16 +323,18 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   /**
    * Adds an unsigned {@code int} to this number.
    *
-   * @param a The amount to add (unsigned).
+   * @param add The amount to add (unsigned).
    * @complexity O(n)
    * @amortized O(1)
    */
-  public BigInt uadd(final int a) {
-    return a == 0 ? this : isZero() ? assign(1, a) : uadd0(a);
-  }
+  public BigInt add(final int sig, final int add) {
+    if (add == 0)
+      return this;
 
-  private BigInt uadd0(final int a) {
-    val = BigIntAddition.uadd(val, a);
+    if (isZero())
+      return assign(1, add);
+
+    val = BigIntAddition.uadd(val, add);
     return this;
   }
 
@@ -343,7 +345,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    * @amortized O(1)
    */
-  public BigInt uadd(final long a) {
+  public BigInt add(final int sig, final long a) {
     if (a == 0)
       return this;
 
@@ -351,16 +353,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
       return assign(1, a);
 
     final long ah = a >>> 32;
-    return ah == 0 ? uadd0((int)a) : uadd0(a, ah);
-  }
+    if (ah == 0)
+      val = BigIntAddition.uadd(val, (int)a);
+    else
+      val = uadd0(val, a, ah);
 
-  private BigInt uadd0(final long a, final long ah) {
-    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
-    final long al = a & LONG_INT_MASK;
-    // FIXME: This will fail for 0 value
-    final long val0l = val[1] & LONG_INT_MASK;
-    final long val0h = len <= 1 ? 0 : val[2] & LONG_INT_MASK;
-    val = BigIntAddition.uadd(val, val0l, val0h, al, ah, len, signum, true);
     return this;
   }
 
@@ -372,10 +369,12 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @amortized O(1)
    */
   public BigInt usub(final int s) {
-    return s == 0 ? this : isZero() ? assign(-1, s) : usub0(s);
-  }
+    if (s == 0)
+      return this;
 
-  private BigInt usub0(final int s) {
+    if (isZero())
+      return assign(-1, s);
+
     val = BigIntAddition.usub(val, s);
     return this;
   }
@@ -395,12 +394,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
       return assign(-1, s);
 
     final long sh = s >>> 32;
-    return sh == 0 ? usub0((int)s) : usub0(s, sh);
-  }
+    if (sh == 0)
+      val = BigIntAddition.usub(val, (int)s);
+    else
+      val = usub0(val, s, sh);
 
-  private BigInt usub0(final long s, final long sh) {
-    final long sl = s & LONG_INT_MASK;
-    val = BigIntAddition.uadd(val, sl, sh, false);
     return this;
   }
 
@@ -418,9 +416,9 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
       return a == 0 ? this : assign(a);
 
     if (a > 0)
-      uadd0(a);
+      val = BigIntAddition.uadd(val, a);
     else if (a < 0)
-      usub0(-a);
+      val = BigIntAddition.usub(val, -a);
 
     return this;
   }
@@ -437,14 +435,22 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
 
     if (a > 0) {
       final long ah = a >>> 32;
-      return ah == 0 ? uadd0((int)a) : uadd0(a, ah);
+      if (ah == 0)
+        val = BigIntAddition.uadd(val, (int)a);
+      else
+        val = uadd0(val, a, ah);
+
+      return this;
     }
 
     if (a < 0) {
       // FIXME: What about Long.MIN_VALUE?!
       a = -a;
       final long ah = a >>> 32;
-      return ah == 0 ? usub0((int)a) : usub0(a, ah);
+      if (ah == 0)
+        val = BigIntAddition.usub(val, (int)a);
+      else
+        val = usub0(val, a, ah);
     }
 
     return this;
@@ -478,11 +484,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
       return s == 0 ? this : s == Integer.MIN_VALUE ? assign(1, s) : assign(-s);
 
     if (s > 0)
-      usub0(s);
+      val = BigIntAddition.usub(val, s);
     else if (s == Integer.MIN_VALUE)
-      uadd0(-(long)s, 0);
+      val = uadd0(val, -(long)s, 0);
     else if (s < 0)
-      uadd0(-s);
+      val = BigIntAddition.uadd(val, -s);
 
     return this;
   }
@@ -499,14 +505,20 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
 
     if (s > 0) {
       final long ah = s >>> 32;
-      return ah == 0 ? usub0((int)s) : usub0(s, ah);
+      if (ah == 0)
+        val = BigIntAddition.usub(val, (int)s);
+      else
+        val = usub0(val, s, ah);
     }
 
     if (s < 0) {
       final boolean isMinInt = s == Integer.MIN_VALUE;
       s = -s;
       final long ah = s >>> 32;
-      return ah == 0 && !isMinInt ? uadd0((int)s) : uadd0(s, ah);
+      if (ah == 0 && !isMinInt)
+        val = BigIntAddition.uadd(val, (int)s);
+      else
+        val = uadd0(val, s, ah);
     }
 
     return this;
