@@ -25,7 +25,8 @@ public class BigIntModulusTest extends BigIntTest {
   public void testBig() {
     testRange("mod(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(abs(nz(b))), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, b -> new BigInt(abs(nz(b))), (BigInt a, BigInt b) -> a.mod(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, b -> new BigInt(abs(nz(b))), (BigInt a, BigInt b) -> a.mod(b), String::valueOf),
+      s("int[]", this::scaledVal, b -> BigInt.valueOf(abs(nz(b))), (int[] a, int[] b) -> BigInt.mod(a, b), BigInt::toString)
     );
   }
 }

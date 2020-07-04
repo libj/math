@@ -22,10 +22,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
   public static int[] add(final int[] val, final int add) {
     if (add > 0)
-      return BigIntAddition.add(val, 1, add);
+      return add(val, 1, add);
 
     if (add < 0)
-      return BigIntAddition.sub(val, 1, -add);
+      return sub(val, 1, -add);
+
+    return val;
+  }
+
+  public static int[] sub(final int[] val, final int sub) {
+    if (sub > 0)
+      return sub(val, 1, sub);
+
+    if (sub < 0)
+      return add(val, 1, -sub);
 
     return val;
   }
@@ -40,6 +50,9 @@ abstract class BigIntAddition extends BigIntMagnitude {
   public static int[] add(int[] val, final int sig, final int add) {
     if (add == 0)
       return val;
+
+    if (sig < 0)
+      return sub(val, 1, add);
 
     int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     if (signum >= 0) {
@@ -59,69 +72,6 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
-  public static int[] add(final int[] val, final long add) {
-    if (add > 0)
-      return BigIntAddition.add(val, 1, add);
-
-    if (add < 0)
-      return BigIntAddition.sub(val, 1, -add);
-
-    return val;
-  }
-
-  public static int[] add(final int[] val, final int sig, final long add) {
-    if (isZero(val))
-      return assign(val, sig, add);
-
-    final long addh = add >>> 32;
-    if (addh == 0)
-      return add(val, sig, (int)add);
-
-    return uadd0(val, add, addh);
-  }
-
-  static int[] uadd0(int[] val, final long add, final long addh) {
-    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
-    final long al = add & LONG_INT_MASK;
-    // FIXME: This will fail for 0 value
-    final long val0l = val[1] & LONG_INT_MASK;
-    final long val0h = len <= 1 ? 0 : val[2] & LONG_INT_MASK;
-    val = BigIntAddition.uadd(val, val0l, val0h, al, addh, len, signum, true);
-    return val;
-  }
-
-  static int[] usub0(final int[] val, final long sub, final long subh) {
-    return BigIntAddition.add(val, sub & LONG_INT_MASK, subh, false);
-  }
-
-  public static int[] sub(final int[] val, final int sig, final long sub) {
-    final long subh = sub >>> 32;
-    if (subh == 0)
-      return BigIntAddition.sub(val, sig, (int)sub);
-
-    return usub0(val, sub, subh);
-  }
-
-  public static int[] sub(final int[] val, final int sub) {
-    if (sub > 0)
-      return BigIntAddition.sub(val, 1, sub);
-
-    if (sub < 0)
-      return BigIntAddition.add(val, 1, -sub);
-
-    return val;
-  }
-
-  public static int[] sub(final int[] val, final long sub) {
-    if (sub > 0)
-      return BigIntAddition.sub(val, 1, sub);
-
-    if (sub < 0)
-      return BigIntAddition.add(val, 1, -sub);
-
-    return val;
-  }
-
   /**
    * Subtracts an unsigned {@code int} from this number.
    *
@@ -130,6 +80,9 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @amortized O(1)
    */
   public static int[] sub(int[] val, final int sig, final int sub) {
+    if (sig < 0)
+      return add(val, 1, sub);
+
     int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
     if (signum < 0) {
       val = uaddVal(val, sub);
@@ -146,7 +99,65 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
-  static int[] add(int[] val, final long al, final long ah, final boolean positive) {
+  public static int[] add(final int[] val, final long add) {
+    if (add > 0)
+      return add(val, 1, add);
+
+    if (add < 0)
+      return sub(val, 1, -add);
+
+    return val;
+  }
+
+  public static int[] sub(final int[] val, final long sub) {
+    if (sub > 0)
+      return sub(val, 1, sub);
+
+    if (sub < 0)
+      return add(val, 1, -sub);
+
+    return val;
+  }
+
+  public static int[] add(final int[] val, final int sig, final long add) {
+    if (isZero(val))
+      return assign(val, sig, add);
+
+    if (sig < 0)
+      return sub(val, 1, add);
+
+    final long addh = add >>> 32;
+    if (addh == 0)
+      return add(val, sig, (int)add);
+
+    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+    final long al = add & LONG_INT_MASK;
+    // FIXME: This will fail for 0 value
+    final long val0l = val[1] & LONG_INT_MASK;
+    final long val0h = len <= 1 ? 0 : val[2] & LONG_INT_MASK;
+    return uadd(val, val0l, val0h, al, addh, len, signum, true);
+  }
+
+  public static int[] sub(final int[] val, final int sig, final long sub) {
+    if (sig < 0)
+      return add(val, 1, sub);
+
+    final long subh = sub >>> 32;
+    if (subh == 0)
+      return sub(val, sig, (int)sub);
+
+    return add(val, sub & LONG_INT_MASK, subh, false);
+  }
+
+  public static int[] add(int[] val1, final int[] val2) {
+    return add(val1, val2, true);
+  }
+
+  public static int[] sub(int[] val1, final int[] val2) {
+    return add(val1, val2, false);
+  }
+
+  private static int[] add(int[] val, final long al, final long ah, final boolean positive) {
     if (isZero(val)) {
       if (val.length <= 2)
         val = realloc(val, 3);
@@ -176,7 +187,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uadd(int[] val, final long val0l, final long val1l, final long al, final long ah, int len, int signum, final boolean positive) {
+  private static int[] uadd(int[] val, final long val0l, final long val1l, final long al, final long ah, int len, int signum, final boolean positive) {
     if (positive ? signum >= 0 : signum <= 0) {
       val = uaddVal(val, len, signum, val0l, val1l, al, ah);
     }
@@ -209,7 +220,28 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
-  public static int[] add(int[] val1, final int[] val2) {
+  private static int[] add(int[] val1, final int[] val2, final boolean positive) {
+    if (isZero(val1)) {
+      if (isZero(val2))
+        return val1;
+
+      final int len = Math.abs(val2[0]) + 1;
+      if (len > val1.length)
+        val1 = alloc(len);
+
+      System.arraycopy(val2, 0, val1, 0, len);
+      if (!positive)
+        val1[0] = -val1[0];
+
+      return val1;
+    }
+
+    if (isZero(val2))
+      return val1;
+
+    if (positive == (val1[0] < 0 == val2[0] < 0))
+      return addVal(val1, val2, positive);
+
     if (compareToAbs(val1, val2) >= 0) {
       subVal(val1, val2);
     }
@@ -250,30 +282,5 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     _debugLenSig(val1);
     return val1;
-  }
-
-  static int[] add(int[] val1, final int[] val2, final boolean positive) {
-    if (isZero(val1)) {
-      if (isZero(val2))
-        return val1;
-
-      final int len = Math.abs(val2[0]) + 1;
-      if (len > val1.length)
-        val1 = alloc(len);
-
-      System.arraycopy(val2, 0, val1, 0, len);
-      if (!positive)
-        val1[0] = -val1[0];
-
-      return val1;
-    }
-
-    if (isZero(val2))
-      return val1;
-
-    if (positive == (val1[0] < 0 == val2[0] < 0))
-      return addVal(val1, val2, positive);
-
-    return add(val1, val2);
   }
 }

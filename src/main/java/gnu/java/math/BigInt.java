@@ -400,7 +400,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(n)
    */
   public BigInt add(final BigInt add) {
-    val = add(val, add.val, true);
+    val = add(val, add.val);
     return this;
   }
 
@@ -416,6 +416,17 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
+   * Subtracts an {@code int} from this number.
+   *
+   * @param sub The amount to subtract.
+   * @complexity O(n)
+   */
+  public BigInt sub(final int sig, final int sub) {
+    val = sub(val, sig, sub);
+    return this;
+  }
+
+  /**
    * Subtracts a {@code long} from this number.
    *
    * @param s The amount to subtract.
@@ -427,13 +438,24 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
+   * Subtracts a {@code long} from this number.
+   *
+   * @param s The amount to subtract.
+   * @complexity O(n)
+   */
+  public BigInt sub(final int sig, final long sub) {
+    val = sub(val, sig, sub);
+    return this;
+  }
+
+  /**
    * Subtracts a {@link BigInt} from this number.
    *
    * @param sub The number to subtract.
    * @complexity O(n)
    */
   public BigInt sub(final BigInt sub) {
-    val = add(val, sub.val, false);
+    val = sub(val, sub.val);
     return this;
   }
 

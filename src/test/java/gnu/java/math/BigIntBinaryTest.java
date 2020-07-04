@@ -25,7 +25,8 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testAnd() {
     testRange("and(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.and(a, b), BigInt::toString)
     );
   }
 
@@ -33,7 +34,8 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testOr() {
     testRange("or(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.or(a, b), BigInt::toString)
     );
   }
 
@@ -41,7 +43,8 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testXor() {
     testRange("xor(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.xor(a, b), BigInt::toString)
     );
   }
 
@@ -49,7 +52,8 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testNot() {
     testRange("not(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.not(), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.not(), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.not(a), BigInt::toString)
     );
   }
 
@@ -57,7 +61,8 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testAndNot() {
     testRange("andNot(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.andNot(a, b), BigInt::toString)
     );
   }
 }

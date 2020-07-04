@@ -19,45 +19,91 @@ package gnu.java.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
+import org.libj.math.BigIntegers;
 
 public class BigIntAdditionTest extends BigIntTest {
   @Test
-  public void testAddInt() {
-    testRange("add(int)",
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf)
+  public void testAddUnsignedInt() {
+    final int[] signum = {0};
+    testRange("add(int,int)",
+      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(signum[0], b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.add(a, signum[0], b), BigInt::toString)
     );
   }
 
   @Test
-  public void testAddLong() {
+  public void testAddSignedInt() {
+    testRange("add(int)",
+      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.add(a, b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testAddUnsignedLong() {
+    final int[] signum = {0};
+    testRange("add(int,long)",
+      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(signum[0], b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.add(a, signum[0], b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testAddSignedLong() {
     testRange("add(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf)
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.add(a, b), BigInt::toString)
     );
   }
 
   @Test
   public void testAddBig() {
-    testRange("add(String)",
+    testRange("add(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.add(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubInt() {
+  public void testSubUnsignedInt() {
+    final int[] signum = {0};
+    testRange("sub(int,int)",
+      i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.sub(signum[0], b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.sub(a, signum[0], b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testSubSignedInt() {
     testRange("sub(int)",
       i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.sub(b), String::valueOf)
+      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.sub(b), String::valueOf),
+      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.sub(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubLong() {
+  public void testSubUnsignedLong() {
+    final int[] signum = {0};
+    testRange("sub(int,long)",
+      l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.sub(signum[0], b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.sub(a, signum[0], b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testSubSignedLong() {
     testRange("sub(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.sub(b), String::valueOf)
+      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.sub(b), String::valueOf),
+      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.sub(a, b), BigInt::toString)
     );
   }
 
@@ -65,7 +111,8 @@ public class BigIntAdditionTest extends BigIntTest {
   public void testSubBig() {
     testRange("sub(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.sub(b), String::valueOf)
+      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.sub(b), String::valueOf),
+      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.sub(a, b), BigInt::toString)
     );
   }
 }

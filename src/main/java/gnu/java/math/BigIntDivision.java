@@ -618,7 +618,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
     val1 = rem(val1, val2);
     if (val1[0] < 0)
-      val1 = add(val1, val2, true);
+      val1 = add(val1, val2);
 
     _debugLenSig(val1);
     return val1;
@@ -757,7 +757,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     System.arraycopy(val1, 0, q, 0, len1);
 
     // Do the div, with results going to val1 (which is where we want it to end up)
-    BigIntDivision.div(q, val2, val1);
+    div(q, val2, val1);
     return q;
   }
 

@@ -62,13 +62,13 @@ abstract class BigIntValue extends Number {
   }
 
   public static int[] assign(int[] val, final int sig, final int mag) {
+    if (val.length < 2)
+      val = alloc(2);
+
     if (mag == 0) {
       val[0] = 0;
     }
     else {
-      if (val.length < 2)
-        val = alloc(2);
-
       val[0] = sig;
       val[1] = mag;
     }
@@ -85,7 +85,10 @@ abstract class BigIntValue extends Number {
     return assign(val, sig ? 1 : -1, mag);
   }
 
-  public static int[] assign(final int[] val, final int mag) {
+  public static int[] assign(int[] val, final int mag) {
+    if (val.length < 2)
+      val = alloc(2);
+
     return mag == 0 ? setToZero(val) : mag == Integer.MIN_VALUE ? assign(val, -1, mag) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
@@ -554,8 +557,16 @@ abstract class BigIntValue extends Number {
     return assign(emptyVal, mag);
   }
 
+  public static int[] valueOf(final int sig, final int mag) {
+    return assign(emptyVal, sig, mag);
+  }
+
   public static int[] valueOf(final long mag) {
     return assign(emptyVal, mag);
+  }
+
+  public static int[] valueOf(final int sig, final long mag) {
+    return assign(emptyVal, sig, mag);
   }
 
   public static int[] valueOf(final char[] s) {
@@ -606,11 +617,12 @@ abstract class BigIntValue extends Number {
     return new String(cmag, top, cmag.length - top);
   }
 
-  public static void abs(final int[] val) {
+  public static int[] abs(final int[] val) {
     if (val[0] < 0)
       val[0] = -val[0];
 
     _debugLenSig(val);
+    return val;
   }
 
   public static int[] max(final int[] val1, final int[] val2) {

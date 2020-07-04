@@ -37,7 +37,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     if (len + 1 >= val.length)
       val = realloc(val);
 
-    val[0] = BigIntMultiplication.umul(val, 1, len, mul);
+    val[0] = umul(val, 1, len, mul);
     if (flipSig)
       val[0] = -val[0];
 
@@ -60,7 +60,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     if (len + 2 >= val.length)
       val = realloc(val, 2 * (len + 1));
 
-    val[0] = BigIntMultiplication.umul(val, 1, len, ml, mh);
+    val[0] = umul(val, 1, len, ml, mh);
     if (flipSig)
       val[0] = -val[0];
 
@@ -192,13 +192,13 @@ abstract class BigIntMultiplication extends BigIntAddition {
         if (len1 + 2 >= val1.length)
           val1 = realloc(val1, 2 * len1 + 1);
 
-        len1 = BigIntMultiplication.umul(val1, 1, len1, val2[1]);
+        len1 = umul(val1, 1, len1, val2[1]);
       }
       else if (len1 == 1) {
         final int m = val1[1];
         val1 = val2.clone();
         val1 = copy(val1, val2, len2 + 1, len2 + 2);
-        len1 = BigIntMultiplication.umul(val1, 1, len2, m);
+        len1 = umul(val1, 1, len2, m);
       }
       else {
         final long ml;
@@ -217,7 +217,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
           len1 = len2;
         }
 
-        len1 = BigIntMultiplication.umul(val1, 1, len1, ml, mh);
+        len1 = umul(val1, 1, len1, ml, mh);
       }
 
       val1[0] = flipSig ? -len1 : len1;
@@ -239,7 +239,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
       try {
         // FIXME: Tune thresholds
-        val1 = BigIntMultiplication.karatsuba(val1, val2, Math.max(len1, len2) > 20000);
+        val1 = karatsuba(val1, val2, Math.max(len1, len2) > 20000);
       }
       catch (final ExecutionException | InterruptedException e) {
         throw new RuntimeException(e);

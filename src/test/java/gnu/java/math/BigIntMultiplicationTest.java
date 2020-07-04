@@ -28,16 +28,16 @@ public class BigIntMultiplicationTest extends BigIntTest {
     testRange("mul(int,int)",
       i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(signum[0], b), String::valueOf),
-      i("int[]", this::scaledVal, (int[] a, int b) -> b == 0 ? ZERO : BigInt.mul(a, signum[0], b), BigInt::toString)
+      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.mul(a, signum[0], b), BigInt::toString)
     );
   }
 
   @Test
-  public void testInt() {
+  public void testSignedInt() {
     testRange("mul(int)",
       i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
-      i("int[]", this::scaledVal, (int[] a, int b) -> b == 0 ? ZERO : BigInt.mul(a, b), BigInt::toString)
+      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 
@@ -47,16 +47,16 @@ public class BigIntMultiplicationTest extends BigIntTest {
     testRange("mul(int,long)",
       l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(signum[0], b), String::valueOf),
-      l("int[]", this::scaledVal, (int[] a, long b) -> b == 0 ? ZERO : BigInt.mul(a, signum[0], b), BigInt::toString)
+      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.mul(a, signum[0], b), BigInt::toString)
     );
   }
 
   @Test
-  public void testLong() {
+  public void testSignedLong() {
     testRange("mul(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
-      l("int[]", this::scaledVal, (int[] a, long b) -> b == 0 ? ZERO : BigInt.mul(a, b), BigInt::toString)
+      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 

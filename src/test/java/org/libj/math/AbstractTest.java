@@ -491,8 +491,16 @@ public abstract class AbstractTest {
     return new StringCase<>(name, aToA, bToB, test, out);
   }
 
+  public static <A,B,R,O>StringCase<A,B,R,O> s(final String name, final Function<String,A> aToA, final Function<String,B> bToB, final BiFunction<A,B,R> test) {
+    return new StringCase<>(name, aToA, bToB, test, null);
+  }
+
   public static <A,B,R,O>StringCase<A,B,R,O> s(final String name, final Function<String,A> aToA, final BiFunction<A,B,R> test, final Function<R,O> out) {
     return new StringCase<>(name, aToA, null, test, out);
+  }
+
+  public static <A,B,R,O>StringCase<A,B,R,O> s(final String name, final Function<String,A> aToA, final BiFunction<A,B,R> test) {
+    return new StringCase<>(name, aToA, null, test, null);
   }
 
   public static <R,O>StringCase<String,String,R,O> s(final String name, final BiFunction<String,String,R> test, final Function<R,O> out) {
