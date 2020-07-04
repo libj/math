@@ -24,7 +24,7 @@ import org.libj.math.BigIntegers;
 public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testUnsignedInt() {
-    testRange("<init>(int,int)",
+    test("<init>(int,int)",
       i("BigInteger", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigIntegers.valueOf(a, b), String::valueOf),
       i("BigInt", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> new BigInt(a, b), String::valueOf),
       i("int[]", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigInt.valueOf(a, b), BigInt::toString)
@@ -33,7 +33,7 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testSignedInt() {
-    testRange("<init>(int)",
+    test("<init>(int)",
       i("BigInteger", (int a, int b) -> BigInteger.valueOf(a), String::valueOf),
       i("BigInt", (int a, int b) -> new BigInt(a), String::valueOf),
       i("int[]", (int a, int b) -> BigInt.valueOf(a), BigInt::toString)
@@ -42,7 +42,7 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testUnsignedLong() {
-    testRange("<init>(int,long)",
+    test("<init>(int,long)",
       l("BigInteger", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf),
       l("BigInt", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInt((int)a, b), String::valueOf),
       l("int[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigInt.valueOf((int)a, b), BigInt::toString)
@@ -51,19 +51,19 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testSignedLong() {
-    testRange("<init>(long)",
-      l("BigInteger", (long a, long b) -> BigInteger.valueOf(a), String::valueOf),
-      l("BigInt", (long a, long b) -> new BigInt(a), String::valueOf),
-      l("int[]", (long a, long b) -> BigInt.valueOf(a), BigInt::toString)
+    test("<init>(long)",
+      l("BigInteger", (long a) -> BigInteger.valueOf(a), String::valueOf),
+      l("BigInt", (long a) -> new BigInt(a), String::valueOf),
+      l("int[]", (long a) -> BigInt.valueOf(a), BigInt::toString)
     );
   }
 
   @Test
   public void testBig() {
-    testRange("<init>(String)",
-      s("BigInteger", (String a, String b) -> new BigInteger(a), String::valueOf),
-      s("BigInt", (String a, String b) -> new BigInt(a), String::valueOf),
-      s("int[]", (String a, String b) -> BigInt.valueOf(a), BigInt::toString)
+    test("<init>(String)",
+      s("BigInteger", (String a) -> new BigInteger(a), String::valueOf),
+      s("BigInt", (String a) -> new BigInt(a), String::valueOf),
+      s("int[]", (String a) -> BigInt.valueOf(a), BigInt::toString)
     );
   }
 }

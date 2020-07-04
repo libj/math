@@ -25,7 +25,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt() {
     final int[] signum = {0};
-    testRange("mul(int,int)",
+    test("mul(int,int)",
       i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(signum[0], b), String::valueOf),
       i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.mul(a, signum[0], b), BigInt::toString)
@@ -34,7 +34,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSignedInt() {
-    testRange("mul(int)",
+    test("mul(int)",
       i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
       i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.mul(a, b), BigInt::toString)
@@ -44,7 +44,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedLong() {
     final int[] signum = {0};
-    testRange("mul(int,long)",
+    test("mul(int,long)",
       l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(signum[0], b), String::valueOf),
       l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.mul(a, signum[0], b), BigInt::toString)
@@ -53,7 +53,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSignedLong() {
-    testRange("mul(long)",
+    test("mul(long)",
       l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
       l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.mul(a, b), BigInt::toString)
@@ -62,7 +62,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testBig() {
-    testRange("mul(T)",
+    test("mul(T)",
       s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
       s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
@@ -75,7 +75,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] zds = new int[4];
     final int[] x = new int[4];
     final int[] y = new int[1];
-    testRange("umul(int[],int[])",
+    test("umul(int[],int[])",
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
@@ -104,7 +104,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] zds = new int[4];
     final int[] x = new int[4];
     final int[] y = new int[2];
-    testRange("umul(long[],long[])",
+    test("umul(long[],long[])",
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);

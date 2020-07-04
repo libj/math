@@ -732,6 +732,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
     return bitCount(val);
   }
 
+  public int precision() {
+    return precision(val);
+  }
+
   /**
    * Shifts this number left by the given amount.
    *

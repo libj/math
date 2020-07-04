@@ -35,14 +35,14 @@ public class BigIntStudy extends BigIntTest {
   @Test
   public void testLengthSignum() {
     final int[] v = new int[10];
-    testRange("length signum: regular vs compound",
-      i("Regular", a -> {v[0] = Math.abs(a / 2); v[1] = Integer.compare(a, 0); return v;}, (int[] a, int b) -> {
+    test("length signum: regular vs compound",
+      i("Regular", a -> {v[0] = Math.abs(a / 2); v[1] = Integer.compare(a, 0); return v;}, (int[] a) -> {
         int len = a[0];
         int signum = a[1];
 
         return len * signum;
       }, Integer::valueOf),
-      i("Compound", a -> {v[0] = a / 2; return v;}, (int[] a, int b) -> {
+      i("Compound", a -> {v[0] = a / 2; return v;}, (int[] a) -> {
         int signum, len = a[0];
         if (len < 0) {
           len = -len;

@@ -521,15 +521,15 @@ abstract class BigIntValue extends Number {
     return sig * hash;
   }
 
+  private static final int pow5 = 1_220_703_125;
+  private static final int pow2 = 1 << 13;
+
   // Divides the number by 10^13 and returns the remainder.
   // Does not change the sign of the number.
   private static long toStringDiv(final int[] val, int len) {
-    // FIXME: Static...
-    final int pow5 = 1_220_703_125;
-    final int pow2 = 1 << 13;
     int q1 = 0;
     long r = 0;
-    for (int q0; len > 1; --len) {
+    for (int q0; len > 0; --len) {
       r = (r << 32) + (val[len] & LONG_INT_MASK);
       q0 = (int)(r / pow5);
       r = r % pow5;
@@ -537,9 +537,9 @@ abstract class BigIntValue extends Number {
       q1 = q0 << 32 - 13;
     }
 
-    r = (r << 32) + (val[1] & LONG_INT_MASK);
-    final int mod2 = val[1] & pow2 - 1;
-    val[1] = q1 | (int)(r / pow5 >>> 13);
+    r = (r << 32) + (val[0] & LONG_INT_MASK);
+    final int mod2 = val[0] & pow2 - 1;
+    val[0] = q1 | (int)(r / pow5 >>> 13);
     r %= pow5;
 
     // Applies the Chinese Remainder Theorem. -67*5^13 + 9983778*2^13 = 1
@@ -583,38 +583,66 @@ abstract class BigIntValue extends Number {
    * @return The string representation of this number in decimal.
    * @complexity O(n^2)
    */
-  // FIXME: Performance is really bad!
   public static String toString(final int[] val) {
     if (isZero(val))
       return "0";
 
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
 
-    int top = len * 10 + 3;
-    final char[] cmag = new char[top];
-    Arrays.fill(cmag, '0');
-    // FIXME: Why are we copying?
-    final int[] cpy = Arrays.copyOf(val, len + 1);
+    int j, top = len * 10 + 3;
+    final char[] chars = new char[top];
+    Arrays.fill(chars, '0');
+    final int[] mag = new int[len];
+    System.arraycopy(val, 1, mag, 0, len);
+    long tmp;
     while (true) {
-      final int j = top;
-      long tmp = toStringDiv(val, len);
-      if (val[len] == 0 && len > 1 && val[--len] == 0 && len > 1)
+      j = top;
+      tmp = toStringDiv(mag, len - 1);
+      if (mag[len - 1] == 0 && len > 1 && mag[--len - 1] == 0 && len > 1)
         --len;
 
       for (; tmp > 0; tmp /= 10)
-        cmag[--top] += tmp % 10; // TODO: Optimize.
+        chars[--top] += tmp % 10; // TODO: Optimize.
 
-      if (len == 1 && val[1] == 0)
+      if (len == 1 && mag[0] == 0)
         break;
 
       top = j - 13;
     }
 
     if (sig < 0)
-      cmag[--top] = '-';
+      chars[--top] = '-';
 
-    System.arraycopy(cpy, 0, val, 0, cpy.length);
-    return new String(cmag, top, cmag.length - top);
+    return new String(chars, top, chars.length - top);
+  }
+
+  public static int precision(final int[] val) {
+    if (isZero(val))
+      return 1;
+
+    int len = val[0]; if (len < 0) { len = -len; }
+
+    final int length = len * 10 + 3;
+    int j, top = length;
+    final int[] mag = new int[len];
+    System.arraycopy(val, 1, mag, 0, len);
+    long tmp;
+    while (true) {
+      j = top;
+      tmp = toStringDiv(mag, len - 1);
+      if (mag[len - 1] == 0 && len > 1 && mag[--len - 1] == 0 && len > 1)
+        --len;
+
+      for (; tmp > 0; tmp /= 10)
+        --top;
+
+      if (len == 1 && mag[0] == 0)
+        break;
+
+      top = j - 13;
+    }
+
+    return length - top;
   }
 
   public static int[] abs(final int[] val) {

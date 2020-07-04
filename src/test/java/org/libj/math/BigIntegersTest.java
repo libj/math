@@ -73,7 +73,7 @@ public class BigIntegersTest extends BigIntTest {
 
   @Test
   public void testUnsignedBigIntegerInt() {
-    testRange("new unsigned BigInteger: byte[] vs shift",
+    test("new unsigned BigInteger: byte[] vs shift",
       i("byte[]", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> new BigInteger(a, toByteArray(b)), String::valueOf),
       i("shift", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigIntegers.valueOf(a, b), String::valueOf)
     );
@@ -81,7 +81,7 @@ public class BigIntegersTest extends BigIntTest {
 
   @Test
   public void testUnsignedBigIntegerLong() {
-    testRange("new unsigned BigInteger: byte[] vs shift",
+    test("new unsigned BigInteger: byte[] vs shift",
       l("byte[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInteger((int)a, toByteArray(b)), String::valueOf),
       l("shift", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf)
     );
@@ -89,7 +89,7 @@ public class BigIntegersTest extends BigIntTest {
 
   @Test
   public void testUnsignedBigInteger2() {
-    testRange("signum * value: '*' vs '? :'",
+    test("signum * value: '*' vs '? :'",
       l("s * v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a * b),
       l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
     );

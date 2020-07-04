@@ -18,10 +18,12 @@ package gnu.java.math;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Random;
 
-import org.libj.math.AbstractTest;
+import org.libj.math.CaseTest;
 
-public abstract class BigIntTest extends AbstractTest {
+public abstract class BigIntTest extends CaseTest {
+  private static final Random random = new Random();
   public static final int IRRELEVANT = 1;
   public static final int[] ZERO = {0};
   static final int numTests = 1000000;
@@ -150,5 +152,34 @@ public abstract class BigIntTest extends AbstractTest {
     shoudlScale = random.nextDouble() < scaleFactor;
     shouldInflate = random.nextDouble() < inflateFactor;
     shouldBeEqual = random.nextDouble() < equalFactor;
+  }
+
+  public long intScale() {
+    return 1000000000000000000L;
+  }
+
+  public long longScale() {
+    return 1000000000000000000L;
+  }
+
+  public String stringScale(final String a) {
+    return a + a.replace("-", "");
+  }
+
+  public static String randomBig(final int len) {
+    return randomBig(len, false);
+  }
+
+  public static String randomBig(final int len, final boolean positive) {
+    final int sign = positive ? 0 : random.nextInt(2);
+    final char[] num = new char[len + sign];
+    if (sign > 0)
+      num[0] = '-';
+
+    num[sign] = (char)('1' + random.nextInt(9));
+    for (int i = sign + 1; i < len + sign; i++)
+      num[i] = (char)('0' + random.nextInt(10));
+
+    return new String(num);
   }
 }

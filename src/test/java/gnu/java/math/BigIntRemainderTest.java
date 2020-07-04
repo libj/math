@@ -24,7 +24,7 @@ import org.libj.math.BigIntegers;
 public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedRemInt() {
-    testRange("rem(int,int)",
+    test("rem(int,int)",
       i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(IRRELEVANT, nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(IRRELEVANT, b), String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> {BigInt.rem(a, IRRELEVANT, b); return a;}, BigInt::toString)
@@ -33,7 +33,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testUnsignedRemLong() {
-    testRange("rem(int,long)",
+    test("rem(int,long)",
       l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(IRRELEVANT, nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(IRRELEVANT, b), String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> {BigInt.rem(a, IRRELEVANT, b); return a;}, BigInt::toString)
@@ -42,7 +42,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedRemInt() {
-    testRange("rem(int)",
+    test("rem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(b), String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> {BigInt.rem(a, b); return a;}, BigInt::toString)
@@ -51,7 +51,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedRemLong() {
-    testRange("rem(long)",
+    test("rem(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(b), String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> {BigInt.rem(a, b); return a;}, BigInt::toString)
@@ -60,7 +60,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testRemBig() {
-    testRange("rem(T)",
+    test("rem(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> b.isZero() ? 0 : a.rem(b), String::valueOf),
       s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> BigInt.isZero(b) ? ZERO : BigInt.rem(a, b), BigInt::toString)
@@ -70,7 +70,7 @@ public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedDivRemInt() {
     final int[] signum = {0};
-    testRange("divRem(int)",
+    test("divRem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> a.divRem(signum[0], b), String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> BigInt.divRem(a, signum[0], b), String::valueOf)
@@ -80,7 +80,7 @@ public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedDivRemLong() {
     final int[] signum = {0};
-    testRange("divRem(long)",
+    test("divRem(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b).abs(), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> a.divRem(signum[0], b), Long::toUnsignedString),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> BigInt.divRem(a, signum[0], b), Long::toUnsignedString)
@@ -89,7 +89,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedDivRemInt() {
-    testRange("divRem(int)",
+    test("divRem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> a.divRem(b), String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> BigInt.divRem(a, b), String::valueOf)
@@ -98,7 +98,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedDivRemLong() {
-    testRange("divRem(long)",
+    test("divRem(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> a.divRem(b), String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> BigInt.divRem(a, b), String::valueOf)
@@ -107,7 +107,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testDivRemBig() {
-    testRange("divRem(T)",
+    test("divRem(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> b.isZero() ? 0 : a.divRem(b), String::valueOf),
       s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> BigInt.isZero(b) ? ZERO : BigInt.divRem(a, b), BigInt::toString)

@@ -25,7 +25,7 @@ public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivInt() {
     final int[] signum = {0};
-    testRange("udivRem(int)",
+    test("udivRem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> a.div(signum[0], b), String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> b == 0 ? ZERO : BigInt.div(a, signum[0], b), BigInt::toString)
@@ -35,7 +35,7 @@ public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivLong() {
     final int[] signum = {0};
-    testRange("udiv(long)",
+    test("udiv(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> a.div(signum[0], b), String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> b == 0 ? ZERO : BigInt.div(a, signum[0], b), BigInt::toString)
@@ -44,7 +44,7 @@ public class BigIntDivisionTest extends BigIntTest {
 
   @Test
   public void testSignedDivInt() {
-    testRange("divRem(int)",
+    test("divRem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> a.div(b), String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> b == 0 ? ZERO : BigInt.div(a, b), BigInt::toString)
@@ -53,7 +53,7 @@ public class BigIntDivisionTest extends BigIntTest {
 
   @Test
   public void testSignedDivLong() {
-    testRange("divRem(long)",
+    test("divRem(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> a.div(b), String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> b == 0 ? ZERO : BigInt.div(a, b), BigInt::toString)
@@ -62,7 +62,7 @@ public class BigIntDivisionTest extends BigIntTest {
 
   @Test
   public void testDivBig() {
-    testRange("div(T)",
+    test("div(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> a.div(b), String::valueOf),
       s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> BigInt.div(a, b), BigInt::toString)
@@ -72,7 +72,7 @@ public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivRemInt() {
     final int[] signum = {0};
-    testRange("udivRem(int)",
+    test("udivRem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> {a.divRem(signum[0], b); return a;}, String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> {BigInt.divRem(a, signum[0], b); return a;}, BigInt::toString)
@@ -82,7 +82,7 @@ public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivRemLong() {
     final int[] signum = {0};
-    testRange("udiv(long)",
+    test("udiv(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigIntegers.valueOf(signum[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> {a.divRem(signum[0], b); return a;}, String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> {BigInt.divRem(a, signum[0], b); return a;}, BigInt::toString)
@@ -91,7 +91,7 @@ public class BigIntDivisionTest extends BigIntTest {
 
   @Test
   public void testSignedDivRemInt() {
-    testRange("divRem(int)",
+    test("divRem(int)",
       i("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       i("BigInt", this::scaledBigInt, this::nz, (BigInt a, int b) -> {a.divRem(b); return a;}, String::valueOf),
       i("int[]", this::scaledVal, this::nz, (int[] a, int b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
@@ -100,7 +100,7 @@ public class BigIntDivisionTest extends BigIntTest {
 
   @Test
   public void testSignedDivRemLong() {
-    testRange("divRem(long)",
+    test("divRem(long)",
       l("BigInteger", this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       l("BigInt", this::scaledBigInt, this::nz, (BigInt a, long b) -> {a.divRem(b); return a;}, String::valueOf),
       l("int[]", this::scaledVal, this::nz, (int[] a, long b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
@@ -109,7 +109,7 @@ public class BigIntDivisionTest extends BigIntTest {
 
   @Test
   public void testDivRemBig() {
-    testRange("div(T)",
+    test("div(T)",
       s("BigInteger", this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
       s("BigInt", this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> {a.divRem(b); return a;}, String::valueOf),
       s("int[]", this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
