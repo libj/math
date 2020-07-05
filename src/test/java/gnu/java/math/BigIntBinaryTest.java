@@ -50,7 +50,7 @@ public class BigIntBinaryTest extends BigIntTest {
 
   @Test
   public void testNot() {
-    test("not(T)",
+    test("not()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a) -> a.not(), String::valueOf),
       s("BigInt", this::scaledBigInt, (BigInt a) -> a.not(), String::valueOf),
       s("int[]", this::scaledVal, (int[] a) -> BigInt.not(a), BigInt::toString)

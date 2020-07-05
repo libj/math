@@ -3,31 +3,33 @@ package org.libj.math;
 import java.util.Arrays;
 
 import org.libj.lang.Ansi;
-import org.libj.lang.Strings;
 import org.libj.lang.Ansi.Color;
 import org.libj.lang.Ansi.Intensity;
+import org.libj.lang.Strings;
 
 public abstract class Surveys {
-  private final int buckets;
+  private final int variables;
+  private final int divisions;
   private final Survey[] surveys;
 
-  public Surveys(final int size, final int buckets) {
-    this.buckets = buckets;
+  public Surveys(final int size, final int variables, final int divisions) {
+    this.variables = variables;
+    this.divisions = divisions;
     surveys = new Survey[size];
     for (int i = 0; i < size; ++i) {
-      surveys[i] = new Survey(buckets) {
+      surveys[i] = new Survey(variables, divisions) {
         @Override
-        public int getBucket(final Object obj) {
-          return Surveys.this.getBucket(obj);
+        public int getDivision(final int variable, final Object obj) {
+          return Surveys.this.getBucket(variable, obj);
         }
       };
     }
   }
 
-  public abstract int getBucket(final Object obj);
+  public abstract int getBucket(int variable, Object obj);
 
-  public void addTime(int c, Object o, long time) {
-    surveys[c].addTime(o, time);
+  public void addTime(final int survey, final int variable, final Object obj, final long time) {
+    surveys[survey].addTime(variable, obj, time);
   }
 
   public void reset() {
@@ -35,44 +37,54 @@ public abstract class Surveys {
       surveys[i].reset();
   }
 
-  public abstract String key(int b);
+  public abstract String key(int variable, int division);
 
   public void print(final String label, final int count, final long ts, final String ... headings) {
-    for (int i = 0; i < surveys.length; ++i)
-      surveys[i].normalize();
+    for (int s = 0; s < surveys.length; ++s)
+      surveys[s].normalize();
 
-    final long[] min = new long[buckets];
-    Arrays.fill(min, Long.MAX_VALUE);
+    final long[][] min = new long[variables][divisions];
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(min[v], Long.MAX_VALUE);
 
-    final long[] max = new long[buckets];
-    Arrays.fill(max, Long.MIN_VALUE);
+    final long[][] max = new long[variables][divisions];
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(max[v], Long.MIN_VALUE);
 
-    for (int i = 0; i < surveys.length; ++i) {
-      for (int b = 0; b < buckets; ++b) {
-        min[b] = Math.min(min[b], surveys[i].getTimes()[b]);
-        max[b] = Math.max(max[b], surveys[i].getTimes()[b]);
+    for (int s = 0; s < surveys.length; ++s) {
+      for (int v = 0; v < variables; ++v) {
+        for (int d = 0; d < divisions; ++d) {
+          final long time = surveys[s].getTimes()[v][d];
+          min[v][d] = Math.min(min[v][d], time);
+          max[v][d] = Math.max(max[v][d], time);
+        }
       }
     }
 
-    final String[][] strings = new String[surveys.length + 1][];
-    strings[0] = new String[buckets + 1];
-    strings[0][0] = "";
-    for (int j = 0; j < buckets; ++j)
-      strings[0][j + 1] = key(j);
+    final String[][] columns = new String[surveys.length + 1][];
+    columns[0] = new String[variables * divisions + 1];
+    columns[0][0] = "";
+    for (int v = 0; v < variables; ++v)
+      for (int d = 0; d < divisions; ++d)
+        columns[0][v + d * variables + 1] = key(v, d);
 
-    for (int i = 0; i < surveys.length; ++i) {
-      final long[] times = surveys[i].getTimes();
-      strings[i + 1] = new String[times.length + 1];
-      strings[i + 1][0] = headings[i];
-      for (int j = 0; j < times.length; ++j) {
-        strings[i + 1][j + 1] = String.valueOf(times[j]);
-        if (times[j] == min[j])
-          strings[i + 1][j + 1] = Ansi.apply(strings[i + 1][j + 1], Intensity.BOLD, Color.GREEN);
-        else if (surveys.length > 2 ? i >= surveys.length - 2 : i >= surveys.length - 1)
-          strings[i + 1][j + 1] = Ansi.apply(strings[i + 1][j + 1], Intensity.BOLD, times[j] == max[j] ? Color.RED : Color.YELLOW);
+    for (int s = 0; s < surveys.length; ++s) {
+      columns[s + 1] = new String[variables * divisions + 1];
+      columns[s + 1][0] = headings[s];
+      final long[][] times = surveys[s].getTimes();
+      for (int v = 0; v < variables; ++v) {
+        for (int d = 0; d < divisions; ++d) {
+          final long time = times[v][d];
+          final int c = v + d * variables + 1;
+          columns[s + 1][c] = String.valueOf(time);
+          if (time == min[v][d])
+            columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, Color.GREEN);
+          else if (surveys.length > 2 ? s >= surveys.length - 2 : s >= surveys.length - 1)
+            columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, time == max[v][d] ? Color.RED : Color.YELLOW);
+        }
       }
     }
 
-    System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Strings.printTable(true, true, strings));
+    System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Strings.printTable(true, true, variables, false, columns));
   }
 }

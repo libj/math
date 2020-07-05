@@ -59,17 +59,74 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInteger scaledBigInteger(final int a) {
-    final BigInteger b = BigInteger.valueOf(a);
-    return shoudlScale ? b.multiply(BigInteger.valueOf(intScale())) : b;
+    setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+    if (shoudlScale)
+      return new BigInteger(stringScale(String.valueOf(a)));
+
+    return BigInteger.valueOf(a);
   }
 
   public BigInteger scaledBigInteger(final long a) {
-    final BigInteger b = BigInteger.valueOf(a);
-    return shoudlScale ? b.multiply(BigInteger.valueOf(longScale())) : b;
+    setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+    if (shoudlScale)
+      return new BigInteger(stringScale(String.valueOf(a)));
+
+    return BigInteger.valueOf(a);
   }
 
   public BigInteger scaledBigInteger(final String a) {
+    setScaleFactorFactor(StringCase.class, scaleFactorFactor());
     return new BigInteger(shoudlScale ? stringScale(a) : a);
+  }
+
+  public int[] scaledVal(final int a) {
+    setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+    final int[] val = BigInt.assign(newVal(2), a);
+    if (shoudlScale)
+      return BigInt.valueOf(stringScale(BigInt.toString(val)));
+
+    return val;
+  }
+
+  public int[] scaledVal(final long a) {
+    setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+    final int[] val = BigInt.assign(newVal(2), a);
+    if (shoudlScale)
+      return BigInt.valueOf(stringScale(BigInt.toString(val)));
+
+    return val;
+  }
+
+  public int[] scaledVal(final String a) {
+    setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+    if (shoudlScale)
+      return BigInt.valueOf(stringScale(a));
+
+    return BigInt.valueOf(a);
+  }
+
+  public BigInt scaledBigInt(final int a) {
+    setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+    if (shoudlScale)
+      return newBigInt().assign(stringScale(String.valueOf(a)));
+
+    return newBigInt().assign(a);
+  }
+
+  public BigInt scaledBigInt(final long a) {
+    setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+    if (shoudlScale)
+      return newBigInt().assign(stringScale(String.valueOf(a)));
+
+    return newBigInt().assign(a);
+  }
+
+  public BigInt scaledBigInt(final String a) {
+    setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+    if (shoudlScale)
+      return newBigInt().assign(stringScale(a));
+
+    return newBigInt().assign(a);
   }
 
   private static BigInt newBigInt() {
@@ -78,34 +135,6 @@ public abstract class BigIntTest extends CaseTest {
 
   private static int[] newVal(final int size) {
     return shouldInflate ? new int[random.nextInt(1024) + 1] : new int[size];
-  }
-
-  public int[] scaledVal(final int a) {
-    final int[] b = BigInt.assign(newVal(2), a);
-    return shoudlScale ? BigInt.mul(b, intScale()) : b;
-  }
-
-  public int[] scaledVal(final long a) {
-    final int[] b = BigInt.assign(newVal(2), a);
-    return shoudlScale ? BigInt.mul(b, intScale()) : b;
-  }
-
-  public int[] scaledVal(final String a) {
-    return BigInt.valueOf(shoudlScale ? stringScale(a) : a);
-  }
-
-  public BigInt scaledBigInt(final int a) {
-    final BigInt b = newBigInt().assign(a);
-    return shoudlScale ? b.mul(intScale()) : b;
-  }
-
-  public BigInt scaledBigInt(final long a) {
-    final BigInt b = newBigInt().assign(a);
-    return shoudlScale ? b.mul(longScale()) : b;
-  }
-
-  public BigInt scaledBigInt(final String a) {
-    return newBigInt().assign(shoudlScale ? stringScale(a) : a);
   }
 
   @Override
@@ -154,16 +183,20 @@ public abstract class BigIntTest extends CaseTest {
     shouldBeEqual = random.nextDouble() < equalFactor;
   }
 
-  public long intScale() {
-    return 1000000000000000000L;
-  }
-
-  public long longScale() {
-    return 1000000000000000000L;
+  public int scaleFactorFactor() {
+    return 2;
   }
 
   public String stringScale(final String a) {
-    return a + a.replace("-", "");
+    if (scaleFactorFactor() == 1)
+      return a;
+
+    final String copy = a.replace("-", "");
+    final StringBuilder builder = new StringBuilder(a);
+    for (int i = 1; i < scaleFactorFactor(); ++i)
+      builder.append(copy);
+
+    return builder.toString();
   }
 
   public static String randomBig(final int len) {
