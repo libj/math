@@ -62,13 +62,16 @@ abstract class BigIntValue extends Number {
   }
 
   public static int[] assign(int[] val, final int sig, final int mag) {
-    if (val.length < 2)
-      val = alloc(2);
-
     if (mag == 0) {
+      if (val.length < 1)
+        val = alloc(1);
+
       val[0] = 0;
     }
     else {
+      if (val.length < 2)
+        val = alloc(2);
+
       val[0] = sig;
       val[1] = mag;
     }
@@ -77,28 +80,46 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
-  public static int[] assign(final int[] val, final boolean sig, final long mag) {
-    return assign(val, sig ? 1 : -1, mag);
+  public static int[] assign(int[] val, final int mag) {
+    if (mag == 0) {
+      if (val.length < 1)
+        val = alloc(1);
+
+      return setToZero(val);
+    }
+
+    return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
   public static int[] assign(final int[] val, final boolean sig, final int mag) {
     return assign(val, sig ? 1 : -1, mag);
   }
 
-  public static int[] assign(int[] val, final int mag) {
-    if (val.length < 2)
-      val = alloc(2);
-
-    return mag == 0 ? setToZero(val) : mag == Integer.MIN_VALUE ? assign(val, -1, mag) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
+  public static int[] assign(final int[] val, final boolean sig, final long mag) {
+    return assign(val, sig ? 1 : -1, mag);
   }
 
-  public static int[] assign(int[] val, final int sig, final byte[] mag, final int len) {
+  public static int[] assign(int[] val, final byte[] mag, final boolean isLittleEndian) {
+    return assign(val, mag, 0, mag.length, isLittleEndian);
+  }
+
+  public static int[] assign(int[] val, final byte[] mag, final int off, final int len, final boolean isLittleEndian) {
+    if (isLittleEndian)
+      return assignLittleEndian(val, mag, off, len);
+
+    if (mag[off] < 0)
+      return assignBigEndianNegative(val, mag, off, len);
+
+    return assignBigEndianPositive(val, mag, off, len);
+  }
+
+  private static int[] assignLittleEndian(int[] val, final byte[] mag, final int off, final int len) {
     int newLen = (len + 3) / 4;
     if (val == null || newLen > val.length)
       val = alloc(newLen + 2);
 
     int tmp = len / 4;
-    int j = 0;
+    int j = off;
     for (int i = 1; i <= tmp; ++i, j += 4)
       val[i] = mag[j + 3] << 24 | (mag[j + 2] & 0xFF) << 16 | (mag[j + 1] & 0xFF) << 8 | mag[j] & 0xFF;
 
@@ -110,18 +131,99 @@ abstract class BigIntValue extends Number {
           tmp |= (mag[j] & 0xFF) << 16;
       }
 
-      val[newLen + 1] = tmp;
-      if (tmp == 0)
-        --newLen;
+      if (tmp != 0)
+        val[++newLen] = tmp;
     }
 
-    val[0] = sig < 0 ? -newLen : newLen;
+    if (val[newLen] == 0)
+      --newLen;
+
+    val[0] = newLen;
     _debugLenSig(val);
     return val;
   }
 
+  /**
+   * Takes an array a representing a negative 2's-complement number and
+   * returns the minimal (no leading zero bytes) unsigned whose value is -a.
+   */
+  private static int[] assignBigEndianNegative(int[] val, final byte[] mag, final int off, final int len) {
+    final int indexBound = off + len;
+    int keep, k;
+
+    // Find first non-sign (0xFF) byte of input
+    for (keep = off; keep < indexBound && mag[keep] == -1; ++keep);
+
+    /*
+     * Allocate output array. If all non-sign bytes are 0x00, we must allocate
+     * space for one extra output byte.
+     */
+    for (k = keep; k < indexBound && mag[k] == 0; ++k);
+
+    final int extraByte = k == indexBound ? 1 : 0;
+    final int vlen = ((indexBound - keep + extraByte) + 3) >>> 2;
+    if (val.length <= vlen)
+      val = new int[vlen + 1];
+
+    /*
+     * Copy one's complement of input into output, leaving extra byte (if it
+     * exists) == 0x00
+     */
+    for (int i = 1, j, b = indexBound - 1, numBytesToTransfer, lim, mask; i <= vlen; ++i) {
+      numBytesToTransfer = Math.max(0, Math.min(3, b - keep));
+      val[i] = mag[b--] & 0xFF;
+      for (j = 8, lim = 8 * numBytesToTransfer; j <= lim; j += 8)
+        val[i] |= (mag[b--] & 0xFF) << j;
+
+      // Mask indicates which bits must be complemented
+      mask = -1 >>> (8 * (3 - numBytesToTransfer));
+      val[i] = ~val[i] & mask;
+    }
+
+    // Add one to one's complement to generate two's complement
+    for (int i = 1; i <= vlen; ++i) {
+      val[i] = (int)((val[i] & LONG_INT_MASK) + 1);
+      if (val[i] != 0)
+        break;
+    }
+
+    val[0] = -vlen;
+    _debugLenSig(val);;
+    return val;
+  }
+
+  /**
+   * Returns a copy of the input array stripped of any leading zero bytes.
+   */
+  private static int[] assignBigEndianPositive(int[] val, final byte[] mag, final int off, final int len) {
+    final int indexBound = off + len;
+    int keep;
+
+    // Find first nonzero byte
+    for (keep = off; keep < indexBound && mag[keep] == 0; ++keep);
+
+    // Allocate new array and copy relevant part of input array
+    final int vlen = ((indexBound - keep) + 3) >>> 2;
+    if (val.length <= vlen)
+      val = new int[vlen + 1];
+
+    if (vlen == 0)
+      return setToZero(val);
+
+    for (int i = 1, j, b = indexBound - 1, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
+      bytesRemaining = b - keep;
+      bytesToTransfer = Math.min(3, bytesRemaining);
+      val[i] = mag[b--] & 0xff;
+      for (j = 8; j <= bytesToTransfer << 3; j += 8)
+        val[i] |= (mag[b--] & 0xff) << j;
+    }
+
+    val[0] = vlen;
+    _debugLenSig(val);;
+    return val;
+  }
+
   public static int[] assign(final int[] val, final long mag) {
-    // FIXME: Long.MIN_VALUE
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
@@ -129,13 +231,13 @@ abstract class BigIntValue extends Number {
     if (mag == 0)
       return setToZero(val.length == 0 ? new int[1] : val);
 
-    final int h = (int)(mag >>> 32);
-    if (h != 0) {
+    final int magh = (int)(mag >>> 32);
+    if (magh != 0) {
       if (val.length < 3)
         val = alloc(3);
 
       val[0] = sig < 0 ? -2 : 2;
-      val[2] = h;
+      val[2] = magh;
     }
     else {
       if (val.length < 2)
@@ -144,7 +246,7 @@ abstract class BigIntValue extends Number {
       val[0] = sig;
     }
 
-    val[1] = (int)(mag & LONG_INT_MASK);
+    val[1] = (int)mag;
     _debugLenSig(val);
     return val;
   }
@@ -274,20 +376,6 @@ abstract class BigIntValue extends Number {
    */
   public static boolean isZero(final int[] val) {
     return val[0] == 0;
-  }
-
-  /**
-   * Unsigned long to bytes
-   *
-   * @param val
-   * @return
-   */
-  public static byte[] toByteArray(long val) {
-    final byte[] b = new byte[8];
-    for (int j = 7; j >= 0; --j, val >>>= 8)
-      b[j] = (byte)(val & 0xFF);
-
-    return b;
   }
 
   /**
@@ -459,11 +547,11 @@ abstract class BigIntValue extends Number {
   }
 
   public static int compareTo(final int[] val1, final int[] val2) {
-    int sig1, len1 = val1[0];
-    if (len1 < 0) { len1 = -len1; sig1 = -1; } else { sig1 = 1; }
+    int sig1 = 1, len1 = val1[0];
+    if (len1 < 0) { len1 = -len1; sig1 = -1; }
 
-    int sig2, len2 = val2[0];
-    if (len2 < 0) { len2 = -len2; sig2 = -1; } else { sig2 = 1; }
+    int sig2 = 1, len2 = val2[0];
+    if (len2 < 0) { len2 = -len2; sig2 = -1; }
 
     if (sig1 < 0)
       return sig2 < 0 ? compareToAbs(val2, len2, val1, len1) : -1;
@@ -485,20 +573,16 @@ abstract class BigIntValue extends Number {
    * @complexity O(n)
    */
   public static boolean equals(final int[] val1, final int[] val2) {
-    int sig1, len1 = val1[0];
-    if (len1 < 0) { len1 = -len1; sig1 = -1; } else { sig1 = 1; }
+    int len1 = val1[0];
 
-    int sig2, len2 = val2[0];
-    if (len2 < 0) { len2 = -len2; sig2 = -1; } else { sig2 = 1; }
-
-    if (len1 != len2)
+    if (len1 != val2[0])
       return false;
 
     if (len1 == 0)
       return true;
 
-    if ((sig1 ^ sig2) < 0)
-      return false;
+    if (len1 < 0)
+      len1 = -len1;
 
     for (; len1 >= 1; --len1)
       if (val1[len1] != val2[len1])
@@ -512,7 +596,7 @@ abstract class BigIntValue extends Number {
     if (len == 0)
       return 0;
 
-    final int sig; if (len < 0) { len = -len; sig = -1; } else { sig = 1; }
+    int sig = 1; if (len < 0) { len = -len; sig = -1; }
 
     int hash = 0;
     for (; len >= 1; --len)
@@ -567,6 +651,14 @@ abstract class BigIntValue extends Number {
 
   public static int[] valueOf(final int sig, final long mag) {
     return assign(emptyVal, sig, mag);
+  }
+
+  public static int[] valueOf(final byte[] mag, final int off, final int len, final boolean isLittleEndian) {
+    return assign(emptyVal, mag, off, len, isLittleEndian);
+  }
+
+  public static int[] valueOf(final byte[] mag, final boolean isLittleEndian) {
+    return assign(emptyVal, mag, 0, mag.length, isLittleEndian);
   }
 
   public static int[] valueOf(final char[] s) {
@@ -664,119 +756,5 @@ abstract class BigIntValue extends Number {
   static void _debugLenSig(final int[] val) {
     if (!isZero(val) && val[Math.abs(val[0])] == 0)
       throw new IllegalStateException(Arrays.toString(val));
-  }
-
-  public static int[] to$(final int[] val) {
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
-    int[] val$ = new int[val.length + 2];
-    System.arraycopy(val, 1, val$, 2, len);
-    val$[0] = len + 2;
-    val$[1] = sig;
-    return val$;
-  }
-
-  public static int[] to$$(final int[] val) {
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
-    int[] val$$ = new int[val.length - 1];
-    System.arraycopy(val, 1, val$$, 0, len);
-    return val$$;
-  }
-
-  static int[] bigShiftLeft$(int[] val, int shift) {
-    final int len = val[0] - 2;
-    shift += 2;
-    final int newLen = len + shift;
-    if (newLen > val.length) {
-      final int[] tmp = new int[newLen];
-      System.arraycopy(val, 2, tmp, shift, len);
-      tmp[1] = val[1];
-      val = tmp;
-    }
-    else {
-      System.arraycopy(val, 2, val, shift, len);
-      for (int i = 2; i < shift; ++i)
-        val[i] = 0;
-    }
-
-    val[0] = newLen;
-    return val;
-  }
-
-  static int[] smallShiftLeft$(int[] val, final int shift, final int fromIndex) {
-    int len = val[0];
-    if ((val[len - 1] << shift >>> shift) != val[len - 1]) { // Overflow?
-      if (++len > val.length)
-        val = realloc(val, val[0] - 1, len + 2);
-      else
-        val[len - 1] = 0;
-
-      val[0] = len;
-    }
-
-    int next = len > val.length ? 0 : val[len - 1];
-    for (int i = len - 1; i > fromIndex; --i)
-      val[i] = next << shift | (next = val[i - 1]) >>> 32 - shift;
-
-    val[fromIndex] = next << shift;
-    return val;
-  }
-
-  public static int[] shiftRight$(final int[] val, final int shift) {
-//    if (shift < 0)
-//      return shiftLeft$(val, -shift);
-
-    if (shift == 0 || val[0] == 3 && val[2] == 0)
-      return val;
-
-    int sig = val[1];
-    final int shiftBig = shift >>> 5;
-    // Special case: entire contents shifted off the end
-    if (shiftBig + 2 >= val[0])
-      return sig >= 0 ? setToZero(val) : assign(val, sig, 1);
-
-    final int shiftSmall = shift & 31;
-    boolean oneLost = false;
-    if (sig < 0) {
-      // Find out whether any one-bits will be shifted off the end
-      final int j = 2 + shiftBig;
-      for (int i = 2; i < j && !(oneLost = val[i] != 0); ++i);
-      if (!oneLost && shiftSmall != 0)
-        oneLost = val[j] << (32 - shiftSmall) != 0;
-    }
-
-    if (shiftBig > 0)
-      bigShiftRight$(val, shiftBig);
-
-    if (shiftSmall > 0)
-      smallShiftRight$(val, shiftSmall);
-
-    // FIXME: What if an overflow happens? Look at Integer#javaIncrement(int[])
-    if (oneLost)
-      ++val[2];
-
-    if (val[0] == 3 && val[2] == 0)
-      val[1] = 0;
-
-    return val;
-  }
-
-  static void smallShiftRight$(final int[] val, final int shiftSmall) {
-    int len = val[0];
-    for (int next = val[2], i = 2; i < len - 1; ++i)
-      val[i] = next >>> shiftSmall | (next = val[i + 1]) << 32 - shiftSmall;
-
-    if ((val[len - 1] >>>= shiftSmall) == 0 && len > 3)
-      val[0] = --len;
-  }
-
-  /**
-   * Shifts this number right by 32*shift, i.e. moves each digit shift positions
-   * to the right.
-   *
-   * @param shift The number of positions to move each digit.
-   * @complexity O(n)
-   */
-  static void bigShiftRight$(final int[] val, int shift) {
-    System.arraycopy(val, shift + 2, val, 2, (val[0] -= shift) - 1);
   }
 }

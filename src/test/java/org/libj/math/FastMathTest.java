@@ -21,6 +21,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.libj.lang.Strings;
 
+import gnu.java.math.BigIntTest;
+
 public class FastMathTest extends BigIntTest {
   @Test
   public void testLog2Int() {

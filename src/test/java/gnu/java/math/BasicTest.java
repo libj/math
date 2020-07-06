@@ -71,8 +71,8 @@ public class BasicTest {
     assertEquals("Zero string2", "0", me.toString());
     byte[] littleEndian = {35, 47, 32, 45, 93, 0, 1, 0, 0, 0, 0, 0};
     byte[] bigEndian = {1, 0, 93, 45, 32, 47, 35};
-    assertEquals("Byte[] constructor", new BigInteger(1, bigEndian).toString(), new BigInt(1, littleEndian, 10).toString());
-    assertEquals("Byte[] 0 constructor", "0", new BigInt(1, new byte[] {0, 0, 0}).toString());
+    assertEquals("Byte[] constructor", new BigInteger(1, bigEndian).toString(), new BigInt(littleEndian, 0, 10, true).toString());
+    assertEquals("Byte[] 0 constructor", "0", new BigInt(new byte[] {0, 0, 0}, true).toString());
     // Add test case covering length-increase due to add in mulAdd().
   }
 

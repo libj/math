@@ -28,9 +28,27 @@ public class BigIntBitwiseTest extends BigIntTest {
   @Test
   public void testBitCount() {
     test("bitCount()",
-      s("BigInteger", this::scaledBigInteger, (BigInteger a, String b) -> a.bitCount(), Integer::valueOf),
-      s("BigInt", this::scaledBigInt, (BigInt a, String b) -> a.bitCount(), Integer::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.bitCount(a), Integer::valueOf)
+      s("BigInteger", this::scaledBigInteger, (BigInteger a) -> a.bitCount(), Integer::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a) -> a.bitCount(), Integer::valueOf),
+      s("int[]", this::scaledVal, (int[] a) -> BigInt.bitCount(a), Integer::valueOf)
+    );
+  }
+
+  @Test
+  public void testBitLength() {
+    test("bitLength()",
+      s("BigInteger", this::scaledBigInteger, (BigInteger a) -> a.bitLength(), Integer::valueOf),
+      s("BigInt", this::scaledBigInt, (BigInt a) -> a.bitLength(), Integer::valueOf),
+      s("int[]", this::scaledVal, (int[] a) -> BigInt.bitLength(a), Integer::valueOf)
+    );
+  }
+
+  @Test
+  public void testToByteArray() {
+    test("toByteArray()",
+      s("BigInteger", this::scaledBigInteger, (BigInteger a) -> a.toByteArray()),
+      s("BigInt", this::scaledBigInt, (BigInt a) -> a.toByteArray()),
+      s("int[]", this::scaledVal, (int[] a) -> BigInt.toByteArray(a))
     );
   }
 

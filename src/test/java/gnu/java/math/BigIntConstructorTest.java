@@ -59,11 +59,21 @@ public class BigIntConstructorTest extends BigIntTest {
   }
 
   @Test
-  public void testBig() {
+  public void testString() {
     test("<init>(String)",
       s("BigInteger", (String a) -> new BigInteger(a), String::valueOf),
       s("BigInt", (String a) -> new BigInt(a), String::valueOf),
       s("int[]", (String a) -> BigInt.valueOf(a), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testBytes() {
+    final byte[][] bytes = new byte[1][];
+    test("<init>(byte[])",
+      s("BigInteger", a -> bytes[0] = new BigInteger(a).toByteArray(), (byte[] a) -> new BigInteger(a), String::valueOf),
+      s("BigInt", a -> bytes[0], (byte[] a) -> new BigInt(a, false), String::valueOf),
+      s("int[]", a -> bytes[0], (byte[] a) -> BigInt.valueOf(a, false), BigInt::toString)
     );
   }
 }

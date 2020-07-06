@@ -26,6 +26,7 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
+import org.junit.internal.ArrayComparisonFailure;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 import org.libj.test.TestAide;
@@ -49,6 +50,7 @@ public abstract class CaseTest {
 
   private final int[] scaleFactorFactors = {1, 1, 1};
 
+  @SuppressWarnings("rawtypes")
   protected void setScaleFactorFactor(final Class<? extends Case> cls, final int scaleFactorFactor) {
     if (cls == IntCase.class)
       this.scaleFactorFactors[0] = scaleFactorFactor;
@@ -60,6 +62,7 @@ public abstract class CaseTest {
       throw new UnsupportedOperationException("Unsupported type: " + cls.getName());
   }
 
+  @SuppressWarnings("rawtypes")
   protected int getScaleFactorFactor(final Class<? extends Case> cls) {
     if (cls == IntCase.class)
       return this.scaleFactorFactors[0];
@@ -98,10 +101,10 @@ public abstract class CaseTest {
     }
 
     abstract int maxPrecision(int variable);
-    abstract void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys);
-    abstract <I,O>void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys, final T inputs);
+    abstract void test(final CaseTest caseTest, final String label, final Case<?,I,?,O>[] cases, final Supplier<Surveys> surveys);
+    abstract <I,O>void test(final CaseTest caseTest, final String label, final Case<?,I,?,O>[] cases, final Supplier<Surveys> surveys, final T inputs);
 
-    void verify(final String label, final Case cse, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
+    <I,O>void verify(final String label, final Case<?,I,Object,O> cse, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
       final Object o = cse.out != null ? cse.out.apply(result) : result;
       if (previous != null) {
         if (c > 0) {
@@ -113,19 +116,38 @@ public abstract class CaseTest {
             final double delta = Math.ulp((Double)previous);
             assertEquals((Double)previous, (Double)o, delta);
           }
-          else if (!previous.equals(o)) {
-            final StringBuilder message = new StringBuilder("\n");
-            message.append(label).append('\n');
-            if (o instanceof Integer)
-              message.append(Arrays.toString(BigInt.valueOf(((Integer)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Integer)o).intValue())));
-            else if (o instanceof Long)
-              message.append(Arrays.toString(BigInt.valueOf(((Long)previous).longValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Long)o).longValue())));
-            else if (o instanceof String)
-              message.append(Arrays.toString(BigInt.valueOf((String)previous))).append('\n').append(((String)o).isEmpty() ? "" : Arrays.toString(BigInt.valueOf((String)o)));
-            else if (!(o instanceof Boolean))
-              throw new UnsupportedOperationException("Unsupported type: " + o.getClass().getName());
+          else {
+            if (o instanceof byte[]) {
+              if (!Arrays.equals((byte[])previous, (byte[])o)) {
+                final StringBuilder message = new StringBuilder("\n");
+                message.append(label).append('\n');
+                message.append(Arrays.toString((byte[])previous)).append('\n').append(Arrays.toString((byte[])o));
+                try {
+                  assertArrayEquals(cse.name + ": " + message.append('\n').toString(), (byte[])previous, (byte[])o);
+                }
+                catch (final ArrayComparisonFailure e) {
+                  // For some reason, throwing ArrayComparisonFailure causes Eclipse to
+                  // fail with: java.lang.instrument ASSERTION FAILED ***: "!errorOutstanding"
+                  final AssertionError assertionError = new AssertionError(e.getMessage());
+                  assertionError.setStackTrace(e.getStackTrace());
+                  throw assertionError;
+                }
+              }
+            }
+            else if (!previous.equals(o)) {
+              final StringBuilder message = new StringBuilder("\n");
+              message.append(label).append('\n');
+              if (o instanceof Integer)
+                message.append(Arrays.toString(BigInt.valueOf(((Integer)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Integer)o).intValue())));
+              else if (o instanceof Long)
+                message.append(Arrays.toString(BigInt.valueOf(((Long)previous).longValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Long)o).longValue())));
+              else if (o instanceof String)
+                message.append(Arrays.toString(BigInt.valueOf((String)previous))).append('\n').append(((String)o).isEmpty() ? "" : Arrays.toString(BigInt.valueOf((String)o)));
+              else if (!(o instanceof Boolean))
+                throw new UnsupportedOperationException("Unsupported type: " + o.getClass().getName());
 
-            assertEquals(cse.name + ": " + message.append('\n').toString(), previous, o);
+              assertEquals(cse.name + ": " + message.append('\n').toString(), previous, o);
+            }
           }
         }
       }
@@ -159,7 +181,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final Case<?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
       for (int i = 0; i < SPECIAL.length; ++i) {
         for (int j = 0; j < SPECIAL.length; ++j) {
           inputs[0] = SPECIAL[i];
@@ -184,7 +206,7 @@ public abstract class CaseTest {
     private int scaleFactorFactorB;
 
     @Override
-    <I,O>void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
+    <I,O>void test(final CaseTest caseTest, final String label, final Case<?,I,?,O>[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
@@ -292,7 +314,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final Case<?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
       for (int i = 0; i < SPECIAL.length; ++i) {
         for (int j = 0; j < SPECIAL.length; ++j) {
           inputs[0] = SPECIAL[i];
@@ -317,7 +339,7 @@ public abstract class CaseTest {
     private int scaleFactorFactorB;
 
     @Override
-    <I,O>void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
+    <I,O>void test(final CaseTest caseTest, final String label, final Case<?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
@@ -433,7 +455,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final Case<?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
       for (int i = 0; i < SPECIAL.length; ++i) {
         for (int j = 0; j < SPECIAL.length; ++j) {
           inputs[0] = SPECIAL[i];
@@ -458,7 +480,7 @@ public abstract class CaseTest {
     private int scaleFactorFactorB;
 
     @Override
-    <I,O>void test(final CaseTest caseTest, final String label, final Case[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
+    <I,O>void test(final CaseTest caseTest, final String label, final Case<?,I,?,O>[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
       for (int c = 0; c < cases.length; ++c) {
         try {
           final Case<?,I,Object,O> cse = (Case<?,I,Object,O>)cases[c];
@@ -659,8 +681,9 @@ public abstract class CaseTest {
     exec(label, cases);
   }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
   private final <I,O>void exec(final String label, final Case<?,I,?,O>[] cases) {
-    final Case<?,?,?,?> prototype = cases[0];
+    final Case prototype = cases[0];
     final int divisions = 11;
     final int variables = prototype.variables();
 
@@ -680,7 +703,7 @@ public abstract class CaseTest {
         }
 
         @Override
-        public int getBucket(final int variable, final Object obj) {
+        public int getDivision(final int variable, final Object obj) {
           if (obj instanceof Boolean)
             return ((Boolean)obj).booleanValue() ? 0 : 1;
 
@@ -714,6 +737,13 @@ public abstract class CaseTest {
             final int dig = BigInt.precision(val) * BigInt.signum(val);
             division = (int)((maxPrec + dig) / width);
           }
+          else if (obj instanceof byte[]) {
+            final byte[] val = (byte[])obj;
+            // FIXME: This is incorrect!
+            final int bits = (val.length - 1) * 8;
+            final int dig = (int)SafeMath.floor(SafeMath.log10((1L << bits) - 1));
+            division = (int)((maxPrec + dig) / width);
+          }
           else if (obj instanceof String) {
             final String val = (String)obj;
             final int dig = val.startsWith("-") ? 1 - val.length() : val.length();
@@ -727,27 +757,28 @@ public abstract class CaseTest {
         }
       };
     });
-    ts = System.currentTimeMillis() - ts;
 
+    ts = System.currentTimeMillis() - ts;
     surveys.print(label, prototype.count, ts, headings);
   }
 
   private Surveys surveys;
 
   private static String[] heading(final Case<?,?,?,?>[] cases) {
-    final String[] array = new String[cases.length];
-    for (int i = 0; i < array.length; ++i)
-      array[i] = cases[i].name;
+    final String[] heading = new String[cases.length];
+    for (int i = 0; i < heading.length; ++i)
+      heading[i] = cases[i].name;
 
-    return array;
+    return heading;
   }
 
   @SuppressWarnings("unchecked")
   private static <T extends Throwable>void checkDebug(final Throwable t) throws T {
+    TestAide.printStackTrace(System.err, t);
     if (!TestAide.isInDebug())
       throw (T)t;
 
     // TODO: Place breakpoint here to debug...
-    TestAide.printStackTrace(System.err, t);
+    System.console();
   }
 }

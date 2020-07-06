@@ -21,8 +21,8 @@ import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 
-import org.libj.lang.Strings;
 import org.libj.lang.Ansi.Color;
+import org.libj.lang.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

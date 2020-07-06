@@ -16,7 +16,7 @@
 
 package org.libj.math;
 
-import static gnu.java.math.BigInt.*;
+import static gnu.java.math.BigIntValue.*;
 
 import org.libj.lang.Numbers;
 

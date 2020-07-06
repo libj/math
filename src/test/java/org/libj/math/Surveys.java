@@ -20,13 +20,13 @@ public abstract class Surveys {
       surveys[i] = new Survey(variables, divisions) {
         @Override
         public int getDivision(final int variable, final Object obj) {
-          return Surveys.this.getBucket(variable, obj);
+          return Surveys.this.getDivision(variable, obj);
         }
       };
     }
   }
 
-  public abstract int getBucket(int variable, Object obj);
+  public abstract int getDivision(int variable, Object obj);
 
   public void addTime(final int survey, final int variable, final Object obj, final long time) {
     surveys[survey].addTime(variable, obj, time);
@@ -81,6 +81,8 @@ public abstract class Surveys {
             columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, Color.GREEN);
           else if (surveys.length > 2 ? s >= surveys.length - 2 : s >= surveys.length - 1)
             columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, time == max[v][d] ? Color.RED : Color.YELLOW);
+          else
+            columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, Color.WHITE);
         }
       }
     }

@@ -76,19 +76,18 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * Creates a BigInt from the given parameters. The contents of the input-array
    * will be copied.
    *
-   * @param sig The sign of the number.
    * @param mag The magnitude of the number, the first position gives the least
    *          significant 8 bits.
    * @param len The (first) number of entries of v that are considered part of
    *          the number.
    * @complexity O(n)
    */
-  public BigInt(final int sig, final byte[] mag, int len) {
-    val = assign(emptyVal, sig, mag, len);
+  public BigInt(final byte[] mag, int off, int len, final boolean isLittleEndian) {
+    val = assign(emptyVal, mag, off, len, isLittleEndian);
   }
 
-  public BigInt(final int sig, final byte[] mag) {
-    val = assign(emptyVal, sig, mag, mag.length);
+  public BigInt(final byte[] mag, final boolean isLittleEndian) {
+    val = assign(emptyVal, mag, 0, mag.length, isLittleEndian);
   }
 
   /**
@@ -193,8 +192,13 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @param len The length of the magnitude array to be used.
    * @complexity O(n)
    */
-  public BigInt assign(final int sig, final byte[] mag, final int len) {
-    val = assign(val, sig, mag, len);
+  public BigInt assign(final byte[] mag, final int off, final int len, final boolean isLittleEndian) {
+    val = assign(val, mag, off, len, isLittleEndian);
+    return this;
+  }
+
+  public BigInt assign(final byte[] mag, final boolean isLittleEndian) {
+    val = assign(val, mag, 0, mag.length, isLittleEndian);
     return this;
   }
 
@@ -732,6 +736,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
     return bitCount(val);
   }
 
+  public int bitLength() {
+    return bitLength(val);
+  }
+
   public int precision() {
     return precision(val);
   }
@@ -936,6 +944,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   @Override
   public double doubleValue() {
     return doubleValue(val);
+  }
+
+  public byte[] toByteArray() {
+    return toByteArray(val);
   }
 
   /**
