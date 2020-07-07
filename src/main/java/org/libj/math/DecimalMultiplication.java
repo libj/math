@@ -154,12 +154,12 @@ abstract class DecimalMultiplication extends FixedPoint {
 
     // First check that we can do the simplest possible multiplication, without any adjustments
     long v = multiplyNonZero(v1, v2, minValue, maxValue);
-    final byte signum;
+    final byte sig;
     if (v != 0) {
-      signum = 1;
+      sig = 1;
     }
     else {
-      signum = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
+      sig = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
       // Have to make adjustments, so let's try to reduce the error as much as possible
       v1 = Math.abs(v1);
       v2 = Math.abs(v2);
@@ -359,7 +359,7 @@ abstract class DecimalMultiplication extends FixedPoint {
       }
     }
 
-    result.set(signum * v, (short)s);
+    result.set(sig * v, (short)s);
     return true;
   }
 }

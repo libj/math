@@ -76,7 +76,7 @@ abstract class DecimalDivision extends FixedPoint {
     final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
 
-    final byte signum = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
+    final byte sig = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
     v1 = Math.abs(v1);
     v2 = Math.abs(v2);
 
@@ -153,7 +153,7 @@ abstract class DecimalDivision extends FixedPoint {
     if (s > maxScale) {
       int adj = s - maxScale;
       if (adj >= Numbers.precision(v)) {
-        result.set(signum * v, (short)s);
+        result.set(sig * v, (short)s);
         return false;
       }
 
@@ -162,7 +162,7 @@ abstract class DecimalDivision extends FixedPoint {
       v /= FastMath.e10[adj];
       v = roundDown10(v);
       if (v == 0) {
-        result.set(signum * v, (short)s);
+        result.set(sig * v, (short)s);
         return false;
       }
     }
@@ -170,7 +170,7 @@ abstract class DecimalDivision extends FixedPoint {
       if (s < minScale) {
         int adj = minScale - s;
         if (adj >= 20 - Numbers.precision(v)) {
-          result.set(signum * v, (short)s);
+          result.set(sig * v, (short)s);
           return false;
         }
 
@@ -181,13 +181,13 @@ abstract class DecimalDivision extends FixedPoint {
         }
 
         if (v < 0 ? v < minValue : maxValue < v) {
-          result.set(signum * v, (short)s);
+          result.set(sig * v, (short)s);
           return false;
         }
       }
     }
 
-    result.set(signum * v, (short)s);
+    result.set(sig * v, (short)s);
     return true;
   }
 }

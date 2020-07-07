@@ -164,26 +164,26 @@ abstract class DecimalAddition extends FixedPoint {
     }
 
     if (s1 == s2) {
-      int signum;
+      int sig;
       if (v1 == Long.MIN_VALUE) {
-        signum = -1;
+        sig = -1;
       }
       else if (v1 == Long.MAX_VALUE) {
-        signum = v2 == Long.MIN_VALUE ? -1 : v2 == Long.MIN_VALUE + 1 ? 0 : 1;
+        sig = v2 == Long.MIN_VALUE ? -1 : v2 == Long.MIN_VALUE + 1 ? 0 : 1;
       }
       else if (v1 < 0) {
         final long av1 = Math.abs(v1);
-        signum = av1 > v2 ? -1 : av1 == v2 ? 0 : 1;
+        sig = av1 > v2 ? -1 : av1 == v2 ? 0 : 1;
       }
       else if (v2 < 0) {
         final long av2 = Math.abs(v2);
-        signum = av2 > v1 ? -1 : av2 == v1 ? 0 : 1;
+        sig = av2 > v1 ? -1 : av2 == v1 ? 0 : 1;
       }
       else {
-        signum = 1;
+        sig = 1;
       }
 
-      if (v < 0 ? signum != -1 : v == 0 ? signum != 0 : signum != 1) {
+      if (v < 0 ? sig != -1 : v == 0 ? sig != 0 : sig != 1) {
         // overflow can only be off by a factor of 10,
         // since this is addition/subtraction
         if (--s < minScale) {
@@ -206,7 +206,7 @@ abstract class DecimalAddition extends FixedPoint {
           v2 -= 1;
 
         v = v1 + v2;
-        if (v < 0 ? signum != -1 : v == 0 ? signum != 0 : signum != 1)
+        if (v < 0 ? sig != -1 : v == 0 ? sig != 0 : sig != 1)
           throw new IllegalStateException("Should not happen");
 
         result.set(v, s);

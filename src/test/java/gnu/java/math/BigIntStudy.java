@@ -22,14 +22,14 @@ public class BigIntStudy extends BigIntTest {
   /**
    * Tests which is faster:
    * <ol>
-   * <li><ins>Regular: {@code int[] {len, signum, ..}}</ins><br>
-   * Length and signum separated, thus signum can be -1, 0, or 1. A length of 0
-   * means signum must be 0, which means code has to check for this
+   * <li><ins>Regular: {@code int[] {len, sig, ..}}</ins><br>
+   * Length and sig separated, thus sig can be -1, 0, or 1. A length of 0
+   * means sig must be 0, which means code has to check for this
    * alignment.</li>
    * <li><ins>Compound: {@code int[] {sigLen, ..}}</ins><br>
-   * Length and signum are combined, whereby a positive length means a signum =
-   * 1, and a negative length a signum = -1. A length of 0 means the value is
-   * zero, and signum ends up as 1. No alignment checks are necessary.</li>
+   * Length and sig are combined, whereby a positive length means a sig =
+   * 1, and a negative length a sig = -1. A length of 0 means the value is
+   * zero, and sig ends up as 1. No alignment checks are necessary.</li>
    * </ol>
    */
   @Test
@@ -38,21 +38,21 @@ public class BigIntStudy extends BigIntTest {
     test("length signum: regular vs compound",
       i("Regular", a -> {v[0] = Math.abs(a / 2); v[1] = Integer.compare(a, 0); return v;}, (int[] a) -> {
         int len = a[0];
-        int signum = a[1];
+        int sig = a[1];
 
-        return len * signum;
+        return len * sig;
       }, Integer::valueOf),
       i("Compound", a -> {v[0] = a / 2; return v;}, (int[] a) -> {
-        int signum, len = a[0];
+        int sig, len = a[0];
         if (len < 0) {
           len = -len;
-          signum = -1;
+          sig = -1;
         }
         else {
-          signum = 1;
+          sig = 1;
         }
 
-        return len * signum;
+        return len * sig;
       }, Integer::valueOf)
     );
   }

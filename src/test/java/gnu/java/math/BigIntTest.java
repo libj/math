@@ -33,6 +33,7 @@ public abstract class BigIntTest extends CaseTest {
   private static boolean shoudlScale;
   private static boolean shouldInflate;
   private static boolean shouldBeEqual;
+  private boolean hello;
 
   public int nz(final int a) {
     return a == 0 ? 1 : a;

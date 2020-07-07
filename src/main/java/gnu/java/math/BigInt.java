@@ -40,19 +40,26 @@ import java.util.concurrent.ExecutionException;
 public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
-  // FIXME: Rewrite this javadoc
   /**
-   * The value array with the following encoding:<br>
-   * <blockquote> <b>{@code val[1]}</b>: <ins>signum</ins>:
-   * <code>{-1, 0, 1}</code><br>
-   * &nbsp;&nbsp;&nbsp;&nbsp;-1 for negative, 0 for zero, or 1 for positive.<br>
-   * <b>{@code val[0]}</b>: <ins>length</ins>:
-   * {@code [1, Integer.MAX_VALUE - 2]}<br>
-   * &nbsp;&nbsp;&nbsp;&nbsp;The number of base 2^32 digits in the number.<br>
-   * <b>{@code val[2,val[0]-1]}</b>: <ins>digits</ins>:
-   * {@code [Integer.MIN_VALUE, Integer.MAX_VALUE]}<br>
-   * &nbsp;&nbsp;&nbsp;&nbsp;The base 2^32 digits of the number in
-   * <i>little-endian</i> order. </blockquote>
+   * The <i>value array</i> representing the signed magnitude of the number:
+   * <ol>
+   * <li><b>{@code val[0]}</b>: <ins>signed length</ins>:
+   * <code>{Integer.MIN_VALUE - 2, .., -1, 0, 1, .., Integer.MAX_VALUE - 1}</code><br>
+   * <ul>
+   * <li>{@code Math.abs(val[0])}: The number of base 2^32 digits (limbs) in the
+   * magnitude.</li>
+   * <li>{@code Math.signum(val[0])}: The sign of the magnitude (-1 for
+   * negative, and 1 for positive).</li>
+   * <li>{@code val[0] == 0}: Magnitude is zero.</li>
+   * </ul>
+   * </li>
+   * <li><b>{@code val[2,val[0]-1]}</b>: <ins>digits</ins>:
+   * {@code [Integer.MIN_VALUE, Integer.MAX_VALUE]}
+   * <ul>
+   * <li>The base 2^32 digits of the number in <i>little-endian</i> order.</li>
+   * </ul>
+   * </li></li>
+   * </ol>
    */
   private int[] val;
 

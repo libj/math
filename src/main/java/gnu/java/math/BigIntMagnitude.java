@@ -28,7 +28,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @amortized O(1)
    */
   static void usubVal(final int[] val, final long val0, final long val1, final long sl, final long sh) {
-    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
 
     long dif = val0 - sl;
     val[1] = (int)dif;
@@ -45,7 +45,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     while (val[len] == 0)
       --len;
 
-    val[0] = signum < 0 ? -len : len;
+    val[0] = sig < 0 ? -len : len;
     _debugLenSig(val);
   }
 
@@ -62,7 +62,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       val[1] = s;
     }
     else {
-      int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+      int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
       long dif = (val[1] & LONG_INT_MASK) - (s & LONG_INT_MASK);
       val[1] = (int)dif;
       if ((dif >> 32) != 0) {
@@ -81,7 +81,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       }
 
       --len;
-      val[0] = signum < 0 ? -len : len;
+      val[0] = sig < 0 ? -len : len;
     }
 
     _debugLenSig(val);
@@ -96,7 +96,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @complexity O(n)
    */
   static void subVal(final int[] val1, final int[] val2) {
-    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
+    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
     int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
 
     final int[] v = val1; // ulen <= vlen // FIXME: Why v?!
@@ -121,7 +121,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     while (val1[len1] == 0 && len1 >= 1)
       --len1;
 
-    val1[0] = signum1 < 0 ? -len1 : len1;
+    val1[0] = sig1 < 0 ? -len1 : len1;
     _debugLenSig(val1);
   }
 
@@ -141,7 +141,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       final long tmp = (val[1] & LONG_INT_MASK) + (a & LONG_INT_MASK);
       val[1] = (int)tmp;
       if ((tmp >>> 32) != 0) {
-        int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
+        int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
         ++len;
         int i = 2;
         for (; i < len && ++val[i] == 0; ++i);
@@ -150,7 +150,7 @@ abstract class BigIntMagnitude extends BigIntValue {
             val = realloc(val, len + 1);
 
           val[len] = 1;
-          val[0] = signum < 0 ? -len : len;
+          val[0] = sig < 0 ? -len : len;
         }
       }
     }
@@ -166,7 +166,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddVal(int[] val, int len, final int signum, final long val0l, final long val1l, final long al, final long ah) {
+  static int[] uaddVal(int[] val, int len, final int sig, final long val0l, final long val1l, final long al, final long ah) {
     // FIXME: Change int signum to boolean signum
     if (val.length <= 3)
       val = realloc(val, 4); // FIXME: 4 or 3?
@@ -194,7 +194,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       --len;
     }
 
-    val[0] = signum < 0 ? -len : len;
+    val[0] = sig < 0 ? -len : len;
     _debugLenSig(val);
     return val;
   }
@@ -207,8 +207,8 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @complexity O(n)
    */
   static int[] addVal(int[] val1, int[] val2, final boolean positive) {
-    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
-    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
+    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
 
     int len0 = len1;
     int[] val0 = val1; // ulen <= vlen
@@ -233,7 +233,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     if (len2 > len1) {
       System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
       len1 = len2;
-      val1[0] = signum1 < 0 ? -len1 : len1;
+      val1[0] = sig1 < 0 ? -len1 : len1;
     }
 
     if (carry != 0) { // carry==1
@@ -243,7 +243,7 @@ abstract class BigIntMagnitude extends BigIntValue {
           val1 = realloc(val1, i + 1);
 
         val1[++len1] = 1;
-        val1[0] = signum1 < 0 ? -len1 : len1;
+        val1[0] = sig1 < 0 ? -len1 : len1;
       }
     }
 

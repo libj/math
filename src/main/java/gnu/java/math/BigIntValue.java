@@ -256,10 +256,10 @@ abstract class BigIntValue extends Number {
   }
 
   public static int[] assign(int[] val, final char[] s) {
-    final int signum = s[0] == '-' ? -1 : 1;
+    final int sig = s[0] == '-' ? -1 : 1;
 
     final int length = s.length;
-    final int from = signum - 1 >> 1;
+    final int from = sig - 1 >> 1;
     final int len = length + from;
     // 3402 = bits per digit * 1024
     final int alloc = (len < 10 ? 1 : (int)(len * 3402L >>> 10) + 32 >>> 5) + 1;
@@ -278,7 +278,7 @@ abstract class BigIntValue extends Number {
         toIndex = mulAdd(val, 1, toIndex, 1_000_000_000, parse(s, j, j += 9));
 
       --toIndex;
-      val[0] = signum < 0 ? -toIndex : toIndex;
+      val[0] = sig < 0 ? -toIndex : toIndex;
     }
     else {
       val[0] = 0;
@@ -414,8 +414,8 @@ abstract class BigIntValue extends Number {
   }
 
   public static long longValue(final int[] val) {
-    int signum = 1; int len = val[0]; if (len < 0) { len = -len; signum = -1; }
-    return longValue(val, 1, len, signum);
+    int sig = 1; int len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    return longValue(val, 1, len, sig);
   }
 
   public static long longValueUnsigned(final int[] val) {
@@ -424,7 +424,10 @@ abstract class BigIntValue extends Number {
   }
 
   public static long longValue(final int[] mag, final int off, final int len, final int sig) {
-    final long longValue = longValue(mag, off, len);
+    if (len == 0)
+      return 0;
+
+    final long longValue = longValue0(mag, off, len);
     return sig < 0 ? ~longValue + 1 : longValue;
   }
 
@@ -436,16 +439,23 @@ abstract class BigIntValue extends Number {
    * @return
    */
   public static long longValue(final int[] mag, final int off, final int len) {
+    return len == 0 ? 0 : longValue0(mag, off, len);
+  }
+
+  static long longValue0(final int[] mag, final int off, final int len) {
     final long val0l = mag[off] & LONG_INT_MASK;
     return len > 1 ? (long)mag[off + 1] << 32 | val0l : val0l;
   }
 
   public static float floatValue(final int[] val) {
-    int signum = 1, len = val[0]; if (len < 0) { len = -len; signum = -1; }
-    return floatValue(val, 1, len, signum);
+    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    return floatValue(val, 1, len, sig);
   }
 
   public static float floatValue(final int[] mag, final int off, final int len, final int sig) {
+    if (len == 0)
+      return 0;
+
     final int end = len + off - 1;
     final int s = Integer.numberOfLeadingZeros(mag[end]);
     if (len == 1 && s >= 8)
@@ -479,6 +489,9 @@ abstract class BigIntValue extends Number {
   }
 
   public static double doubleValue(final int[] val, final int off, final int len, final int sig) {
+    if (len == 0)
+      return 0;
+
     if (len == 1) {
       final double v = val[off] & LONG_INT_MASK;
       return sig < 0 ? -v : v;

@@ -89,7 +89,7 @@ public class BigIntegersTest extends BigIntTest {
 
   @Test
   public void testUnsignedBigInteger2() {
-    test("signum * value: '*' vs '? :'",
+    test("sig * value: '*' vs '? :'",
       l("s * v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a * b),
       l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
     );

@@ -410,15 +410,23 @@ public abstract class CaseTest {
             result = test.apply(a0, b);
           }
           else if (cse.test instanceof BiFunction) {
-            final BiFunction test = (BiFunction)this.test;
+            final BiFunction test = (BiFunction)cse.test;
             in1 = a0;
             in2 = b0;
 
             time = System.nanoTime();
             result = test.apply(a0, b0);
           }
+          else if (cse.test instanceof BiLongFunction) {
+            final BiLongFunction test = (BiLongFunction)cse.test;
+            in1 = a;
+            in2 = b;
+
+            time = System.nanoTime();
+            result = test.apply(a, b);
+          }
           else {
-            final Function test = (Function)this.test;
+            final Function test = (Function)cse.test;
             in1 = a0;
 
             time = System.nanoTime();
@@ -593,6 +601,10 @@ public abstract class CaseTest {
     return new LongCase<>(name, 2, aToA, bToB, test, out);
   }
 
+  public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiLongFunction<R> test, final Function<R,O> out) {
+    return new LongCase<>(name, 2, aToA, bToB, test, out);
+  }
+
   public static <R,O>LongCase<Long,Long,R,O> l(final String name, final BiLongFunction<R> test, final Function<R,O> out) {
     return new LongCase<>(name, 2, null, null, test, out);
   }
@@ -734,6 +746,11 @@ public abstract class CaseTest {
           }
           else if (obj instanceof int[]) {
             final int[] val = (int[])obj;
+            final int len = Math.abs(val[0]);
+            // Is this a BigInt value array?
+            if (len != 0 && len >= val.length)
+              throw new IllegalArgumentException("Expected BigInt value array: " + Arrays.toString(val));
+
             final int dig = BigInt.precision(val) * BigInt.signum(val);
             division = (int)((maxPrec + dig) / width);
           }

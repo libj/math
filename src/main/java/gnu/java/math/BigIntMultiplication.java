@@ -98,10 +98,10 @@ abstract class BigIntMultiplication extends BigIntAddition {
     }
 
     long carry = 0;
-    final long ml = mul & LONG_INT_MASK;
+    final long low = mul & LONG_INT_MASK;
     len += off;
     for (int i = off; i < len; ++i) {
-      carry += (mag[i] & LONG_INT_MASK) * ml;
+      carry += (mag[i] & LONG_INT_MASK) * low;
       mag[i] = (int)carry;
       carry >>>= 32;
     }
@@ -175,8 +175,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   public static int[] mul(int[] val1, int[] val2) {
     // FIXME: Determine the actual size necessary for the result before the
     // FIXME: execution of this method, and pass the result array into here.
-    int signum1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; signum1 = -1; }
-    int signum2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; signum2 = -1; }
+    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
 
     if (isZero(val1))
       return val1;
@@ -187,7 +187,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     }
 
     if (len2 <= 2 || len1 <= 2) {
-      final boolean flipSig = signum1 != signum2;
+      final boolean flipSig = sig1 != sig2;
       if (len2 == 1) {
         if (len1 + 2 >= val1.length)
           val1 = realloc(val1, 2 * len1 + 1);
@@ -228,10 +228,10 @@ abstract class BigIntMultiplication extends BigIntAddition {
       val1 = res;
 
       len1 = val1[val1.length - 1] == 0 ? val1.length - 2 : val1.length - 1;
-      val1[0] = signum1 != signum2 ? -len1 : len1;
+      val1[0] = sig1 != sig2 ? -len1 : len1;
     }
     else {
-      final boolean flipLenSig = signum1 != signum2;
+      final boolean flipLenSig = sig1 != sig2;
       if (val2.length < len1)
         val2 = realloc(val2, len1);
       else if (val1.length < len2)
