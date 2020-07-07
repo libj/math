@@ -17,6 +17,7 @@
 package org.libj.math;
 
 import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +29,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -50,7 +52,7 @@ public abstract class DecimalTest {
   private static final byte maxBits = Decimal.MAX_SCALE_BITS;
 
   static final Random random = new Random();
-  static final int numTests = 100000;
+  static final int numTests = 10000;
   static final MathContext precision16 = MathContext.DECIMAL64;
   static final DecimalFormat expectedFormatter = new DecimalFormat("0E0");
   static final DecimalFormat epsilonFormatter = new DecimalFormat("0E0");
@@ -71,7 +73,8 @@ public abstract class DecimalTest {
   private static long testLD1 = -1;
   private static long testLD2 = -1;
 
-  private static final File errorFile = new File("target/generated-test-resources/DecimalTest.txt");
+  private static final Path errorPath = Path.of("target/generated-test-resources/DecimalTest.txt");
+  private static final File errorFile;
 
   static {
     for (byte v = 0; v < minValue.length; ++v) {
@@ -88,24 +91,29 @@ public abstract class DecimalTest {
     for (int i = 0; i < pow2.length; ++i)
       pow2[i] = (long)Math.pow(2, i);
 
-    readErrorFile();
+    if (Files.exists(errorPath)) {
+      errorFile = errorPath.toFile();
+      readErrorFile();
+    }
+    else {
+      errorFile = null;
+    }
   }
 
   private static void clearErrorFile() {
-    errorFile.delete();
+    if (errorFile != null)
+      errorFile.delete();
   }
 
   private static void readErrorFile() {
-    if (errorFile.exists()) {
-      try (final BufferedReader in = new BufferedReader(new FileReader(errorFile))) {
-        testLD1 = Long.parseLong(in.readLine());
-        testLD2 = Long.parseLong(in.readLine());
-        testBits = Byte.parseByte(in.readLine());
-        logVariables(testLD1, testLD2, testBits);
-      }
-      catch (final IOException e) {
-        throw new UncheckedIOException(e);
-      }
+    try (final BufferedReader in = new BufferedReader(new FileReader(errorFile))) {
+      testLD1 = Long.parseLong(in.readLine());
+      testLD2 = Long.parseLong(in.readLine());
+      testBits = Byte.parseByte(in.readLine());
+      logVariables(testLD1, testLD2, testBits);
+    }
+    catch (final IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -115,8 +123,8 @@ public abstract class DecimalTest {
 
   private static void writeErrorFile(final long ld1, final long ld2, final byte scaleBits) {
     try {
-      errorFile.getParentFile().mkdirs();
-      Files.write(errorFile.toPath(), (ld1 + "\n" + ld2 + "\n" + scaleBits).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+      errorPath.toFile().getParentFile().mkdirs();
+      Files.write(errorPath, (ld1 + "\n" + ld2 + "\n" + scaleBits).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
     catch (final IOException e) {
       throw new UncheckedIOException(e);
@@ -274,8 +282,8 @@ public abstract class DecimalTest {
             try {
               actual = operation.test(ld1, ld2, bd1, bd2, scaleBits, defaultValue, time);
             }
-            catch (final Exception e) {
-              e.printStackTrace();
+            catch (final Throwable t) {
+              TestAide.printStackTrace(System.err, t);
             }
             ((DecimalOperation)operation).run(bd1, bd2, expected, actual, testBits != -1 ? testBits : scaleBits, defaultValue, errors, failures);
           }

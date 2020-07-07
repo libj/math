@@ -26,7 +26,6 @@ public abstract class BigIntTest extends CaseTest {
   protected static final Random random = new Random();
   protected static final int IRRELEVANT = 1;
   protected static final int[] ZERO = {0};
-  protected static final int numTests = 1000000;
 
   private static final double scaleFactor = 0.2;
   private static final double inflateFactor = 0.2;

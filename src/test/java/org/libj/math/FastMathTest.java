@@ -48,16 +48,16 @@ public class FastMathTest extends BigIntTest {
   @Test
   public void testDivideUnsignedLong() {
     test("divideUnsigned(long, long)",
-      l("FastMath", (long a, long b) -> FastMath.divideUnsigned(a, b)),
-      l("Long", (long a, long b) -> Long.divideUnsigned(a, b))
+      l("Long", a -> a, this::nz, (long a, long b) -> Long.divideUnsigned(a, b)),
+      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.divideUnsigned(a, b))
     );
   }
 
   @Test
   public void testRemainderUnsignedLong() {
     test("remainderUnsigned(long, long)",
-      l("FastMath", (long a, long b) -> FastMath.remainderUnsigned(a, b)),
-      l("Long", (long a, long b) -> Long.remainderUnsigned(a, b))
+      l("Long", a -> a, this::nz, (long a, long b) -> Long.remainderUnsigned(a, b)),
+      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.remainderUnsigned(a, b))
     );
   }
 

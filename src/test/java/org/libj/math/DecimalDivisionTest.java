@@ -32,7 +32,7 @@ public class DecimalDivisionTest extends DecimalTest {
     D("7E-13"),
     D("2E-13"),
     D("4E-14"),
-    D("5E-16"),
+    D("8E-15"),
     D("9E-16"),
     D("3E-15"),
     D("5E-15"),

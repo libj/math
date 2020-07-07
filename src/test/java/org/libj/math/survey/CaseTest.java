@@ -43,6 +43,8 @@ import org.libj.util.function.ObjLongFunction;
 import org.libj.util.function.ObjLongToLongFunction;
 
 public abstract class CaseTest {
+  protected static final int numTests = System.getProperty("fast") != null ? 1000 : 1000000;
+
   public static String neg(final String v) {
     return !v.startsWith("-") ? "-" + v : v.substring(1);
   }
@@ -167,7 +169,7 @@ public abstract class CaseTest {
 
   public static class IntCase<A,B,R,O> extends Case<int[],Integer,R,O> {
     private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE};
-    private static final int NUM_RANDOM = 4000000;
+    private static final int NUM_RANDOM = 4 * numTests;
     private final int[] inputs = {0, 0};
 
     IntCase(final String name, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
@@ -300,7 +302,7 @@ public abstract class CaseTest {
 
   public static class LongCase<A,B,R,O> extends Case<long[],Long,R,O> {
     private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, Long.MIN_VALUE, Long.MAX_VALUE};
-    private static final int NUM_RANDOM = 3000000;
+    private static final int NUM_RANDOM = 3 * numTests;
     private final long[] inputs = {0, 0};
 
     LongCase(final String name, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
@@ -447,7 +449,7 @@ public abstract class CaseTest {
 
   public static class StringCase<A,B,R,O> extends Case<String[],String,R,O> {
     private static final String[] SPECIAL = {"0", "-1", "1", String.valueOf(Byte.MIN_VALUE), String.valueOf(Byte.MAX_VALUE), String.valueOf(Short.MIN_VALUE), String.valueOf(Short.MAX_VALUE), String.valueOf(Integer.MIN_VALUE), String.valueOf(Integer.MAX_VALUE), String.valueOf(Long.MIN_VALUE), String.valueOf(Long.MAX_VALUE), "-18446744073709551616", "18446744073709551615", "-79228162514264337593543950336", "79228162514264337593543950335", "-340282366920938463463374607431768211456", "340282366920938463463374607431768211455", "-1461501637330902918203684832716283019655932542976", "1461501637330902918203684832716283019655932542975", "-6277101735386680763835789423207666416102355444464034512896", "6277101735386680763835789423207666416102355444464034512895", "-26959946667150639794667015087019630673637144422540572481103610249216", "26959946667150639794667015087019630673637144422540572481103610249215", "-115792089237316195423570985008687907853269984665640564039457584007913129639936", "115792089237316195423570985008687907853269984665640564039457584007913129639935"};
-    private static final int NUM_RANDOM = 50000;
+    private static final int NUM_RANDOM = 5 * numTests / 100;
     private static final int MAX_LENGTH = 1024;
 
     private final String[] inputs = {null, null};
@@ -602,6 +604,10 @@ public abstract class CaseTest {
 
   public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiLongFunction<R> test, final Function<R,O> out) {
     return new LongCase<>(name, 2, aToA, bToB, test, out);
+  }
+
+  public static <A,B,R,O>LongCase<A,B,R,O> l(final String name, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongFunction<R> test) {
+    return new LongCase<>(name, 2, aToA, bToB, test, null);
   }
 
   public static <R,O>LongCase<Long,Long,R,O> l(final String name, final BiLongFunction<R> test, final Function<R,O> out) {
