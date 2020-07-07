@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package gnu.java.math;
+package org.huldra.math;
 
 import java.util.Arrays;
 
@@ -22,8 +22,8 @@ import java.util.Arrays;
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
 
-  public static final int INT_MASK = 0xFFFFFFFF;
-  public static final long LONG_INT_MASK = 0xFFFFFFFFL;
+  static final int INT_MASK = 0xFFFFFFFF;
+  static final long LONG_INT_MASK = 0xFFFFFFFFL;
 
   /**
    * Creates a new {@code int[]} that is at least length = {@code len}.

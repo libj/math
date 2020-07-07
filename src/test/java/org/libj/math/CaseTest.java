@@ -26,6 +26,7 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
+import org.huldra.math.BigInt;
 import org.junit.internal.ArrayComparisonFailure;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
@@ -40,8 +41,6 @@ import org.libj.util.function.ObjIntFunction;
 import org.libj.util.function.ObjIntToIntFunction;
 import org.libj.util.function.ObjLongFunction;
 import org.libj.util.function.ObjLongToLongFunction;
-
-import gnu.java.math.BigInt;
 
 public abstract class CaseTest {
   public static String neg(final String v) {

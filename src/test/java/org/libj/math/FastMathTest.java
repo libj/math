@@ -16,12 +16,12 @@
 
 package org.libj.math;
 
+import static org.huldra.math.BigIntTest.*;
 import static org.junit.Assert.*;
 
+import org.huldra.math.BigIntTest;
 import org.junit.Test;
 import org.libj.lang.Strings;
-
-import gnu.java.math.BigIntTest;
 
 public class FastMathTest extends BigIntTest {
   @Test
@@ -48,7 +48,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testDivideUnsignedLong() {
-    testRange("divideUnsigned(long, long)",
+    test("divideUnsigned(long, long)",
       l("FastMath", (long a, long b) -> FastMath.divideUnsigned(a, b)),
       l("Long", (long a, long b) -> Long.divideUnsigned(a, b))
     );
@@ -56,7 +56,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testRemainderUnsignedLong() {
-    testRange("remainderUnsigned(long, long)",
+    test("remainderUnsigned(long, long)",
       l("FastMath", (long a, long b) -> FastMath.remainderUnsigned(a, b)),
       l("Long", (long a, long b) -> Long.remainderUnsigned(a, b))
     );

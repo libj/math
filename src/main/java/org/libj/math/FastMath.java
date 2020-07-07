@@ -16,8 +16,6 @@
 
 package org.libj.math;
 
-import gnu.java.math.BigInt;
-
 /**
  * Alternative functions supplementing those in {@link java.lang.Math} that
  * offer higher performance algorithms.
@@ -140,40 +138,6 @@ public final class FastMath {
     final long q = ((dividend >>> 1) / divisor) << 1;
     final long r = dividend - q * divisor;
     return r - (Long.compareUnsigned(r, divisor) >= 0 ? divisor : 0);
-  }
-
-  // FIXME: Implement tests and document.
-  static void divideUnsigned(final int[] dividend, int len, final long divisor, final long[] result) {
-    final long divh = divisor >>> 32;
-    if (divh == 0) {
-      divideUnsigned(dividend, (int)divisor, len, result);
-      return;
-    }
-
-    result[1] = BigInt.div(dividend, len, divisor, divh);
-    --len;
-    if (len > 1 && dividend[len - 1] == 0)
-      --len;
-
-    result[0] = BigInt.longValue(dividend, 0, len);
-  }
-
-  // FIXME: Implement tests and document.
-  static long divideUnsigned(final int[] dividend, int len, final long divisor) {
-    if ((int)(divisor >>> 32) == 0)
-      return divideUnsigned(dividend, (int)divisor, len);
-
-    BigInt.udiv(dividend, 0, len, divisor, divisor >>> 32);
-    --len;
-    if (len > 1 && dividend[len - 1] == 0)
-      --len;
-
-    return BigInt.longValue(dividend, 0, len);
-  }
-
-  // FIXME: Implement tests and document.
-  static long remainderUnsigned(final int[] dividend, final int len, final long divisor) {
-    return BigInt.udiv(dividend, 0, len, divisor, divisor >>> 32);
   }
 
   private FastMath() {

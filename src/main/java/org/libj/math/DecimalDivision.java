@@ -18,9 +18,8 @@ package org.libj.math;
 
 import java.util.Arrays;
 
+import org.huldra.math.BigInt;
 import org.libj.lang.Numbers;
-
-import gnu.java.math.BigInt;
 
 abstract class DecimalDivision extends FixedPoint {
   private static final long serialVersionUID = 2875665225793357664L;

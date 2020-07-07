@@ -20,9 +20,8 @@ import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 
+import org.huldra.math.BigIntTest;
 import org.junit.Test;
-
-import gnu.java.math.BigIntTest;
 
 public class BigIntegersTest extends BigIntTest {
   @Test

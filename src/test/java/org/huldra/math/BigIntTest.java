@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package gnu.java.math;
+package org.huldra.math;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -23,17 +23,18 @@ import java.util.Random;
 import org.libj.math.CaseTest;
 
 public abstract class BigIntTest extends CaseTest {
-  private static final Random random = new Random();
-  public static final int IRRELEVANT = 1;
-  public static final int[] ZERO = {0};
-  static final int numTests = 1000000;
+  protected static final Random random = new Random();
+  protected static final int IRRELEVANT = 1;
+  protected static final int[] ZERO = {0};
+  protected static final int numTests = 1000000;
+
   private static final double scaleFactor = 0.2;
   private static final double inflateFactor = 0.2;
   private static final double equalFactor = 0.1;
+
   private static boolean shoudlScale;
   private static boolean shouldInflate;
   private static boolean shouldBeEqual;
-  private boolean hello;
 
   public int nz(final int a) {
     return a == 0 ? 1 : a;

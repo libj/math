@@ -16,8 +16,6 @@
 
 package org.libj.math;
 
-import static gnu.java.math.BigIntValue.*;
-
 import org.libj.lang.Numbers;
 
 abstract class DecimalMultiplication extends FixedPoint {

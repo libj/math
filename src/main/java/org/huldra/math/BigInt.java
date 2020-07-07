@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package gnu.java.math;
+package org.huldra.math;
 
 import java.util.concurrent.ExecutionException;
 
