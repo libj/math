@@ -18,7 +18,6 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 import static org.libj.math.Decimal.*;
-import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 

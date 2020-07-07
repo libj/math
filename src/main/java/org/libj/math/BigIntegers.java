@@ -72,35 +72,45 @@ public final class BigIntegers {
   }
 
   /**
-   * Return a BigInteger equal to the unsigned value of the
-   * argument.
+   * Return a {@link BigInteger} equal to the unsigned value of the argument.
+   *
+   * @param signum The sign of the {@link BigInteger} to be returned.
+   * @param mag The unsigned magnitude of the {@link BigInteger} to be returned.
+   * @return A {@link BigInteger} equal to the unsigned value of the argument.
+   * @throws NumberFormatException If {@code signum} is not -1, 0 or 1, or if
+   *           {@code signum == 0 && mag != 0}.
    */
-  public static BigInteger valueOf(final int signum, final int v) {
-    final long signed = Integer.toUnsignedLong(v);
+  public static BigInteger valueOf(final int signum, final int mag) {
+    final long signed = Integer.toUnsignedLong(mag);
     return BigInteger.valueOf(signum < 0 ? -signed : signed);
   }
 
   /**
-   * Return a BigInteger equal to the unsigned value of the
-   * argument.
+   * Return a {@link BigInteger} equal to the unsigned value of the argument.
+   *
+   * @param signum The sign of the {@link BigInteger} to be returned.
+   * @param mag The unsigned magnitude of the {@link BigInteger} to be returned.
+   * @return A {@link BigInteger} equal to the unsigned value of the argument.
+   * @throws NumberFormatException If {@code signum} is not -1, 0 or 1, or if
+   *           {@code signum == 0 && mag != 0}.
    */
-  public static BigInteger valueOf(final int signum, final long v) {
+  public static BigInteger valueOf(final int signum, final long mag) {
     if (signum < -1 || signum > 1)
       throw new NumberFormatException("Invalid signum value");
 
     if (signum == 0) {
-      if (v != 0)
+      if (mag != 0)
         throw new NumberFormatException("signum-magnitude mismatch");
 
       return BigInteger.ZERO;
     }
 
-    if (v >= 0L)
-      return BigInteger.valueOf(signum == -1 ? -v : v);
+    if (mag >= 0L)
+      return BigInteger.valueOf(signum == -1 ? -mag : mag);
 
     // (upper << 32) + lower
-    final int upper = (int)(v >>> 32);
-    final int lower = (int)v;
+    final int upper = (int)(mag >>> 32);
+    final int lower = (int)mag;
 
     if (signum == -1)
       return BigInteger.valueOf(-Integer.toUnsignedLong(upper)).shiftLeft(32).add(BigInteger.valueOf(-Integer.toUnsignedLong(lower)));

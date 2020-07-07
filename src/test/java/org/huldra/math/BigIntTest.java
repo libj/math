@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.libj.math.CaseTest;
+import org.libj.math.survey.CaseTest;
 
 public abstract class BigIntTest extends CaseTest {
   protected static final Random random = new Random();

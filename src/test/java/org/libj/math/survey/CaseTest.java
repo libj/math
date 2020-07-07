@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.libj.math;
+package org.libj.math.survey;
 
 import static org.junit.Assert.*;
 
@@ -136,8 +136,8 @@ public abstract class CaseTest {
             else if (!previous.equals(o)) {
               final StringBuilder message = new StringBuilder("\n");
               message.append(label).append('\n');
-              if (o instanceof Integer)
-                message.append(Arrays.toString(BigInt.valueOf(((Integer)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Integer)o).intValue())));
+              if (o instanceof Byte || o instanceof Short || o instanceof Integer)
+                message.append(Arrays.toString(BigInt.valueOf(((Number)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Number)o).intValue())));
               else if (o instanceof Long)
                 message.append(Arrays.toString(BigInt.valueOf(((Long)previous).longValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Long)o).longValue())));
               else if (o instanceof String)
@@ -576,7 +576,7 @@ public abstract class CaseTest {
     return new IntCase<>(name, 1, aToA, null, test, out);
   }
 
-  public static <A,B,R,O>IntCase<A,B,R,O> i(final String name, final IntFunction<A> aToA, final IntToIntFunction bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+  public static <A,R,O>IntCase<A,?,R,O> i(final String name, final IntFunction<A> aToA, final IntToIntFunction bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
     return new IntCase<>(name, 2, aToA, bToB, test, out);
   }
 
@@ -757,7 +757,7 @@ public abstract class CaseTest {
             final byte[] val = (byte[])obj;
             // FIXME: This is incorrect!
             final int bits = (val.length - 1) * 8;
-            final int dig = (int)SafeMath.floor(SafeMath.log10((1L << bits) - 1));
+            final int dig = (int)Math.floor(Math.log10((1L << bits) - 1));
             division = (int)((maxPrec + dig) / width);
           }
           else if (obj instanceof String) {

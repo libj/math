@@ -1053,7 +1053,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
   }
 
   final long[] buf = new long[2];
-  final int[] zds = new int[4];
+  final int[] zds = new int[5];
   // FIXME: Make these private
   long value;
   short scale;

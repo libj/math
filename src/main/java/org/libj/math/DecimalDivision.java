@@ -16,8 +16,6 @@
 
 package org.libj.math;
 
-import java.util.Arrays;
-
 import org.huldra.math.BigInt;
 import org.libj.lang.Numbers;
 
@@ -35,24 +33,17 @@ abstract class DecimalDivision extends FixedPoint {
    * @param buf An array for the rounding buffer ({@code long[2]}).
    * @return The result of <code>v1 * 10<sup>dp</sup> / v2</code>.
    */
-  static long scaleDiv(long v1, final long v2, byte dp, final int[] q, final long[] buf) {
+  static long scaleDiv(long v1, final long v2, byte dp, int[] q, final long[] buf) {
     final long f = FastMath.e10[dp];
 
-    Arrays.fill(q, 0);
+    BigInt.assign(q, 1, v1);
+    if (BigInt.mul(q, f) != q)
+      throw new IllegalStateException("q is not big enough");
 
-    q[0] = (int)(v1 & 0xFFFFFFFFL);
-    q[1] = (int)(v1 >>> 32);
-    BigInt.umul(q, 0, 2, f);
-
-    final long divisorHigh = v2 >>> 32;
-    long remainder;
-    if (divisorHigh == 0)
-      remainder = BigInt.div(q, 0, 3, (int)v2);
-    else
-      remainder = BigInt.udiv(q, 0, 4, v2, divisorHigh);
+    long remainder = BigInt.divRem(q, v2);
 
     // Put the result in v1
-    v1 = BigInt.longValue(q, 0, 2);
+    v1 = BigInt.longValue(q, 1, 3);
 
     // If v1 is bigger than the signed limit, scale it down
     if (v1 < 0) {

@@ -30,10 +30,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
   }
 
   public static long rem(final int[] val, final int mod) {
-    if (mod > 0)
-      return rem(val, IRRELEVANT, mod);
-
-    return rem(val, IRRELEVANT, -mod); // FIXME: Integer.MIN_VALUE does not seem to matter?!
+    return rem(val, IRRELEVANT, mod < 0 ? -mod : mod);
   }
 
   public static int rem(final int[] mag, final int off, final int len, final int sig, final int mod) {
@@ -71,10 +68,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
   }
 
   public static int rem(final int[] mag, final int off, final int len, final int mod) {
-    if (mod > 0)
-      return rem(mag, off, len, IRRELEVANT, mod);
-
-    return rem(mag, off, len, IRRELEVANT, -mod); // FIXME: Integer.MIN_VALUE does not seem to matter?!
+    return rem(mag, off, len, IRRELEVANT, mod < 0 ? -mod : mod);
   }
 
   public static void rem(final int[] val, final int sig, long mod) {
@@ -100,10 +94,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
   }
 
   public static void rem(final int[] val, long mod) {
-    if (mod > 0)
-      rem(val, IRRELEVANT, mod);
+    if (mod < 0)
+      rem(val, IRRELEVANT, -mod);
     else
-      rem(val, IRRELEVANT, -mod); // FIXME: Long.MIN_VALUE does not seem to matter?!
+      rem(val, IRRELEVANT, mod);
   }
 
   public static int[] div(final int[] val, final int sig, final int div) {
@@ -123,7 +117,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * @return The remainder from the division of {@code val} by {@code divisor}.
    * @throws ArithmeticException If {@code divisor} is 0.
    */
-  // FIXME: Javadoc: Assumes div > 0.
+  // FIXME: Javadoc: Assumes div > 0?
   public static long divRem(final int[] val, final int sig, final int div) {
     int vsig = 1, len = val[0]; if (len < 0) { len = -len; vsig = -1; }
     final long r = divRem0(val, sig, div);
@@ -179,10 +173,12 @@ abstract class BigIntDivision extends BigIntMultiplication {
   }
 
   public static long divRem(final int[] val, final int div) {
-    if (div > 0)
+    // FIXME: Why are we flipping the sign of r for long but not for int?!!?
+    final long r;
+    if (div < 0)
+      return divRem(val, -1, -div);
+    else
       return divRem(val, 1, div);
-
-    return divRem(val, -1, -div); // FIXME: Integer.MIN_VALUE does not seem to matter?!
   }
 
   /**
@@ -251,7 +247,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     }
 
     long k, qhat, t, rhat, p;
-    for (int j = len - 1; j >= 1; j--) {
+    for (int j = len - 1; j >= 1; --j) {
       u2 = u1;
       u1 = u0;
       u0 = s > 0 && j > 0 ? (val[j] << s | val[j - 1] >>> 32 - s) & LONG_INT_MASK : (val[j] << s) & LONG_INT_MASK;
@@ -316,11 +312,12 @@ abstract class BigIntDivision extends BigIntMultiplication {
   public static long divRem(final int[] val, final long div) {
     final boolean sig = val[0] >= 0;
     final long r;
-    if (div > 0)
-      r = divRem(val, 1, div);
+    if (div < 0)
+      r = divRem(val, -1, -div);
     else
-      r = divRem(val, -1, -div); // FIXME: Long.MIN_VALUE does not seem to matter?!
+      r = divRem(val, 1, div);
 
+    // FIXME: Why are we flipping the sign of r for long but not for int?!!?
     return sig ? r : -r;
   }
 
@@ -345,10 +342,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
     ++len2;
 
     final int fromIndex = 1;
-    final long b = 1L << 32; // Number base (32 bits).
-    long qhat; // Estimated quotient digit.
-    long rhat; // A remainder.
-    long p; // Product of two digits.
+    final long b = 1L << 32; // Number base (32 bits)
+    long qhat; // Estimated quotient digit
+    long rhat; // A remainder
+    long p; // Product of two digits
 
     int s, i, j;
     long t, k;
@@ -379,7 +376,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     final long hbit = Long.MIN_VALUE;
 
     for (j = len1 - len2; j >= 0; --j) {
-      // Compute estimate qhat of q[j].
+      // Compute estimate qhat of q[j]
       k = val1[j + len2] * b + (val1[j + len2 - 1] & LONG_INT_MASK);
       qhat = (k >>> 1) / dh << 1;
       t = k - qhat * dh;

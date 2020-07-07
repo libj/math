@@ -17,7 +17,6 @@
 package org.libj.math;
 
 import static org.libj.math.Decimal.*;
-import static org.libj.math.FixedPoint.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -244,7 +243,7 @@ public abstract class DecimalTest {
             logVariables(ld1, ld2, scaleBits);
             final String actu;
             if (actual instanceof Long) {
-              final short s = decodeScale(((Long)actual).longValue(), scaleBits);
+//              final short s = decodeScale(((Long)actual).longValue(), scaleBits);
 //              expected = ((BigDecimal)expected).setScale(s, RoundingMode.HALF_UP);
               actu = String.valueOf(((Long)actual).longValue() == defaultValue ? "err" : Decimal.toString((Long)actual, scaleBits));
             }

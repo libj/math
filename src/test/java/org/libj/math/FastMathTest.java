@@ -16,7 +16,6 @@
 
 package org.libj.math;
 
-import static org.huldra.math.BigIntTest.*;
 import static org.junit.Assert.*;
 
 import org.huldra.math.BigIntTest;

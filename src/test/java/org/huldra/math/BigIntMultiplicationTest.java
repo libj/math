@@ -77,7 +77,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] x = new int[3];
     final int[] y = new int[1];
     final int[] val = new int[4];
-    test("umul(int[],int[])",
+    test("umul(int[],int)",
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
@@ -103,7 +103,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] x = new int[3];
     final int[] y = new int[2];
     final int[] val = new int[5];
-    test("umul(int[],int[])",
+    test("umul(int[],long)",
       l("MPN", a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
