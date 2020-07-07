@@ -38,7 +38,7 @@ exception statement from your version. */
 // Included from Kawa 1.6.62 with permission of the author,
 // Per Bothner <per@bothner.com>.
 
-package org.huldra.math;
+package gnu.java.math;
 
 /**
  * This contains various low-level routines for unsigned bigints. The interfaces

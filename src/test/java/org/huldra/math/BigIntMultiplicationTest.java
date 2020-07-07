@@ -21,6 +21,8 @@ import java.math.BigInteger;
 import org.junit.Test;
 import org.libj.math.BigIntegers;
 
+import gnu.java.math.MPN;
+
 public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt() {
