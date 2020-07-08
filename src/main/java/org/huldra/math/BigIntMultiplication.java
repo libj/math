@@ -21,82 +21,149 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@SuppressWarnings("javadoc")
 abstract class BigIntMultiplication extends BigIntAddition {
   private static final long serialVersionUID = -4907342078241892616L;
 
-  public static int[] mul(final int[] val, final int mul) {
-    if (mul > 0)
-      return mul(val, 1, mul);
-
-    return mul(val, -1, -mul);
-  }
-
-  public static int[] mul(int[] val, final int sig, final int mul) {
-    final boolean flipSig; int len = val[0]; if (len < 0) { len = -len; flipSig = sig >= 0; } else { flipSig = sig < 0; }
-    if (len + 1 >= val.length)
-      val = realloc(val);
-
-    val[0] = umul(val, 1, len, mul);
-    if (flipSig)
-      val[0] = -val[0];
-
-    _debugLenSig(val);
-    return val;
-  }
-
-  public static int[] mul(final int[] val, long mul) {
-    int sig = 1; if (mul < 0) { sig = -1; mul = -mul; }
+  /**
+   * Multiplies the provided number by an {@code int} multiplicand.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the multiplication of the provided number by the specified multiplier
+   * requires a larger {@code int[]}.</i>
+   *
+   * @param val The value-encoded multiplicand.
+   * @param mul The multiplier.
+   * @return The result of the multiplication of the provided number by the
+   *         {@code int} multiplier.
+   * @complexity O(n)
+   */
+  public static int[] mul(final int[] val, int mul) {
+    int sig = 1;
+    if (mul < 0) {
+      sig = -1;
+      mul = -mul;
+    }
     return mul(val, sig, mul);
   }
 
-  public static int[] mul(int[] val, final int sig, final long mul) {
-    final long ml = mul & LONG_INT_MASK;
-    final long mh = mul >>> 32;
-    if (mh == 0)
-      return mul(val, sig, (int)ml);
+  /**
+   * Multiplies the provided number by an <i>unsigned</i> {@code int}
+   * multiplicand.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the multiplication of the provided number by the specified multiplier
+   * requires a larger {@code int[]}.</i>
+   *
+   * @param val The value-encoded multiplicand.
+   * @param sig The sign of the unsigned {@code int} multiplier.
+   * @param mul The multiplier (unsigned).
+   * @return The result of the multiplication of the provided number by the
+   *         <i>unsigned</i> {@code int} multiplier.
+   * @complexity O(n)
+   */
+  public static int[] mul(int[] val, int sig, final int mul) {
+    final boolean flipSig;
+    int len = val[0];
+    if (len < 0) {
+      len = -len;
+      flipSig = sig >= 0;
+    }
+    else {
+      flipSig = sig < 0;
+    }
+    if (len + 1 >= val.length)
+      val = realloc(val);
 
-    final boolean flipSig; int len = val[0]; if (len < 0) { len = -len; flipSig = sig >= 0; } else { flipSig = sig < 0; }
-    if (len + 2 >= val.length)
-      val = realloc(val, 2 * (len + 1));
-
-    val[0] = umul(val, 1, len, ml, mh);
-    if (flipSig)
-      val[0] = -val[0];
+    sig = umul(val, 1, len, mul);
+    val[0] = flipSig ? -sig : sig;
 
     _debugLenSig(val);
     return val;
   }
 
   /**
-   * Returns {@code val} after the multiplication of the unsigned multiplicand
-   * in {@code val} of (of length {@code len}) by the unsigned
-   * {@code multiplier}.
-   *
-   * @param val The multiplicand (unsigned) as input, and result (unsigned) as
-   *          output.
-   * @param multiplier The amount to multiply (unsigned).
-   * @param len The significant length of the multiplicand in {@code val}.
-   * @return {@code val} after the multiplication of the unsigned multiplicand
-   *         in {@code val} of (of length {@code len}) by the unsigned
-   *         {@code multiplier}.
-   * @complexity O(n)
-   */
-  /**
-   * Multiplies this number with an unsigned int.
+   * Multiplies the provided number by an {@code long} multiplicand.
    * <p>
-   * NOTE: Does not check for zero!
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the multiplication of the provided number by the specified multiplier
+   * requires a larger {@code int[]}.</i>
    *
-   * @param mul The amount by which to multiply (unsigned).
+   * @param val The value-encoded multiplicand.
+   * @param mul The multiplier.
+   * @return The result of the multiplication of the provided number by the
+   *         {@code long} multiplier.
    * @complexity O(n)
    */
-  // FIXME: Where should these methods go?
-  public static int umul(final int[] mag, final int off, int len, final int mul) {
-    if (mul == 0) {
-      setToZero0(mag);
-      return 0;
+  public static int[] mul(final int[] val, long mul) {
+    int sig = 1;
+    if (mul < 0) {
+      sig = -1;
+      mul = -mul;
     }
+    return mul(val, sig, mul);
+  }
 
+  /**
+   * Multiplies the provided number by an <i>unsigned</i> {@code long}
+   * multiplicand.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the multiplication of the provided number by the specified multiplier
+   * requires a larger {@code int[]}.</i>
+   *
+   * @param val The value-encoded multiplicand.
+   * @param sig The sign of the unsigned {@code long} multiplier.
+   * @param mul The multiplier (unsigned).
+   * @return The result of the multiplication of the provided number by the
+   *         <i>unsigned</i> {@code long} multiplier.
+   * @complexity O(n)
+   */
+  public static int[] mul(int[] val, int sig, final long mul) {
+    final long mull = mul & LONG_INT_MASK;
+    final long mulh = mul >>> 32;
+    if (mulh == 0)
+      return mul(val, sig, (int)mull);
+
+    final boolean flipSig;
+    int len = val[0];
+    if (len < 0) {
+      len = -len;
+      flipSig = sig >= 0;
+    }
+    else {
+      flipSig = sig < 0;
+    }
+    if (len + 2 >= val.length)
+      val = realloc(val, 2 * (len + 1));
+
+    sig = umul0(val, 1, len, mull, mulh);
+    val[0] = flipSig ? -sig : sig;
+
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Multiplies the provided magnitude by an <i>unsigned</i> {@code int}
+   * multiplicand.
+   * <p>
+   * <i><b>Note:</b> This method assumes that the length of the provided
+   * magnitude array will accommodate for the result of the multiplication,
+   * which may at most require 1 free limb.</i>
+   *
+   * @param mag The multiplicand (little-endian).
+   * @param off The offset of the first significant limb of the multiplicand.
+   * @param len The number of significant limbs of the multiplicand.
+   * @param mul The multiplier (unsigned).
+   * @return The result of the multiplication of the provided magnitude by the
+   *         <i>unsigned</i> {@code int} multiplier.
+   * @complexity O(n)
+   */
+  public static int umul(final int[] mag, final int off, int len, final int mul) {
+    return mul == 0 ? mag[off] = 0 : umul0(mag, off, len, mul);
+  }
+
+  private static int umul0(final int[] mag, final int off, int len, final int mul) {
     long carry = 0;
     final long low = mul & LONG_INT_MASK;
     len += off;
@@ -114,50 +181,41 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns {@code val} after the multiplication of the unsigned multiplicand
-   * in {@code val} (of (of length {@code len})) by the unsigned {@code multiplier}.
-   *
-   * @param val The multiplicand (unsigned) as input, and result (unsigned) as
-   *          output.
-   * @param multiplier The amount to multiply (unsigned).
-   * @param len The significant length of the multiplicand in {@code val}.
-   * @return {@code val} after the multiplication of the unsigned multiplicand
-   *         in {@code val} of (of (of length {@code len})) by the unsigned
-   *         {@code multiplier}.
-   * @complexity O(n)
-   */
-  /**
-   * Multiplies this number with an unsigned long.
+   * Multiplies the provided magnitude by an <i>unsigned</i> {@code long}
+   * multiplicand.
    * <p>
-   * NOTE: val size must be at least len + 2
-   * NOTE: Does not check for zero!
+   * <i><b>Note:</b> This method assumes that the length of the provided
+   * magnitude array will accommodate for the result of the multiplication,
+   * which may at most require 2 free limbs.</i>
    *
-   * @param mul The amount to multiply (unsigned).
+   * @param mag The multiplicand (little-endian).
+   * @param off The offset of the first significant limb of the multiplicand.
+   * @param len The number of significant limbs of the multiplicand.
+   * @param mul The multiplier (unsigned).
+   * @return The result of the multiplication of the provided magnitude by the
+   *         <i>unsigned</i> {@code int} multiplier.
    * @complexity O(n)
    */
-  // FIXME: Where should these methods go?
   public static int umul(final int[] mag, final int off, final int len, final long mul) {
-    final long h2 = mul >>> 32;
-    return h2 == 0 ? umul(mag, off, len, (int)mul) : umul(mag, off, len, mul & LONG_INT_MASK, h2);
+    return mul == 0 ? mag[off] = 0 : umul0(mag, off, len, mul);
   }
 
-  // FIXME: Where should these methods go?
-  private static int umul(final int[] val, final int off, int len, final long ml, final long mh) {
-    long carry = 0;
-    long h0 = 0;
-    long l0;
-    long vl;
+  private static int umul0(final int[] mag, final int off, final int len, final long mul) {
+    final long h2 = mul >>> 32;
+    return h2 == 0 ? umul(mag, off, len, (int)mul) : umul0(mag, off, len, mul & LONG_INT_MASK, h2);
+  }
+
+  private static int umul0(final int[] val, final int off, int len, final long mull, final long mulh) {
+    long carry = 0, low, mul;
     len += off;
     for (int i = off; i < len; ++i) {
-      carry += h0; // Could this overflow?
-      vl = val[i] & LONG_INT_MASK;
-      l0 = vl * ml;
-      h0 = vl * mh;
-      val[i] = (int)(l0 + carry);
-      carry = (l0 >>> 32) + (carry >>> 32) + ((l0 & LONG_INT_MASK) + (carry & LONG_INT_MASK) >>> 32);
+      low = val[i] & LONG_INT_MASK;
+      mul = low * mull;
+      val[i] = (int)(mul + carry);
+      carry = (mul >>> 32) + (carry >>> 32) + ((mul & LONG_INT_MASK) + (carry & LONG_INT_MASK) >>> 32);
+      carry += low * mulh; // Could this overflow?
     }
 
-    carry += h0;
     val[len] = (int)carry;
     if (carry == 0)
       return len - off;
@@ -169,116 +227,130 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * NOTE: Does not guarantee proper signum for zero result. It is expected that
-   * zero result is determined before execution of this method.
+   * Multiplies the provided number by a value-encoded multiplicand.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the multiplication of the provided number by the specified multiplier
+   * requires a larger {@code int[]}.</i>
+   *
+   * @param val The value-encoded multiplicand.
+   * @param mul The value-encoded multiplier.
+   * @return The result of the multiplication of the provided value-encoded
+   *         number by the value-encoded multiplier.
+   * @complexity O(n^2)
    */
-  public static int[] mul(int[] val1, int[] val2) {
+  public static int[] mul(int[] val, int[] mul) {
+    if (isZero(val))
+      return val;
+
+    if (isZero(mul))
+      return setToZero0(val);
+
     // FIXME: Determine the actual size necessary for the result before the
     // FIXME: execution of this method, and pass the result array into here.
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
-
-    if (isZero(val1))
-      return val1;
-
-    if (isZero(val2)) {
-      setToZero0(val1);
-      return val1;
+    int len1 = val[0];
+    int len2 = mul[0];
+    final boolean flipSig = len1 < 0 != len2 < 0;
+    if (len1 < 0) {
+      len1 = -len1;
+    }
+    if (len2 < 0) {
+      len2 = -len2;
     }
 
     if (len2 <= 2 || len1 <= 2) {
-      final boolean flipSig = sig1 != sig2;
       if (len2 == 1) {
-        if (len1 + 2 >= val1.length)
-          val1 = realloc(val1, 2 * len1 + 1);
+        if (len1 + 2 >= val.length)
+          val = realloc(val, 2 * len1 + 1);
 
-        len1 = umul(val1, 1, len1, val2[1]);
+        len1 = umul0(val, 1, len1, mul[1]);
       }
       else if (len1 == 1) {
-        final int m = val1[1];
-        val1 = val2.clone();
-        val1 = copy(val1, val2, len2 + 1, len2 + 2);
-        len1 = umul(val1, 1, len2, m);
+        final int m = val[1];
+        val = copy(val, mul, len2 + 1, len2 + 2);
+        len1 = umul0(val, 1, len2, m);
       }
       else {
         final long ml;
         final long mh;
         if (len2 == 2) {
-          if (len1 + 2 >= val1.length)
-            val1 = realloc(val1, 2 * len1 + 1);
+          if (len1 + 2 >= val.length)
+            val = realloc(val, 2 * len1 + 1);
 
-          ml = val2[1] & LONG_INT_MASK;
-          mh = val2[2] & LONG_INT_MASK;
+          ml = mul[1] & LONG_INT_MASK;
+          mh = mul[2] & LONG_INT_MASK;
         }
         else {
-          ml = val1[1] & LONG_INT_MASK;
-          mh = val1[2] & LONG_INT_MASK;
-          val1 = copy(val1, val2, len2 + 1, len2 + 3);
+          ml = val[1] & LONG_INT_MASK;
+          mh = val[2] & LONG_INT_MASK;
+          val = copy(val, mul, len2 + 1, len2 + 3);
           len1 = len2;
         }
 
-        len1 = umul(val1, 1, len1, ml, mh);
+        len1 = umul0(val, 1, len1, ml, mh);
       }
-
-      val1[0] = flipSig ? -len1 : len1;
     }
     else if (len1 - 1 < 128 || len2 - 1 < 128 || (long)len1 * len2 < 1_000_000) {
       final int[] res = new int[len1 + len2 + 1];
-      mulQuad(res, val1, len1 + 1, val2, len2 + 1, 1);
-      val1 = res;
+      mulQuad(val, len1 + 1, mul, len2 + 1, 1, res);
+      val = res;
 
-      len1 = val1[val1.length - 1] == 0 ? val1.length - 2 : val1.length - 1;
-      val1[0] = sig1 != sig2 ? -len1 : len1;
+      len1 = val[val.length - 1] == 0 ? val.length - 2 : val.length - 1;
     }
     else {
-      final boolean flipLenSig = sig1 != sig2;
-      if (val2.length < len1)
-        val2 = realloc(val2, len1);
-      else if (val1.length < len2)
-        val1 = realloc(val1, len1);
+      if (mul.length < len1)
+        mul = realloc(mul, len1);
+      else if (val.length < len2)
+        val = realloc(val, len1);
 
       try {
         // FIXME: Tune thresholds
-        val1 = karatsuba(val1, val2, Math.max(len1, len2) > 20000);
+        val = karatsuba(val, mul, Math.max(len1, len2) > 20000);
       }
       catch (final ExecutionException | InterruptedException e) {
         throw new RuntimeException(e);
       }
 
       len1 += len2 - 1;
-      val1[0] = flipLenSig ? -len1 : len1;
     }
 
-    _debugLenSig(val1);
-    return val1;
+    val[0] = flipSig ? -len1 : len1;
+    _debugLenSig(val);
+    return val;
   }
 
   /**
-   * Multiplies this number by the given (suitably small) BigInt. Uses a
-   * quadratic algorithm which is often suitable for smaller numbers.
-   *
    * @param mul The number to multiply with.
+   */
+  /**
+   * Multiplies the provided value-encoded numbers, and puts the result in
+   * {@code res}. Uses a quadratic algorithm which is often suitable for smaller
+   * numbers.
+   *
+   * <pre>
+   * res = val1 * val2
+   * </pre>
+   *
+   * <i><b>Note:</b> It is expected that
+   * {@code res.length >= len1 + len2 + 1}.</i>
+   *
+   * @param val1 The first value-encoded number.
+   * @param len1 The number of significant limbs of the first number.
+   * @param val2 The second value-encoded number.
+   * @param len2 The number of significant limbs of the second number.
+   * @param off The offset of the first significant limb for the first and
+   *          second numbers, as well as the result array.
+   * @param res The array into which the result is to be put.
    * @complexity O(n^2)
    */
-  private static void mulQuad(final int[] res, final int[] val1, final int len1, final int[] val2, final int len2, final int off) {
+  private static void mulQuad(final int[] val1, final int len1, final int[] val2, final int len2, final int off, final int[] res) {
     if (len1 < len2)
-      mulQuad0(res, val1, len1, val2, len2, off);
+      mulQuad0(val1, len1, val2, len2, off, res);
     else
-      mulQuad0(res, val2, len2, val1, len1, off);
+      mulQuad0(val2, len2, val1, len1, off, res);
   }
 
-  /**
-   * Multiplies two magnitude arrays and returns the result.
-   * <p>
-   * res must be int[] of size len1 + len2.
-   *
-   * @param val1 The first magnitude array.
-   * @param len1 The length of the first array.
-   * @param val2 The second magnitude array.
-   * @param len2 The length of the second array.
-   * @complexity O(n^2)
-   */
-  private static void mulQuad0(final int[] res, final int[] val1, final int len1, final int[] val2, final int len2, final int off) {
+  private static void mulQuad0(final int[] val1, final int len1, final int[] val2, final int len2, final int off, final int[] res) {
     int i, j, k, l;
     long v, r = 0;
     long val1l = val1[off] & LONG_INT_MASK;
@@ -308,15 +380,16 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
   /**
    * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
-   * returns the result. Algorithm: Karatsuba
+   * puts the result in {@code res}. Algorithm: Karatsuba
    *
    * @param val1 The first magnitude array.
    * @param val2 The second magnitude array.
-   * @param off The offset, where the first element is residing.
+   * @param off The offset of the first element.
    * @param len The length of each of the two partial arrays.
+   * @param res The array into which the result is to be put.
    * @complexity O(n^1.585)
    */
-  static void kmul(final int[] res, final int[] val1, final int[] val2, final int off, int len) {
+  static void kmul(final int[] val1, final int[] val2, final int off, int len, final int[] res) {
     len += off;
     // x = x1*B^m + x0
     // y = y1*B^m + y0
@@ -347,8 +420,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
       final int b = len >>> 1;
       final int[] z2 = new int[2 * (len - b)];
       final int[] z0 = new int[2 * b];
-      kmul(z2, val1, val2, off + b, len - b);
-      kmul(z0, val1, val2, off, b);
+      kmul(val1, val2, off + b, len - b, z2);
+      kmul(val1, val2, off, b, z0);
 
       // FIXME: How to avoid new int[]?
       final int[] x2 = new int[len - b + 1];
@@ -383,7 +456,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
       final int l = len - b + (x2[len - b] != 0 || y2[len - b] != 0 ? 1 : 0);
       final int[] z1 = new int[2 * l];
-      kmul(z1, x2, y2, 0, l);
+      kmul(x2, y2, 0, l, z1);
 
       // FIXME: fromIndex & toIndex?!
       System.arraycopy(z0, 0, res, 0, 2 * b); // Add z0
@@ -420,28 +493,27 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
   /**
    * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
-   * returns the result. Algorithm: Parallel Karatsuba
+   * puts the result in {@code res}. Algorithm: Parallel Karatsuba
    *
-   * @param res Must be int[2 *n]
    * @param val1 The first magnitude array.
    * @param val2 The second magnitude array.
-   * @param off The offset, where the first element is residing.
-   * @param toIndex The length of each of the two partial arrays.
-   * @param lim The recursion depth up until which we will spawn new threads.
-   * @param pool Where spawn threads will be added and executed.
-   * @throws Various thread related exceptions.
+   * @param off The offset of the first element.
+   * @param len The length of each of the two partial arrays.
+   * @param lim The recursion depth until which to spawn new threads.
+   * @param pool Where spawned threads are to be added and executed.
+   * @param res The array into which the result is to be put (length = 2 * n).
    * @complexity O(n^1.585)
    */
-  private static void pmul(final int[] res, final int[] val1, final int[] val2, final int off, final int len, final int lim, final ExecutorService pool) throws ExecutionException, InterruptedException {
+  private static void pmul(final int[] val1, final int[] val2, final int off, final int len, final int lim, final int[] res, final ExecutorService pool) throws ExecutionException, InterruptedException {
     final int toIndex = len + off;
     final int b = toIndex >>> 1;
 
     final Future<int[]> left = pool.submit(() -> {
       final int[] z = new int[2 * b];
       if (lim == 0)
-        kmul(z, val1, val2, off, b);
+        kmul(val1, val2, off, b, z);
       else
-        pmul(z, val1, val2, off, b, lim - 1, pool);
+        pmul(val1, val2, off, b, lim - 1, z, pool);
 
       return z;
     });
@@ -449,9 +521,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
     final Future<int[]> right = pool.submit(() -> {
       final int[] z = new int[2 * (toIndex - b)];
       if (lim == 0)
-        kmul(z, val1, val2, off + b, len - b);
+        kmul(val1, val2, off + b, len - b, z);
       else
-        pmul(z, val1, val2, off + b, len - b, lim - 1, pool);
+        pmul(val1, val2, off + b, len - b, lim - 1, z, pool);
 
       return z;
     });
@@ -490,9 +562,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
       final int l = toIndex - b + (x2[toIndex - b] != 0 || y2[toIndex - b] != 0 ? 1 : 0);
       final int[] Z = new int[2 * l];
       if (lim == 0)
-        kmul(Z, x2, y2, 0, l - off);
+        kmul(x2, y2, 0, l - off, Z);
       else
-        pmul(Z, x2, y2, 0, l - off, lim - 1, pool);
+        pmul(x2, y2, 0, l - off, lim - 1, Z, pool);
 
       return Z;
     });
@@ -530,20 +602,34 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies this number by the given BigInt using the Karatsuba algorithm.
-   * The caller can choose to use a parallel version which is more suitable for
-   * larger numbers.
+   * Multiplies the provided value-encoded numbers using the Karatsuba
+   * algorithm, and returns the result. The caller can choose to use a parallel
+   * version which is more suitable for larger numbers.
    * <p>
-   * NOTE: Size of val1 and val2 must be the same!
+   * <i><b>Note:</b> The size of {@code val1} and {@code val2} must be the
+   * same.</i>
    *
-   * @param mul The number to multiply with.
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
    * @param parallel Whether to attempt to use the parallel algorithm.
+   * @return The result of the multiplication of the provided value-encoded
+   *         numbers.
+   * @throws ExecutionException If the computation in a worker thread threw an
+   *           exception.
+   * @throws InterruptedException If the current thread was interrupted while
+   *           waiting.
    * @complexity O(n^1.585)
    */
   // FIXME: Not fully tested on small numbers... fix naming?
   static int[] karatsuba(int[] val1, int[] val2, final boolean parallel) throws ExecutionException, InterruptedException {
-    int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
-    int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
+    int len1 = val1[0];
+    if (len1 < 0) {
+      len1 = -len1;
+    }
+    int len2 = val2[0];
+    if (len2 < 0) {
+      len2 = -len2;
+    }
     final int mlen = Math.max(len1, len2);
     if (len2 < len1) {
       do
@@ -563,11 +649,11 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
     if (parallel) {
       final ExecutorService pool = Executors.newFixedThreadPool(12);
-      pmul(res, val1, val2, 1, mlen, 1, pool);
+      pmul(val1, val2, 1, mlen, 1, res, pool);
       pool.shutdown();
     }
     else {
-      kmul(res, val1, val2, 1, mlen);
+      kmul(val1, val2, 1, mlen, res);
     }
 
     _debugLenSig(res);

@@ -43,7 +43,7 @@ import org.libj.util.function.ObjLongFunction;
 import org.libj.util.function.ObjLongToLongFunction;
 
 public abstract class CaseTest {
-  protected static final int numTests = System.getProperty("fast") != null ? 10000 : 1000000;
+  protected static final int numTests = /*System.getProperty("fast") != null ?*/ 100000 ;//: 1000000;
 
   public static String neg(final String v) {
     return !v.startsWith("-") ? "-" + v : v.substring(1);

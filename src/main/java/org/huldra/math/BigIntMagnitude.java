@@ -179,36 +179,36 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param val The value-encoded number.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
-   * @param val2 The value-encoded amount by which to increase (or decrease).
-   * @param len2 The count of limbs in the number by which to increase.
+   * @param add The value-encoded amount by which to increase (or decrease).
+   * @param alen The count of limbs in the number by which to increase.
    * @return The provided number increased (or decreased) by the specified
    *         amount.
    * @complexity O(n)
    */
-  static int[] addVal(int[] val, int len, final boolean sig, int[] val2, int len2) {
+  static int[] addVal(int[] val, int len, final boolean sig, int[] add, int alen) {
     int[] val1 = val; // len <= len2
     int len1 = len;
-    if (len2 < len) {
-      val1 = val2;
-      val2 = val;
-      len1 = len2;
-      len2 = len;
+    if (alen < len) {
+      val1 = add;
+      add = val;
+      len1 = alen;
+      alen = len;
     }
 
-    if (len2 >= val.length)
-      val = realloc(val, len2 + 2);
+    if (alen >= val.length)
+      val = realloc(val, alen + 2);
 
     long carry = 0;
     int i = 1;
     for (; i <= len1; ++i) {
-      carry = (val1[i] & LONG_INT_MASK) + (val2[i] & LONG_INT_MASK) + carry;
+      carry = (val1[i] & LONG_INT_MASK) + (add[i] & LONG_INT_MASK) + carry;
       val[i] = (int)carry;
       carry >>>= 32;
     }
 
-    if (len2 > len) {
-      System.arraycopy(val2, len + 1, val, len + 1, len2 - len);
-      len = len2;
+    if (alen > len) {
+      System.arraycopy(add, len + 1, val, len + 1, alen - len);
+      len = alen;
       val[0] = sig ? len : -len;
     }
 
@@ -233,16 +233,16 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param val The value-encoded number.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
-   * @param val2 The value-encoded amount by which to decrease.
-   * @param len2 The count of limbs in the number by which to decrease.
+   * @param sub The value-encoded amount by which to decrease.
+   * @param slen The count of limbs in the number by which to decrease.
    * @complexity O(n)
    */
-  static void subVal(final int[] val, int len, final boolean sig, final int[] val2, final int len2) {
+  static void subVal(final int[] val, int len, final boolean sig, final int[] sub, final int slen) {
     // Assumes len == len2 and v == dig
     long dif = 0;
     int i = 1;
-    for (; i <= len2; ++i) {
-      dif += (val[i] & LONG_INT_MASK) - (val2[i] & LONG_INT_MASK);
+    for (; i <= slen; ++i) {
+      dif += (val[i] & LONG_INT_MASK) - (sub[i] & LONG_INT_MASK);
       val[i] = (int)dif;
       dif >>= 32;
     }
@@ -252,7 +252,7 @@ abstract class BigIntMagnitude extends BigIntValue {
         --val[i];
 
       if (--val[i] == 0 && i + 1 == len)
-        len = len2;
+        len = slen;
     }
 
     while (val[len] == 0)
