@@ -278,10 +278,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Sets to this {@link BigInt} the absolute value of its magnitude.
+   * Sets the magnitude of this {@link BigInt} its absolute value.
    *
    * <pre>
-   * {@code v = | v |}
+   * {@code this = | this |}
    * </pre>
    *
    * @return This {@link BigInt}.

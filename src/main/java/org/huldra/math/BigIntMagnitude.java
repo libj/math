@@ -42,7 +42,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (++len == val.length)
-          val = realloc(val, len + 1);
+          val = realloc(val, len, len + 1);
 
         val[len] = 1;
         val[0] = sig ? len : -len;
@@ -104,7 +104,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    */
   static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh) {
     if (val.length <= 3)
-      val = realloc(val, 4);
+      val = realloc(val, len, 4);
 
     final long val0 = val[1] & LONG_INT_MASK;
     final long val1 = val[2] & LONG_INT_MASK;
@@ -122,7 +122,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       if (i > len) {
         len = i;
         if (len == val.length)
-          val = realloc(val, len);
+          val = realloc(val, len, len);
 
         val[len] = 1;
       }
@@ -196,7 +196,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     }
 
     if (alen >= val.length)
-      val = realloc(val, alen + 2);
+      val = realloc(val, len, alen + 2);
 
     long carry = 0;
     int i = 1;
@@ -216,7 +216,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) { // len == len2
         if (i == val.length)
-          val = realloc(val, i + 1);
+          val = realloc(val, len, i + 1);
 
         val[++len] = 1;
         val[0] = sig ? len : -len;

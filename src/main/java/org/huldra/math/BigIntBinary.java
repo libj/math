@@ -18,6 +18,7 @@ package org.huldra.math;
 
 import java.util.Arrays;
 
+@SuppressWarnings("javadoc")
 abstract class BigIntBinary extends BigIntDivision {
   private static final long serialVersionUID = 6584645376198040730L;
 
@@ -259,7 +260,7 @@ abstract class BigIntBinary extends BigIntDivision {
     if ((val[len] << shift >>> shift) != val[len]) { // Overflow?
       if (++len >= val.length) {
         next = 0;
-        res = realloc(val, len + 1);
+        res = realloc(val, len, len + 1);
       }
       else {
         next = val[len];
@@ -292,7 +293,7 @@ abstract class BigIntBinary extends BigIntDivision {
     final int smallBit = bit & 31;
     if (sig >= 0) {
       if (bigBit >= val.length) {
-        val = realloc(val, bigBit + 1);
+        val = realloc(val, len, bigBit + 1);
         len = bigBit;
       }
       else if (bigBit > len) {
@@ -360,7 +361,7 @@ abstract class BigIntBinary extends BigIntDivision {
     }
     else {
       if (bigBit >= val.length) {
-        val = realloc(val, bigBit + 1);
+        val = realloc(val, len, bigBit + 1);
         len = bigBit;
         val[bigBit] |= 1 << smallBit;
       }
@@ -401,7 +402,7 @@ abstract class BigIntBinary extends BigIntDivision {
             val[j] = 0;
 
           if (j == val.length)
-            val = realloc(val, j + 2);
+            val = realloc(val, len, j + 2);
 
           if (j <= len) {
             val[j] = -~val[j];
@@ -437,7 +438,7 @@ abstract class BigIntBinary extends BigIntDivision {
     final int smallBit = bit & 31;
     block:
     if (bigBit >= val.length) {
-      val = realloc(val, bigBit + 1);
+      val = realloc(val, len, bigBit + 1);
       val[bigBit] ^= 1 << smallBit;
       len = bigBit;
     }
@@ -492,7 +493,7 @@ abstract class BigIntBinary extends BigIntDivision {
             val[j] = 0;
 
           if (j == val.length)
-            val = realloc(val, j + 2);
+            val = realloc(val, len, j + 2);
 
           if (j <= len)
             val[j] = -~val[j];
@@ -598,7 +599,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
         if (len2 > len1) {
           if (len2 >= val1.length)
-            val1 = realloc(val1, len2 + 3);
+            val1 = realloc(val1, len1, len2 + 3);
 
           System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
         }
@@ -613,7 +614,7 @@ abstract class BigIntBinary extends BigIntDivision {
       else {
         if (len2 > len1) {
           if (len2 >= val1.length)
-            val1 = realloc(val1, len2 + 3);
+            val1 = realloc(val1, len1, len2 + 3);
 
           System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
         }
@@ -660,7 +661,7 @@ abstract class BigIntBinary extends BigIntDivision {
             else {
               ++blen;
               if (blen >= val1.length)
-                val1 = realloc(val1, blen + 2);
+                val1 = realloc(val1, len1, blen + 2);
 
               val1[blen] = 1;
               val1[0] = sig1 < 0 ? -blen : blen;
@@ -709,7 +710,7 @@ abstract class BigIntBinary extends BigIntDivision {
       if (sig2 >= 0) {
         if (len2 > len1) {
           if (len2 >= val1.length)
-            val1 = realloc(val1, len2 + 2);
+            val1 = realloc(val1, len1, len2 + 2);
 
           System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
           for (int i = 1; i <= len1; ++i)
@@ -724,7 +725,7 @@ abstract class BigIntBinary extends BigIntDivision {
       }
       else {
         if (len2 >= val1.length)
-          val1 = realloc(val1, len2 + 2);
+          val1 = realloc(val1, len1, len2 + 2);
 
         if (len2 > len1)
           System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
@@ -865,7 +866,7 @@ abstract class BigIntBinary extends BigIntDivision {
     if (sig1 > 0) {
       if (len2 > len1) {
         if (len2 > val1.length)
-          val1 = realloc(val1, len2 + 2);
+          val1 = realloc(val1, len1, len2 + 2);
 
         System.arraycopy(val2, len1, val1, len1, len2 - len1);
       }
@@ -905,7 +906,7 @@ abstract class BigIntBinary extends BigIntDivision {
               val1[j] = 0;
 
             if (blen == val1.length)
-              val1 = realloc(val1, blen + 2); // len==blen
+              val1 = realloc(val1, len1, blen + 2); // len==blen
 
             if (j == blen) {
               val1[blen] = 1;
@@ -928,7 +929,7 @@ abstract class BigIntBinary extends BigIntDivision {
     else {
       if (len2 > len1) {
         if (len2 > val1.length)
-          val1 = realloc(val1, len2 + 2);
+          val1 = realloc(val1, len1, len2 + 2);
 
         System.arraycopy(val2, len1, val1, len1, len2 - len1);
       }
@@ -1046,7 +1047,7 @@ abstract class BigIntBinary extends BigIntDivision {
     else {
       if (len2 > len1) {
         if (len2 > val1.length)
-          val1 = realloc(val1, len2 + 3);
+          val1 = realloc(val1, len1, len2 + 3);
 
         System.arraycopy(val2, len1, val1, len1, len2 - len1);
       }

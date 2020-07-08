@@ -493,7 +493,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       if (c > 0) {
         ++len1;
         if (len1 == val1.length)
-          val1 = realloc(val1, len1 + 1); // We need an extra slot
+          val1 = realloc(val1, len1, len1 + 1); // We need an extra slot
 
         final int[] q = new int[len1 - len2 + 1];
         div(val1, val2, q);
@@ -537,7 +537,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       else {
         ++len1;
         if (len1 == val1.length)
-          val1 = realloc(val1, len1 + 1); // We need an extra slot
+          val1 = realloc(val1, len1, len1 + 1); // We need an extra slot
 
         final int[] q = alloc(len1 - len2 + 1);
         div(val1, val2, q);

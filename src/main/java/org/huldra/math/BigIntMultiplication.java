@@ -64,15 +64,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
   public static int[] mul(int[] val, int sig, final int mul) {
     final boolean flipSig;
     int len = val[0];
-    if (len < 0) {
-      len = -len;
-      flipSig = sig >= 0;
-    }
-    else {
-      flipSig = sig < 0;
-    }
+    if (len < 0) { len = -len; flipSig = sig >= 0; } else { flipSig = sig < 0; }
     if (len + 1 >= val.length)
-      val = realloc(val);
+      val = realloc(val, len, len + len + 1);
 
     sig = umul(val, 1, len, mul);
     val[0] = flipSig ? -sig : sig;
@@ -126,15 +120,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
     final boolean flipSig;
     int len = val[0];
-    if (len < 0) {
-      len = -len;
-      flipSig = sig >= 0;
-    }
-    else {
-      flipSig = sig < 0;
-    }
+    if (len < 0) { len = -len; flipSig = sig >= 0; } else { flipSig = sig < 0; }
     if (len + 2 >= val.length)
-      val = realloc(val, 2 * (len + 1));
+      val = realloc(val, len, len + len + 2);
 
     sig = umul0(val, 1, len, mull, mulh);
     val[0] = flipSig ? -sig : sig;
@@ -261,7 +249,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     if (len2 <= 2 || len1 <= 2) {
       if (len2 == 1) {
         if (len1 + 2 >= val.length)
-          val = realloc(val, 2 * len1 + 1);
+          val = realloc(val, len1, 2 * len1 + 1);
 
         len1 = umul0(val, 1, len1, mul[1]);
       }
@@ -275,7 +263,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
         final long mh;
         if (len2 == 2) {
           if (len1 + 2 >= val.length)
-            val = realloc(val, 2 * len1 + 1);
+            val = realloc(val, len1, 2 * len1 + 1);
 
           ml = mul[1] & LONG_INT_MASK;
           mh = mul[2] & LONG_INT_MASK;
@@ -299,9 +287,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
     }
     else {
       if (mul.length < len1)
-        mul = realloc(mul, len1);
+        mul = realloc(mul, len2, len1);
       else if (val.length < len2)
-        val = realloc(val, len1);
+        val = realloc(val, len1, len2);
 
       try {
         // FIXME: Tune thresholds

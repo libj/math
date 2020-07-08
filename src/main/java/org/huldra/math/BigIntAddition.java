@@ -293,7 +293,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
     else {
       if (val.length <= 2)
-        val = realloc(val, 3);
+        val = realloc(val, len, 3);
 
       final long val0 = val[1] & LONG_INT_MASK;
       final long val1 = val[2] & LONG_INT_MASK;
@@ -407,7 +407,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
     else {
       if (len2 >= val.length)
-        val = realloc(val, len2 + 2);
+        val = realloc(val, len, len2 + 2);
 
       sig = !sig;
       long dif = 0;

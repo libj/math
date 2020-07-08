@@ -62,17 +62,7 @@ abstract class BigIntValue extends Number {
   }
 
   public static int[] assign(int[] val, final int sig, final int mag) {
-    if (mag == 0) {
-      if (val.length == 0)
-        val = alloc(1);
-
-      return setToZero0(val);
-    }
-
-    if (val.length <= 1)
-      val = alloc(2);
-
-    return assign0(val, sig, mag);
+    return mag == 0 ? setToZero(val) : assign0(val.length > 1 ? val : alloc(2), sig, mag);
   }
 
   static int[] assign0(final int[] val, final int sig, final int mag) {
@@ -83,10 +73,7 @@ abstract class BigIntValue extends Number {
   }
 
   public static int[] assign(int[] val, final int mag) {
-    if (mag == 0)
-      return setToZero(val);
-
-    return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
+    return mag == 0 ? setToZero(val) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
   public static int[] assign(final int[] val, final boolean sig, final int mag) {
@@ -95,6 +82,29 @@ abstract class BigIntValue extends Number {
 
   public static int[] assign(final int[] val, final boolean sig, final long mag) {
     return assign(val, sig ? 1 : -1, mag);
+  }
+
+  public static int[] assign(final int[] val, final long mag) {
+    return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
+  }
+
+  public static int[] assign(int[] val, final int sig, final long mag) {
+    if (mag == 0)
+      return setToZero(val);
+
+    final int magh = (int)(mag >>> 32);
+    if (magh != 0)
+      return assign0(val.length >= 3 ? val : alloc(3), sig, mag, magh);
+
+    return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
+  }
+
+  static int[] assign0(final int[] val, final int sig, final long mag, final int magh) {
+    val[0] = sig < 0 ? -2 : 2;
+    val[1] = (int)mag;
+    val[2] = magh;
+    _debugLenSig(val);
+    return val;
   }
 
   public static int[] assign(int[] val, final byte[] mag, final boolean isLittleEndian) {
@@ -161,7 +171,7 @@ abstract class BigIntValue extends Number {
     final int extraByte = k == indexBound ? 1 : 0;
     final int vlen = ((indexBound - keep + extraByte) + 3) >>> 2;
     if (val.length <= vlen)
-      val = new int[vlen + 1];
+      val = alloc(vlen + 1);
 
     /*
      * Copy one's complement of input into output, leaving extra byte (if it
@@ -203,7 +213,7 @@ abstract class BigIntValue extends Number {
     // Allocate new array and copy relevant part of input array
     final int vlen = ((indexBound - keep) + 3) >>> 2;
     if (val.length <= vlen)
-      val = new int[vlen + 1];
+      val = alloc(vlen + 1);
 
     if (vlen == 0)
       return setToZero0(val);
@@ -218,29 +228,6 @@ abstract class BigIntValue extends Number {
 
     val[0] = vlen;
     _debugLenSig(val);;
-    return val;
-  }
-
-  public static int[] assign(final int[] val, final long mag) {
-    return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
-  }
-
-  public static int[] assign(int[] val, final int sig, final long mag) {
-    if (mag == 0)
-      return setToZero(val);
-
-    final int magh = (int)(mag >>> 32);
-    if (magh != 0)
-      return assign0(val.length >= 3 ? val : alloc(3), sig, mag, magh);
-
-    return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
-  }
-
-  static int[] assign0(final int[] val, final int sig, final long mag, final int magh) {
-    val[0] = sig < 0 ? -2 : 2;
-    val[1] = (int)mag;
-    val[2] = magh;
-    _debugLenSig(val);
     return val;
   }
 
@@ -331,25 +318,12 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Reallocates the magnitude array to one twice its size.
-   *
-   * @complexity O(n)
-   */
-  static int[] realloc(final int[] val) {
-    return realloc(val, val.length * 2);
-  }
-
-  /**
    * Reallocates the magnitude array to one of the given size.
    *
    * @param newLen The new size of the magnitude array.
    * @complexity O(n)
    */
-  static int[] realloc(final int[] val, final int newLen) {
-    int len = val[0]; if (len < 0) len = -len;
-    return realloc(val, len, newLen);
-  }
-
+  // FIXME: Tune this like alloc()
   static int[] realloc(final int[] val, final int len, final int newLen) {
     final int[] v = new int[newLen];
     System.arraycopy(val, 0, v, 0, len + 1);
@@ -377,12 +351,8 @@ abstract class BigIntValue extends Number {
    * @return The new length.
    * @complexity O(1)
    */
-  public static int[] setToZero(int[] val) {
-    if (val.length == 0)
-      val = alloc(1);
-
-    val[0] = 0;
-    return val;
+  public static int[] setToZero(final int[] val) {
+    return setToZero0(val.length > 0 ? val : alloc(1));
   }
 
   static int[] setToZero0(final int[] val) {
@@ -547,13 +517,13 @@ abstract class BigIntValue extends Number {
     if (len1 < len2)
       return -1;
 
-    for (long val1l, val2l; len1 >= 1; --len1) {
-      val1l = val1[len1] & LONG_INT_MASK;
-      val2l = val2[len1] & LONG_INT_MASK;
-      if (val1l > val2l)
+    for (long v1, v2; len1 >= 1; --len1) {
+      v1 = val1[len1] & LONG_INT_MASK;
+      v2 = val2[len1] & LONG_INT_MASK;
+      if (v1 > v2)
         return 1;
 
-      if (val1l < val2l)
+      if (v1 < v2)
         return -1;
     }
 
@@ -610,20 +580,27 @@ abstract class BigIntValue extends Number {
     if (len == 0)
       return 0;
 
-    int sig = 1; if (len < 0) { len = -len; sig = -1; }
+    boolean sig = true; if (len < 0) { len = -len; sig = false; }
 
     int hash = 0;
     for (; len >= 1; --len)
       hash = 31 * hash + val[len] & INT_MASK;
 
-    return sig * hash;
+    return sig ? hash : -hash;
   }
 
   private static final int pow5 = 1_220_703_125;
   private static final int pow2 = 1 << 13;
 
-  // Divides the number by 10^13 and returns the remainder.
-  // Does not change the sign of the number.
+  /**
+   * Divides the provided value-encoded number by {@code 10^13} and returns the
+   * remainder. Does not change the sign of the number.
+   *
+   * @param val The value-encoded number.
+   * @param len The count of limbs to divide.
+   * @return The remainder of the division of the provided value-encode number
+   *         by {@code 10^13}.
+   */
   private static long toStringDiv(final int[] val, int len) {
     int q1 = 0;
     long r = 0;
@@ -684,9 +661,11 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Converts this number into a string of radix 10.
+   * Converts the provided value-encoded number into a string of radix 10.
    *
-   * @return The string representation of this number in decimal.
+   * @param val The value-encoded number.
+   * @return The string representation of the provided value-encoded number in
+   *         radix 10.
    * @complexity O(n^2)
    */
   public static String toString(final int[] val) {
@@ -722,6 +701,7 @@ abstract class BigIntValue extends Number {
     return new String(chars, top, chars.length - top);
   }
 
+  // FIXME: There must be a more efficient way to do this!
   public static int precision(final int[] val) {
     if (isZero(val))
       return 1;
@@ -751,6 +731,17 @@ abstract class BigIntValue extends Number {
     return length - top;
   }
 
+  /**
+   * Sets the magnitude of the provided value-encoded number its absolute value.
+   *
+   * <pre>
+   * {@code val = | val |}
+   * </pre>
+   *
+   * @param val The value-encoded number.
+   * @return The provided value-encoded number with the magnitude set to its
+   *         absolute value.
+   */
   public static int[] abs(final int[] val) {
     if (val[0] < 0)
       val[0] = -val[0];
@@ -759,10 +750,26 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
+  /**
+   * Returns the maximum of the provided value-encoded numbers.
+   *
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return The value-encoded number whose value is the greater of the provided
+   *         value-encoded numbers.
+   */
   public static int[] max(final int[] val1, final int[] val2) {
     return compareTo(val1, val2) > 0 ? val1 : val2;
   }
 
+  /**
+   * Returns the minimum of the provided value-encoded numbers.
+   *
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return The value-encoded number whose value is the lesser of the provided
+   *         value-encoded numbers.
+   */
   public static int[] min(final int[] val1, final int[] val2) {
     return compareTo(val1, val2) < 0 ? val1 : val2;
   }
