@@ -35,7 +35,7 @@ abstract class BigIntValue extends Number {
    * @return A new {@code int[]} that is at least length = {@code len}.
    */
   static int[] alloc(final int len) {
-    return new int[len];
+    return new int[len + len];
   }
 
   /**
@@ -63,30 +63,28 @@ abstract class BigIntValue extends Number {
 
   public static int[] assign(int[] val, final int sig, final int mag) {
     if (mag == 0) {
-      if (val.length < 1)
+      if (val.length == 0)
         val = alloc(1);
 
-      val[0] = 0;
-    }
-    else {
-      if (val.length < 2)
-        val = alloc(2);
-
-      val[0] = sig;
-      val[1] = mag;
+      return setToZero0(val);
     }
 
+    if (val.length <= 1)
+      val = alloc(2);
+
+    return assign0(val, sig, mag);
+  }
+
+  static int[] assign0(final int[] val, final int sig, final int mag) {
+    val[0] = sig;
+    val[1] = mag;
     _debugLenSig(val);
     return val;
   }
 
   public static int[] assign(int[] val, final int mag) {
-    if (mag == 0) {
-      if (val.length < 1)
-        val = alloc(1);
-
+    if (mag == 0)
       return setToZero(val);
-    }
 
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
@@ -208,7 +206,7 @@ abstract class BigIntValue extends Number {
       val = new int[vlen + 1];
 
     if (vlen == 0)
-      return setToZero(val);
+      return setToZero0(val);
 
     for (int i = 1, j, b = indexBound - 1, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
       bytesRemaining = b - keep;
@@ -229,24 +227,19 @@ abstract class BigIntValue extends Number {
 
   public static int[] assign(int[] val, final int sig, final long mag) {
     if (mag == 0)
-      return setToZero(val.length == 0 ? new int[1] : val);
+      return setToZero(val);
 
     final int magh = (int)(mag >>> 32);
-    if (magh != 0) {
-      if (val.length < 3)
-        val = alloc(3);
+    if (magh != 0)
+      return assign0(val.length >= 3 ? val : alloc(3), sig, mag, magh);
 
-      val[0] = sig < 0 ? -2 : 2;
-      val[2] = magh;
-    }
-    else {
-      if (val.length < 2)
-        val = alloc(2);
+    return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
+  }
 
-      val[0] = sig;
-    }
-
+  static int[] assign0(final int[] val, final int sig, final long mag, final int magh) {
+    val[0] = sig < 0 ? -2 : 2;
     val[1] = (int)mag;
+    val[2] = magh;
     _debugLenSig(val);
     return val;
   }
@@ -384,7 +377,15 @@ abstract class BigIntValue extends Number {
    * @return The new length.
    * @complexity O(1)
    */
-  public static int[] setToZero(final int[] val) {
+  public static int[] setToZero(int[] val) {
+    if (val.length == 0)
+      val = alloc(1);
+
+    val[0] = 0;
+    return val;
+  }
+
+  static int[] setToZero0(final int[] val) {
     val[0] = 0;
     return val;
   }

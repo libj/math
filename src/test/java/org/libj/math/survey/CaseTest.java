@@ -43,7 +43,7 @@ import org.libj.util.function.ObjLongFunction;
 import org.libj.util.function.ObjLongToLongFunction;
 
 public abstract class CaseTest {
-  protected static final int numTests = System.getProperty("fast") != null ? 1000 : 1000000;
+  protected static final int numTests = System.getProperty("fast") != null ? 10000 : 1000000;
 
   public static String neg(final String v) {
     return !v.startsWith("-") ? "-" + v : v.substring(1);
@@ -78,7 +78,6 @@ public abstract class CaseTest {
   }
 
   public abstract static class Case<T,I,R,O> {
-    private int count = -100;
     final String name;
     final Object aToA;
     final Object bToB;
@@ -160,10 +159,8 @@ public abstract class CaseTest {
       previous = o;
     }
 
-    void onSuccess(final CaseTest caseTest, final Supplier<Surveys> surveys) {
+    void onSuccess(final CaseTest caseTest) {
       caseTest.onSuccess();
-      if (++count < 0)
-        surveys.get().reset();
     }
   }
 
@@ -296,7 +293,7 @@ public abstract class CaseTest {
         }
       }
 
-      onSuccess(caseTest, surveys);
+      onSuccess(caseTest);
     }
   }
 
@@ -443,7 +440,7 @@ public abstract class CaseTest {
         }
       }
 
-      onSuccess(caseTest, surveys);
+      onSuccess(caseTest);
     }
   }
 
@@ -558,7 +555,7 @@ public abstract class CaseTest {
         }
       }
 
-      onSuccess(caseTest, surveys);
+      onSuccess(caseTest);
     }
   }
 
@@ -711,7 +708,7 @@ public abstract class CaseTest {
       if (CaseTest.this.surveys != null)
         return CaseTest.this.surveys;
 
-      return CaseTest.this.surveys = new Surveys(cases.length, variables, divisions) {
+      return CaseTest.this.surveys = new Surveys(cases.length, variables, divisions, 100) {
         @Override
         public String key(final int variable, final int division) {
           final int maxPrec = prototype.maxPrecision(variable);
@@ -781,7 +778,7 @@ public abstract class CaseTest {
     });
 
     ts = System.currentTimeMillis() - ts;
-    surveys.print(label, prototype.count, ts, headings);
+    surveys.print(label, ts, headings);
   }
 
   private Surveys surveys;

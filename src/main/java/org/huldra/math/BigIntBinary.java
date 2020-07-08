@@ -18,10 +18,10 @@ package org.huldra.math;
 
 import java.util.Arrays;
 
-@SuppressWarnings("javadoc")
 abstract class BigIntBinary extends BigIntDivision {
   private static final long serialVersionUID = 6584645376198040730L;
 
+  // FIXME: Javadoc
   public static int bitCount(final int[] val) {
     int i, bits = 0;
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -123,7 +123,7 @@ abstract class BigIntBinary extends BigIntDivision {
     final int shiftBig = shift >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig >= len)
-      return sig >= 0 ? setToZero(val) : assign(val, sig, 1);
+      return sig >= 0 ? setToZero0(val) : assign(val, sig, 1);
 
     final int shiftSmall = shift & 31;
     boolean oneLost = false;
@@ -163,6 +163,7 @@ abstract class BigIntBinary extends BigIntDivision {
    * @param shift The amount to shift.
    * @complexity O(n)
    */
+  // FIXME: Javadoc
   private static int smallShiftRight(final int[] val, int len, final int shift) {
     for (int next = val[1], i = 1; i < len; ++i)
       val[i] = next >>> shift | (next = val[i + 1]) << 32 - shift;
@@ -180,11 +181,17 @@ abstract class BigIntBinary extends BigIntDivision {
    * @param shift The number of positions to move each digit.
    * @complexity O(n)
    */
+  // FIXME: Javadoc
   private static int bigShiftRight(final int[] val, int len, int shift) {
     System.arraycopy(val, shift + 1, val, 1, len -= shift);
     return len;
   }
 
+  /**
+   * @param val
+   * @param shift
+   * @return
+   */
   public static int[] shiftLeft(int[] val, final int shift) {
     if (shift < 0)
       return shiftRight(val, -shift);
@@ -216,6 +223,7 @@ abstract class BigIntBinary extends BigIntDivision {
    * @param shift The number of positions to move each digit.
    * @complexity O(n)
    */
+  // FIXME: Javadoc
   private static int[] bigShiftLeft(int[] val, int len, final boolean sig, int shift) {
     ++shift;
     int newLen = len + shift;
@@ -244,6 +252,7 @@ abstract class BigIntBinary extends BigIntDivision {
    * @param off The digit to start shifting from.
    * @complexity O(n)
    */
+  // FIXME: Javadoc
   private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int shift) {
     int[] res = val;
     int next;
@@ -271,6 +280,11 @@ abstract class BigIntBinary extends BigIntDivision {
     return res;
   }
 
+  /**
+   * @param val
+   * @param bit
+   * @return
+   */
   public static int[] setBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
 
@@ -329,6 +343,11 @@ abstract class BigIntBinary extends BigIntDivision {
     return val;
   }
 
+  /**
+   * @param val
+   * @param bit
+   * @return
+   */
   public static int[] clearBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
 
@@ -406,6 +425,11 @@ abstract class BigIntBinary extends BigIntDivision {
     return val;
   }
 
+  /**
+   * @param val
+   * @param bit
+   * @return
+   */
   public static int[] flipBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
 
@@ -499,8 +523,7 @@ abstract class BigIntBinary extends BigIntDivision {
     int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
 
     if (sig2 == 0 || isZero(val2)) { // FIXME: Defensive check
-      setToZero(val1);
-      return val1;
+      return setToZero0(val1);
     }
 
     if (sig1 >= 0) {
@@ -805,12 +828,6 @@ abstract class BigIntBinary extends BigIntDivision {
 
     _debugLenSig(val1);
     return val1;
-  }
-
-  public static void swap(final int[] a, final int[] b) {
-    if (a.length < b.length) {
-
-    }
   }
 
   /**
@@ -1121,16 +1138,31 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Inverts sign and all bits of this number, i.e. this = ~this. The identity
-   * -this = ~this + 1 holds.
+   * Inverts the sign and all bits of the provided number.
    *
+   * <pre>
+   * val = ~val
+   * </pre>
+   *
+   * The identity {@code -val = ~val + 1} holds.
+   *
+   * @param val The number.
+   * @return {@code ~this}
    * @complexity O(n)
    */
   public static int[] not(int[] val) {
-    if (val[0] >= 0)
-      val = uaddVal(val, 1);
+    final int len = val[0];
+    if (len == 0) {
+      val[0] = -1;
+      val[1] = 1;
+      _debugLenSig(val);
+      return val;
+    }
+
+    if (len < 0)
+      usubVal(val, -len, false, 1);
     else
-      usubVal(val, 1);
+      val = uaddVal(val, len, true, 1);
 
     val[0] = -val[0];
     _debugLenSig(val);

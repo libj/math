@@ -27,10 +27,12 @@ public abstract class Surveys {
   private final int variables;
   private final int divisions;
   private final Survey[] surveys;
+  private int count;
 
-  public Surveys(final int size, final int variables, final int divisions) {
+  public Surveys(final int size, final int variables, final int divisions, final int warmup) {
     this.variables = variables;
     this.divisions = divisions;
+    this.count = -warmup;
     surveys = new Survey[size];
     for (int i = 0; i < size; ++i) {
       surveys[i] = new Survey(variables, divisions) {
@@ -45,17 +47,18 @@ public abstract class Surveys {
   public abstract int getDivision(int variable, Object obj);
 
   public void addTime(final int survey, final int variable, final Object obj, final long time) {
-    surveys[survey].addTime(variable, obj, time);
+    if (++count >= 0)
+      surveys[survey].addTime(variable, obj, time);
   }
 
   public void reset() {
-    for (int i = 0; i < surveys.length; ++i)
-      surveys[i].reset();
+    for (int s = 0; s < surveys.length; ++s)
+      surveys[s].reset();
   }
 
   public abstract String key(int variable, int division);
 
-  public void print(final String label, final int count, final long ts, final String ... headings) {
+  public void print(final String label, final long ts, final String ... headings) {
     for (int s = 0; s < surveys.length; ++s)
       surveys[s].normalize();
 

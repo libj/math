@@ -16,142 +16,36 @@
 
 package org.huldra.math;
 
-@SuppressWarnings("javadoc")
 abstract class BigIntMagnitude extends BigIntValue {
   private static final long serialVersionUID = 734086338662551150L;
 
   /**
-   * Decreases the magnitude of this number. If s > this behavior is undefined.
+   * Increases the magnitude of the provided number by the specified amount.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the increase of the provided number by the specified amount requires a
+   * larger {@code int[]}.
    *
-   * @param s The amount of the decrease (unsigned).
+   * @param val The value-encoded number.
+   * @param len The count of limbs in the number.
+   * @param sig The sign of the number.
+   * @param add The amount by which to increase (unsigned).
+   * @return The provided number increased by the specified amount.
    * @complexity O(n)
    * @amortized O(1)
    */
-  static void usubVal(final int[] val, final long val0, final long val1, final long sl, final long sh) {
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+  static int[] uaddVal(int[] val, int len, final boolean sig, final int add) {
+    final long sum = (val[1] & LONG_INT_MASK) + (add & LONG_INT_MASK);
+    val[1] = (int)sum;
+    if ((sum >>> 32) != 0) {
+      int i = 2;
+      for (; i <= len && ++val[i] == 0; ++i);
+      if (i > len) {
+        if (++len == val.length)
+          val = realloc(val, len + 1);
 
-    long dif = val0 - sl;
-    val[1] = (int)dif;
-    dif >>= 32;
-    dif = val1 - sh + dif;
-    val[2] = (int)dif;
-
-    // Subtract remainder of longer number while borrow propagates
-    boolean borrow = dif >> 32 != 0;
-    for (int i = 2; i <= len && borrow;)
-      borrow = --val[++i] == -1;
-
-    // FIXME: This can be optimized to not require a dedicated loop
-    while (val[len] == 0)
-      --len;
-
-    val[0] = sig < 0 ? -len : len;
-    _debugLenSig(val);
-  }
-
-  /**
-   * Decreases the magnitude of this number. If s > this behavior is undefined.
-   *
-   * @param s The amount of the decrease (unsigned).
-   * @complexity O(n)
-   * @amortized O(1)
-   */
-  static void usubVal(final int[] val, final int s) {
-    if (val[0] == 0) {
-      val[0] = -1;
-      val[1] = s;
-    }
-    else {
-      int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
-      long dif = (val[1] & LONG_INT_MASK) - (s & LONG_INT_MASK);
-      val[1] = (int)dif;
-      if ((dif >> 32) != 0) {
-        int i = 2;
-        for (; val[i] == 0; ++i)
-          --val[i];
-
-        if (--val[i] != 0 || i != len) {
-          _debugLenSig(val);
-          return;
-        }
-      }
-      else if (val[len] != 0) {
-        _debugLenSig(val);
-        return;
-      }
-
-      --len;
-      val[0] = sig < 0 ? -len : len;
-    }
-
-    _debugLenSig(val);
-  }
-
-  /**
-   * Decreases the magnitude of this number by the given magnitude array.
-   * Behavior is undefined if u > |this|.
-   *
-   * @param val2 The magnitude array of the decrease.
-   * @param vlen The length (number of digits) of the decrease.
-   * @complexity O(n)
-   */
-  static void subVal(final int[] val1, final int[] val2) {
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
-
-    final int[] v = val1; // ulen <= vlen // FIXME: Why v?!
-
-    // Assumes vlen=len and v=dig
-    long dif = 0;
-    int i = 1;
-    for (; i <= len2; ++i) {
-      dif = (v[i] & LONG_INT_MASK) - (val2[i] & LONG_INT_MASK) + dif;
-      val1[i] = (int)dif;
-      dif >>= 32;
-    }
-
-    if (dif != 0) {
-      for (; val1[i] == 0; ++i)
-        --val1[i];
-
-      if (--val1[i] == 0 && i + 1 == len1)
-        len1 = len2;
-    }
-
-    while (val1[len1] == 0 && len1 >= 1)
-      --len1;
-
-    val1[0] = sig1 < 0 ? -len1 : len1;
-    _debugLenSig(val1);
-  }
-
-  /**
-   * Increases the magnitude of this number.
-   *
-   * @param a The amount of the increase (unsigned).
-   * @complexity O(n)
-   * @amortized O(1)
-   */
-  static int[] uaddVal(int[] val, final int a) {
-    if (val[0] == 0) {
-      val[0] = 1;
-      val[1] = a;
-    }
-    else {
-      final long tmp = (val[1] & LONG_INT_MASK) + (a & LONG_INT_MASK);
-      val[1] = (int)tmp;
-      if ((tmp >>> 32) != 0) {
-        int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
-        ++len;
-        int i = 2;
-        for (; i < len && ++val[i] == 0; ++i);
-        if (i == len) {
-          if (len == val.length)
-            val = realloc(val, len + 1);
-
-          val[len] = 1;
-          val[0] = sig < 0 ? -len : len;
-        }
+        val[len] = 1;
+        val[0] = sig ? len : -len;
       }
     }
 
@@ -160,21 +54,64 @@ abstract class BigIntMagnitude extends BigIntValue {
   }
 
   /**
-   * Increases the magnitude of this number.
+   * Decreases the magnitude of the provided number by the specified amount.
    *
-   * @param a The amount of the increase (unsigned).
+   * @param val The value-encoded number.
+   * @param len The count of limbs in the number.
+   * @param sig The sign of the number.
+   * @param sub The amount by which to decrease (unsigned).
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddVal(int[] val, int len, final int sig, final long val0l, final long val1l, final long al, final long ah) {
-    // FIXME: Change int signum to boolean signum
-    if (val.length <= 3)
-      val = realloc(val, 4); // FIXME: 4 or 3?
+  static void usubVal(final int[] val, int len, final boolean sig, final int sub) {
+    final long dif = (val[1] & LONG_INT_MASK) - (sub & LONG_INT_MASK);
+    val[1] = (int)dif;
+    if ((dif >> 32) != 0) {
+      int i = 2;
+      for (; val[i] == 0; ++i)
+        --val[i];
 
-    long carry = val0l + al;
+      if (--val[i] != 0 || i != len) {
+        _debugLenSig(val);
+        return;
+      }
+    }
+    else if (val[len] != 0) {
+      _debugLenSig(val);
+      return;
+    }
+
+    --len;
+    val[0] = sig ? len : -len;
+    _debugLenSig(val);
+  }
+
+  /**
+   * Increases the magnitude of the provided number by the specified amount.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the increase of the provided number by the specified amount requires a
+   * larger {@code int[]}.
+   *
+   * @param val The value-encoded number.
+   * @param len The count of limbs in the number.
+   * @param sig The sign of the number.
+   * @param addl The lower limb of the amount by which to increase (unsigned).
+   * @param addh The higher limb of the amount by which to increase (unsigned).
+   * @return The provided number increased by the specified amount.
+   * @complexity O(n)
+   * @amortized O(1)
+   */
+  static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh) {
+    if (val.length <= 3)
+      val = realloc(val, 4);
+
+    final long val0 = val[1] & LONG_INT_MASK;
+    final long val1 = val[2] & LONG_INT_MASK;
+    long carry = val0 + addl;
     val[1] = (int)carry;
     carry >>>= 32;
-    carry = val1l + ah + carry;
+    carry = val1 + addh + carry;
     val[2] = (int)carry;
     if (carry != 0 && len < 2)
       ++len;
@@ -182,7 +119,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     if ((carry >> 32) != 0) {
       int i = 3;
       for (; i <= len && ++val[i] == 0; ++i);
-      if (i == len + 1) { // FIXME: Change this to < ?
+      if (i > len) {
         len = i;
         if (len == val.length)
           val = realloc(val, len);
@@ -194,60 +131,135 @@ abstract class BigIntMagnitude extends BigIntValue {
       --len;
     }
 
-    val[0] = sig < 0 ? -len : len;
+    val[0] = sig ? len : -len;
     _debugLenSig(val);
     return val;
   }
 
   /**
-   * Increases the magnitude of this number by the given magnitude array.
+   * Decreases the magnitude of the provided number by the specified amount.
    *
-   * @param val2 The magnitude array of the increase.
-   * @param len2 The length (number of digits) of the increase.
+   * @param val The value-encoded number.
+   * @param len The count of limbs in the number.
+   * @param sig The sign of the number.
+   * @param val0 The value of {@code val[1]}.
+   * @param val1 The value of {@code val[2]}.
+   * @param subl The lower limb of the amount by which to decrease (unsigned).
+   * @param subh The higher limb of the amount by which to decrease (unsigned).
+   * @complexity O(n)
+   * @amortized O(1)
+   */
+  static void usubVal(final int[] val, int len, final boolean sig, final long val0, final long val1, final long subl, final long subh) {
+    long dif = val0 - subl;
+    val[1] = (int)dif;
+    dif >>= 32;
+    dif = val1 - subh + dif;
+    val[2] = (int)dif;
+
+    // Subtract remainder of longer number while borrow propagates
+    boolean borrow = dif >> 32 != 0;
+    for (int i = 2; i <= len && borrow;)
+      borrow = --val[++i] == -1;
+
+    while (val[len] == 0)
+      --len;
+
+    val[0] = sig ? len : -len;
+    _debugLenSig(val);
+  }
+
+  /**
+   * Increases (or decreased) the magnitude of the provided number by the
+   * specified amount.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the increase (or decrease) of the provided number by the specified amount
+   * requires a larger {@code int[]}.
+   *
+   * @param val The value-encoded number.
+   * @param len The count of limbs in the number.
+   * @param sig The sign of the number.
+   * @param val2 The value-encoded amount by which to increase (or decrease).
+   * @param len2 The count of limbs in the number by which to increase.
+   * @return The provided number increased (or decreased) by the specified
+   *         amount.
    * @complexity O(n)
    */
-  static int[] addVal(int[] val1, int[] val2, final boolean positive) {
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
-
-    int len0 = len1;
-    int[] val0 = val1; // ulen <= vlen
-    if (len2 < len0) {
-      val0 = val2;
-      val2 = val1;
-      len0 = len2;
-      len2 = len1;
+  static int[] addVal(int[] val, int len, final boolean sig, int[] val2, int len2) {
+    int[] val1 = val; // len <= len2
+    int len1 = len;
+    if (len2 < len) {
+      val1 = val2;
+      val2 = val;
+      len1 = len2;
+      len2 = len;
     }
 
-    if (len2 >= val1.length)
-      val1 = realloc(val1, len2 + 2);
+    if (len2 >= val.length)
+      val = realloc(val, len2 + 2);
 
     long carry = 0;
     int i = 1;
-    for (; i <= len0; ++i) {
-      carry = (val0[i] & LONG_INT_MASK) + (val2[i] & LONG_INT_MASK) + carry;
-      val1[i] = (int)carry;
+    for (; i <= len1; ++i) {
+      carry = (val1[i] & LONG_INT_MASK) + (val2[i] & LONG_INT_MASK) + carry;
+      val[i] = (int)carry;
       carry >>>= 32;
     }
 
-    if (len2 > len1) {
-      System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
-      len1 = len2;
-      val1[0] = sig1 < 0 ? -len1 : len1;
+    if (len2 > len) {
+      System.arraycopy(val2, len + 1, val, len + 1, len2 - len);
+      len = len2;
+      val[0] = sig ? len : -len;
     }
 
-    if (carry != 0) { // carry==1
-      for (; i <= len1 && ++val1[i] == 0; ++i);
-      if (i > len1) { // vlen==len
-        if (i == val1.length)
-          val1 = realloc(val1, i + 1);
+    if (carry != 0) { // carry == 1
+      for (; i <= len && ++val[i] == 0; ++i);
+      if (i > len) { // len == len2
+        if (i == val.length)
+          val = realloc(val, i + 1);
 
-        val1[++len1] = 1;
-        val1[0] = sig1 < 0 ? -len1 : len1;
+        val[++len] = 1;
+        val[0] = sig ? len : -len;
       }
     }
 
-    _debugLenSig(val1);
-    return val1;
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Decreased the magnitude of the provided number by the specified amount.
+   *
+   * @param val The value-encoded number.
+   * @param len The count of limbs in the number.
+   * @param sig The sign of the number.
+   * @param val2 The value-encoded amount by which to decrease.
+   * @param len2 The count of limbs in the number by which to decrease.
+   * @complexity O(n)
+   */
+  static void subVal(final int[] val, int len, final boolean sig, final int[] val2, final int len2) {
+    // Assumes len == len2 and v == dig
+    long dif = 0;
+    int i = 1;
+    for (; i <= len2; ++i) {
+      dif += (val[i] & LONG_INT_MASK) - (val2[i] & LONG_INT_MASK);
+      val[i] = (int)dif;
+      dif >>= 32;
+    }
+
+    if (dif != 0) {
+      for (; val[i] == 0; ++i)
+        --val[i];
+
+      if (--val[i] == 0 && i + 1 == len)
+        len = len2;
+    }
+
+    while (val[len] == 0)
+      if (--len == 0)
+        break;
+
+    val[0] = sig ? len : -len;
+    _debugLenSig(val);
   }
 }

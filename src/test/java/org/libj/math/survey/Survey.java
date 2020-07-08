@@ -23,18 +23,30 @@ public abstract class Survey {
   private final int divisions;
   private final int[][] counts;
   private final long[][] times;
+  private final long[][] max;
+  private final long[][] min;
 
   public Survey(final int variables, final int divisions) {
     this.variables = variables;
     this.divisions = divisions;
-    this.times = new long[variables][divisions];
     this.counts = new int[variables][divisions];
+    this.times = new long[variables][divisions];
+
+    this.max = new long[variables][divisions];
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(this.max[v], Long.MIN_VALUE);
+
+    this.min = new long[variables][divisions];
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(this.min[v], Long.MAX_VALUE);
   }
 
   public abstract int getDivision(final int variable, final Object obj);
 
   public void addTime(final int variable, final Object obj, final long time) {
     final int division = getDivision(variable, obj);
+    this.max[variable][division] = Math.max(this.max[variable][division], time);
+    this.min[variable][division] = Math.min(this.min[variable][division], time);
     this.times[variable][division] += time;
     ++this.counts[variable][division];
   }
@@ -44,17 +56,28 @@ public abstract class Survey {
   }
 
   public void normalize() {
-    for (int i = 0; i < variables; ++i)
-      for (int j = 0; j < divisions; ++j)
-        if (counts[i][j] != 0)
-          times[i][j] /= counts[i][j];
+    for (int v = 0; v < variables; ++v) {
+      for (int d = 0; d < divisions; ++d) {
+        if (counts[v][d] == 0)
+          continue;
+
+        if (counts[v][d] <= 2) {
+          times[v][d] /= counts[v][d];
+        }
+        else {
+          times[v][d] -= max[v][d];
+          times[v][d] -= min[v][d];
+          times[v][d] /= counts[v][d] - 2;
+        }
+      }
+    }
   }
 
   public void reset() {
-    for (int i = 0; i < variables; ++i)
-      Arrays.fill(times[i], 0);
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(times[v], 0);
 
-    for (int i = 0; i < variables; ++i)
-      Arrays.fill(counts[i], 0);
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(counts[v], 0);
   }
 }

@@ -93,7 +93,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
   // FIXME: Where should these methods go?
   public static int umul(final int[] mag, final int off, int len, final int mul) {
     if (mul == 0) {
-      setToZero(mag);
+      setToZero0(mag);
       return 0;
     }
 
@@ -182,7 +182,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
       return val1;
 
     if (isZero(val2)) {
-      setToZero(val1);
+      setToZero0(val1);
       return val1;
     }
 
