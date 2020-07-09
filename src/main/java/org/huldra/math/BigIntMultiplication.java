@@ -29,7 +29,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
-   * requires a larger {@code int[]}.</i>
+   * requires a larger array.</i>
    *
    * @param val The value-encoded multiplicand.
    * @param mul The multiplier.
@@ -52,7 +52,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
-   * requires a larger {@code int[]}.</i>
+   * requires a larger array.</i>
    *
    * @param val The value-encoded multiplicand.
    * @param sig The sign of the unsigned {@code int} multiplier.
@@ -80,7 +80,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
-   * requires a larger {@code int[]}.</i>
+   * requires a larger array.</i>
    *
    * @param val The value-encoded multiplicand.
    * @param mul The multiplier.
@@ -103,7 +103,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
-   * requires a larger {@code int[]}.</i>
+   * requires a larger array.</i>
    *
    * @param val The value-encoded multiplicand.
    * @param sig The sign of the unsigned {@code long} multiplier.
@@ -140,8 +140,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * which may at most require 1 free limb.</i>
    *
    * @param mag The multiplicand (little-endian).
-   * @param off The offset of the first significant limb of the multiplicand.
-   * @param len The number of significant limbs of the multiplicand.
+   * @param off The offset of the first limb of the multiplicand.
+   * @param len The number of limbs of the multiplicand.
    * @param mul The multiplier (unsigned).
    * @return The result of the multiplication of the provided magnitude by the
    *         <i>unsigned</i> {@code int} multiplier.
@@ -177,8 +177,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * which may at most require 2 free limbs.</i>
    *
    * @param mag The multiplicand (little-endian).
-   * @param off The offset of the first significant limb of the multiplicand.
-   * @param len The number of significant limbs of the multiplicand.
+   * @param off The offset of the first limb of the multiplicand.
+   * @param len The number of limbs of the multiplicand.
    * @param mul The multiplier (unsigned).
    * @return The result of the multiplication of the provided magnitude by the
    *         <i>unsigned</i> {@code int} multiplier.
@@ -219,7 +219,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
-   * requires a larger {@code int[]}.</i>
+   * requires a larger array.</i>
    *
    * @param val The value-encoded multiplicand.
    * @param mul The value-encoded multiplier.
@@ -323,11 +323,11 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * {@code res.length >= len1 + len2 + 1}.</i>
    *
    * @param val1 The first value-encoded number.
-   * @param len1 The number of significant limbs of the first number.
+   * @param len1 The number of limbs of the first number.
    * @param val2 The second value-encoded number.
-   * @param len2 The number of significant limbs of the second number.
-   * @param off The offset of the first significant limb for the first and
-   *          second numbers, as well as the result array.
+   * @param len2 The number of limbs of the second number.
+   * @param off The offset of the first limb for the first and second numbers,
+   *          as well as the result array.
    * @param res The array into which the result is to be put.
    * @complexity O(n^2)
    */

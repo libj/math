@@ -688,7 +688,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @return The absolute value of the remainder as an unsigned int.
    * @complexity O(n)
    */
-  public long divRem(final int sig, final int div) {
+  public int divRem(final int sig, final int div) {
     return divRem(val, sig, div);
   }
 

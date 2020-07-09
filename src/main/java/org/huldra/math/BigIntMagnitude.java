@@ -24,7 +24,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.
+   * larger array.
    *
    * @param val The value-encoded number.
    * @param len The count of limbs in the number.
@@ -42,7 +42,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (++len == val.length)
-          val = realloc(val, len, len + 1);
+          val = realloc(val, len - 1, len + 1);
 
         val[len] = 1;
         val[0] = sig ? len : -len;
@@ -91,7 +91,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.
+   * larger array.
    *
    * @param val The value-encoded number.
    * @param len The count of limbs in the number.
@@ -174,7 +174,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the increase (or decrease) of the provided number by the specified amount
-   * requires a larger {@code int[]}.
+   * requires a larger array.
    *
    * @param val The value-encoded number.
    * @param len The count of limbs in the number.

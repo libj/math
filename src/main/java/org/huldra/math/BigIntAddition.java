@@ -20,20 +20,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static final long serialVersionUID = 2873086066678372875L;
 
   /**
-   * Adds the value of an {@code int} to the provided number.
+   * Adds an {@code int} to the provided value-encoded addend.
    *
    * <pre>
    * val = val + add
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase of the provided addend by the specified {@code int} requires a
+   * larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend.
    * @param add The amount to add.
    * @return The result of the addition of the specified amount to the provided
-   *         number.
+   *         value-encoded addend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -42,20 +42,21 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Subtracts the value of an {@code int} from the provided number.
+   * Subtracts an {@code int} subtrahend from the provided value-encoded
+   * minuend.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the decrease of the provided minuend by the specified {@code int} requires
+   * a larger array.</i>
    *
-   * @param val The value-encoded number.
-   * @param sub The amount to subtract.
+   * @param val The value-encoded minuend.
+   * @param sub The subtrahend.
    * @return The result of the subtraction of the specified amount from the
-   *         provided number.
+   *         provided value-encoded minuend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -64,21 +65,21 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds the value of an <i>unsigned</i> {@code int} to the provided number.
+   * Adds an <i>unsigned</i> {@code int} to the provided value-encoded addend.
    *
    * <pre>
    * val = val + add
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase of the provided addend by the specified {@code int} requires a
+   * larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend.
    * @param sig The sign of the unsigned {@code int} to add.
    * @param add The amount to add (unsigned).
    * @return The result of the addition of the specified amount to the provided
-   *         number.
+   *         value-encoded addend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -109,22 +110,22 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Subtracts the value of an <i>unsigned</i> {@code int} from the provided
-   * number.
+   * Subtracts an <i>unsigned</i> {@code int} subtrahend from the provided
+   * value-encoded minuend.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the decrease of the provided minuend by the specified {@code int} requires
+   * a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded minuend.
    * @param sig The sign of the unsigned {@code int} to subtract.
-   * @param sub The amount to subtract (unsigned).
+   * @param sub The subtrahend (unsigned).
    * @return The result of the subtraction of the specified amount from the
-   *         provided number.
+   *         provided value-encoded minuend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -153,20 +154,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds the value of a {@code long} to the provided number.
+   * Adds a {@code long} to the provided value-encoded addend.
    *
    * <pre>
    * val = val + add
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase of the provided addend by the specified {@code long} requires
+   * a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend.
    * @param add The amount to add.
    * @return The result of the addition of the specified amount to the provided
-   *         number.
+   *         value-encoded addend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -175,20 +176,21 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Subtracts the value of a {@code long} from the provided number.
+   * Subtracts a {@code long} subtrahend from the provided value-encoded
+   * minuend.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the decrease of the provided minuend by the specified {@code long} requires
+   * a larger array.</i>
    *
-   * @param val The value-encoded number.
-   * @param sub The amount to subtract.
+   * @param val The value-encoded minuend.
+   * @param sub The subtrahend.
    * @return The result of the subtraction of the specified amount from the
-   *         provided number.
+   *         provided value-encoded minuend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -197,21 +199,21 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds the value of an <i>unsigned</i> {@code long} to the provided number.
+   * Adds an <i>unsigned</i> {@code long} to the provided value-encoded addend.
    *
    * <pre>
    * val = val + add
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase of the provided addend by the specified {@code long} requires
+   * a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend.
    * @param sig The sign of the unsigned {@code long} to add.
    * @param add The amount to add (unsigned).
    * @return The result of the addition of the specified amount to the provided
-   *         number.
+   *         value-encoded addend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -233,22 +235,22 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Subtracts the value of an <i>unsigned</i> {@code long} from the provided
-   * number.
+   * Subtracts an <i>unsigned</i> {@code long} subtrahend from the provided
+   * value-encoded minuend.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the decrease of the provided minuend by the specified {@code long} requires
+   * a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded minuend.
    * @param sig The sign of the unsigned {@code long} to subtract.
-   * @param sub The amount to subtract (unsigned).
+   * @param sub The subtrahend (unsigned).
    * @return The result of the subtraction of the specified amount from the
-   *         provided number.
+   *         provided value-encoded minuend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -270,20 +272,21 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds (or subtracts) an unsigned {@code long} to (or from) the provided number.
+   * Adds (or subtracts) an unsigned {@code long} to (or from) the provided
+   * value-encoded addend.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase (or decrease) of the provided addend (or minuend) by the
+   * specified {@code long} requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend (or minuend).
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param addl The lower limb of the amount to add (unsigned).
    * @param addh The higher limb of the amount to add (unsigned).
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
    * @return The result of the addition of the specified amount to the provided
-   *         number.
+   *         value-encoded addend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -322,20 +325,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds the value of a value-encoded amount to the provided number.
+   * Adds a value-encoded number to the provided value-encoded addend.
    *
    * <pre>
    * val = val + add
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase of the provided addend by the specified value-encoded number
+   * requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend.
    * @param add The value-encoded amount to add.
-   * @return The result of the addition of the specified value-encoded amount to the
-   *         provided number.
+   * @return The result of the addition of the specified value-encoded number to
+   *         the provided value-encoded addend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -344,20 +347,21 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Subtracts the value of a value-encoded amount from the provided number.
+   * Subtracts a value-encoded subtrahend from the provided value-encoded
+   * minuend.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the decrease of the provided minuend by the specified value-encoded
+   * subtrahend requires a larger array.</i>
    *
-   * @param val The value-encoded number.
-   * @param sub The value-encoded amount to subtract.
-   * @return The result of the subtraction of the specified value-encoded amount
-   *         from the provided number.
+   * @param val The value-encoded minuend.
+   * @param sub The value-encoded subtrahend.
+   * @return The result of the subtraction of the specified value-encoded
+   *         subtrahend from the provided value-encoded minuend.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -366,38 +370,40 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds (or subtracts) a value-encoded amount to (or from) the provided
-   * number.
+   * Adds (or subtracts) a value-encoded number to (or from) the provided
+   * value-encoded addend (or minuend).
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided number by the specified amount requires a
-   * larger {@code int[]}.</i>
+   * the increase of the provided addend by the specified value-encoded number
+   * requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The value-encoded addend (or minuend).
    * @param add The value-encoded amount to add.
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
-   * @return The result of the addition of the specified amount to the provided
-   *         number.
+   * @return The result of the addition (or subtraction) of the specified amount
+   *         to (or from) the provided value-encoded addend (or minuend).
    * @complexity O(n)
    * @amortized O(1)
    */
   private static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
-    if (isZero(add))
-      return val;
-
-    if (isZero(val)) {
-      final int len = Math.abs(add[0]) + 1;
-      if (len > val.length)
+    int len = val[0];
+    if (len == 0) {
+      len = Math.abs(add[0]);
+      if (len >= val.length)
         val = alloc(len);
 
-      System.arraycopy(add, 0, val, 0, len);
+      System.arraycopy(add, 0, val, 0, len + 1);
       if (!addOrSub)
         val[0] = -val[0];
 
       return val;
     }
 
-    boolean sig = true; int len = val[0]; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    return addSub0(val, len, sig, add, addOrSub);
+  }
+
+  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub) {
     int len2 = add[0]; if (len2 < 0) { len2 = -len2; }
     if (addOrSub == (sig == add[0] >= 0))
       return addVal(val, len, sig, add, len2);

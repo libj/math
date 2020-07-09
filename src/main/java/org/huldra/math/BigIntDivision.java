@@ -16,124 +16,54 @@
 
 package org.huldra.math;
 
-@SuppressWarnings("javadoc")
 abstract class BigIntDivision extends BigIntMultiplication {
   private static final long serialVersionUID = -4156041218135948540L;
-  static int IRRELEVANT = 1;
 
-  public static int rem(final int[] val, final int sig, int mod) {
-    int vsig = 1, len = val[0]; if (len < 0) { len = -len; vsig = -1; }
-    val[1] = mod = rem(val, 1, len, sig, mod);
-    val[0] = val[1] == 0 ? 0 : vsig;
-    _debugLenSig(val);
-    return mod;
-  }
-
-  public static long rem(final int[] val, final int mod) {
-    return rem(val, IRRELEVANT, mod < 0 ? -mod : mod);
-  }
-
-  public static int rem(final int[] mag, final int off, final int len, final int sig, final int mod) {
-    final int toIndex = len + off - 1;
-    long r = 0;
-    if (mod < 0) {
-      final long d = mod & LONG_INT_MASK;
-      final long hbit = Long.MIN_VALUE;
-      // Precompute hrem = (1<<63) % d
-      // I.e. the remainder caused by the highest bit.
-      long hrem = (hbit - 1) % d;
-      if (++hrem == d)
-        hrem = 0;
-
-      for (int i = toIndex; i >= off; --i) {
-        r = (r << 32) + (mag[i] & LONG_INT_MASK);
-        // Calculate rem %= d.
-        // Do this by calculating the lower 63 bits and highest bit separately.
-        // The highest bit remainder only gets added if it's set.
-        r = ((r & hbit - 1) + (hrem & r >> 63)) % d;
-        // The addition is safe and cannot overflow.
-        // Because hrem < 2^32 and there's at least one zero bit in [62,32] if bit
-        // 63 is set.
-      }
-    }
-    else {
-      final long d = mod & LONG_INT_MASK;
-      for (int i = toIndex; i >= off; --i) {
-        r <<= 32;
-        r = (r + (mag[i] & LONG_INT_MASK)) % d;
-      }
-    }
-
-    return (int)r;
-  }
-
-  public static int rem(final int[] mag, final int off, final int len, final int mod) {
-    return rem(mag, off, len, IRRELEVANT, mod < 0 ? -mod : mod);
-  }
-
-  public static void rem(final int[] val, final int sig, long mod) {
-    long modh = mod >>> 32;
-    if (modh == 0) {
-      rem(val, sig, (int)mod);
-      return;
-    }
-
-    final boolean sig1 = val[0] >= 0;
-    mod = div(val, sig, mod, modh);
-    modh = mod >>> 32;
-    val[1] = (int)mod;
-    if (modh == 0) {
-      val[0] = mod == 0 ? 0 : sig1 ? 1 : -1;
-    }
-    else {
-      val[0] = sig1 ? 2 : -2;
-      val[2] = (int)(modh);
-    }
-
-    _debugLenSig(val);
-  }
-
-  public static void rem(final int[] val, long mod) {
-    if (mod < 0)
-      rem(val, IRRELEVANT, -mod);
-    else
-      rem(val, IRRELEVANT, mod);
-  }
-
+  /**
+   * Divides the provided value-encoded dividend by the specified
+   * <i>unsigned</i> {@code int} divisor.
+   *
+   * @param val The value-encoded dividend.
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return The provided value-encoded dividend, divided by the specified
+   *         <i>unsigned</i> {@code int} divisor.
+   * @complexity O(n)
+   */
   public static int[] div(final int[] val, final int sig, final int div) {
     divRem(val, sig, div);
     return val;
   }
 
   /**
-   * Divides the unsigned dividend in {@code val} (up to {@code len}) by the
-   * unsigned {@code divisor}, and returns the remainder. The quotient will be
-   * set in {@code val}.
+   * Divides the provided value-encoded dividend by the specified
+   * <i>unsigned</i> {@code int} divisor, and returns the <i>absolute unsigned
+   * int</i> remainder
    *
-   * @param val The dividend (unsigned) as input, and quotient (unsigned) as
-   *          output.
-   * @param div The {@code int} divisor (unsigned).
-   * @param len The significant length of the dividend in {@code val}.
-   * @return The remainder from the division of {@code val} by {@code divisor}.
-   * @throws ArithmeticException If {@code divisor} is 0.
+   * @param val The value-encoded dividend.
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned int</i> remainder resulting from the
+   *         division of the provided value-encoded dividend by the specified
+   *         <i>unsigned</i> {@code int} divisor.
+   * @complexity O(n)
    */
-  // FIXME: Javadoc: Assumes div > 0?
-  public static long divRem(final int[] val, final int sig, final int div) {
-    int vsig = 1, len = val[0]; if (len < 0) { len = -len; vsig = -1; }
-    final long r = divRem0(val, sig, div);
-    return vsig < 0 ? -r : r;
-  }
-
-  private static long divRem0(final int[] val, final int sig, final int div) {
-    if (isZero(val))
+  public static int divRem(final int[] val, final int sig, final int div) {
+    int len1 = val[0];
+    if (len1 == 0)
       return 0;
 
-    int len = val[0]; if (len < 0) { len = -len; }
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    return divRem0(val, len1, sig1, sig, div);
+  }
+
+  private static final long hbit = Long.MIN_VALUE;
+
+  private static int divRem0(final int[] val, int len, final int sig, final int dsig, final int div) {
     long r = 0, rh;
     final long divl = div & LONG_INT_MASK;
     boolean zeroes = true;
     if (div < 0) {
-      final long hbit = Long.MIN_VALUE;
       long hq = (hbit - 1) / divl;
       if (hq * divl + divl == hbit)
         ++hq;
@@ -162,68 +92,99 @@ abstract class BigIntDivision extends BigIntMultiplication {
       }
     }
 
-    val[0] = val[0] < 0 != sig < 0 ? -len : len;
+    val[0] = sig != dsig ? -len : len;
     _debugLenSig(val);
-    return r;
+    return (int)r;
   }
 
+  /**
+   * Divides the provided value-encoded dividend by the specified {@code int}
+   * divisor.
+   *
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The provided value-encoded dividend, divided by the specified
+   *         {@code int} divisor.
+   * @complexity O(n)
+   */
   public static int[] div(final int[] val, final int div) {
     divRem(val, div);
     return val;
   }
 
-  public static long divRem(final int[] val, final int div) {
-    // FIXME: Why are we flipping the sign of r for long but not for int?!!?
-    final long r;
-    if (div < 0)
-      return divRem(val, -1, -div);
-    else
-      return divRem(val, 1, div);
-  }
-
   /**
-   * Divides the unsigned dividend in {@code val} (up to {@code len}) by the
-   * unsigned {@code divisor}, and returns the remainder. The quotient will be
-   * set in {@code val}.
+   * Divides the provided value-encoded dividend by the specified {@code int}
+   * divisor, and returns the remainder.
    *
-   * @param val The dividend (unsigned) as input, and quotient (unsigned) as
-   *          output.
-   * @param divisor The {@code long} divisor (unsigned).
-   * @param len The significant length of the dividend in {@code val}.
-   * @return The remainder from the division of {@code val} by {@code divisor}.
-   * @throws ArithmeticException If {@code divisor} is 0.
-   */
-  /**
-   * Divides this number with an unsigned long and returns the remainder.
-   * ABSOLUTE UNSIGNED LONG VALUE OF THE REMAINDER
-   *
-   * @param div The amount to divide with (treated as unsigned).
-   * @return The absolute value of the remainder as an unsigned long.
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The remainder resulting from the division of the provided
+   *         value-encoded dividend by the specified {@code int} divisor.
    * @complexity O(n)
    */
-  public static long divRem(final int[] val, final int sig, final long div) {
-    return div(val, sig, div, div >>> 32);
+  public static int divRem(final int[] val, final int div) {
+    int len = val[0];
+    if (len == 0)
+      return 0;
+
+    int sig = 1; if (len < 0) { len = -len; sig = -1; }
+    final int r = div < 0 ? divRem0(val, len, sig, -1, -div) : divRem0(val, len, sig, 1, div);
+    return sig < 0 ? -r : r;
   }
 
+  /**
+   * Divides the provided value-encoded dividend by the specified
+   * <i>unsigned</i> {@code long} divisor.
+   *
+   * @param val The value-encoded dividend.
+   * @param sig The sign of the unsigned {@code long} divisor.
+   * @param div The divisor (unsigned).
+   * @return The provided value-encoded dividend, divided by the specified
+   *         <i>unsigned</i> {@code long} divisor.
+   * @complexity O(n)
+   */
   public static int[] div(final int[] val, final int sig, final long div) {
-    div(val, sig, div, div >>> 32);
+    int len1 = val[0];
+    if (len1 == 0)
+      return val;
+
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    divRem0(val, len1, sig1, sig, div, div >>> 32);
     return val;
   }
 
-  static long div(final int[] val, final int sig, final long div, long divh) {
-    if (isZero(val))
+  /**
+   * Divides the provided value-encoded dividend by the specified
+   * <i>unsigned</i> {@code long} divisor, and returns the <i>absolute unsigned
+   * {@code long}</i> remainder.
+   *
+   * @param val The value-encoded dividend.
+   * @param sig The sign of the unsigned {@code long} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned {@code long}</i> remainder resulting from the
+   *         division of the provided value-encoded dividend by the specified
+   *         <i>unsigned</i> {@code long} divisor.
+   * @complexity O(n)
+   */
+  public static long divRem(final int[] val, final int sig, final long div) {
+    int len1 = val[0];
+    if (len1 == 0)
       return 0;
 
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    return divRem0(val, len1, sig1, sig, div, div >>> 32);
+  }
+
+  private static long divRem0(final int[] val, int len, final int sig, final int dsig, final long div, long divh) {
     if (divh == 0)
-      return divRem0(val, sig, (int)div) & LONG_INT_MASK;
+      return divRem0(val, len, sig, dsig, (int)div) & LONG_INT_MASK;
 
     final long r;
-    int len = val[0]; if (len < 0) { len = -len; }
     if (len <= 1) {
       r = val[1] & LONG_INT_MASK;
       if (div == 1) {
         val[1] = 1;
-        if (val[0] < 0 != sig < 0)
+        if (sig < 0 != dsig < 0)
           val[0] = -val[0];
       }
       else {
@@ -295,7 +256,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     val[len] = 0;
     while (val[--len] == 0);
 
-    val[0] = val[0] < 0 != sig < 0 ? -len : len;
+    val[0] = sig < 0 != dsig < 0 ? -len : len;
 
     _debugLenSig(val);
 
@@ -304,41 +265,67 @@ abstract class BigIntDivision extends BigIntMultiplication {
     return r;
   }
 
+  /**
+   * Divides the provided value-encoded dividend by the specified {@code long}
+   * divisor.
+   *
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The provided value-encoded dividend, divided by the specified
+   *         {@code long} divisor.
+   * @complexity O(n)
+   */
   public static int[] div(final int[] val, final long div) {
     divRem(val, div);
     return val;
   }
 
+  /**
+   * Divides the provided value-encoded dividend by the specified {@code long}
+   * divisor, and returns the {@code long} remainder.
+   *
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The {@code long} remainder resulting from the division of the
+   *         provided value-encoded dividend by the specified {@code long}
+   *         divisor.
+   * @complexity O(n)
+   */
   public static long divRem(final int[] val, final long div) {
-    final boolean sig = val[0] >= 0;
-    final long r;
-    if (div < 0)
-      r = divRem(val, -1, -div);
-    else
-      r = divRem(val, 1, div);
+    int len = val[0];
+    if (len == 0)
+      return 0;
 
-    // FIXME: Why are we flipping the sign of r for long but not for int?!!?
-    return sig ? r : -r;
+    int sig = 1; if (len < 0) { len = -len; sig = -1; }
+    final long r = div < 0 ? divRem0(val, len, sig, -1, -div) : divRem0(val, len, sig, 1, div);
+    return sig < 0 ? -r : r;
+  }
+
+  private static long divRem0(final int[] val, final int len, final int sig, final int dsig, final long div) {
+    return divRem0(val, len, sig, dsig, div, div >>> 32);
   }
 
   /**
-   * Divides the first magnitude u[0..m) by v[0..n) and stores the resulting
-   * quotient in q. The remainder will be stored in u, so u will be destroyed.
-   * u[] must have room for an additional element, i.e. u[m] is a legal access.
+   * Divides the first value-encoded dividend by the second value-encoded
+   * divisor, and stored the quotient in {@code q}. The remainder will be stored
+   * in array of the dividend ({@code val}).
+   * <p>
+   * <i>Hacker's Delight's implementation of Knuth's Algorithm D.</i>
    *
-   * @param val1 The first magnitude array, the dividend.
-   * @param val2 The second magnitude array, the divisor.
-   * @param m The length of the first array.
-   * @param n The length of the second array.
-   * @param q An array of length at least n-m+1 where the quotient will be
-   *          stored.
-   * @complexity O(m*n)
+   * @param val The value-encoded dividend.
+   * @param div The value-encoded divisor.
+   * @param q An array to store the quotient, which must be at least of length
+   *          {@code Math.abs(val[0]) - Math.abs(div[0]) + 1}.
+   * @complexity O(|val[0]|*|div[0]|)
    */
-  // Hacker's Delight's implementation of Knuth's Algorithm D
-  public static void div(final int[] val1, final int[] val2, final int[] q) {
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+  public static void div(final int[] val, final int[] div, final int[] q) {
+    int sig1 = 1, len1 = val[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1, len2 = div[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+    div0(val, len1, sig1, div, len2, sig2, q);
+  }
+
+  private static void div0(final int[] val, int len1, final int sig1, final int[] div, int len2, final int sig2, final int[] q) {
     ++len1;
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
     ++len2;
 
     final int fromIndex = 1;
@@ -355,29 +342,29 @@ abstract class BigIntDivision extends BigIntMultiplication {
     // same amount. We may have to append a high-order
     // digit on the dividend; we do that unconditionally.
 
-    s = Integer.numberOfLeadingZeros(val2[len2 - 1]);
+    s = Integer.numberOfLeadingZeros(div[len2 - 1]);
     if (s > 0) { // In Java (x<<32)==(x<<0) so...
       // Normalize val2
       for (i = len2 - 1; i > fromIndex; --i)
-        val2[i] = (val2[i] << s) | (val2[i - 1] >>> 32 - s);
+        div[i] = (div[i] << s) | (div[i - 1] >>> 32 - s);
 
-      val2[fromIndex] = val2[fromIndex] << s;
+      div[fromIndex] = div[fromIndex] << s;
 
       // Normalize val1
-      val1[len1] = val1[len1 - 1] >>> 32 - s;
+      val[len1] = val[len1 - 1] >>> 32 - s;
       for (i = len1 - 1; i > fromIndex; --i)
-        val1[i] = (val1[i] << s) | (val1[i - 1] >>> 32 - s);
+        val[i] = (val[i] << s) | (val[i - 1] >>> 32 - s);
 
-      val1[fromIndex] = val1[fromIndex] << s;
+      val[fromIndex] = val[fromIndex] << s;
     }
 
-    final long dh = val2[len2 - 1] & LONG_INT_MASK;
-    final long dl = val2[len2 - 2] & LONG_INT_MASK;
+    final long dh = div[len2 - 1] & LONG_INT_MASK;
+    final long dl = div[len2 - 2] & LONG_INT_MASK;
     final long hbit = Long.MIN_VALUE;
 
     for (j = len1 - len2; j >= 0; --j) {
       // Compute estimate qhat of q[j]
-      k = val1[j + len2] * b + (val1[j + len2 - 1] & LONG_INT_MASK);
+      k = val[j + len2] * b + (val[j + len2 - 1] & LONG_INT_MASK);
       qhat = (k >>> 1) / dh << 1;
       t = k - qhat * dh;
       if (t + hbit >= dh + hbit)
@@ -385,7 +372,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
       rhat = k - qhat * dh;
 
-      while (qhat + hbit >= b + hbit || qhat * dl + hbit > b * rhat + (val1[j + len2 - 2] & LONG_INT_MASK) + hbit) { // Unsigned comparison.
+      while (qhat + hbit >= b + hbit || qhat * dl + hbit > b * rhat + (val[j + len2 - 2] & LONG_INT_MASK) + hbit) { // Unsigned comparison.
         qhat -= 1;
         rhat += dh;
         if (rhat + hbit >= b + hbit)
@@ -395,14 +382,14 @@ abstract class BigIntDivision extends BigIntMultiplication {
       // Multiply and subtract
       k = 0;
       for (i = fromIndex; i < len2; ++i) {
-        p = qhat * (val2[i] & LONG_INT_MASK);
-        t = (val1[i + j] & LONG_INT_MASK) - k - (p & LONG_INT_MASK);
-        val1[i + j] = (int)t;
+        p = qhat * (div[i] & LONG_INT_MASK);
+        t = (val[i + j] & LONG_INT_MASK) - k - (p & LONG_INT_MASK);
+        val[i + j] = (int)t;
         k = (p >>> 32) - (t >> 32);
       }
 
-      t = (val1[j + len2] & LONG_INT_MASK) - k;
-      val1[j + len2] = (int)t;
+      t = (val[j + len2] & LONG_INT_MASK) - k;
+      val[j + len2] = (int)t;
 
       // Store quotient digit. If we subtracted too much, add back
       q[j + fromIndex] = (int)qhat;
@@ -410,27 +397,27 @@ abstract class BigIntDivision extends BigIntMultiplication {
         q[j + fromIndex] -= 1;
         k = 0;
         for (i = fromIndex; i < len2; ++i) {
-          t = (val1[i + j] & LONG_INT_MASK) + (val2[i] & LONG_INT_MASK) + k;
-          val1[i + j] = (int)t;
+          t = (val[i + j] & LONG_INT_MASK) + (div[i] & LONG_INT_MASK) + k;
+          val[i + j] = (int)t;
           k = t >>> 32; // >>
         }
 
-        val1[j + len2] += (int)k;
+        val[j + len2] += (int)k;
       }
     }
 
     if (s > 0) {
       // Unnormalize val1
       for (i = fromIndex; i < len2 - 1; ++i)
-        val2[i] = val2[i] >>> s | val2[i + 1] << 32 - s;
+        div[i] = div[i] >>> s | div[i + 1] << 32 - s;
 
-      val2[len2 - 1] >>>= s;
+      div[len2 - 1] >>>= s;
 
       // Unnormalize val2
       for (i = fromIndex; i < len1; ++i)
-        val1[i] = val1[i] >>> s | val1[i + 1] << 32 - s;
+        val[i] = val[i] >>> s | val[i + 1] << 32 - s;
 
-      val1[len1] >>>= s;
+      val[len1] >>>= s;
     }
 
     int qlen = len1 - len2 + 1;
@@ -440,160 +427,124 @@ abstract class BigIntDivision extends BigIntMultiplication {
     _debugLenSig(q);
 
     // Set the new length of val1
-    for (; val1[len2] == 0; --len2);
+    for (; val[len2] == 0; --len2);
     // Sign of remainder does not depend on the sign of the operand
-    val1[0] = sig1 < 0 ? -len2 : len2;
+    val[0] = sig1 < 0 ? -len2 : len2;
 
-    _debugLenSig(val1);
+    _debugLenSig(val);
   }
 
   /**
-   * Sets this number to {@code (this mod m}). This method differs from
-   * {@code rem} in that it always computes * <i>non-negative</i> result
+   * Divides the provided value-encoded dividend by the specified value-encoded
+   * divisor.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the operation requires a larger array for the computation.</i>
    *
-   * @param div The number to use in the division causing the remainder.
-   * @see #rem
-   */
-  public static int[] mod(int[] val1, final int[] val2) {
-    if (val2[0] <= 0)
-      throw new ArithmeticException("BigInt: modulus not positive");
-
-    val1 = rem(val1, val2);
-    if (val1[0] < 0)
-      val1 = add(val1, val2);
-
-    _debugLenSig(val1);
-    return val1;
-  }
-
-  /**
-   * Sets this number to the remainder r satisfying q*div + r = this, where q =
-   * floor(this/div).
-   *
-   * @param div The number to use in the division causing the remainder.
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The provided value-encoded dividend, divided by the specified
+   *         value-encoded divisor.
    * @complexity O(n^2)
    */
-  public static int[] rem(int[] val1, final int[] val2) {
-    if (isZero(val1))
-      return val1;
+  public static int[] div(int[] val, final int[] div) {
+    int len1 = val[0];
+    if (len1 == 0)
+      return val;
 
-    // -7/-3 = 2, 2*-3 + -1
-    // -7/3 = -2, -2*3 + -1
-    // 7/-3 = -2, -2*-3 + 1
-    // 7/3 = 2, 2*3 + 1
-    int len2 = val2[0]; if (len2 < 0) { len2 = -len2; }
-
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1, len2 = div[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+    final boolean flipSig = sig1 < 0 != sig2 < 0;
     if (len2 <= 1) {
-      rem(val1, 1, val2[1]);
-      val1[0] = val1[1] == 0 ? 0 : val1[0] < 0 ? -1 : 1;
+      divRem0(val, len1, sig1, sig2, div[1]);
+      // FIXME: Can this be unwrapped?...
+      if (val[0] < 0 != flipSig)
+        val[0] = -val[0];
     }
     else {
-      int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
-      final int c = compareToAbs(val1, val2);
-      if (c > 0) {
-        ++len1;
-        if (len1 == val1.length)
-          val1 = realloc(val1, len1, len1 + 1); // We need an extra slot
-
-        final int[] q = new int[len1 - len2 + 1];
-        div(val1, val2, q);
-      }
-      else if (c == 0) {
-        setToZero0(val1);
-      }
-    }
-
-    _debugLenSig(val1);
-    return val1;
-  }
-
-  /**
-   * Divides this number by the given BigInt. Division by zero is undefined.
-   *
-   * @param div The number to divide with.
-   * @complexity O(n^2)
-   */
-  public static int[] div(int[] val1, final int[] val2) {
-    if (isZero(val1))
-      return val1;
-
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
-    final boolean flipSig = val1[0] < 0 != val2[0] < 0;
-    int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
-    if (len2 <= 1) {
-      divRem(val1, sig2, val2[1]);
-      if (val1[0] < 0 != flipSig)
-        val1[0] = -val1[0];
-    }
-    else {
-      final int c = compareToAbs(val1, val2);
+      final int c = compareToAbs(val, len1, div, len2);
       if (c < 0) {
-        setToZero0(val1);
+        setToZero0(val);
       }
       else if (c == 0) {
-        val1[0] = flipSig ? -1 : 1;
-        val1[1] = 1;
+        val[0] = flipSig ? -1 : 1;
+        val[1] = 1;
       }
       else {
-        ++len1;
-        if (len1 == val1.length)
-          val1 = realloc(val1, len1, len1 + 1); // We need an extra slot
+        if (len1 + 1 == val.length)
+          val = realloc(val, len1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
 
-        final int[] q = alloc(len1 - len2 + 1);
-        div(val1, val2, q);
-        val1 = q;
+        final int[] q = alloc(len1 - len2 + 2);
+        div0(val, len1, sig1, div, len2, sig2, q);
+        val = q;
       }
     }
 
-    _debugLenSig(val1);
-    return val1;
+    _debugLenSig(val);
+    return val;
   }
 
-  public static int[] divRem(int[] val1, int[] val2) {
-    if (isZero(val1))
-      return val1;
+  /**
+   * Divides the provided value-encoded dividend by the specified value-encoded
+   * divisor, and returns the remainder.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the operation requires a larger array for the computation.</i>
+   *
+   * @param val The value-encoded dividend.
+   * @param div The value-encoded divisor.
+   * @return The remainder resulting from the division of the provided
+   *         value-encoded dividend by the specified value-encoded divisor.
+   * @complexity O(n^2)
+   */
+  public static int[] divRem(int[] val, int[] div) {
+    int len1 = val[0];
+    if (len1 == 0)
+      return val;
 
-    final boolean sig1 = val1[0] >= 0;
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
-    final boolean pos = val1[0] < 0 == val2[0] < 0;
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1, len2 = div[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+    // FIXME: Can this be unwrapped?...
+    final boolean pos = val[0] < 0 == div[0] < 0;
     if (len2 > 1) {
-      val2 = divRem0(val1, val2);
-      if (pos != val1[0] >= 0)
-        val1[0] = -val1[0];
+      div = divRem0(val, div);
+      if (pos != val[0] >= 0)
+        val[0] = -val[0];
 
-      val1 = val2;
+      val = div;
     }
     else {
-      final long r = divRem0(val1, sig2, val2[1]);
-      if (pos != val1[0] >= 0)
-        val1[0] = -val1[0];
+      final int r = divRem0(val, len1, sig1, sig2, div[1]);
+      if (pos != val[0] >= 0)
+        val[0] = -val[0];
 
-      val1 = assign(new int[2], pos, r);
+      val = assign(new int[2], pos, r);
     }
 
-    if (val1[0] >= 0 != sig1)
-      val1[0] = -val1[0];
+    if (val[0] < 0 != sig1 < 0)
+      val[0] = -val[0];
 
-    return val1;
+    return val;
   }
 
-  static int[] divRem0(int[] val1, final int[] val2) {
+  private static int[] divRem0(int[] val1, final int[] val2) {
     final int c = compareToAbs(val1, val2);
     if (c == 0) {
       assign(val1, 1, 1);
       return alloc(2);
     }
 
+    int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
+    ++len1;
     if (c < 0) {
-      final int[] r = val1.clone();
+      final int[] r = alloc(len1);
+      System.arraycopy(val1, 0, r, 0, len1);
+      val1.clone();
       setToZero0(val1);
       return r;
     }
 
-    int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
-    ++len1;
-
-    // Prepare the q array as the replacement for val1, accounting for the extra 1 required slot
+    // Prepare the q array as the replacement for val1, accounting for the extra 1 required slot // FIXME: Can this extra slot be avoided?
     final int[] q = alloc(len1 == val1.length ? val1.length + 1 : val1.length);
     // Transfer val1 -> q
     System.arraycopy(val1, 0, q, 0, len1);
@@ -601,5 +552,253 @@ abstract class BigIntDivision extends BigIntMultiplication {
     // Do the div, with results going to val1 (which is where we want it to end up)
     div(q, val2, val1);
     return q;
+  }
+
+  /**
+   * Divides the provided value-encoded dividend by the specified
+   * <i>unsigned</i> {@code int} divisor, sets the dividend's value to the
+   * remainder, and returns the remainder as an <i>absolute unsigned
+   * {@code int}</i>.
+   *
+   * @param val The value-encoded dividend.
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned {@code int}</i> remainder resulting from
+   *         the division of the provided value-encoded dividend by the
+   *         specified <i>unsigned</i> {@code int} divisor.
+   * @complexity O(n)
+   */
+  public static int rem(final int[] val, final int sig, int div) {
+    int vsig = 1, len = val[0]; if (len < 0) { len = -len; vsig = -1; }
+    val[1] = div = rem(val, 1, len, sig, div);
+    val[0] = val[1] == 0 ? 0 : vsig;
+    _debugLenSig(val);
+    return div;
+  }
+
+  /**
+   * Divides the provided value-encoded dividend by the specified {@code int}
+   * divisor, sets the dividend's value to the remainder, and returns the
+   * remainder as an {@code int}.
+   *
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The {@code int} remainder resulting from the division of the
+   *         provided value-encoded dividend by the specified {@code int}
+   *         divisor.
+   * @complexity O(n)
+   */
+  public static int rem(final int[] val, final int div) {
+    final boolean sig = val[0] >= 0;
+    final int r = div < 0 ? rem(val, -1, -div) : rem(val, 1, div);
+    return sig ? r : -r;
+  }
+
+  /**
+   * Divides the provided dividend in the magnitude array (starting at
+   * {@code off}, with {@code len} limbs) by the specified <i>unsigned</i>
+   * {@code int} divisor, sets the dividend's magnitude at {@code off} to the
+   * remainder, and returns the remainder as an <i>absolute unsigned
+   * {@code int}</i>.
+   *
+   * @param mag The dividend as a magnitude array.
+   * @param off The offset of the first limb of the dividend.
+   * @param len The number of limbs of the dividend.
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned {@code int}</i> remainder resulting from
+   *         the division of the provided dividend magnitude array by the
+   *         specified <i>unsigned</i> {@code int} divisor.
+   * @complexity O(n)
+   */
+  public static int rem(final int[] mag, final int off, final int len, final int sig, final int div) {
+    final int toIndex = len + off - 1;
+    long r = 0;
+    if (div < 0) {
+      final long d = div & LONG_INT_MASK;
+      final long hbit = Long.MIN_VALUE;
+      // Precompute hrem = (1<<63) % d
+      // I.e. the remainder caused by the highest bit.
+      long hrem = (hbit - 1) % d;
+      if (++hrem == d)
+        hrem = 0;
+
+      for (int i = toIndex; i >= off; --i) {
+        r = (r << 32) + (mag[i] & LONG_INT_MASK);
+        // Calculate rem %= d.
+        // Do this by calculating the lower 63 bits and highest bit separately.
+        // The highest bit remainder only gets added if it's set.
+        r = ((r & hbit - 1) + (hrem & r >> 63)) % d;
+        // The addition is safe and cannot overflow.
+        // Because hrem < 2^32 and there's at least one zero bit in [62,32] if bit
+        // 63 is set.
+      }
+    }
+    else {
+      final long d = div & LONG_INT_MASK;
+      for (int i = toIndex; i >= off; --i) {
+        r <<= 32;
+        r = (r + (mag[i] & LONG_INT_MASK)) % d;
+      }
+    }
+
+    return (int)r;
+  }
+
+  /**
+   * Divides the provided dividend in the magnitude array (starting at
+   * {@code off}, with {@code len} limbs) by the specified {@code int} divisor,
+   * sets the dividend's magnitude at {@code off} to the remainder, and returns
+   * the remainder as an {@code int}.
+   *
+   * @param mag The dividend as a magnitude array.
+   * @param off The offset of the first limb of the dividend.
+   * @param len The number of limbs of the dividend.
+   * @param div The divisor.
+   * @return The {@code int} remainder resulting from the division of the
+   *         provided value-encoded dividend by the specified {@code int}
+   *         divisor.
+   * @complexity O(n)
+   */
+  public static int rem(final int[] mag, final int off, final int len, final int div) {
+    return div < 0 ? rem(mag, off, len, -1, -div) : rem(mag, off, len, 1, div);
+  }
+
+  /**
+   * Divides the provided value-encoded dividend by the specified
+   * <i>unsigned</i> {@code long} divisor, sets the dividend's value to the
+   * remainder, and returns the remainder as an <i>absolute unsigned
+   * {@code long}</i>.
+   *
+   * @param val The value-encoded dividend.
+   * @param sig The sign of the unsigned {@code long} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned {@code long}</i> remainder resulting from
+   *         the division of the provided value-encoded dividend by the
+   *         specified <i>unsigned</i> {@code long} divisor.
+   * @complexity O(n)
+   */
+  public static long rem(final int[] val, final int sig, long div) {
+    int len = val[0];
+    if (len == 0)
+      return 0;
+
+    long modh = div >>> 32;
+    if (modh == 0)
+      return rem(val, sig, (int)div);
+
+    int vsig = 1; if (len < 0) { len = -len; vsig = -1; }
+    div = divRem0(val, len, vsig, sig, div, modh);
+    modh = div >>> 32;
+    val[1] = (int)div;
+    if (modh == 0) {
+      val[0] = div == 0 ? 0 : vsig < 0 ? -1 : 1;
+    }
+    else {
+      val[0] = vsig < 0 ? -2 : 2;
+      val[2] = (int)(modh);
+    }
+
+    _debugLenSig(val);
+    return div;
+  }
+
+  /**
+   * Divides the provided value-encoded dividend by the specified {@code long}
+   * divisor, sets the dividend's value to the remainder, and returns the
+   * remainder as a {@code long}.
+   *
+   * @param val The value-encoded dividend.
+   * @param div The divisor.
+   * @return The {@code long} remainder resulting from
+   *         the division of the provided value-encoded dividend by the
+   *         specified {@code long} divisor.
+   * @complexity O(n)
+   */
+  public static long rem(final int[] val, final long div) {
+    final boolean sig = val[0] >= 0;
+    final long r = div < 0 ? rem(val, -1, -div) : rem(val, 1, div);
+    return sig ? r : -r;
+  }
+
+  /**
+   * Divides the provided value-encoded dividend by the specified value-encoded
+   * divisor, and returns the dividend array with its value replaced by the
+   * remainder.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the operation requires a larger array for the computation.</i>
+   *
+   * @param val The value-encoded dividend.
+   * @param div The value-encoded divisor.
+   * @return The dividend array with its value replaced by the remainder
+   *         resulting from the division of the provided value-encoded dividend
+   *         by the specified value-encoded divisor.
+   * @complexity O(n^2)
+   */
+  public static int[] rem(int[] val, final int[] div) {
+    return isZero(val) ? val : rem0(val, div);
+  }
+
+  private static int[] rem0(int[] val, final int[] div) {
+    // -7/-3 = 2, 2*-3 + -1
+    // -7/3 = -2, -2*3 + -1
+    // 7/-3 = -2, -2*-3 + 1
+    // 7/3 = 2, 2*3 + 1
+    int sig2 = 1, len2 = div[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+
+    if (len2 <= 1) {
+      rem(val, 1, div[1]);
+      val[0] = val[1] == 0 ? 0 : val[0] < 0 ? -1 : 1;
+    }
+    else {
+      int sig1 = 1, len1 = val[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+      final int c = compareToAbs(val, div);
+      if (c > 0) {
+        if (len1 + 1 == val.length)
+          val = realloc(val, len1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
+
+        final int[] q = new int[len1 - len2 + 2];
+        div0(val, len1, sig1, div, len2, sig2, q);
+      }
+      else if (c == 0) {
+        setToZero0(val);
+      }
+    }
+
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Divides the provided value-encoded dividend by the specified value-encoded
+   * divisor, and returns the dividend array with its value replaced by the
+   * modulus.
+   * <p>
+   * <i><b>Note:</b> This method differs from {@link #rem(int[],int[])} in that
+   * it always returns a <i>non-negative</i> result.</i>
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the operation requires a larger array for the computation.</i>
+   *
+   * @param val The value-encoded dividend.
+   * @param div The value-encoded divisor.
+   * @return The dividend array with its value replaced by the modulus resulting
+   *         from the division of the provided value-encoded dividend by the
+   *         specified value-encoded divisor.
+   * @complexity O(n^2)
+   */
+  public static int[] mod(int[] val, final int[] div) {
+    int len = val[0];
+    if (len == 0)
+      return val;
+
+    val = rem0(val, div);
+    len = val[0];
+    if (len < 0)
+      val = addSub0(val, -len, false, div, true);
+
+    _debugLenSig(val);
+    return val;
   }
 }

@@ -866,7 +866,7 @@ abstract class BigIntBinary extends BigIntDivision {
     if (sig1 > 0) {
       if (len2 > len1) {
         if (len2 > val1.length)
-          val1 = realloc(val1, len1, len2 + 2);
+          val1 = realloc(val1, len1 - fromIndex, len2 + 2);
 
         System.arraycopy(val2, len1, val1, len1, len2 - len1);
       }
@@ -906,7 +906,7 @@ abstract class BigIntBinary extends BigIntDivision {
               val1[j] = 0;
 
             if (blen == val1.length)
-              val1 = realloc(val1, len1, blen + 2); // len==blen
+              val1 = realloc(val1, len1 - fromIndex, blen + 2); // len==blen
 
             if (j == blen) {
               val1[blen] = 1;
@@ -1047,7 +1047,7 @@ abstract class BigIntBinary extends BigIntDivision {
     else {
       if (len2 > len1) {
         if (len2 > val1.length)
-          val1 = realloc(val1, len1, len2 + 3);
+          val1 = realloc(val1, len1 - fromIndex, len2 + 3);
 
         System.arraycopy(val2, len1, val1, len1, len2 - len1);
       }
