@@ -44,11 +44,20 @@ public class BigIntBitwiseTest extends BigIntTest {
   }
 
   @Test
-  public void testToByteArray() {
+  public void testToByteArrayBigEndian() {
     test("toByteArray()",
       s("BigInteger", this::scaledBigInteger, (BigInteger a) -> a.toByteArray()),
-      s("BigInt", this::scaledBigInt, (BigInt a) -> a.toByteArray()),
-      s("int[]", this::scaledVal, (int[] a) -> BigInt.toByteArray(a))
+      s("BigInt", this::scaledBigInt, (BigInt a) -> a.toByteArray(false)),
+      s("int[]", this::scaledVal, (int[] a) -> BigInt.toByteArray(a, false))
+    );
+  }
+
+  @Test
+  public void testToByteArrayLittleEndian() {
+    test("toByteArray()",
+      s("BigInteger", this::scaledBigInteger, (BigInteger a) -> reverse(a.toByteArray())),
+      s("BigInt", this::scaledBigInt, (BigInt a) -> a.toByteArray(true)),
+      s("int[]", this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true))
     );
   }
 

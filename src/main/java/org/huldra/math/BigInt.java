@@ -36,7 +36,6 @@ import java.util.concurrent.ExecutionException;
  * @author Simon Klein
  * @version 0.7
  */
-@SuppressWarnings("javadoc")
 public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
@@ -953,8 +952,8 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
     return doubleValue(val);
   }
 
-  public byte[] toByteArray() {
-    return toByteArray(val);
+  public byte[] toByteArray(final boolean littleEndian) {
+    return toByteArray(val, littleEndian);
   }
 
   /**

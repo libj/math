@@ -18,40 +18,41 @@ package org.huldra.math;
 
 import java.util.Arrays;
 
-@SuppressWarnings("javadoc")
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
 
   static final int INT_MASK = 0xFFFFFFFF;
   static final long LONG_INT_MASK = 0xFFFFFFFFL;
+  static final int[] emptyVal = {};
 
   /**
-   * Creates a new {@code int[]} that is at least length = {@code len}.
+   * Creates a new {@code int[]} with length that is at least {@code len}.
    * <p>
-   * This method can return longer arrays in order to tune for optimal
-   * performance.
+   * This method can return longer arrays tuned for optimal performance.
    *
    * @param len The minimal length of the returned {@code int[]}.
-   * @return A new {@code int[]} that is at least length = {@code len}.
+   * @return A new {@code int[]} with a length that is at least {@code len}.
    */
   static int[] alloc(final int len) {
     return new int[len + len];
   }
 
   /**
-   * Assigns the content of the given magnitude array and the length to this
-   * number. The contents of the input will be copied.
+   * Assigns the content of {@code copyLength} number of elements of the
+   * specified source array to the provided target array, ensuring the length of
+   * the target array is at least {@code arrayLength}.
+   * <p>
+   * <i><b>Note:</b> The returned array may be a {@code new int[]} instance if
+   * the length of the provided target array not sufficient to satisfy the
+   * required {@code arrayLength}.</i>
    *
-   * @param source The new magnitude array content.
-   * @param len The length of the content, len > 0.
+   * @param target The target array.
+   * @param source The source array.
+   * @param copyLength The number of elements to copy from source to target.
+   * @param arrayLength The minimal length of the target array.
+   * @return The result of copying the source array to the target array.
    * @complexity O(n)
    */
-  // FIXME: 0 or 1 min len?
-  public static int[] copy(int[] target, final int[] source) {
-    final int len = Math.abs(source[0]) + 1;
-    return copy(target, source, len, len);
-  }
-
   static int[] copy(int[] target, final int[] source, final int copyLength, final int arrayLength) {
     if (arrayLength >= target.length)
       target = alloc(arrayLength);
@@ -61,6 +62,51 @@ abstract class BigIntValue extends Number {
     return target;
   }
 
+  /**
+   * Assigns an {@code int} magnitude to the provided value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param mag The magnitude.
+   * @return The result of assigning an {@code int} magnitude to the provided
+   *         value-encoded number.
+   */
+  public static int[] assign(int[] val, final int mag) {
+    return mag == 0 ? setToZero(val) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
+  }
+
+  /**
+   * Assigns an <i>unsigned</i> {@code int} magnitude to the provided
+   * value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param sig The sign of the unsigned {@code int}.
+   * @param mag The magnitude (unsigned).
+   * @return The result of assigning an <i>unsigned</i> {@code int} magnitude to
+   *         the provided value-encoded number.
+   */
+  public static int[] assign(final int[] val, final boolean sig, final int mag) {
+    return assign(val, sig ? 1 : -1, mag);
+  }
+
+  /**
+   * Assigns an <i>unsigned</i> {@code int} magnitude to the provided
+   * value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param sig The sign of the unsigned {@code int}.
+   * @param mag The magnitude (unsigned).
+   * @return The result of assigning an <i>unsigned</i> {@code int} magnitude to
+   *         the provided value-encoded number.
+   */
   public static int[] assign(int[] val, final int sig, final int mag) {
     return mag == 0 ? setToZero(val) : assign0(val.length > 1 ? val : alloc(2), sig, mag);
   }
@@ -72,22 +118,51 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
-  public static int[] assign(int[] val, final int mag) {
-    return mag == 0 ? setToZero(val) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
-  }
-
-  public static int[] assign(final int[] val, final boolean sig, final int mag) {
-    return assign(val, sig ? 1 : -1, mag);
-  }
-
-  public static int[] assign(final int[] val, final boolean sig, final long mag) {
-    return assign(val, sig ? 1 : -1, mag);
-  }
-
+  /**
+   * Assigns an {@code long} magnitude to the provided value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param mag The magnitude.
+   * @return The result of assigning an {@code long} magnitude to the provided
+   *         value-encoded number.
+   */
   public static int[] assign(final int[] val, final long mag) {
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
+  /**
+   * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
+   * value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param sig The sign of the unsigned {@code long}.
+   * @param mag The magnitude (unsigned).
+   * @return The result of assigning an <i>unsigned</i> {@code long} magnitude
+   *         to the provided value-encoded number.
+   */
+  public static int[] assign(final int[] val, final boolean sig, final long mag) {
+    return assign(val, sig ? 1 : -1, mag);
+  }
+
+  /**
+   * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
+   * value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param sig The sign of the unsigned {@code long}.
+   * @param mag The magnitude (unsigned).
+   * @return The result of assigning an <i>unsigned</i> {@code long} magnitude
+   *         to the provided value-encoded number.
+   */
   public static int[] assign(int[] val, final int sig, final long mag) {
     if (mag == 0)
       return setToZero(val);
@@ -107,55 +182,150 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
-  public static int[] assign(int[] val, final byte[] mag, final boolean isLittleEndian) {
-    return assign(val, mag, 0, mag.length, isLittleEndian);
+  /**
+   * Assigns a byte array containing the two's-complement binary representation
+   * of a value-encoded {@code int[]} into a value-encoded {@code int[]}.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The target array of the assignment.
+   * @param mag The two's-complement binary representation of a value-encoded
+   *          {@code int[]}.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return The result of assigning a byte array containing the
+   *         two's-complement binary representation of a value-encoded
+   *         {@code int[]} into a value-encoded {@code int[]}.
+   */
+  public static int[] assign(final int[] val, final byte[] mag, final boolean littleEndian) {
+    return assign(val, mag, 0, mag.length, littleEndian);
   }
 
-  public static int[] assign(int[] val, final byte[] mag, final int off, final int len, final boolean isLittleEndian) {
-    if (isLittleEndian)
-      return assignLittleEndian(val, mag, off, len);
-
-    if (mag[off] < 0)
-      return assignBigEndianNegative(val, mag, off, len);
-
-    return assignBigEndianPositive(val, mag, off, len);
+  /**
+   * Assigns a byte array containing the two's-complement binary representation
+   * of a value-encoded {@code int[]} into a value-encoded {@code int[]}.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The target array of the assignment.
+   * @param mag The two's-complement binary representation of a value-encoded
+   *          {@code int[]}.
+   * @param off The start offset of the binary representation.
+   * @param len The number of bytes to use.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return The result of assigning a byte array containing the
+   *         two's-complement binary representation of a value-encoded
+   *         {@code int[]} into a value-encoded {@code int[]}.
+   */
+  public static int[] assign(int[] val, final byte[] mag, final int off, final int len, final boolean littleEndian) {
+    return littleEndian ? assignLittleEndian(val, mag, off, len) : assignBigEndian(val, mag, off, len);
   }
 
   private static int[] assignLittleEndian(int[] val, final byte[] mag, final int off, final int len) {
-    int newLen = (len + 3) / 4;
-    if (val == null || newLen > val.length)
-      val = alloc(newLen + 2);
+    if (mag[off + len - 1] < 0)
+      return assignNegativeLittleEndian(val, mag, off, len);
 
-    int tmp = len / 4;
-    int j = off;
-    for (int i = 1; i <= tmp; ++i, j += 4)
-      val[i] = mag[j + 3] << 24 | (mag[j + 2] & 0xFF) << 16 | (mag[j + 1] & 0xFF) << 8 | mag[j] & 0xFF;
+    return assignPositiveLittleEndian(val, mag, off, len);
+  }
 
-    if (tmp != newLen) {
-      tmp = mag[j] & 0xFF;
-      if (++j < len) {
-        tmp |= (mag[j] & 0xFF) << 8;
-        if (++j < len)
-          tmp |= (mag[j] & 0xFF) << 16;
-      }
+  private static int[] assignBigEndian(int[] val, final byte[] mag, final int off, final int len) {
+    if (mag[off] < 0)
+      return assignNegativeBigEndian(val, mag, off, len);
 
-      if (tmp != 0)
-        val[++newLen] = tmp;
+    return assignPositiveBigEndian(val, mag, off, len);
+  }
+
+  /**
+   * Takes a little-endian array a representing a negative 2's-complement number
+   * and returns the minimal (no leading zero bytes) unsigned whose value is -a.
+   */
+  private static int[] assignNegativeLittleEndian(int[] val, final byte[] mag, final int off, final int len) {
+    final int indexBound = off;
+    int keep, k;
+
+    // Find first non-sign (0xFF) byte of input
+    for (keep = off + len - 1; keep >= indexBound && mag[keep] == -1; --keep);
+
+    /*
+     * Allocate output array. If all non-sign bytes are 0x00, we must allocate
+     * space for one extra output byte.
+     */
+    for (k = keep; k >= indexBound && mag[k] == 0; --k);
+
+    final int extraByte = k == indexBound - 1 ? 1 : 0;
+    final int vlen = ((keep - (indexBound - 1) + extraByte) + 3) >>> 2;
+    if (val.length <= vlen)
+      val = alloc(vlen + 1);
+
+    /*
+     * Copy one's complement of input into output, leaving extra byte (if it
+     * exists) == 0x00
+     */
+    for (int i = 1, j, b = indexBound, numBytesToTransfer, lim, mask; i <= vlen; ++i) {
+      numBytesToTransfer = Math.max(0, Math.min(3, keep - b));
+      val[i] = mag[b++] & 0xFF;
+      for (j = 8, lim = 8 * numBytesToTransfer; j <= lim; j += 8)
+        val[i] |= (mag[b++] & 0xFF) << j;
+
+      // Mask indicates which bits must be complemented
+      mask = -1 >>> (8 * (3 - numBytesToTransfer));
+      val[i] = ~val[i] & mask;
     }
 
-    if (val[newLen] == 0)
-      --newLen;
+    // Add one to one's complement to generate two's complement
+    for (int i = 1; i <= vlen; ++i) {
+      val[i] = (int)((val[i] & LONG_INT_MASK) + 1);
+      if (val[i] != 0)
+        break;
+    }
 
-    val[0] = newLen;
-    _debugLenSig(val);
+    val[0] = -vlen;
+    _debugLenSig(val);;
     return val;
   }
 
   /**
-   * Takes an array a representing a negative 2's-complement number and
-   * returns the minimal (no leading zero bytes) unsigned whose value is -a.
+   * Returns a copy of the little-endian input array stripped of any leading
+   * zero bytes.
    */
-  private static int[] assignBigEndianNegative(int[] val, final byte[] mag, final int off, final int len) {
+  private static int[] assignPositiveLittleEndian(int[] val, final byte[] mag, final int off, final int len) {
+    final int indexBound = off;
+    int keep;
+
+    // Find first nonzero byte
+    for (keep = off + len - 1; keep >= indexBound && mag[keep] == 0; --keep);
+
+    // Allocate new array and copy relevant part of input array
+    final int vlen = ((keep - (indexBound - 1)) + 3) >>> 2;
+    if (val.length <= vlen)
+      val = alloc(vlen + 1);
+
+    if (vlen == 0)
+      return setToZero0(val);
+
+    for (int i = 1, j, b = indexBound, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
+      bytesRemaining = keep - b;
+      bytesToTransfer = Math.min(3, bytesRemaining);
+      val[i] = mag[b++] & 0xff;
+      for (j = 8; j <= bytesToTransfer << 3; j += 8)
+        val[i] |= (mag[b++] & 0xff) << j;
+    }
+
+    val[0] = vlen;
+    _debugLenSig(val);;
+    return val;
+  }
+
+  /**
+   * Takes a big-endian array a representing a negative 2's-complement number
+   * and returns the minimal (no leading zero bytes) unsigned whose value is -a.
+   */
+  private static int[] assignNegativeBigEndian(int[] val, final byte[] mag, final int off, final int len) {
     final int indexBound = off + len;
     int keep, k;
 
@@ -201,9 +371,10 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns a copy of the input array stripped of any leading zero bytes.
+   * Returns a copy of the big-endian input array stripped of any leading zero
+   * bytes.
    */
-  private static int[] assignBigEndianPositive(int[] val, final byte[] mag, final int off, final int len) {
+  private static int[] assignPositiveBigEndian(int[] val, final byte[] mag, final int off, final int len) {
     final int indexBound = off + len;
     int keep;
 
@@ -231,10 +402,34 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
+  /**
+   * Assigns the specified number as a string to the provided value-encoded
+   * array.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The target array of the assignment.
+   * @param s The number as a string.
+   * @return The result of assigning the specified number as a string to the
+   *         provided value-encoded array.
+   */
   public static int[] assign(final int[] val, final String s) {
     return assign(val, s.toCharArray());
   }
 
+  /**
+   * Assigns the specified number as a {@code char[]} to the provided
+   * value-encoded array.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * @param val The target array of the assignment.
+   * @param s The number as a {@code char[]}.
+   * @return The result of assigning the specified number as a {@code char[]} to
+   *         the provided value-encoded array.
+   */
   public static int[] assign(int[] val, final char[] s) {
     final int sig = s[0] == '-' ? -1 : 1;
 
@@ -269,7 +464,7 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Parses a part of a char array as an unsigned decimal number.
+   * Parses a part of a char array as an unsigned number radix 10.
    *
    * @param s A char array representing the number in decimal.
    * @param fromIndex The index (inclusive) where we start parsing.
@@ -286,9 +481,16 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Multiplies this number and then adds something to it. I.e. sets this =
-   * this*mul + add.
+   * Multiplies the provided value-encoded number with {@code mul}, and then
+   * adds {@code add}.
    *
+   * <pre>
+   * val = val * mul + add
+   * </pre>
+   *
+   * @param val The value-encoded number.
+   * @param fromIndex The starting index in the val array.
+   * @param toIndex The ending index in the val array.
    * @param mul The value we multiply our number with, mul < 2^31.
    * @param add The value we add to our number, add < 2^31.
    * @complexity O(n)
@@ -318,27 +520,154 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Reallocates the magnitude array to one of the given size.
+   * Reallocates the provided array up to length {@code len} to a new array of
+   * length {@code newLen}.
    *
-   * @param newLen The new size of the magnitude array.
+   * @param array The array to reallocate.
+   * @param len The number of elements in the original array to copy to the
+   *          returned array.
+   * @param newLen The length of the returned array.
+   * @return A new array of length {@code newLen} with {@code len} number of
+   *         elements copied from {@code array}.
    * @complexity O(n)
    */
-  // FIXME: Tune this like alloc()
-  static int[] realloc(final int[] val, final int len, final int newLen) {
+  // FIXME: Tune this like alloc(), and make sure this is not being called when not needed
+  static int[] realloc(final int[] array, final int len, final int newLen) {
     final int[] v = new int[newLen];
-    System.arraycopy(val, 0, v, 0, len + 1);
+    System.arraycopy(array, 0, v, 0, len + 1);
     return v;
   }
 
+  /**
+   * Returns a new value-encoded number with the provided magnitude as an
+   * {@code int}.
+   *
+   * @param mag The magnitude.
+   * @return A new value-encoded number with the provided magnitude as an
+   *         {@code int}.
+   */
+  public static int[] valueOf(final int mag) {
+    return assign(emptyVal, mag);
+  }
+
+  /**
+   * Returns a new value-encoded number with the provided magnitude as an
+   * <i>unsigned</i> {@code int}.
+   *
+   * @param sig The sign of the magnitude.
+   * @param mag The magnitude (unsigned).
+   * @return A new value-encoded number with the provided magnitude as an
+   *         <i>unsigned</i> {@code int}.
+   */
+  public static int[] valueOf(final int sig, final int mag) {
+    return assign(emptyVal, sig, mag);
+  }
+
+  /**
+   * Returns a new value-encoded number with the provided magnitude as a
+   * {@code long}.
+   *
+   * @param mag The magnitude.
+   * @return A new value-encoded number with the provided magnitude as a
+   *         {@code long}.
+   */
+  public static int[] valueOf(final long mag) {
+    return assign(emptyVal, mag);
+  }
+
+  /**
+   * Returns a new value-encoded number with the provided magnitude as an
+   * <i>unsigned</i> {@code long}.
+   *
+   * @param sig The sign of the magnitude.
+   * @param mag The magnitude (unsigned).
+   * @return A new value-encoded number with the provided magnitude as an
+   *         <i>unsigned</i> {@code long}.
+   */
+  public static int[] valueOf(final int sig, final long mag) {
+    return assign(emptyVal, sig, mag);
+  }
+
+  /**
+   * Returns a new value-encoded number with the magnitude of the provided byte
+   * array containing the two's-complement binary representation of a
+   * value-encoded {@code int[]}.
+   *
+   * @param mag The two's-complement binary representation of a value-encoded
+   *          {@code int[]}.
+   * @param off The start offset of the binary representation.
+   * @param len The number of bytes to use.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return A new value-encoded number with the magnitude of the provided byte
+   *         array containing the two's-complement binary representation of a
+   *         value-encoded {@code int[]}.
+   */
+  public static int[] valueOf(final byte[] mag, final int off, final int len, final boolean littleEndian) {
+    return assign(emptyVal, mag, off, len, littleEndian);
+  }
+
+  /**
+   * Returns a new value-encoded number with the magnitude of the provided byte
+   * array containing the two's-complement binary representation of a
+   * value-encoded {@code int[]}.
+   *
+   * @param mag The two's-complement binary representation of a value-encoded
+   *          {@code int[]}.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return A new value-encoded number with the magnitude of the provided byte
+   *         array containing the two's-complement binary representation of a
+   *         value-encoded {@code int[]}.
+   */
+  public static int[] valueOf(final byte[] mag, final boolean littleEndian) {
+    return assign(emptyVal, mag, 0, mag.length, littleEndian);
+  }
+
+  /**
+   * Returns a new value-encoded number with the provided magnitude as a
+   * {@code char[]}.
+   *
+   * @param s The magnitude.
+   * @return A new value-encoded number with the magnitude of the provided
+   *         {@code long}.
+   */
+  public static int[] valueOf(final char[] s) {
+    return assign(emptyVal, s);
+  }
+
+  /**
+   * Returns a new value-encoded number with the provided magnitude as a
+   * {@code String}.
+   *
+   * @param s The magnitude.
+   * @return A new value-encoded number with the magnitude of the provided
+   *         {@code long}.
+   */
+  public static int[] valueOf(final String s) {
+    return assign(emptyVal, s);
+  }
+
+  /**
+   * Returns the signum of the provided value-encoded number.
+   *
+   * @param val The value-encoded number.
+   * @return -1, 0 or 1 as the value of the provided value-encoded number is
+   *         negative, zero or positive.
+   */
   public static int signum(final int[] val) {
     final int v = val[0];
     return v == 0 ? 0 : v < 0 ? -1 : 1;
   }
 
   /**
-   * Tells whether this number is zero or not.
+   * Tests if the provided value-encoded number is zero.
    *
-   * @return true if this number is zero, false otherwise
+   * @param val The value-encoded number.
+   * @return {@code true} if the provided value-encoded number is zero,
+   *         otherwise {@code false}.
    * @complexity O(1)
    */
   public static boolean isZero(final int[] val) {
@@ -346,9 +675,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Sets this number to zero.
+   * Sets the provided value-encoded number to zero.
+   * <p>
+   * <i><b>Note:</b> The returned array will be a {@code new int[]} instance if
+   * the length of the provided array is zero.</i>
    *
-   * @return The new length.
+   * @param val The value-encoded number.
+   * @return The provided value-encoded number set to zero.
    * @complexity O(1)
    */
   public static int[] setToZero(final int[] val) {
@@ -360,40 +693,112 @@ abstract class BigIntValue extends Number {
     return val;
   }
 
+  /**
+   * Returns the value of the the provided value-encoded number as a
+   * <i>signed</i> {@code byte}.
+   *
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as a
+   *         <i>signed</i> {@code byte}.
+   */
   public static byte byteValue(final int[] val) {
     return byteValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
+  /**
+   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
+   * {@code byte}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param sig The sign with which to decode magnitude values.
+   * @return The value of the the provided magnitude array as an <i>unsigned</i>
+   *         {@code byte}.
+   */
+  // FIXME: Javadoc for "sig" is confusing.
   public static byte byteValue(final int[] mag, final int off, final int sig) {
     return (byte)(sig < 0 ? ~mag[off] + 1 : mag[off]);
   }
 
+  /**
+   * Returns the value of the the provided value-encoded number as a
+   * <i>signed</i> {@code short}.
+   *
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as a
+   *         <i>signed</i> {@code short}.
+   */
   public static short shortValue(final int[] val) {
     return shortValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
+  /**
+   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
+   * {@code short}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param sig The sign with which to decode magnitude values.
+   * @return The value of the the provided magnitude array as an <i>unsigned</i>
+   *         {@code short}.
+   */
+  // FIXME: Javadoc for "sig" is confusing.
   public static short shortValue(final int[] mag, final int off, final int sig) {
     return (short)(sig < 0 ? ~mag[off] + 1 : mag[off]);
   }
 
+  /**
+   * Returns the value of the the provided value-encoded number as a
+   * <i>signed</i> {@code int}.
+   *
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as a
+   *         <i>signed</i> {@code long}.
+   */
   public static int intValue(final int[] val) {
     return intValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
+  /**
+   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
+   * {@code int}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param sig The sign with which to decode magnitude values.
+   * @return The value of the the provided magnitude array as an <i>unsigned</i>
+   *         {@code int}.
+   */
+  // FIXME: Javadoc for "sig" is confusing.
   public static int intValue(final int[] mag, final int off, final int sig) {
     return sig < 0 ? ~mag[off] + 1 : mag[off];
   }
 
+  /**
+   * Returns the value of the the provided value-encoded number as a
+   * <i>signed</i> {@code long}.
+   *
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as a
+   *         <i>signed</i> {@code long}.
+   */
   public static long longValue(final int[] val) {
     int sig = 1; int len = val[0]; if (len < 0) { len = -len; sig = -1; }
     return longValue(val, 1, len, sig);
   }
 
-  public static long longValueUnsigned(final int[] val) {
-    int len = val[0]; if (len < 0) { len = -len; }
-    return longValue(val, 1, len);
-  }
-
+  /**
+   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
+   * {@code long}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param len The number of magnitude elements to use.
+   * @param sig The sign with which to decode magnitude values.
+   * @return The value of the the provided magnitude array as an <i>unsigned</i>
+   *         {@code long}.
+   */
+  // FIXME: Javadoc for "sig" is confusing.
   public static long longValue(final int[] mag, final int off, final int len, final int sig) {
     if (len == 0)
       return 0;
@@ -403,11 +808,27 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * To unsigned long!
+   * Returns the value of the the provided value-encoded number as an
+   * <i>unsigned</i> {@code long}.
    *
-   * @param mag
-   * @param len
-   * @return
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as an
+   *         <i>unsigned</i> {@code long}.
+   */
+  public static long longValueUnsigned(final int[] val) {
+    int len = val[0]; if (len < 0) { len = -len; }
+    return longValue(val, 1, len);
+  }
+
+  /**
+   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
+   * {@code long}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param len The number of magnitude elements to use.
+   * @return The value of the the provided magnitude array as an <i>unsigned</i>
+   *         {@code long}.
    */
   public static long longValue(final int[] mag, final int off, final int len) {
     return len == 0 ? 0 : longValue0(mag, off, len);
@@ -418,11 +839,30 @@ abstract class BigIntValue extends Number {
     return len > 1 ? (long)mag[off + 1] << 32 | val0l : val0l;
   }
 
+  /**
+   * Returns the value of the the provided value-encoded number as a
+   * {@code float}.
+   *
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as a
+   *         {@code float}.
+   */
   public static float floatValue(final int[] val) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
     return floatValue(val, 1, len, sig);
   }
 
+  /**
+   * Returns the value of the the provided magnitude array as a {@code float}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param len The number of magnitude elements to use.
+   * @param sig The sign with which to decode magnitude values.
+   * @return The value of the the provided value-encoded number as a
+   *         {@code float}.
+   */
+  // FIXME: Javadoc for "sig" is confusing.
   public static float floatValue(final int[] mag, final int off, final int len, final int sig) {
     if (len == 0)
       return 0;
@@ -454,40 +894,58 @@ abstract class BigIntValue extends Number {
     return Float.intBitsToFloat(bits);
   }
 
+  /**
+   * Returns the value of the the provided value-encoded number as a
+   * {@code double}.
+   *
+   * @param val The value-encoded number.
+   * @return The value of the the provided value-encoded number as a
+   *         {@code double}.
+   */
   public static double doubleValue(final int[] val) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
     return doubleValue(val, 1, len, sig);
   }
 
-  public static double doubleValue(final int[] val, final int off, final int len, final int sig) {
+  /**
+   * Returns the value of the the provided magnitude array as a {@code double}.
+   *
+   * @param mag The magnitude array.
+   * @param off The start index in the magnitude array.
+   * @param len The number of magnitude elements to use.
+   * @param sig The sign with which to decode magnitude values.
+   * @return The value of the the provided value-encoded number as a
+   *         {@code double}.
+   */
+  public static double doubleValue(final int[] mag, final int off, final int len, final int sig) {
     if (len == 0)
       return 0;
 
     if (len == 1) {
-      final double v = val[off] & LONG_INT_MASK;
+      final double v = mag[off] & LONG_INT_MASK;
       return sig < 0 ? -v : v;
     }
 
     final int end = off + len - 1;
-    final int z = Integer.numberOfLeadingZeros(val[end]);
+    final int z = Integer.numberOfLeadingZeros(mag[end]);
     final int exponent = ((len - 1) << 5) + (32 - z) - 1;
     if (exponent < Long.SIZE - 1)
-      return longValue(val, off, len, sig < 0 ? -1 : 1);
+      return longValue(mag, off, len, sig < 0 ? -1 : 1);
 
     if (exponent > Double.MAX_EXPONENT)
       return sig < 0 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 
     if (len == 2 && 32 - z + 32 <= 53) {
-      final double v = ((long)val[off + 1] << 32 | (val[off] & LONG_INT_MASK));
+      final double v = ((long)mag[off + 1] << 32 | (mag[off] & LONG_INT_MASK));
       return sig < 0 ? -v : v;
     }
 
-    long bits = (long)val[end] << 32 | (val[end - 1] & LONG_INT_MASK); // Mask out
+    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_INT_MASK); // Mask out
     // the 53 MSBits.
     if (z <= 11)
       bits >>>= 11 - z;
     else
-      bits = bits << z - 11 | val[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need.
+      bits = bits << z - 11 | mag[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need.
 
     bits ^= 1L << 52; // The leading bit is implicit, cancel it out.
 
@@ -499,17 +957,37 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Compares the absolute value of this and the given number.
+   * Compares the absolute values of the provided value-encoded numbers, and
+   * returns one of {@code -1}, {@code 0}, or {@code 1} whether the first
+   * number's absolute value is less than, equal to, or greater than that of the
+   * second argument, respectively.
    *
-   * @param a The number to be compared with.
-   * @return -1 if the absolute value of this number is less, 0 if it's equal, 1
-   *         if it's greater.
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if the first number's
+   *         absolute value is less than, equal to, or greater than that of the
+   *         second argument, respectively.
    * @complexity O(n)
    */
   public static int compareToAbs(final int[] val1, final int[] val2) {
     return compareToAbs(val1, Math.abs(val1[0]), val2, Math.abs(val2[0]));
   }
 
+  /**
+   * Compares the absolute values of the provided value-encoded numbers, and
+   * returns one of {@code -1}, {@code 0}, or {@code 1} whether the first
+   * number's absolute value is less than, equal to, or greater than that of the
+   * second argument, respectively.
+   *
+   * @param val1 The first value-encoded number.
+   * @param len1 The length of the first number.
+   * @param val2 The second value-encoded number.
+   * @param len2 The length of the second number.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if the first number's
+   *         absolute value is less than, equal to, or greater than that of the
+   *         second argument, respectively.
+   * @complexity O(n)
+   */
   static int compareToAbs(final int[] val1, int len1, final int[] val2, int len2) {
     if (len1 > len2)
       return 1;
@@ -530,6 +1008,19 @@ abstract class BigIntValue extends Number {
     return 0;
   }
 
+  /**
+   * Compares the values of the provided value-encoded numbers, and returns one
+   * of {@code -1}, {@code 0}, or {@code 1} whether the first number's value is
+   * less than, equal to, or greater than that of the second argument,
+   * respectively.
+   *
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if the first number's
+   *         value is less than, equal to, or greater than that of the second
+   *         argument, respectively.
+   * @complexity O(n)
+   */
   public static int compareTo(final int[] val1, final int[] val2) {
     int sig1 = 1, len1 = val1[0];
     if (len1 < 0) { len1 = -len1; sig1 = -1; }
@@ -550,10 +1041,54 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Tests equality of this number and the given one.
+   * Sets the provided value-encoded number its absolute value.
    *
-   * @param a The number to be compared with.
-   * @return true if the two numbers are equal, false otherwise.
+   * <pre>
+   * {@code val = | val |}
+   * </pre>
+   *
+   * @param val The value-encoded number.
+   * @return The provided value-encoded number set to its absolute value.
+   */
+  public static int[] abs(final int[] val) {
+    if (val[0] < 0)
+      val[0] = -val[0];
+
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Returns the maximum of the provided value-encoded numbers.
+   *
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return The value-encoded number whose value is the greater of the provided
+   *         value-encoded numbers.
+   */
+  public static int[] max(final int[] val1, final int[] val2) {
+    return compareTo(val1, val2) > 0 ? val1 : val2;
+  }
+
+  /**
+   * Returns the minimum of the provided value-encoded numbers.
+   *
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return The value-encoded number whose value is the lesser of the provided
+   *         value-encoded numbers.
+   */
+  public static int[] min(final int[] val1, final int[] val2) {
+    return compareTo(val1, val2) < 0 ? val1 : val2;
+  }
+
+  /**
+   * Tests the provided value-encoded numbers for equality.
+   *
+   * @param val1 The first value-encoded number.
+   * @param val2 The second value-encoded number.
+   * @return {@code true} if the two provided numbers are equal, otherwise
+   *         {@code false}.
    * @complexity O(n)
    */
   public static boolean equals(final int[] val1, final int[] val2) {
@@ -575,6 +1110,13 @@ abstract class BigIntValue extends Number {
     return true;
   }
 
+  /**
+   * Computes the hash code of the provided value-encoded number.
+   *
+   * @param val The value-encoded number.
+   * @return The hash code of the provided value-encoded number.
+   * @complexity O(n)
+   */
   public static int hashCode(final int[] val) {
     int len = val[0];
     if (len == 0)
@@ -626,40 +1168,6 @@ abstract class BigIntValue extends Number {
     return r;
   }
 
-  static final int[] emptyVal = {};
-
-  public static int[] valueOf(final int mag) {
-    return assign(emptyVal, mag);
-  }
-
-  public static int[] valueOf(final int sig, final int mag) {
-    return assign(emptyVal, sig, mag);
-  }
-
-  public static int[] valueOf(final long mag) {
-    return assign(emptyVal, mag);
-  }
-
-  public static int[] valueOf(final int sig, final long mag) {
-    return assign(emptyVal, sig, mag);
-  }
-
-  public static int[] valueOf(final byte[] mag, final int off, final int len, final boolean isLittleEndian) {
-    return assign(emptyVal, mag, off, len, isLittleEndian);
-  }
-
-  public static int[] valueOf(final byte[] mag, final boolean isLittleEndian) {
-    return assign(emptyVal, mag, 0, mag.length, isLittleEndian);
-  }
-
-  public static int[] valueOf(final char[] s) {
-    return assign(emptyVal, s);
-  }
-
-  public static int[] valueOf(final String s) {
-    return assign(emptyVal, s);
-  }
-
   /**
    * Converts the provided value-encoded number into a string of radix 10.
    *
@@ -701,6 +1209,14 @@ abstract class BigIntValue extends Number {
     return new String(chars, top, chars.length - top);
   }
 
+  /**
+   * Returns the number of digits in the provided value-encoded number (radix
+   * 10).
+   *
+   * @param val The value-encoded number.
+   * @return The number of digits in the provided value-encoded number (radix
+   *         10).
+   */
   // FIXME: There must be a more efficient way to do this!
   public static int precision(final int[] val) {
     if (isZero(val))
@@ -729,49 +1245,6 @@ abstract class BigIntValue extends Number {
     }
 
     return length - top;
-  }
-
-  /**
-   * Sets the magnitude of the provided value-encoded number its absolute value.
-   *
-   * <pre>
-   * {@code val = | val |}
-   * </pre>
-   *
-   * @param val The value-encoded number.
-   * @return The provided value-encoded number with the magnitude set to its
-   *         absolute value.
-   */
-  public static int[] abs(final int[] val) {
-    if (val[0] < 0)
-      val[0] = -val[0];
-
-    _debugLenSig(val);
-    return val;
-  }
-
-  /**
-   * Returns the maximum of the provided value-encoded numbers.
-   *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
-   * @return The value-encoded number whose value is the greater of the provided
-   *         value-encoded numbers.
-   */
-  public static int[] max(final int[] val1, final int[] val2) {
-    return compareTo(val1, val2) > 0 ? val1 : val2;
-  }
-
-  /**
-   * Returns the minimum of the provided value-encoded numbers.
-   *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
-   * @return The value-encoded number whose value is the lesser of the provided
-   *         value-encoded numbers.
-   */
-  public static int[] min(final int[] val1, final int[] val2) {
-    return compareTo(val1, val2) < 0 ? val1 : val2;
   }
 
   static void _debugLenSig(final int[] val) {

@@ -963,7 +963,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
     int len1 = val[0];
     if (len1 == 0)
-      return val = copy(val, mask);
+      return val = copy(val, mask, len2 = Math.abs(len2) + 1, len2);
 
     int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
     int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }
@@ -1310,38 +1310,52 @@ abstract class BigIntBinary extends BigIntDivision {
 
   /**
    * Returns a byte array containing the two's-complement representation of the
-   * provided value-encoded number. The byte array will be in <i>big-endian</i>
-   * byte-order: the most significant byte is in the zeroth element. The array
-   * will contain the minimum number of bytes required to represent the provided
-   * number, including at least one sign bit, which is
-   * {@code (ceil((bitLength(val) + 1) / 8))}. (This representation is
-   * compatible with {@link #assign(int[],byte[],boolean)
-   * BigInt.assign(int[],false)}).
-   * <p>
-   * <i><b>Note:</b> <i>big-endian</i> byte-order is chosen for interoperability
-   * with {@link java.math.BigInteger#toByteArray()}.</i>
+   * provided value-encoded number. The byte array will be in the endian order
+   * as specified by the {@code littleEndian} argument. The array will contain
+   * the minimum number of bytes required to represent the provided number,
+   * including at least one sign bit, which is
+   * {@code (ceil((bitLength(val) + 1) / 8))}.
    *
    * @param val The value-encoded number.
+   * @param littleEndian Whether the produced byte array is to be encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
    * @return A byte array containing the two's-complement representation of the
    *         provided value-encoded number.
    */
-  public static byte[] toByteArray(final int[] val) {
+  public static byte[] toByteArray(final int[] val, final boolean littleEndian) {
     int sig = 0, len = val[0]; if (len < 0) { len = -len; sig = -1; }
     final int nzIndex = firstNonzeroIntNum(val, 1, len);
     final int byteLen = bitLength(val) / 8 + 1;
     final byte[] bytes = new byte[byteLen];
 
-    for (int i = byteLen - 1, bytesCopied = 4, nextInt = 0, intIndex = 1; i >= 0; --i) {
-      if (bytesCopied == 4) {
-        nextInt = getInt(sig, len, val, nzIndex, intIndex++);
-        bytesCopied = 1;
-      }
-      else {
-        nextInt >>>= 8;
-        ++bytesCopied;
-      }
+    if (littleEndian) {
+      for (int i = 0, bytesCopied = 4, nextInt = 0, intIndex = 1; i < byteLen; ++i) {
+        if (bytesCopied == 4) {
+          nextInt = getInt(sig, len, val, nzIndex, intIndex++);
+          bytesCopied = 1;
+        }
+        else {
+          nextInt >>>= 8;
+          ++bytesCopied;
+        }
 
-      bytes[i] = (byte)nextInt;
+        bytes[i] = (byte)nextInt;
+      }
+    }
+    else {
+      for (int i = byteLen - 1, bytesCopied = 4, nextInt = 0, intIndex = 1; i >= 0; --i) {
+        if (bytesCopied == 4) {
+          nextInt = getInt(sig, len, val, nzIndex, intIndex++);
+          bytesCopied = 1;
+        }
+        else {
+          nextInt >>>= 8;
+          ++bytesCopied;
+        }
+
+        bytes[i] = (byte)nextInt;
+      }
     }
 
     return bytes;

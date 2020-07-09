@@ -35,6 +35,19 @@ public abstract class BigIntTest extends CaseTest {
   private static boolean shouldInflate;
   private static boolean shouldBeEqual;
 
+  public static byte[] reverse(final byte[] bytes) {
+    if (bytes == null || bytes.length <= 1)
+      return bytes;
+
+    for (int i = 0; i < bytes.length / 2; ++i) {
+      bytes[i] ^= bytes[bytes.length - 1 - i];
+      bytes[bytes.length - 1 - i] ^= bytes[i];
+      bytes[i] ^= bytes[bytes.length - 1 - i];
+    }
+
+    return bytes;
+  }
+
   public int nz(final int a) {
     return a == 0 ? 1 : a;
   }

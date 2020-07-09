@@ -68,12 +68,22 @@ public class BigIntConstructorTest extends BigIntTest {
   }
 
   @Test
-  public void testBytes() {
+  public void testBytesBigEndian() {
     final byte[][] bytes = new byte[1][];
     test("<init>(byte[])",
       s("BigInteger", a -> bytes[0] = new BigInteger(a).toByteArray(), (byte[] a) -> new BigInteger(a), String::valueOf),
       s("BigInt", a -> bytes[0], (byte[] a) -> new BigInt(a, false), String::valueOf),
       s("int[]", a -> bytes[0], (byte[] a) -> BigInt.valueOf(a, false), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testBytesLittleEndian() {
+    final byte[][] bytes = new byte[2][];
+    test("<init>(byte[])",
+      s("BigInteger", a ->  { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),
+      s("BigInt", a -> bytes[1], (byte[] a) -> new BigInt(a, true), String::valueOf),
+      s("int[]", a -> bytes[1], (byte[] a) -> BigInt.valueOf(a, true), BigInt::toString)
     );
   }
 }

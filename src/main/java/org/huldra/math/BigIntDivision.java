@@ -530,7 +530,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
   private static int[] divRem0(int[] val1, final int[] val2) {
     final int c = compareToAbs(val1, val2);
     if (c == 0) {
-      assign(val1, 1, 1);
+      assign0(val1, 1, 1);
       return alloc(2);
     }
 
