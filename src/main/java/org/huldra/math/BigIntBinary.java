@@ -18,19 +18,26 @@ package org.huldra.math;
 
 import java.util.Arrays;
 
-@SuppressWarnings("javadoc")
 abstract class BigIntBinary extends BigIntDivision {
   private static final long serialVersionUID = 6584645376198040730L;
 
-  // FIXME: Javadoc
+  /**
+   * Returns the number of bits in the two's complement representation of the
+   * provided value-encoded number that differ from its sign bit.
+   *
+   * @param val The value-encoded number.
+   * @return Number of bits in the two's complement representation of the
+   *         provided value-encoded number that differ from its sign bit.
+   * @complexity O(n)
+   */
   public static int bitCount(final int[] val) {
     int i, bits = 0;
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    boolean sig = true; int len = val[0]; if (len < 0) { len = -len; sig = false; }
     // Count the bits in the magnitude
     for (i = 1; i <= len; ++i)
       bits += Integer.bitCount(val[i]);
 
-    if (sig < 0) {
+    if (!sig) {
       // Count the trailing zeros in the magnitude
       for (i = 1; i <= len && val[i] == 0; ++i)
         bits += 32;
@@ -43,13 +50,21 @@ abstract class BigIntBinary extends BigIntDivision {
 
   /**
    * Returns the number of bits in the minimal two's-complement representation
-   * of this {@link BigInt}, <em>excluding</em> a sign bit. For positive
-   * {@link BigInt}s, this is equivalent to the number of bits in the ordinary
-   * binary representation. For zero this method returns {@code 0}. (Computes
-   * {@code (ceil(log2(this < 0 ? -this : this + 1)))}.)
+   * of the provided value-encoded number, <em>excluding</em> a sign bit. For
+   * positive the provided value-encoded numbers, this is equivalent to the
+   * number of bits in the ordinary binary representation. For zero this method
+   * returns {@code 0}.
+   * <p>
+   * Computes:
    *
+   * <pre>
+   * ceil(log2(val < 0 ? -val : val + 1))
+   * </pre>
+   *
+   * @param val The value-encoded number.
    * @return Number of bits in the minimal two's-complement representation of
-   *         this {@link BigInt}, <em>excluding</em> a sign bit.
+   *         the provided value-encoded number, <em>excluding</em> a sign bit.
+   * @complexity O(n)
    */
   public static int bitLength(final int[] val) {
     int len = val[0];
@@ -71,17 +86,246 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Package private method to return bit length for an integer.
+   * Returns the bit length of the provided integer.
+   *
+   * @param n The integer.
+   * @return Bit length of the provided integer.
    */
-  static int bitLengthForInt(final int n) {
+  private static int bitLengthForInt(final int n) {
     return Integer.SIZE - Integer.numberOfLeadingZeros(n);
   }
 
   /**
-   * Tests if the given bit in the number is set.
+   * Shifts the provided value-encoded number right by the specified number of
+   * bits. The shift distance, {@code num}, may be negative, in which case this
+   * method performs a left shift.
    *
+   * <pre>
+   * val >> num
+   * </pre>
+   *
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the shift requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param num The amount by which to shift.
+   * @return The result of shifting the provided value-encoded number right by
+   *         the specified number of bits.
+   * @complexity O(n)
+   */
+  public static int[] shiftRight(final int[] val, final int num) {
+    if (num == 0)
+      return val;
+
+    int len = val[0];
+    if (len == 0)
+      return val;
+
+    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    return num < 0 ? shiftLeft0(val, len, sig, -num) : shiftRight0(val, len, sig, num);
+  }
+
+  private static int[] shiftRight0(final int[] val, int len, final boolean sig, final int num) {
+    final int shiftBig = num >>> 5;
+    // Special case: entire contents shifted off the end
+    if (shiftBig >= len)
+      return sig ? setToZero0(val) : assign(val, sig, 1);
+
+    final int shiftSmall = num & 31;
+    boolean oneLost = false;
+    if (!sig) {
+      // Find out whether any one-bits will be shifted off the end
+      final int j = shiftBig + 1;
+      for (int i = 1; i < j && !(oneLost = val[i] != 0); ++i);
+      if (!oneLost && shiftSmall != 0)
+        oneLost = val[j] << (32 - shiftSmall) != 0;
+    }
+
+    if (shiftBig > 0) {
+      len = bigShiftRight(val, len, shiftBig);
+      val[0] = val[0] < 0 ? -len : len;
+    }
+
+    if (shiftSmall > 0) {
+      len = smallShiftRight(val, len, shiftSmall);
+      val[0] = val[0] < 0 ? -len : len;
+    }
+
+    if (oneLost)
+      uaddVal(val, len, sig, 1);
+
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Shifts the provided value-encoded number by {@code 32 * num} bits to the
+   * right.
+   *
+   * @param val The value-encoded number.
+   * @param len The number of limbs of the number to shift.
+   * @param num The number of {@code bits / 32} by which to shift.
+   * @return The length of the number, which may have changed due to the shift.
+   * @complexity O(n)
+   */
+  private static int bigShiftRight(final int[] val, int len, final int num) {
+    System.arraycopy(val, num + 1, val, 1, len -= num);
+    return len;
+  }
+
+  /**
+   * Shifts the provided value-encoded number right by the specified number of
+   * bits (less than 32).
+   *
+   * @param val The value-encoded number.
+   * @param len The number of limbs of the number to shift.
+   * @param num The number of bits by which to shift.
+   * @return The length of the number, which may have changed due to the shift.
+   * @complexity O(n)
+   */
+  private static int smallShiftRight(final int[] val, int len, final int num) {
+    for (int next = val[1], i = 1; i < len; ++i)
+      val[i] = next >>> num | (next = val[i + 1]) << 32 - num;
+
+    if ((val[len] >>>= num) == 0 && len >= 1)
+      --len;
+
+    return len;
+  }
+
+  /**
+   * Shifts the provided value-encoded number left by the specified number of
+   * bits. The shift distance, {@code num}, may be negative, in which case this
+   * method performs a right shift.
+   *
+   * <pre>
+   * val << num
+   * </pre>
+   *
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the shift requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param num The amount by which to shift.
+   * @return The result of shifting the provided value-encoded number left by
+   *         the specified number of bits.
+   * @complexity O(n)
+   */
+  public static int[] shiftLeft(final int[] val, final int num) {
+    if (num == 0)
+      return val;
+
+    int len = val[0];
+    if (len == 0)
+      return val;
+
+    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    return num < 0 ? shiftRight0(val, len, sig, -num) : shiftLeft0(val, len, sig, num);
+  }
+
+  private static int[] shiftLeft0(int[] val, int len, boolean sig, final int num) {
+    final int shiftBig = num >>> 5;
+    if (shiftBig > 0) {
+      val = bigShiftLeft(val, len, sig, shiftBig);
+      sig = true; len = val[0]; if (len < 0) { len = -len; sig = false; }
+    }
+
+    final int shiftSmall = num & 31;
+    if (shiftSmall > 0) {
+      val = smallShiftLeft(val, shiftBig + 1, len, sig, shiftSmall);
+    }
+
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Shifts the provided value-encoded number by {@code 32 * num} bits to the
+   * right.
+   *
+   * @param val The value-encoded number to shift.
+   * @param len The number of limbs of the number to shift.
+   * @param sig The sign of the number to shift.
+   * @param num The number of {@code bits / 32} by which to shift.
+   * @return The length of the number, which may have changed due to the shift.
+   * @complexity O(n)
+   */
+  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, int num) {
+    ++num;
+    int newLen = len + num;
+    if (newLen > val.length) {
+      final int[] tmp = alloc(newLen);
+      System.arraycopy(val, 1, tmp, num, len);
+      val = tmp;
+    }
+    else {
+      System.arraycopy(val, 1, val, num, len);
+      for (int i = 1; i < num; ++i)
+        val[i] = 0;
+    }
+
+    --newLen;
+    val[0] = sig ? newLen : -newLen;
+    _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Shifts the provided value-encoded number left by the specified number of
+   * bits (less than 32) starting at the given offset ({@code off}).
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the shift requires a larger array.</i>
+   *
+   * @param val The value-encoded number to shift.
+   * @param off The limb at which to start shifting.
+   * @param len The number of limbs of the number to shift.
+   * @param sig The sign of the number to shift.
+   * @param num The number of bits by which to shift.
+   * @return The result of shifting the provided value-encoded number left by
+   *         the specified number of bits.
+   * @complexity O(n)
+   */
+  private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num) {
+    int[] res = val;
+    int next;
+    if ((val[len] << num >>> num) != val[len]) { // Overflow?
+      if (++len >= val.length) {
+        next = 0;
+        res = realloc(val, len - 1, len + 1);
+      }
+      else {
+        next = val[len];
+        val[len] = 0;
+      }
+
+      res[0] = sig ? len : -len;
+    }
+    else {
+      next = len >= val.length ? 0 : val[len];
+    }
+
+    for (; len > off; --len)
+      res[len] = next << num | (next = val[len - 1]) >>> 32 - num;
+
+    res[off] = next << num;
+    _debugLenSig(res);
+    return res;
+  }
+
+  /**
+   * Tests if the specified bit is set in the provided value-encoded number.
+   * <p>
+   * Computes:
+   *
+   * <pre>
+   * val | (1 << n)
+   * </pre>
+   *
+   * @param val The value-encoded number.
    * @param bit The index of the bit to test.
-   * @return true if the given bit is one.
+   * @return {@code true} if the given bit is set in the provided value-encoded
+   *         number, otherwise {@code false}.
    * @complexity O(n)
    */
   public static boolean testBit(final int[] val, final int bit) {
@@ -108,183 +352,15 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts this number right by the given amount.
+   * Sets the specified bit in the provided value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
    *
-   * @param shift The amount to shift.
-   * @complexity O(n)
-   */
-  public static int[] shiftRight(final int[] val, final int shift) {
-    if (shift < 0)
-      return shiftLeft(val, -shift);
-
-    if (shift == 0 || isZero(val))
-      return val;
-
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
-    final int shiftBig = shift >>> 5;
-    // Special case: entire contents shifted off the end
-    if (shiftBig >= len)
-      return sig >= 0 ? setToZero0(val) : assign(val, sig, 1);
-
-    final int shiftSmall = shift & 31;
-    boolean oneLost = false;
-    if (sig < 0) {
-      // Find out whether any one-bits will be shifted off the end
-      final int j = shiftBig + 1;
-      for (int i = 1; i < j && !(oneLost = val[i] != 0); ++i);
-      if (!oneLost && shiftSmall != 0)
-        oneLost = val[j] << (32 - shiftSmall) != 0;
-    }
-
-    if (shiftBig > 0) {
-      len = bigShiftRight(val, len, shiftBig);
-      val[0] = val[0] < 0 ? -len : len;
-    }
-
-    if (shiftSmall > 0) {
-      len = smallShiftRight(val, len, shiftSmall);
-      val[0] = val[0] < 0 ? -len : len;
-    }
-
-    // FIXME: What if an overflow happens? Look at Integer#javaIncrement(int[])
-    if (oneLost) {
-      if (val[0] == 0)
-        val[0] = sig;
-
-      ++val[1];
-    }
-
-    _debugLenSig(val);
-    return val;
-  }
-
-  /**
-   * Shifts this number right by the given amount (less than 32).
-   *
-   * @param shift The amount to shift.
-   * @complexity O(n)
-   */
-  // FIXME: Javadoc
-  private static int smallShiftRight(final int[] val, int len, final int shift) {
-    for (int next = val[1], i = 1; i < len; ++i)
-      val[i] = next >>> shift | (next = val[i + 1]) << 32 - shift;
-
-    if ((val[len] >>>= shift) == 0 && len >= 1)
-      --len;
-
-    return len;
-  }
-
-  /**
-   * Shifts this number right by 32*shift, i.e. moves each digit shift positions
-   * to the right.
-   *
-   * @param shift The number of positions to move each digit.
-   * @complexity O(n)
-   */
-  // FIXME: Javadoc
-  private static int bigShiftRight(final int[] val, int len, int shift) {
-    System.arraycopy(val, shift + 1, val, 1, len -= shift);
-    return len;
-  }
-
-  /**
-   * @param val
-   * @param shift
-   * @return
-   */
-  public static int[] shiftLeft(int[] val, final int shift) {
-    if (shift < 0)
-      return shiftRight(val, -shift);
-
-    if (shift == 0 || isZero(val))
-      return val;
-
-    boolean sig = true; int len = val[0]; if (len < 0) { len = -len; sig = false; }
-    final int shiftBig = shift >>> 5;
-
-    if (shiftBig > 0) {
-      val = bigShiftLeft(val, len, sig, shiftBig);
-      sig = true; len = val[0]; if (len < 0) { len = -len; sig = false; }
-    }
-
-    final int shiftSmall = shift & 31;
-    if (shiftSmall > 0) {
-      val = smallShiftLeft(val, shiftBig + 1, len, sig, shiftSmall);
-    }
-
-    _debugLenSig(val);
-    return val;
-  }
-
-  /**
-   * Shifts this number left by 32*shift, i.e. moves each digit shift positions
-   * to the left.
-   *
-   * @param shift The number of positions to move each digit.
-   * @complexity O(n)
-   */
-  // FIXME: Javadoc
-  private static int[] bigShiftLeft(int[] val, int len, final boolean sig, int shift) {
-    ++shift;
-    int newLen = len + shift;
-    if (newLen > val.length) {
-      final int[] tmp = alloc(newLen);
-      System.arraycopy(val, 1, tmp, shift, len);
-      val = tmp;
-    }
-    else {
-      System.arraycopy(val, 1, val, shift, len);
-      for (int i = 1; i < shift; ++i)
-        val[i] = 0;
-    }
-
-    --newLen;
-    val[0] = sig ? newLen : -newLen;
-    _debugLenSig(val);
-    return val;
-  }
-
-  /**
-   * Shifts this number left by the given amount (less than 32) starting at the
-   * given digit, i.e. the first (<len) digits are left untouched.
-   *
-   * @param shift The amount to shift.
-   * @param off The digit to start shifting from.
-   * @complexity O(n)
-   */
-  // FIXME: Javadoc
-  private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int shift) {
-    int[] res = val;
-    int next;
-    if ((val[len] << shift >>> shift) != val[len]) { // Overflow?
-      if (++len >= val.length) {
-        next = 0;
-        res = realloc(val, len, len + 1);
-      }
-      else {
-        next = val[len];
-        val[len] = 0;
-      }
-
-      res[0] = sig ? len : -len;
-    }
-    else {
-      next = len >= val.length ? 0 : val[len];
-    }
-
-    for (; len > off; --len)
-      res[len] = next << shift | (next = val[len - 1]) >>> 32 - shift;
-
-    res[off] = next << shift;
-    _debugLenSig(res);
-    return res;
-  }
-
-  /**
-   * @param val
-   * @param bit
-   * @return
+   * @param val The value-encoded number.
+   * @param bit The bit to set.
+   * @return The result of setting the specified bit in the provided
+   *         value-encoded number.
    */
   public static int[] setBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -345,9 +421,15 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * @param val
-   * @param bit
-   * @return
+   * Clears the specified bit in the provided value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param bit The bit to clear.
+   * @return The result of clearing the specified bit in the provided
+   *         value-encoded number.
    */
   public static int[] clearBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -427,9 +509,15 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * @param val
-   * @param bit
-   * @return
+   * Flips the specified bit in the provided value-encoded number.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param bit The bit to flip.
+   * @return The result of flipping the specified bit in the provided
+   *         value-encoded number.
    */
   public static int[] flipBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -468,8 +556,6 @@ abstract class BigIntBinary extends BigIntDivision {
           val[j] = -1;
 
         val[j] = ~-val[j];
-//        if (j == len && val[len] == 0)
-//          val[0] = len;
       }
       else {
         j = Integer.lowestOneBit(val[j]); // more efficient than numberOfTrailingZeros
@@ -514,19 +600,29 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Bitwise-ands this number with the given number, i.e. this &= mask.
+   * Performs a bitwise "and" of the specified value-encoded mask onto the
+   * provided value-encoded number.
    *
-   * @param mask The number to bitwise-and with.
+   * <pre>
+   * val = val & mask
+   * </pre>
+   *
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param mask The number with which to perform the bitwise "and".
+   * @return The result of the bitwise "and" of the specified value-encoded mask
+   *         onto the provided value-encoded number.
    * @complexity O(n)
    */
-  public static int[] and(int[] val1, final int[] val2) {
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+  public static int[] and(int[] val, final int[] mask) {
+    int len2 = mask[0];
+    if (len2 == 0)
+      return setToZero0(val);
 
-    if (sig2 == 0 || isZero(val2)) { // FIXME: Defensive check
-      return setToZero0(val1);
-    }
-
+    int sig1 = 1, len1 = val[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }
     if (sig1 >= 0) {
       if (sig2 > 0) {
         if (len2 < len1)
@@ -534,78 +630,78 @@ abstract class BigIntBinary extends BigIntDivision {
 
         boolean zeroes = true;
         for (int i = len1; i >= 1; --i) {
-          val1[i] &= val2[i];
-          if (zeroes && (zeroes = val1[i] == 0))
+          val[i] &= mask[i];
+          if (zeroes && (zeroes = val[i] == 0))
             --len1;
         }
       }
       else {
         final int mlen = Math.min(len1, len2);
-        int a = val1[1], b = val2[1], j = 2;
-        for (; (a | b) == 0 && j <= mlen; a = val1[j], b = val2[j], ++j);
+        int a = val[1], b = mask[1], j = 2;
+        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
         if (a != 0 && b == 0) {
-          for (val1[j - 1] = 0; j <= mlen && val2[j] == 0; ++j)
-            val1[j] = 0;
+          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j)
+            val[j] = 0;
 
           if (j <= mlen)
-            val1[j] &= -val2[j];
+            val[j] &= -mask[j];
           else
             len1 = 1;
 
           // FIXME: I think we can remove this
           // FIXME: This was hacked together...
-          if (len1 > 1 && val1[len1] == 0)
+          if (len1 > 1 && val[len1] == 0)
             --len1;
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mlen)
-          while (j <= mlen && val1[j] == 0)
+          while (j <= mlen && val[j] == 0)
             ++j;
         }
         else {
-          val1[j - 1] &= -b;
+          val[j - 1] &= -b;
         }
 
         for (; j <= mlen; ++j)
-          val1[j] &= ~val2[j];
+          val[j] &= ~mask[j];
       }
     }
     else {
       int mlen = Math.min(len1, len2); // FIXME: Make this final
       if (sig2 > 0) {
-        int a = val1[1], b = val2[1], j = 2;
-        for (; (a | b) == 0 && j <= mlen; a = val1[j], b = val2[j], ++j);
+        int a = val[1], b = mask[1], j = 2;
+        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
 
         if (a != 0 && b == 0) {
-          for (val1[j - 1] = 0; j <= mlen && val2[j] == 0; ++j)
-            val1[j] = 0;
+          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j)
+            val[j] = 0;
         }
         else if (a == 0) { // && (b!=0 || j==mlen)
-          while (j <= mlen && val1[j] == 0)
+          while (j <= mlen && val[j] == 0)
             ++j;
 
           if (j <= mlen)
-            val1[j] = -val1[j] & val2[j];
+            val[j] = -val[j] & mask[j];
 
           ++j;
         }
         else {
-          val1[j - 1] = -a & b;
+          val[j - 1] = -a & b;
         }
 
         for (; j <= mlen; ++j)
-          val1[j] = ~val1[j] & val2[j];
+          val[j] = ~val[j] & mask[j];
 
         if (len2 > len1) {
-          if (len2 >= val1.length)
-            val1 = realloc(val1, len1, len2 + 3);
+          if (len2 >= val.length)
+            val = realloc(val, len1, len2 + 3);
 
-          System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
+          System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
         }
 
         // FIXME: This was hacked together...
-        if (len2 > 1 && val1[len2] == 0)
+        if (len2 > 1 && val[len2] == 0)
           --len2;
 
         len1 = len2;
@@ -613,60 +709,60 @@ abstract class BigIntBinary extends BigIntDivision {
       }
       else {
         if (len2 > len1) {
-          if (len2 >= val1.length)
-            val1 = realloc(val1, len1, len2 + 3);
+          if (len2 >= val.length)
+            val = realloc(val, len1, len2 + 3);
 
-          System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
+          System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
         }
 
-        int a = val1[1], b = val2[1], j = 2;
-        for (; (a | b) == 0; a = val1[j], b = val2[j], ++j);
+        int a = val[1], b = mask[1], j = 2;
+        for (; (a | b) == 0; a = val[j], b = mask[j], ++j);
 
         if (a != 0 && b == 0) {
-          for (val1[j - 1] = 0; j <= mlen && val2[j] == 0; ++j)
-            val1[j] = 0;
+          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j)
+            val[j] = 0;
 
           if (j <= mlen)
-            val1[j] = -(~val1[j] & -val2[j]);
+            val[j] = -(~val[j] & -mask[j]);
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mlen)
-          while (j <= mlen && val1[j] == 0)
+          while (j <= mlen && val[j] == 0)
             ++j;
 
           if (j <= mlen)
-            val1[j] = -(-val1[j] & ~val2[j]);
+            val[j] = -(-val[j] & ~mask[j]);
 
           ++j;
         }
         else {
-          val1[j - 1] = -(-a & -b);
+          val[j - 1] = -(-a & -b);
         }
 
         ++mlen;
-        if (j <= mlen && val1[j - 1] == 0) {
+        if (j <= mlen && val[j - 1] == 0) {
           if (j < mlen)
-            for (val1[j] = -~(val1[j] | val2[j]); ++j < mlen && val1[j - 1] == 0;)
-              val1[j] = -~(val1[j] | val2[j]); // -(~dig[j]&~mask.dig[j])
+            for (val[j] = -~(val[j] | mask[j]); ++j < mlen && val[j - 1] == 0;)
+              val[j] = -~(val[j] | mask[j]); // -(~dig[j]&~mask.dig[j])
 
-          if (j == mlen && val1[j - 1] == 0) {
+          if (j == mlen && val[j - 1] == 0) {
             int blen = Math.max(len1, len2);
-            while (j <= blen && val1[j] == -1)
-              val1[j++] = 0; // mask.dig[j]==dig[j]
+            while (j <= blen && val[j] == -1)
+              val[j++] = 0; // mask.dig[j]==dig[j]
 
             if (j <= blen) {
-              val1[j] = -~val1[j];
+              val[j] = -~val[j];
             }
             else {
               ++blen;
-              if (blen >= val1.length)
-                val1 = realloc(val1, len1, blen + 2);
+              if (blen >= val.length)
+                val = realloc(val, len1, blen + 2);
 
-              val1[blen] = 1;
-              val1[0] = sig1 < 0 ? -blen : blen;
-              _debugLenSig(val1);
-              return val1;
+              val[blen] = 1;
+              val[0] = sig1 < 0 ? -blen : blen;
+              _debugLenSig(val);
+              return val;
             }
 
             ++j;
@@ -674,7 +770,7 @@ abstract class BigIntBinary extends BigIntDivision {
         }
 
         for (; j < mlen; ++j)
-          val1[j] |= val2[j]; // ~(~dig[j]&~mask.dig[j]);
+          val[j] |= mask[j]; // ~(~dig[j]&~mask.dig[j]);
 
         if (len2 > len1)
           len1 = len2;
@@ -682,79 +778,91 @@ abstract class BigIntBinary extends BigIntDivision {
     }
 
     if (len1 > 0)
-      for (; val1[len1] == 0; --len1);
+      for (; val[len1] == 0; --len1);
 
-    val1[0] = sig1 < 0 ? -len1 : len1;
+    val[0] = sig1 < 0 ? -len1 : len1;
 
-    _debugLenSig(val1);
-    return val1;
+    _debugLenSig(val);
+    return val;
   }
 
   /**
-   * Bitwise-ors this number with the given number, i.e. this |= mask.
+   * Performs a bitwise "or" of the specified value-encoded mask onto the
+   * provided value-encoded number.
    *
-   * @param mask The number to bitwise-or with.
+   * <pre>
+   * val = val | mask
+   * </pre>
+   *
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param mask The number with which to perform the bitwise "or".
+   * @return The result of the bitwise "or" of the specified value-encoded mask
+   *         onto the provided value-encoded number.
    * @complexity O(n)
    */
-  public static int[] or(int[] val1, final int[] val2) {
-    if (isZero(val2))
-      return val1;
+  public static int[] or(int[] val, final int[] mask) {
+    int len2 = mask[0];
+    if (len2 == 0)
+      return val;
 
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+    int len1 = val[0];
+    if (len1 == 0)
+      return mask;
 
-    if (len1 == 0) // FIXME: Defensive check
-      return val2;
-
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }
     if (sig1 >= 0) {
       if (sig2 >= 0) {
         if (len2 > len1) {
-          if (len2 >= val1.length)
-            val1 = realloc(val1, len1, len2 + 2);
+          if (len2 >= val.length)
+            val = realloc(val, len1, len2 + 2);
 
-          System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
+          System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
           for (int i = 1; i <= len1; ++i)
-            val1[i] |= val2[i];
+            val[i] |= mask[i];
 
           len1 = len2;
         }
         else {
           for (int i = 1; i <= len2; ++i)
-            val1[i] |= val2[i];
+            val[i] |= mask[i];
         }
       }
       else {
-        if (len2 >= val1.length)
-          val1 = realloc(val1, len1, len2 + 2);
+        if (len2 >= val.length)
+          val = realloc(val, len1, len2 + 2);
 
         if (len2 > len1)
-          System.arraycopy(val2, len1 + 1, val1, len1 + 1, len2 - len1);
+          System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
 
         final int mlen = Math.min(len2, len1);
-        int a = val1[1], b = val2[1], j = 2;
-        for (; (a | b) == 0 && j <= mlen; a = val1[j], b = val2[j], ++j);
+        int a = val[1], b = mask[1], j = 2;
+        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
         if (a != 0 && b == 0) {
-          val1[j - 1] = -a;
-          for (; val2[j] == 0; ++j)
-            val1[j] ^= -1;
+          val[j - 1] = -a;
+          for (; mask[j] == 0; ++j)
+            val[j] ^= -1;
 
           if (j <= mlen)
-            val1[j] = ~(val1[j] | -val2[j]);
+            val[j] = ~(val[j] | -mask[j]);
           else // mask.dig[j] == dig[j]
-            val1[j] = ~-val1[j];
+            val[j] = ~-val[j];
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          for (val1[j - 1] = b; j <= mlen && val1[j] == 0; ++j)
-            val1[j] = val2[j];
+          for (val[j - 1] = b; j <= mlen && val[j] == 0; ++j)
+            val[j] = mask[j];
         }
         else { // a!=0 && b!=0
-          val1[j - 1] = -(a | -b);
+          val[j - 1] = -(a | -b);
         }
 
         for (; j <= mlen; ++j)
-          val1[j] = ~val1[j] & val2[j]; // ~(dig[j]|~mask.dig[j])
+          val[j] = ~val[j] & mask[j]; // ~(dig[j]|~mask.dig[j])
 
         len1 = len2;
         sig1 = -1;
@@ -763,98 +871,112 @@ abstract class BigIntBinary extends BigIntDivision {
     else {
       final int mlen = Math.min(len2, len1);
 
-      int a = val1[1], b = val2[1], j = 2;
-      for (; (a | b) == 0 && j <= mlen; a = val1[j], b = val2[j], ++j);
+      int a = val[1], b = mask[1], j = 2;
+      for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
 
       if (sig2 > 0) {
         if (a != 0 && b == 0) {
-          for (; j <= mlen && val2[j] == 0; ++j);
+          for (; j <= mlen && mask[j] == 0; ++j);
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          val1[j - 1] = -b;
-          for (; j <= mlen && val1[j] == 0; ++j)
-            val1[j] = ~val2[j];
+          val[j - 1] = -b;
+          for (; j <= mlen && val[j] == 0; ++j)
+            val[j] = ~mask[j];
 
           if (j <= mlen) {
-            val1[j] = ~(-val1[j] | val2[j]);
+            val[j] = ~(-val[j] | mask[j]);
           }
           else {
-            for (; val1[j] == 0; ++j)
-              val1[j] = -1;
+            for (; val[j] == 0; ++j)
+              val[j] = -1;
 
-            val1[j] = ~-val1[j];
+            val[j] = ~-val[j];
           }
 
           ++j;
         }
         else { // a!=0 && b!=0
-          val1[j - 1] = -(-a | b);
+          val[j - 1] = -(-a | b);
         }
 
         for (; j <= mlen; ++j)
-          val1[j] &= ~val2[j]; // ~(~dig[j]|mask.dig[j])
+          val[j] &= ~mask[j]; // ~(~dig[j]|mask.dig[j])
       }
       else {
         if (a != 0 && b == 0) {
-          for (; j <= mlen && val2[j] == 0; ++j);
+          for (; j <= mlen && mask[j] == 0; ++j);
           if (j <= mlen)
-            val1[j] = ~(~val1[j] | -val2[j]);
+            val[j] = ~(~val[j] | -mask[j]);
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          for (val1[j - 1] = b; j <= mlen && val1[j] == 0; ++j)
-            val1[j] = val2[j];
+          for (val[j - 1] = b; j <= mlen && val[j] == 0; ++j)
+            val[j] = mask[j];
 
           if (j <= mlen)
-            val1[j] = ~(-val1[j] | ~val2[j]);
+            val[j] = ~(-val[j] | ~mask[j]);
 
           ++j;
         }
         else { // a!=0 && b!=0
-          val1[j - 1] = -(-a | -b);
+          val[j - 1] = -(-a | -b);
         }
 
         for (; j <= mlen; ++j)
-          val1[j] &= val2[j]; // ~(~dig[j]|~mask.dig[j])
+          val[j] &= mask[j]; // ~(~dig[j]|~mask.dig[j])
 
         len1 = mlen;
       }
     }
 
     if (len1 > 0)
-      for (; val1[len1] == 0; --len1);
+      for (; val[len1] == 0; --len1);
 
-    val1[0] = sig1 < 0 ? -len1 : len1;
+    val[0] = sig1 < 0 ? -len1 : len1;
 
-    _debugLenSig(val1);
-    return val1;
+    _debugLenSig(val);
+    return val;
   }
 
   /**
-   * Bitwise-xors this number with the given number, i.e. this ^= mask.
+   * Performs a bitwise "xor" of the specified value-encoded mask onto the
+   * provided value-encoded number.
    *
-   * @param mask The number to bitwise-xor with.
+   * <pre>
+   * val = val ^ mask
+   * </pre>
+   *
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param mask The number with which to perform the bitwise "xor".
+   * @return The result of the bitwise "xor" of the specified value-encoded mask
+   *         onto the provided value-encoded number.
    * @complexity O(n)
    */
-  public static int[] xor(int[] val1, int[] val2) {
-    if (isZero(val2))
-      return val1;
+  public static int[] xor(int[] val, int[] mask) {
+    int len2 = mask[0];
+    if (len2 == 0)
+      return val;
 
-    if (isZero(val1))
-      return val1 = val2.clone();
+    int len1 = val[0];
+    if (len1 == 0)
+      return val = copy(val, mask);
 
-    final int fromIndex = 1;
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    len1 += fromIndex;
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
-    len2 += fromIndex;
+    int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+
+    final int off = 1;
+    len1 += off;
+    len2 += off;
 
     if (len1 < len2 || sig1 < sig2) {
       // Copy so that the provided val2 reference does not get modified
-      final int[] copy = Arrays.copyOf(val2, len2);
-      val2 = val1;
-      val1 = copy;
+      final int[] copy = Arrays.copyOf(mask, len2);
+      mask = val;
+      val = copy;
       sig1 ^= sig2;
       sig2 ^= sig1;
       sig1 ^= sig2;
@@ -865,55 +987,55 @@ abstract class BigIntBinary extends BigIntDivision {
 
     if (sig1 > 0) {
       if (len2 > len1) {
-        if (len2 > val1.length)
-          val1 = realloc(val1, len1 - fromIndex, len2 + 2);
+        if (len2 > val.length)
+          val = realloc(val, len1 - off, len2 + 2);
 
-        System.arraycopy(val2, len1, val1, len1, len2 - len1);
+        System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
 
       final int mlen = Math.min(len1, len2);
       if (sig2 > 0) {
         for (int i = 0; i < mlen; ++i)
-          val1[i] ^= val2[i];
+          val[i] ^= mask[i];
       }
       else {
-        int a = val1[fromIndex], b = val2[fromIndex], j = 1 + fromIndex;
-        for (; (a | b) == 0 && j < mlen; a = val1[j], b = val2[j], ++j);
+        int a = val[off], b = mask[off], j = 1 + off;
+        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j);
         if (a != 0 && b == 0) {
-          val1[j - 1] = -a;
-          for (; val2[j] == 0; ++j)
-            val1[j] ^= -1;
+          val[j - 1] = -a;
+          for (; mask[j] == 0; ++j)
+            val[j] ^= -1;
 
           if (j < len1)
-            val1[j] = ~(val1[j] ^ -val2[j]);
+            val[j] = ~(val[j] ^ -mask[j]);
           else
-            val1[j] = ~-val2[j];
+            val[j] = ~-mask[j];
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          val1[j - 1] = b; // -(0^-b)
+          val[j - 1] = b; // -(0^-b)
         }
         else { // a!=0 && b!=0
-          val1[j - 1] = -(a ^ -b);
-          for (; j < mlen && val1[j - 1] == 0; ++j)
-            val1[j] = -(val1[j] ^ ~val2[j]);
+          val[j - 1] = -(a ^ -b);
+          for (; j < mlen && val[j - 1] == 0; ++j)
+            val[j] = -(val[j] ^ ~mask[j]);
 
-          if (j >= mlen && val1[j - 1] == 0) {
-            final int[] tmp = j < len1 ? val1 : val2;
+          if (j >= mlen && val[j - 1] == 0) {
+            final int[] tmp = j < len1 ? val : mask;
             final int blen = Math.max(len1, len2);
             for (; j < blen && tmp[j] == -1; ++j)
-              val1[j] = 0;
+              val[j] = 0;
 
-            if (blen == val1.length)
-              val1 = realloc(val1, len1 - fromIndex, blen + 2); // len==blen
+            if (blen == val.length)
+              val = realloc(val, len1 - off, blen + 2); // len==blen
 
             if (j == blen) {
-              val1[blen] = 1;
+              val[blen] = 1;
               len1 = blen + 1;
             }
             else {
-              val1[j] = -~tmp[j];
+              val[j] = -~tmp[j];
             }
 
             ++j;
@@ -921,82 +1043,82 @@ abstract class BigIntBinary extends BigIntDivision {
         }
 
         for (; j < mlen; ++j)
-          val1[j] ^= val2[j]; // ~(dig[j]^~dig2[j]);
+          val[j] ^= mask[j]; // ~(dig[j]^~dig2[j]);
 
         sig1 = -1;
       }
     }
     else {
       if (len2 > len1) {
-        if (len2 > val1.length)
-          val1 = realloc(val1, len1, len2 + 2);
+        if (len2 > val.length)
+          val = realloc(val, len1, len2 + 2);
 
-        System.arraycopy(val2, len1, val1, len1, len2 - len1);
+        System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
 
       final int mlen = Math.min(len1, len2);
       if (sig2 > 0) {
-        int a = val1[fromIndex], b = val2[fromIndex], j = 1 + fromIndex;
-        for (; (a | b) == 0 && j < mlen; a = val1[j], b = val2[j], ++j);
+        int a = val[off], b = mask[off], j = 1 + off;
+        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j);
         if (a != 0 && b == 0) {
-          while (j < mlen && val2[j] == 0)
+          while (j < mlen && mask[j] == 0)
             ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          for (val1[j - 1] = -b; j < mlen && val1[j] == 0; ++j)
-            val1[j] = ~val2[j];
+          for (val[j - 1] = -b; j < mlen && val[j] == 0; ++j)
+            val[j] = ~mask[j];
 
-          while (j < len1 && val1[j] == 0)
-            val1[j++] = -1;
+          while (j < len1 && val[j] == 0)
+            val[j++] = -1;
 
           if (j < mlen)
-            val1[j] = ~(-val1[j] ^ val2[j]);
+            val[j] = ~(-val[j] ^ mask[j]);
           else
-            val1[j] = ~-val1[j];
+            val[j] = ~-val[j];
 
           ++j;
         }
         else { // a!=0 && b!=0
-          val1[j - 1] = -(-a ^ b);
+          val[j - 1] = -(-a ^ b);
         }
 
         for (; j < mlen; j++)
-          val1[j] ^= val2[j]; // ~(~dig[j]^dig2[j]);
+          val[j] ^= mask[j]; // ~(~dig[j]^dig2[j]);
       }
       else {
-        int a = val1[fromIndex], b = val2[fromIndex], j = 1 + fromIndex;
-        for (; (a | b) == 0 && j < mlen; a = val1[j], b = val2[j], ++j);
+        int a = val[off], b = mask[off], j = 1 + off;
+        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j);
         if (a != 0 && b == 0) {
-          for (val1[j - 1] = -a; val2[j] == 0; ++j)
-            val1[j] ^= -1; // ~dig[j]
+          for (val[j - 1] = -a; mask[j] == 0; ++j)
+            val[j] ^= -1; // ~dig[j]
 
           if (j < len1)
-            val1[j] = ~val1[j] ^ -val2[j];
+            val[j] = ~val[j] ^ -mask[j];
           else
-            val1[j] = ~-val1[j]; // dig[j]==dig2[j], ~0^-dig2[j]
+            val[j] = ~-val[j]; // dig[j]==dig2[j], ~0^-dig2[j]
 
           ++j;
         }
         else if (a == 0) { // && b!=0
-          for (val1[j - 1] = -b; j < len2 && val1[j] == 0; ++j)
-            val1[j] = ~val2[j];
+          for (val[j - 1] = -b; j < len2 && val[j] == 0; ++j)
+            val[j] = ~mask[j];
 
-          while (val1[j] == 0)
-            val1[j++] = -1;
+          while (val[j] == 0)
+            val[j++] = -1;
 
           if (j < len2)
-            val1[j] = -val1[j] ^ ~val2[j];
+            val[j] = -val[j] ^ ~mask[j];
           else
-            val1[j] = ~-val1[j]; // -dig[j]^~0
+            val[j] = ~-val[j]; // -dig[j]^~0
 
           ++j;
         }
         else { // a!=0 && b!=0
-          val1[j - 1] = -a ^ -b;
+          val[j - 1] = -a ^ -b;
         }
 
         for (; j < mlen; ++j)
-          val1[j] ^= val2[j]; // ~dig[j]^~dig2[j]
+          val[j] ^= mask[j]; // ~dig[j]^~dig2[j]
 
         sig1 = 1;
       }
@@ -1005,123 +1127,135 @@ abstract class BigIntBinary extends BigIntDivision {
     if (len2 > len1)
       len1 = len2;
 
-    len1 -= fromIndex;
-    for (; len1 > 0 && val1[len1] == 0; --len1);
-    val1[0] = sig1 < 0 ? -len1 : len1;
+    len1 -= off;
+    for (; len1 > 0 && val[len1] == 0; --len1);
+    val[0] = sig1 < 0 ? -len1 : len1;
 
-    _debugLenSig(val1);
-    return val1;
+    _debugLenSig(val);
+    return val;
   }
 
   /**
-   * Bitwise-and-nots this number with the given number, i.e. this &= ~mask.
+   * Performs a bitwise "and-not" of the specified value-encoded mask onto the
+   * provided value-encoded number.
    *
-   * @param mask The number to bitwise-and-not with.
+   * <pre>
+   * val = val & ~mask
+   * </pre>
+   *
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @param val The value-encoded number.
+   * @param mask The number with which to perform the bitwise "and-not".
+   * @return The result of the bitwise "and-not" of the specified value-encoded
+   *         mask onto the provided value-encoded number.
    * @complexity O(n)
    */
-  public static int[] andNot(int[] val1, final int[] val2) {
-    final int fromIndex = 1;
-    int sig1 = 1, len1 = val1[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
-    len1 += fromIndex;
-    int sig2 = 1, len2 = val2[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
-    len2 += fromIndex;
+  public static int[] andNot(int[] val, final int[] mask) {
+    int sig1 = 1, len1 = val[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
+    int sig2 = 1, len2 = mask[0]; if (len2 < 0) { len2 = -len2; sig2 = -1; }
+
+    final int off = 1;
+    len1 += off;
+    len2 += off;
 
     final int mlen = Math.min(len1, len2);
     if (sig1 > 0) {
       if (sig2 > 0) {
-        for (int i = fromIndex; i < mlen; ++i)
-          val1[i] &= ~val2[i];
+        for (int i = off; i < mlen; ++i)
+          val[i] &= ~mask[i];
       }
       else {
-        int j = fromIndex;
-        while (j < mlen && val2[j] == 0)
+        int j = off;
+        while (j < mlen && mask[j] == 0)
           ++j;
 
         if (j < mlen)
-          for (val1[j] &= ~-val2[j]; ++j < mlen;)
-            val1[j] &= val2[j]; // ~~val2[j]
+          for (val[j] &= ~-mask[j]; ++j < mlen;)
+            val[j] &= mask[j]; // ~~val2[j]
 
         len1 = mlen;
       }
     }
     else {
       if (len2 > len1) {
-        if (len2 > val1.length)
-          val1 = realloc(val1, len1 - fromIndex, len2 + 3);
+        if (len2 > val.length)
+          val = realloc(val, len1 - off, len2 + 3);
 
-        System.arraycopy(val2, len1, val1, len1, len2 - len1);
+        System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
 
       if (sig2 > 0) {
-        int j = fromIndex;
-        for (; val1[j] == 0; ++j);
+        int j = off;
+        for (; val[j] == 0; ++j);
         if (j < mlen) {
-          val1[j] = -(-val1[j] & ~val2[j]);
-          for (; ++j < mlen && val1[j - 1] == 0;) // FIXME:...
-            val1[j] = -~(val1[j] | val2[j]); // -(~dig[j]&~val2[j])
+          val[j] = -(-val[j] & ~mask[j]);
+          for (; ++j < mlen && val[j - 1] == 0;) // FIXME:...
+            val[j] = -~(val[j] | mask[j]); // -(~dig[j]&~val2[j])
 
-          if (j == mlen && val1[j - 1] == 0) {
+          if (j == mlen && val[j - 1] == 0) {
             final int blen = Math.max(len1, len2);
-            while (j < blen && val1[j] == -1)
-              val1[j++] = 0; // val2[j]==dig[j]
+            while (j < blen && val[j] == -1)
+              val[j++] = 0; // val2[j]==dig[j]
 
             if (j < blen) {
-              val1[j] = -~val1[j];
+              val[j] = -~val[j];
             }
             else {
-              if (blen >= val1.length)
-                val1 = realloc(val1, len1 - 1, blen + 2);
+              if (blen >= val.length)
+                val = realloc(val, len1 - 1, blen + 2);
 
-              val1[blen] = 1;
+              val[blen] = 1;
 
               len1 = blen + 1;
-              len1 -= fromIndex;
-              val1[0] = sig1 < 0 ? -len1 : len1;
-              _debugLenSig(val1);
-              return val1;
+              len1 -= off;
+              val[0] = sig1 < 0 ? -len1 : len1;
+              _debugLenSig(val);
+              return val;
             }
 
             ++j;
           }
 
           for (; j < mlen; ++j)
-            val1[j] |= val2[j]; // ~(~dig[j]&~val2[j]);
+            val[j] |= mask[j]; // ~(~dig[j]&~val2[j]);
 
           if (len2 > len1)
             len1 = len2;
         }
       }
       else {
-        int a = val1[fromIndex], b = val2[fromIndex], j = 1 + fromIndex;
-        for (; j < mlen && (a | b) == 0; a = val1[j], b = val2[j], ++j);
+        int a = val[off], b = mask[off], j = 1 + off;
+        for (; j < mlen && (a | b) == 0; a = val[j], b = mask[j], ++j);
         if (a != 0 && b == 0) {
-          val1[j - 1] = -a;
-          for (; j < len2 && val2[j] == 0; ++j)
-            val1[j] ^= -1;
+          val[j - 1] = -a;
+          for (; j < len2 && mask[j] == 0; ++j)
+            val[j] ^= -1;
 
           if (j < len1)
-            val1[j] = ~(val1[j] | -val2[j]); // ~dig[j]&~-val2[j]);
+            val[j] = ~(val[j] | -mask[j]); // ~dig[j]&~-val2[j]);
           else
-            val1[j] = ~-val1[j]; // dig[j]==val2[j]
+            val[j] = ~-val[j]; // dig[j]==val2[j]
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mlen)
-          for (; j < mlen && val1[j] == 0; ++j);
+          for (; j < mlen && val[j] == 0; ++j);
           if (j < mlen)
-            val1[j] = -val1[j] & val2[j]; // ~~val2[j]
+            val[j] = -val[j] & mask[j]; // ~~val2[j]
 
           ++j;
         }
         else {
-          val1[j - 1] = -a & ~-b;
+          val[j - 1] = -a & ~-b;
         }
 
         for (; j < mlen; ++j)
-          val1[j] = ~val1[j] & val2[j];
+          val[j] = ~val[j] & mask[j];
 
         // FIXME: This was hacked together...
-        if (len2 > 2 && val1[len2 - 1] == 0)
+        if (len2 > 2 && val[len2 - 1] == 0)
           --len2;
 
         len1 = len2;
@@ -1129,26 +1263,30 @@ abstract class BigIntBinary extends BigIntDivision {
       }
     }
 
-    len1 -= fromIndex;
+    len1 -= off;
     if (len1 > 0)
-      for (; val1[len1] == 0; --len1);
+      for (; val[len1] == 0; --len1);
 
-    val1[0] = sig1 < 0 ? -len1 : len1;
-    _debugLenSig(val1);
-    return val1;
+    val[0] = sig1 < 0 ? -len1 : len1;
+    _debugLenSig(val);
+    return val;
   }
 
   /**
-   * Inverts the sign and all bits of the provided number.
+   * Inverts the sign and all bits of the provided value-encoded number.
    *
    * <pre>
    * val = ~val
    * </pre>
    *
    * The identity {@code -val = ~val + 1} holds.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The number.
-   * @return {@code ~this}
+   * @param val The value-encoded number.
+   * @return The result of the bitwise "not" of the provided value-encoded
+   *         number.
    * @complexity O(n)
    */
   public static int[] not(int[] val) {
@@ -1171,16 +1309,21 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Returns a byte array containing the two's-complement representation of this
-   * {@link BigInt}. The byte array will be in <i>big-endian</i> byte-order: the
-   * most significant byte is in the zeroth element. The array will contain the
-   * minimum number of bytes required to represent this {@link BigInt},
-   * including at least one sign bit, which is {@code (ceil((this.bitLength() +
-   * 1)/8))}. (This representation is compatible with the {@link #BigInt(byte[])
-   * (byte[])} constructor.)
+   * Returns a byte array containing the two's-complement representation of the
+   * provided value-encoded number. The byte array will be in <i>big-endian</i>
+   * byte-order: the most significant byte is in the zeroth element. The array
+   * will contain the minimum number of bytes required to represent the provided
+   * number, including at least one sign bit, which is
+   * {@code (ceil((bitLength(val) + 1) / 8))}. (This representation is
+   * compatible with {@link #assign(int[],byte[],boolean)
+   * BigInt.assign(int[],false)}).
+   * <p>
+   * <i><b>Note:</b> <i>big-endian</i> byte-order is chosen for interoperability
+   * with {@link java.math.BigInteger#toByteArray()}.</i>
    *
-   * @return A byte array containing the two's-complement representation of this
-   *         {@link BigInt}.
+   * @param val The value-encoded number.
+   * @return A byte array containing the two's-complement representation of the
+   *         provided value-encoded number.
    */
   public static byte[] toByteArray(final int[] val) {
     int sig = 0, len = val[0]; if (len < 0) { len = -len; sig = -1; }
