@@ -1,17 +1,30 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
+ * Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- * You should have received a copy of The MIT License (MIT) along with this
- * program. If not, see <http://opensource.org/licenses/MIT/>.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
 package org.huldra.math;
@@ -23,11 +36,13 @@ abstract class BigIntBinary extends BigIntDivision {
 
   /**
    * Returns the number of bits in the two's complement representation of the
-   * provided value-encoded number that differ from its sign bit.
+   * provided {@linkplain BigInt#val() value-encoded number} that differ from
+   * its sign bit.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return Number of bits in the two's complement representation of the
-   *         provided value-encoded number that differ from its sign bit.
+   *         provided {@linkplain BigInt#val() value-encoded number} that differ
+   *         from its sign bit.
    * @complexity O(n)
    */
   public static int bitCount(final int[] val) {
@@ -50,10 +65,10 @@ abstract class BigIntBinary extends BigIntDivision {
 
   /**
    * Returns the number of bits in the minimal two's-complement representation
-   * of the provided value-encoded number, <em>excluding</em> a sign bit. For
-   * positive the provided value-encoded numbers, this is equivalent to the
-   * number of bits in the ordinary binary representation. For zero this method
-   * returns {@code 0}.
+   * of the provided {@linkplain BigInt#val() value-encoded number},
+   * <em>excluding</em> a sign bit. For positive numbers, this is equivalent to
+   * the number of bits in the ordinary binary representation. For zero this
+   * method returns {@code 0}.
    * <p>
    * Computes:
    *
@@ -61,9 +76,10 @@ abstract class BigIntBinary extends BigIntDivision {
    * ceil(log2(val < 0 ? -val : val + 1))
    * </pre>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return Number of bits in the minimal two's-complement representation of
-   *         the provided value-encoded number, <em>excluding</em> a sign bit.
+   *         the provided {@linkplain BigInt#val() value-encoded number},
+   *         <em>excluding</em> a sign bit.
    * @complexity O(n)
    */
   public static int bitLength(final int[] val) {
@@ -96,9 +112,9 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts the provided value-encoded number right by the specified number of
-   * bits. The shift distance, {@code num}, may be negative, in which case this
-   * method performs a left shift.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by
+   * the specified number of bits. The shift distance, {@code num}, may be
+   * negative, in which case this method performs a left shift.
    *
    * <pre>
    * val >> num
@@ -107,10 +123,10 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the shift requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
-   * @return The result of shifting the provided value-encoded number right by
-   *         the specified number of bits.
+   * @return The result of shifting the provided {@linkplain BigInt#val()
+   *         value-encoded number}} right by the specified number of bits.
    * @complexity O(n)
    */
   public static int[] shiftRight(final int[] val, final int num) {
@@ -159,10 +175,10 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts the provided value-encoded number by {@code 32 * num} bits to the
-   * right.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} by
+   * {@code 32 * num} bits to the right.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The number of limbs of the number to shift.
    * @param num The number of {@code bits / 32} by which to shift.
    * @return The length of the number, which may have changed due to the shift.
@@ -174,10 +190,10 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts the provided value-encoded number right by the specified number of
-   * bits (less than 32).
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by
+   * the specified number of bits (less than 32).
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The number of limbs of the number to shift.
    * @param num The number of bits by which to shift.
    * @return The length of the number, which may have changed due to the shift.
@@ -194,9 +210,9 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts the provided value-encoded number left by the specified number of
-   * bits. The shift distance, {@code num}, may be negative, in which case this
-   * method performs a right shift.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by
+   * the specified number of bits. The shift distance, {@code num}, may be
+   * negative, in which case this method performs a right shift.
    *
    * <pre>
    * val << num
@@ -205,10 +221,10 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the shift requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
-   * @return The result of shifting the provided value-encoded number left by
-   *         the specified number of bits.
+   * @return The result of shifting the provided {@linkplain BigInt#val()
+   *         value-encoded number} left by the specified number of bits.
    * @complexity O(n)
    */
   public static int[] shiftLeft(final int[] val, final int num) {
@@ -240,10 +256,10 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts the provided value-encoded number by {@code 32 * num} bits to the
-   * right.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} by
+   * {@code 32 * num} bits to the right.
    *
-   * @param val The value-encoded number to shift.
+   * @param val The {@linkplain BigInt#val() value-encoded number} to shift.
    * @param len The number of limbs of the number to shift.
    * @param sig The sign of the number to shift.
    * @param num The number of {@code bits / 32} by which to shift.
@@ -271,19 +287,20 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Shifts the provided value-encoded number left by the specified number of
-   * bits (less than 32) starting at the given offset ({@code off}).
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by
+   * the specified number of bits (less than 32) starting at the given offset
+   * ({@code off}).
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the shift requires a larger array.</i>
    *
-   * @param val The value-encoded number to shift.
+   * @param val The {@linkplain BigInt#val() value-encoded number} to shift.
    * @param off The limb at which to start shifting.
    * @param len The number of limbs of the number to shift.
    * @param sig The sign of the number to shift.
    * @param num The number of bits by which to shift.
-   * @return The result of shifting the provided value-encoded number left by
-   *         the specified number of bits.
+   * @return The result of shifting the provided {@linkplain BigInt#val()
+   *         value-encoded number} left by the specified number of bits.
    * @complexity O(n)
    */
   private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num) {
@@ -314,7 +331,8 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Tests if the specified bit is set in the provided value-encoded number.
+   * Tests if the specified bit is set in the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    * <p>
    * Computes:
    *
@@ -322,10 +340,11 @@ abstract class BigIntBinary extends BigIntDivision {
    * val | (1 << n)
    * </pre>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The index of the bit to test.
-   * @return {@code true} if the given bit is set in the provided value-encoded
-   *         number, otherwise {@code false}.
+   * @return {@code true} if the given bit is set in the provided
+   *         {@linkplain BigInt#val() value-encoded number,} otherwise
+   *         {@code false}.
    * @complexity O(n)
    */
   public static boolean testBit(final int[] val, final int bit) {
@@ -352,15 +371,17 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Sets the specified bit in the provided value-encoded number.
+   * Sets the specified bit in the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to set.
    * @return The result of setting the specified bit in the provided
-   *         value-encoded number.
+   *         {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(n)
    */
   public static int[] setBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -421,15 +442,17 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Clears the specified bit in the provided value-encoded number.
+   * Clears the specified bit in the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to clear.
    * @return The result of clearing the specified bit in the provided
-   *         value-encoded number.
+   *         {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(n)
    */
   public static int[] clearBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -509,15 +532,17 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Flips the specified bit in the provided value-encoded number.
+   * Flips the specified bit in the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to flip.
    * @return The result of flipping the specified bit in the provided
-   *         value-encoded number.
+   *         {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(n)
    */
   public static int[] flipBit(int[] val, final int bit) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -600,8 +625,9 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Performs a bitwise "and" of the specified value-encoded mask onto the
-   * provided value-encoded number.
+   * Performs a bitwise "and" of the specified {@linkplain BigInt#val()
+   * value-encoded mask} onto the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    *
    * <pre>
    * val = val & mask
@@ -610,10 +636,11 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "and".
-   * @return The result of the bitwise "and" of the specified value-encoded mask
-   *         onto the provided value-encoded number.
+   * @return The result of the bitwise "and" of the specified
+   *         {@linkplain BigInt#val() value-encoded mask} onto the provided
+   *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] and(int[] val, final int[] mask) {
@@ -787,8 +814,9 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Performs a bitwise "or" of the specified value-encoded mask onto the
-   * provided value-encoded number.
+   * Performs a bitwise "or" of the specified {@linkplain BigInt#val()
+   * value-encoded mask} onto the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    *
    * <pre>
    * val = val | mask
@@ -797,10 +825,11 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "or".
-   * @return The result of the bitwise "or" of the specified value-encoded mask
-   *         onto the provided value-encoded number.
+   * @return The result of the bitwise "or" of the specified
+   *         {@linkplain BigInt#val() value-encoded mask} onto the provided
+   *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] or(int[] val, final int[] mask) {
@@ -940,8 +969,9 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Performs a bitwise "xor" of the specified value-encoded mask onto the
-   * provided value-encoded number.
+   * Performs a bitwise "xor" of the specified {@linkplain BigInt#val()
+   * value-encoded mask} onto the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    *
    * <pre>
    * val = val ^ mask
@@ -950,10 +980,11 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "xor".
-   * @return The result of the bitwise "xor" of the specified value-encoded mask
-   *         onto the provided value-encoded number.
+   * @return The result of the bitwise "xor" of the specified
+   *         {@linkplain BigInt#val() value-encoded mask} onto the provided
+   *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] xor(int[] val, int[] mask) {
@@ -1136,8 +1167,9 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Performs a bitwise "and-not" of the specified value-encoded mask onto the
-   * provided value-encoded number.
+   * Performs a bitwise "and-not" of the specified {@linkplain BigInt#val()
+   * value-encoded mask} onto the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    *
    * <pre>
    * val = val & ~mask
@@ -1146,10 +1178,11 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "and-not".
    * @return The result of the bitwise "and-not" of the specified value-encoded
-   *         mask onto the provided value-encoded number.
+   *         mask onto the provided {@linkplain BigInt#val() value-encoded
+   *         number}.
    * @complexity O(n)
    */
   public static int[] andNot(int[] val, final int[] mask) {
@@ -1273,7 +1306,8 @@ abstract class BigIntBinary extends BigIntDivision {
   }
 
   /**
-   * Inverts the sign and all bits of the provided value-encoded number.
+   * Inverts the sign and all bits of the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    *
    * <pre>
    * val = ~val
@@ -1284,9 +1318,9 @@ abstract class BigIntBinary extends BigIntDivision {
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
-   * @param val The value-encoded number.
-   * @return The result of the bitwise "not" of the provided value-encoded
-   *         number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The result of the bitwise "not" of the provided
+   *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] not(int[] val) {
@@ -1310,18 +1344,18 @@ abstract class BigIntBinary extends BigIntDivision {
 
   /**
    * Returns a byte array containing the two's-complement representation of the
-   * provided value-encoded number. The byte array will be in the endian order
-   * as specified by the {@code littleEndian} argument. The array will contain
-   * the minimum number of bytes required to represent the provided number,
-   * including at least one sign bit, which is
+   * provided {@linkplain BigInt#val() value-encoded number}. The byte array
+   * will be in the endian order as specified by the {@code littleEndian}
+   * argument. The array will contain the minimum number of bytes required to
+   * represent the provided number, including at least one sign bit, which is
    * {@code (ceil((bitLength(val) + 1) / 8))}.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param littleEndian Whether the produced byte array is to be encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
    * @return A byte array containing the two's-complement representation of the
-   *         provided value-encoded number.
+   *         provided {@linkplain BigInt#val() value-encoded number}.
    */
   public static byte[] toByteArray(final int[] val, final boolean littleEndian) {
     int sig = 0, len = val[0]; if (len < 0) { len = -len; sig = -1; }

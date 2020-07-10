@@ -1,17 +1,30 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
+ * Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- * You should have received a copy of The MIT License (MIT) along with this
- * program. If not, see <http://opensource.org/licenses/MIT/>.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
 package org.huldra.math;
@@ -19,28 +32,45 @@ package org.huldra.math;
 import java.util.concurrent.ExecutionException;
 
 /**
- * <p>
- * A class for arbitrary-precision integer arithmetic purely written in Java.
- * </p>
- * <p>
- * This class does what {@link java.math.BigInteger} doesn't.<br />
- * It is <b>faster</b>, and it is <b>mutable</b>!<br />
- * It supports <b>ints</b> and <b>longs</b> as parameters!<br />
- * It has a way faster {@link #toString()} method!<br />
- * It utilizes a faster multiplication algorithm for those nasty big numbers!
- * </p>
- * <p>
- * Get it today! Because performance matters (and we like Java).
- * </p>
+ * An arbitrary-precision integer replacement for {@link java.math.BigInteger},
+ * with the following differences:
+ * <ol>
+ * <li><b>Mutable:</b> {@link BigInt} is mutable, to allow for reuse of
+ * allocated arrays.</li>
+ * <li><b>Generally faster arithmetic:</b> The arithmetic algorithms in
+ * {@link BigInt} are implemented with optimized memory and runtime performance
+ * in mind.</li>
+ * <li><b>Faster multiplication of large numbers:</b> Support parallel
+ * multiplication algorithm for very large numbers.</li>
+ * <li><b>Support for {@code int} and {@code long} parameters and return
+ * types:</b> {@link BigInt} does not require its parameters or return types to
+ * be {@link BigInt}, saving from unnecessary instantiation of transient
+ * {@link BigInt} objects.</li>
+ * <li><b>No preemptive exception checking:</b> The {@link BigInt} does not
+ * preemptively check for exceptions. If a programmer divides by zero he has
+ * only himself to blame. And, it is ok to have undefined behavior.</li>
+ * <li><b>Support for "object-less" operation</b> All methods in {@link BigInt}
+ * are available in static form, allowing <i>bare {@code int[]}
+ * {@linkplain #val() value-encoded number} arrays</i> to be used without a
+ * {@link BigInt} instance, providing further reduction in heap memory
+ * consumption.</li>
+ * </ol>
  *
- * @author Simon Klein
- * @version 0.7
+ * @author Seva Safris
  */
 public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
   /**
-   * The <i>value array</i> representing the signed magnitude of the number:
+   * The {@linkplain #val() value-encoded number}.
+   *
+   * @see #val()
+   */
+  private int[] val;
+
+  /**
+   * Returns the <i>{@linkplain #val() value-encoded number}</i>, which is an
+   * {@code int[]} with the following encoding:
    * <ol>
    * <li><b>{@code val[0]}</b>: <ins>signed length</ins>:
    * <code>{Integer.MIN_VALUE - 2, .., -1, 0, 1, .., Integer.MAX_VALUE - 1}</code><br>
@@ -59,19 +89,21 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * </ul>
    * </li></li>
    * </ol>
+   *
+   * @return The <i>{@linkplain #val() value-encoded number}</i>.
    */
-  private int[] val;
-
   public int[] val() {
     return val;
   }
 
   /**
-   * Creates a BigInt from the given parameters. The input-array will be used as
-   * is and not be copied.
+   * Creates a {@link BigInt} from the provided {@linkplain #val() value-encoded
+   * number}.
+   * <p>
+   * <i><b>Note:</b> The provided array will be used used as-is and not
+   * copied.</i>
    *
-   * @param val The magnitude of the number, the first position gives the least
-   *          significant 32 bits.
+   * @param val The {@linkplain #val() value-encoded number}.
    * @complexity O(1)
    */
   public BigInt(final int[] val) {
@@ -79,150 +111,204 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Creates a BigInt from the given parameters. The contents of the input-array
-   * will be copied.
+   * Creates a {@link BigInt} from the provided byte array containing the
+   * two's-complement binary representation of a {@linkplain #val() value-encoded <code>int[]</code>}.
    *
-   * @param mag The magnitude of the number, the first position gives the least
-   *          significant 8 bits.
-   * @param len The (first) number of entries of v that are considered part of
-   *          the number.
-   * @complexity O(n)
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain #val() value-encoded <code>int[]</code>}.
+   * @param off The start offset of the binary representation.
+   * @param len The number of bytes to use.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @complexity O(1)
    */
-  public BigInt(final byte[] mag, int off, int len, final boolean isLittleEndian) {
-    val = assign(emptyVal, mag, off, len, isLittleEndian);
-  }
-
-  public BigInt(final byte[] mag, final boolean isLittleEndian) {
-    val = assign(emptyVal, mag, 0, mag.length, isLittleEndian);
+  public BigInt(final byte[] mag, int off, int len, final boolean littleEndian) {
+    val = assign(emptyVal, mag, off, len, littleEndian);
   }
 
   /**
-   * Creates a BigInt from the given parameters. The input-value will be
-   * interpreted as unsigned.
+   * Creates a {@link BigInt} from the provided byte array containing the
+   * two's-complement binary representation of a {@linkplain #val() value-encoded <code>int[]</code>}.
    *
-   * @param sig The sign of the number.
-   * @param mag The magnitude of the number.
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain #val() value-encoded <code>int[]</code>}.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @complexity O(1)
+   */
+  public BigInt(final byte[] mag, final boolean littleEndian) {
+    val = assign(emptyVal, mag, 0, mag.length, littleEndian);
+  }
+
+  /**
+   * Creates a {@link BigInt} from the provided <i>unsigned</i> {@code int}
+   * magnitude.
+   *
+   * @param sig The sign of the unsigned {@code int}.
+   * @param mag The magnitude (unsigned).
    * @complexity O(1)
    */
   public BigInt(final int sig, final int mag) {
-    val = assign(alloc(2), sig, mag);
+    val = mag == 0 ? setToZero0(alloc(1)) : assign0(alloc(2), sig, mag);
   }
 
   /**
-   * Creates a BigInt from the given parameters. The input-value will be
-   * interpreted as unsigned.
+   * Creates a {@link BigInt} from the provided <i>unsigned</i> {@code long}
+   * magnitude.
    *
-   * @param sig The sign of the number.
-   * @param mag The magnitude of the number.
+   * @param sig The sign of the unsigned {@code int}.
+   * @param mag The magnitude (unsigned).
    * @complexity O(1)
    */
   public BigInt(final int sig, final long mag) {
-    val = assign(alloc(3), sig, mag);
+    if (mag == 0) {
+      val = setToZero0(alloc(1));
+    }
+    else {
+      final int magh = (int)(mag >>> 32);
+      val = magh != 0 ? assign0(alloc(3), sig, mag, magh) : assign0(alloc(2), sig, (int)mag);
+    }
   }
 
   /**
-   * Creates a BigInt from the given int. The input-value will be interpreted a
-   * signed value.
+   * Creates a {@link BigInt} from the provided {@code int} magnitude.
    *
-   * @param mag The value of the number.
+   * @param mag The magnitude.
    * @complexity O(1)
    */
   public BigInt(final int mag) {
-    val = assign(alloc(2), mag);
+    val = mag == 0 ? setToZero0(alloc(1)) : mag < 0 ? assign0(alloc(2), -1, -mag) : assign0(alloc(2), 1, mag);
   }
 
   /**
-   * Creates a BigInt from the given long. The input-value will be interpreted a
-   * signed value.
+   * Creates a {@link BigInt} from the provided {@code long} magnitude.
    *
-   * @param mag The value of the number.
+   * @param mag The magnitude.
    * @complexity O(1)
    */
-  public BigInt(final long mag) {
-    val = assign(alloc(3), mag);
+  public BigInt(long mag) {
+    if (mag == 0) {
+      val = setToZero0(alloc(1));
+    }
+    else {
+      int sig = 1; if (mag < 0) { mag = -mag; sig = -1; }
+      final int magh = (int)(mag >>> 32);
+      val = magh != 0 ? assign0(alloc(3), sig, mag, magh) : assign0(alloc(2), sig, (int)mag);
+    }
   }
 
   /**
-   * Creates a BigInt from the given string.
+   * Creates a {@link BigInt} from the provided number as a string.
    *
-   * @param s A string representing the number in decimal.
-   * @complexity O(n^2)
+   * @param s The number as a string.
+   * @complexity O(1)
    */
   public BigInt(final String s) {
     val = assign(emptyVal, s);
   }
 
   /**
-   * Creates a BigInt from the given char-array.
+   * Creates a {@link BigInt} from the provided number as a {@code char[]}.
    *
-   * @param s A char array representing the number in decimal.
-   * @complexity O(n^2)
+   * @param s The number as a string.
+   * @complexity O(1)
    */
   public BigInt(final char[] s) {
     val = assign(emptyVal, s);
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Creates a {@link BigInt} from the provided {@link BigInt}.
+   * <p>
+   * <i><b>Note:</b> This is a <i>copy constructor</i> that sets the
+   * {@linkplain #val() value-encoded number} of this {@link BigInt} to a
+   * <b>clone</b> of the {@linkplain #val() value-encoded number} of the
+   * provided {@link BigInt}.</i>
    *
-   * @param The BigInt to copy/assign to this BigInt.
+   * @param b The {@link BigInt}.
    * @complexity O(n)
+   * @see #clone()
    */
-  // FIXME: Javadoc?!: This is not a clone!
+  public BigInt(final BigInt b) {
+    val = b.val.clone();
+  }
+
+  /**
+   * Assigns (copies) the value of the provided {@link BigInt} to this
+   * {@link BigInt}.
+   *
+   * @param b The {@link BigInt}.
+   * @return {@code this}
+   */
   public BigInt assign(final BigInt b) {
+    final int len = Math.abs(val[0]) + 1;
+    copy(val, b.val, len, len);
     return assign(b.val);
   }
 
   /**
-   * Assigns the given BigInt parameter to this number. The input magnitude
-   * array will be used as is and not copied.
+   * Assigns the specified {@linkplain #val() value-encoded number} to this
+   * {@link BigInt}.
+   * <p>
+   * <i><b>Note:</b> The provided array will be used used as-is and not
+   * copied.</i>
    *
-   * @param sign The sign of the number.
-   * @param val The magnitude of the number.
-   * @param len The length of the magnitude array to be used.
+   * @param val The {@linkplain #val() value-encoded number}.
+   * @return {@code this}
    * @complexity O(1)
    */
   public BigInt assign(final int[] val) {
+    // FIXME: Should this assert that val.length != 0?
     this.val = val;
     _debugLenSig(val);
     return this;
   }
 
   /**
-   * Assigns the given BigInt parameter to this number. Assumes no leading
-   * zeroes of the input-array, i.e. that v[vlen-1]!=0, except for the case when
-   * vlen==1.
+   * Assigns a byte array containing the two's-complement binary representation
+   * of a {@linkplain #val() value-encoded <code>int[]</code>} to this
+   * {@link BigInt}.
    *
-   * @param sig The sign of the number.
-   * @param mag The magnitude of the number.
-   * @param len The length of the magnitude array to be used.
-   * @complexity O(n)
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain #val() value-encoded <code>int[]</code>}.
+   * @param off The start offset of the binary representation.
+   * @param len The number of bytes to use.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return {@code this}
+   * @complexity O(1)
    */
-  public BigInt assign(final byte[] mag, final int off, final int len, final boolean isLittleEndian) {
-    val = assign(val, mag, off, len, isLittleEndian);
-    return this;
-  }
-
-  public BigInt assign(final byte[] mag, final boolean isLittleEndian) {
-    val = assign(val, mag, 0, mag.length, isLittleEndian);
+  public BigInt assign(final byte[] mag, final int off, final int len, final boolean littleEndian) {
+    val = assign(val, mag, off, len, littleEndian);
     return this;
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Assigns a byte array containing the two's-complement binary representation
+   * of a {@linkplain #val() value-encoded <code>int[]</code>} to this
+   * {@link BigInt}.
    *
-   * @param s A char array representing the number in decimal.
-   * @complexity O(n^2)
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain #val() value-encoded <code>int[]</code>}.
+   * @param littleEndian Whether the specified byte array is encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return {@code this}
+   * @complexity O(1)
    */
-  public BigInt assign(final char[] s) {
-    val = assign(val, s);
+  public BigInt assign(final byte[] mag, final boolean littleEndian) {
+    val = assign(val, mag, 0, mag.length, littleEndian);
     return this;
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Assigns the specified number as a string to this {@link BigInt}.
    *
-   * @param s A string representing the number in decimal.
+   * @param s The number as a {@code char[]}.
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt assign(final String s) {
@@ -231,10 +317,23 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Assigns the specified number as a {@code char[]} to this {@link BigInt}.
    *
-   * @param sig The sign of the number.
-   * @param mag The magnitude of the number (will be interpreted as unsigned).
+   * @param s The number as a {@code char[]}.
+   * @return {@code this}
+   * @complexity O(n^2)
+   */
+  public BigInt assign(final char[] s) {
+    val = assign(val, s);
+    return this;
+  }
+
+  /**
+   * Assigns an <i>unsigned</i> {@code int} magnitude to this {@link BigInt}.
+   *
+   * @param sig The sign of the unsigned {@code int}.
+   * @param mag The magnitude (unsigned).
+   * @return {@code this}
    * @complexity O(1)
    */
   public BigInt assign(final int sig, final int mag) {
@@ -243,10 +342,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Assigns an <i>unsigned</i> {@code long} magnitude to this {@link BigInt}.
    *
-   * @param sig The sign of the number.
-   * @param mag The magnitude of the number (will be interpreted as unsigned).
+   * @param sig The sign of the unsigned {@code int}.
+   * @param mag The magnitude (unsigned).
+   * @return {@code this}
    * @complexity O(1)
    */
   public BigInt assign(final int sig, final long mag) {
@@ -255,9 +355,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Assigns an {@code int} magnitude to this {@link BigInt}.
    *
-   * @param mag The number to be assigned.
+   * @param mag The magnitude.
+   * @return {@code this}
    * @complexity O(1)
    */
   public BigInt assign(final int mag) {
@@ -266,9 +367,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Assigns the given number to this BigInt object.
+   * Assigns an {@code long} magnitude to this {@link BigInt}.
    *
-   * @param mag The number to be assigned.
+   * @param mag The magnitude.
+   * @return {@code this}
    * @complexity O(1)
    */
   public BigInt assign(final long mag) {
@@ -277,13 +379,13 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Sets the magnitude of this {@link BigInt} its absolute value.
+   * Sets the magnitude of this {@link BigInt} to its absolute value.
    *
    * <pre>
    * {@code this = | this |}
    * </pre>
    *
-   * @return This {@link BigInt}.
+   * @return {@code this}
    */
   public BigInt abs() {
     abs(val);
@@ -312,17 +414,31 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
     return compareTo(v) < 0 ? this : v;
   }
 
+  /**
+   * Returns the signum of this {@link BigInt}.
+   *
+   * @return -1, 0 or 1 as the value of the provided {@linkplain #val() value-encoded number} is negative, zero or positive.
+   * @complexity O(1)
+   */
   public int signum() {
     return signum(val);
   }
 
+  /**
+   * Tests if this {@link BigInt} is zero.
+   *
+   * @return {@code true} if this {@link BigInt} is zero, otherwise
+   *         {@code false}.
+   * @complexity O(1)
+   */
   public boolean isZero() {
     return isZero(val);
   }
 
   /**
-   * Sets this number to zero.
+   * Sets this {@link BigInt} to zero.
    *
+   * @return {@code this}
    * @complexity O(1)
    */
   public BigInt setToZero() {
@@ -331,11 +447,16 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Adds an unsigned {@code int} to this number.
+   * Adds an <i>unsigned</i> {@code int} to this {@link BigInt}.
    *
+   * <pre>
+   * this = this + add
+   * </pre>
+   *
+   * @param sig The sign of the unsigned {@code int} to add.
    * @param add The amount to add (unsigned).
+   * @return {@code this}
    * @complexity O(n)
-   * @amortized O(1)
    */
   public BigInt add(final int sig, final int add) {
     val = add(val, sig, add);
@@ -343,47 +464,47 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Subtracts an unsigned {@code int} from this number.
+   * Adds an {@code int} to this {@link BigInt}.
    *
-   * @param sub The amount to subtract (unsigned).
-   * @complexity O(n)
-   * @amortized O(1)
-   */
-  public BigInt usub(final int sig, final int sub) {
-    val = sub(val, sig, sub);
-    return this;
-  }
-
-  /**
-   * Subtracts an unsigned {@code long} from this number.
-   *
-   * @param sub The amount to subtract (unsigned).
-   * @complexity O(n)
-   * @amortized O(1)
-   */
-  public BigInt usub(final int sig, final long sub) {
-    val = sub(val, sig, sub);
-    return this;
-  }
-
-  /**
-   * Adds an {@code int} to this number.
+   * <pre>
+   * this = this + add
+   * </pre>
    *
    * @param add The amount to add.
+   * @return {@code this}
    * @complexity O(n)
    */
-  // Has not amortized O(1) due to the risk of
-  // alternating +1 -1 on continuous sequence of
-  // 1-set bits.
   public BigInt add(final int add) {
     val = add(val, add);
     return this;
   }
 
   /**
-   * Adds a {@code long} to this number.
+   * Adds an <i>unsigned</i> {@code long} to this {@link BigInt}.
+   *
+   * <pre>
+   * this = this + add
+   * </pre>
+   *
+   * @param sig The sign of the unsigned {@code long} to add.
+   * @param add The amount to add (unsigned).
+   * @return {@code this}
+   * @complexity O(n)
+   */
+  public BigInt add(final int sig, final long add) {
+    val = add(val, sig, add);
+    return this;
+  }
+
+  /**
+   * Adds a {@code long} to this {@link BigInt}.
+   *
+   * <pre>
+   * this = this + add
+   * </pre>
    *
    * @param add The amount to add.
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt add(final long add) {
@@ -392,21 +513,14 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Adds an unsigned {@code long} to this number.
+   * Adds a {@link BigInt} to this {@link BigInt}.
    *
-   * @param add The amount to add (unsigned).
-   * @complexity O(n)
-   * @amortized O(1)
-   */
-  public BigInt add(final int sig, final long add) {
-    val = add(val, sig, add);
-    return this;
-  }
-
-  /**
-   * Adds a {@link BigInt} to this number.
+   * <pre>
+   * this = this + add
+   * </pre>
    *
-   * @param add The number to add.
+   * @param add The {@link BigInt} to add.
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt add(final BigInt add) {
@@ -415,20 +529,15 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Subtracts an {@code int} from this number.
+   * Subtracts an <i>unsigned</i> {@code int} from this {@link BigInt}.
    *
-   * @param sub The amount to subtract.
-   * @complexity O(n)
-   */
-  public BigInt sub(final int sub) {
-    val = sub(val, sub);
-    return this;
-  }
-
-  /**
-   * Subtracts an {@code int} from this number.
+   * <pre>
+   * this = this - sub
+   * </pre>
    *
-   * @param sub The amount to subtract.
+   * @param sig The sign of the unsigned {@code int} to subtract.
+   * @param sub The amount to subtract (unsigned).
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt sub(final int sig, final int sub) {
@@ -437,20 +546,31 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Subtracts a {@code long} from this number.
+   * Subtracts an {@code int} from this {@link BigInt}.
    *
-   * @param s The amount to subtract.
+   * <pre>
+   * this = this - sub
+   * </pre>
+   *
+   * @param sub The amount to subtract.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt sub(final long sub) {
+  public BigInt sub(final int sub) {
     val = sub(val, sub);
     return this;
   }
 
   /**
-   * Subtracts a {@code long} from this number.
+   * Subtracts an <i>unsigned</i> {@code long} from this {@link BigInt}.
    *
-   * @param s The amount to subtract.
+   * <pre>
+   * this = this - sub
+   * </pre>
+   *
+   * @param sig The sign of the unsigned {@code long} to subtract.
+   * @param sub The amount to subtract (unsigned).
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt sub(final int sig, final long sub) {
@@ -459,9 +579,30 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Subtracts a {@link BigInt} from this number.
+   * Subtracts a {@code long} from this {@link BigInt}.
    *
-   * @param sub The number to subtract.
+   * <pre>
+   * this = this - sub
+   * </pre>
+   *
+   * @param sub The amount to subtract.
+   * @return {@code this}
+   * @complexity O(n)
+   */
+  public BigInt sub(final long sub) {
+    val = sub(val, sub);
+    return this;
+  }
+
+  /**
+   * Subtracts a {@link BigInt} from this {@link BigInt}.
+   *
+   * <pre>
+   * this = this - sub
+   * </pre>
+   *
+   * @param sub The {@link BigInt} to subtract.
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt sub(final BigInt sub) {
@@ -470,9 +611,12 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Multiplies this number with an unsigned {@code int}.
+   * Multiplies this {@link BigInt} by an <i>unsigned</i> {@code int}
+   * multiplicand.
    *
-   * @param mul The amount by which to multiply (unsigned).
+   * @param sig The sign of the unsigned {@code int} multiplier.
+   * @param mul The multiplier (unsigned).
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt mul(final int sig, final int mul) {
@@ -481,9 +625,24 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Multiplies this number with an unsigned {@code long}.
+   * Multiplies this {@link BigInt} by an {@code int} multiplicand.
    *
-   * @param mul The amount by which to multiply (unsigned).
+   * @param mul The multiplier.
+   * @return {@code this}
+   * @complexity O(n)
+   */
+  public BigInt mul(final int mul) {
+    val = mul(val, mul);
+    return this;
+  }
+
+  /**
+   * Multiplies this {@link BigInt} by an <i>unsigned</i> {@code long}
+   * multiplicand.
+   *
+   * @param sig The sign of the unsigned {@code int} multiplier.
+   * @param mul The multiplier (unsigned).
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt mul(final int sig, final long mul) {
@@ -492,60 +651,56 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Multiplies this number by an {@code int}.
+   * Multiplies this {@link BigInt} by a {@code long} multiplicand.
    *
-   * @param m The amount by which to multiply.
+   * @param mul The multiplier.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt mul(final int m) {
-    val = mul(val, m);
+  public BigInt mul(final long mul) {
+    val = mul(val, mul);
     return this;
   }
 
   /**
-   * Multiplies this number by a {@code long}.
+   * Multiplies this {@link BigInt} by a {@link BigInt} multiplicand.
    *
-   * @param m The amount by which to multiply.
-   * @complexity O(n)
-   */
-  public BigInt mul(long m) {
-    val = mul(val, m);
-    return this;
-  }
-
-  /**
-   * Multiplies this number by a {@link BigInt}.
-   * <p>
-   * Chooses the appropriate algorithm with regards to the size of the numbers.
-   *
-   * @param m The amount by which to multiply.
+   * @param mul The multiplier.
+   * @return {@code this}
    * @complexity O(n^2) - O(n log n)
    */
-  public BigInt mul(final BigInt m) {
-    val = mul(val, m.val);
+  public BigInt mul(final BigInt mul) {
+    val = mul(val, mul.val);
     return this;
   }
 
   /**
-   * Multiplies this number by the given {@link BigInt} using the Karatsuba
-   * algorithm.
+   * Multiplies this {@link BigInt} by the given {@link BigInt} using the
+   * Karatsuba algorithm.
    * <p>
-   * NOTE: Size of mag1 and mag2 must be the same!
+   * <i><b>Note:</b> Size of mag1 and mag2 must be the same.</i>
    *
-   * @param m The amount to multiply.
-   * @param p Whether to attempt to use the parallel algorithm.
+   * @param mul The amount to multiply.
+   * @param parallel Whether to attempt to use the parallel algorithm.
+   * @return {@code this}
+   * @throws ExecutionException If the computation in a worker thread threw an
+   *           exception.
+   * @throws InterruptedException If the current thread was interrupted while
+   *           waiting.
+   * @complexity O(n^1.585)
    */
-  BigInt karatsuba(final BigInt m, final boolean p) throws ExecutionException, InterruptedException {
-    val = karatsuba(val, m.val, p);
+  BigInt karatsuba(final BigInt mul, final boolean parallel) throws ExecutionException, InterruptedException {
+    val = karatsuba(val, mul.val, parallel);
     return this;
   }
 
   /**
-   * Divides this number by an unsigned {@code int}.
-   * <p>
-   * Division by zero is undefined.
+   * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code int}
+   * divisor.
    *
-   * @param div The number by which to divide.
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt div(final int sig, final int div) {
@@ -554,24 +709,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Divides this number by an unsigned {@code long}.
-   * <p>
-   * Division by zero is undefined.
+   * Divides this {@link BigInt} by the provided {@code int} divisor.
    *
-   * @param div The number by which to divide.
-   * @complexity O(n^2)
-   */
-  public BigInt div(final int sig, final long div) {
-    divRem(val, sig, div);
-    return this;
-  }
-
-  /**
-   * Divides this number by an {@code int}.
-   * <p>
-   * Division by zero is undefined.
-   *
-   * @param div The number by which to divide.
+   * @param div The divisor.
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt div(final int div) {
@@ -580,11 +721,24 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Divides this number by a {@code long}.
-   * <p>
-   * Division by zero is undefined.
+   * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code long}
+   * divisor.
    *
-   * @param div The number by which to divide.
+   * @param sig The sign of the unsigned {@code long} divisor.
+   * @param div The divisor (unsigned).
+   * @return {@code this}
+   * @complexity O(n^2)
+   */
+  public BigInt div(final int sig, final long div) {
+    divRem(val, sig, div);
+    return this;
+  }
+
+  /**
+   * Divides this {@link BigInt} by the provided {@code long} divisor.
+   *
+   * @param div The divisor.
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt div(final long div) {
@@ -593,11 +747,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Divides this number by a {@link BigInt}.
-   * <p>
-   * Division by zero is undefined.
+   * Divides this {@link BigInt} by the provided {@link BigInt} divisor.
    *
-   * @param div The number by which to divide.
+   * @param div The divisor.
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt div(final BigInt div) {
@@ -606,10 +759,93 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Sets this number to the remainder r satisfying q*div + r = this, where q =
-   * floor(this/div).
+   * Divides this {@link BigInt} by the specified <i>unsigned</i> {@code int}
+   * divisor, and returns the <i>absolute unsigned int</i> remainder.
    *
-   * @param div The number to use in the division causing the remainder.
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned int</i> remainder resulting from the
+   *         division of this {@link BigInt} by the specified <i>unsigned</i>
+   *         {@code int} divisor.
+   * @complexity O(n)
+   */
+  public int divRem(final int sig, final int div) {
+    return divRem(val, sig, div);
+  }
+
+  /**
+   * Divides this {@link BigInt} by the specified {@code int} divisor, and
+   * returns the remainder.
+   *
+   * @param div The divisor.
+   * @return The remainder resulting from the division of this {@link BigInt} by
+   *         the specified {@code int} divisor.
+   * @complexity O(n)
+   */
+  public long divRem(final int div) {
+    return divRem(val, div);
+  }
+
+  /**
+   * Divides this {@link BigInt} by the specified <i>unsigned</i> {@code long}
+   * divisor, and returns the <i>absolute unsigned long</i> remainder.
+   *
+   * @param sig The sign of the unsigned {@code long} divisor.
+   * @param div The divisor (unsigned).
+   * @return The <i>absolute unsigned long</i> remainder resulting from the
+   *         division of this {@link BigInt} by the specified <i>unsigned</i>
+   *         {@code long} divisor.
+   * @complexity O(n)
+   */
+  public long divRem(final int sig, final long div) {
+    return divRem(val, sig, div);
+  }
+
+  /**
+   * Divides this {@link BigInt} by the specified {@code long} divisor, and
+   * returns the remainder.
+   *
+   * @param div The divisor.
+   * @return The remainder resulting from the division of this {@link BigInt} by
+   *         the specified {@code long} divisor.
+   * @complexity O(n)
+   */
+  public long divRem(final long div) {
+    return divRem(val, div);
+  }
+
+  /**
+   * Divides this {@link BigInt} by the specified {@link BigInt} divisor, and
+   * returns the remainder as a new {@link BigInt}.
+   *
+   * @param div The {@link BigInt} divisor.
+   * @return A new {@link BigInt} with the remainder.
+   * @complexity O(n^2)
+   */
+  public BigInt divRem(final BigInt div) {
+    return new BigInt(divRem(val, div.val));
+  }
+
+  /**
+   * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code int}
+   * divisor and sets the remainder as the value of this {@link BigInt}.
+   *
+   * @param sig The sign of the unsigned {@code int} divisor.
+   * @param div The divisor (unsigned).
+   * @return {@code this}
+   * @complexity O(n^2)
+   */
+  public BigInt rem(final int sig, final int div) {
+    rem(val, sig, div);
+    return this;
+  }
+
+  /**
+   * Divides this {@link BigInt} by the provided {@code int} divisor and sets
+   * the remainder as the value of this {@link BigInt}.
+   *
+   * @param div The divisor.
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt rem(final int div) {
@@ -618,34 +854,12 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Sets this number to the remainder r satisfying q*div + r = this, where q =
-   * floor(this/div).
+   * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code long}
+   * divisor and sets the remainder as the value of this {@link BigInt}.
    *
-   * @param div The number to use in the division causing the remainder.
-   * @complexity O(n^2)
-   */
-  public BigInt rem(final long div) {
-    rem(val, div);
-    return this;
-  }
-
-  /**
-   * Applies the modulus of this number by an unsigned {@code int} (i.e.
-   * {@code this = (this % div)}).
-   *
-   * @param div The amount by which to modulo (unsigned).
-   * @complexity O(n)
-   */
-  public BigInt rem(final int sig, final int div) {
-    rem(val, sig, div);
-    return this;
-  }
-
-  /**
-   * Applies the modulus of this number by an unsigned {@code long} (i.e.
-   * {@code this = (this % mod)}).
-   *
-   * @param div The amount by which to modulo (unsigned).
+   * @param sig The sign of the unsigned {@code long} divisor.
+   * @param div The divisor (unsigned).
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt rem(final int sig, final long div) {
@@ -654,10 +868,26 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Sets this number to the remainder r satisfying q*div + r = this, where q =
-   * floor(this/div).
+   * Divides this {@link BigInt} by the provided {@code long} divisor and sets
+   * the remainder as the value of this {@link BigInt}.
    *
-   * @param div The number to use in the division causing the remainder.
+   * @param div The divisor.
+   * @return {@code this}
+   * @complexity O(n^2)
+   */
+  public BigInt rem(final long div) {
+    rem(val, div);
+    return this;
+  }
+
+  /**
+   * Divides this {@link BigInt} by the provided {@code long} divisor and sets
+   * the remainder as the value of this {@link BigInt}.
+   * <p>
+   * Satisfies: {@code q * div + r = this}, where {@code q = floor(this / div)}
+   *
+   * @param div The divisor.
+   * @return {@code this}
    * @complexity O(n^2)
    */
   public BigInt rem(final BigInt div) {
@@ -666,169 +896,164 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Divides this number by a {@link BigInt} and returns the remainder.
+   * Divides this {@link BigInt} by the specified {@link BigInt} divisor and sets
+   * the modulus as the value of this {@link BigInt}.
    * <p>
-   * Division by zero is undefined.
+   * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
+   * always returns a <i>non-negative</i> result.</i>
+   * <p>
    *
-   * @param div The amount by which to divide.
-   * @return The remainder.
+   * @param div The {@link BigInt} divisor.
+   * @return {@code this}
    * @complexity O(n^2)
-   */
-  // FIXME: I think we can just align div to return the remainder instead of this.
-  public BigInt divRem(final BigInt div) {
-    return new BigInt(divRem(val, div.val));
-  }
-
-  /**
-   * Divides this number with an unsigned {@code int} and returns the unsigned
-   * remainder.
-   *
-   * @param div The amount by which to divide (unsigned).
-   * @return The absolute value of the remainder as an unsigned int.
-   * @complexity O(n)
-   */
-  public int divRem(final int sig, final int div) {
-    return divRem(val, sig, div);
-  }
-
-  public long divRem(final int div) {
-    return divRem(val, div);
-  }
-
-  /**
-   * Divides this number with an unsigned {@code long} and returns the
-   * remainder.
-   *
-   * @param div The amount by which to divide (unsigned).
-   * @return The absolute value of the remainder as an unsigned long.
-   * @complexity O(n)
-   */
-  public long divRem(final int sig, final long div) {
-    return divRem(val, sig, div);
-  }
-
-  public long divRem(final long div) {
-    return divRem(val, div);
-  }
-
-  /**
-   * Sets this number to {@code (this mod m}). This method differs from
-   * {@link BigInt#rem(BigInt)} in that it always computes <i>non-negative</i>
-   * result.
-   *
-   * @param div The number to use in the division causing the remainder.
-   * @see #rem
    */
   public BigInt mod(final BigInt div) {
     val = mod(val, div.val);
     return this;
   }
 
-  // Negative numbers are imagined in their two's complement form with infinite
-  // sign extension.
-  // This has no effect on bit shifts, but makes implementation of other bit
-  // operations a bit
-  // tricky if one wants them to be as efficient as possible.
-
   /**
    * Returns the number of bits in the two's complement representation of this
-   * {@link BigInt} that differ from its sign bit. This method is useful when
-   * implementing bit-vector style sets atop {@link BigInt}.
+   * {@link BigInt} that differ from its sign bit.
    *
-   * @return The number of bits in the two's complement representation of this
+   * @return Number of bits in the two's complement representation of this
    *         {@link BigInt} that differ from its sign bit.
+   * @complexity O(n)
    */
   public int bitCount() {
     return bitCount(val);
   }
 
+  /**
+   * Returns the number of bits in the minimal two's-complement representation
+   * of this {@link BigInt}, <em>excluding</em> a sign bit. For positive
+   * numbers, this is equivalent to the number of bits in the ordinary binary
+   * representation. For zero this method returns {@code 0}.
+   * <p>
+   * Computes:
+   *
+   * <pre>
+   * ceil(log2(this < 0 ? -this : this + 1))
+   * </pre>
+   *
+   * @return Number of bits in the minimal two's-complement representation of
+   *         this {@link BigInt}, <em>excluding</em> a sign bit.
+   * @complexity O(n)
+   */
   public int bitLength() {
     return bitLength(val);
   }
 
+  /**
+   * Returns the number of digits in this {@link BigInt} (radix 10).
+   *
+   * @return The number of digits in this {@link BigInt} (radix 10).
+   * @complexity O(n^2) // FIXME: There must be a more efficient way to do this!
+   */
   public int precision() {
     return precision(val);
   }
 
   /**
-   * Shifts this number left by the given amount.
+   * Shifts this {@link BigInt} left by the specified number of bits. The shift
+   * distance, {@code num}, may be negative, in which case this method performs
+   * a right shift.
    *
-   * @param s The amount to shift.
+   * <pre>
+   * this << num
+   * </pre>
+   *
+   * @param num The amount by which to shift.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt shiftLeft(final int s) {
-    val = shiftLeft(val, s);
+  public BigInt shiftLeft(final int num) {
+    val = shiftLeft(val, num);
     return this;
   }
 
   /**
-   * Shifts this number right by the given amount.
+   * Shifts this {@link BigInt} right by the specified number of bits. The shift
+   * distance, {@code num}, may be negative, in which case this method performs
+   * a left shift.
    *
-   * @param s The amount to shift.
+   * <pre>
+   * this >> num
+   * </pre>
+   *
+   * @param num The amount by which to shift.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt shiftRight(final int s) {
-    val = shiftRight(val, s);
+  public BigInt shiftRight(final int num) {
+    val = shiftRight(val, num);
     return this;
   }
 
   /**
-   * Tests if the bit at the given index is set.
+   * Tests if the specified bit is set in this {@link BigInt}.
    * <p>
-   * NOT DEFINED FOR NEGATIVE INDEXES
+   * Computes:
    *
-   * @param i The index of the bit to test.
-   * @return {@code true} if the bit at the given index is {@code 1}, and
-   *         {@code false} if {@code 0}.
+   * <pre>
+   * this | (1 << n)
+   * </pre>
+   *
+   * @param bit The index of the bit to test.
+   * @return {@code true} if the given bit is set in this {@link BigInt},
+   *         otherwise {@code false}.
    * @complexity O(n)
    */
-  public boolean testBit(final int i) {
-    return testBit(val, i);
+  public boolean testBit(final int bit) {
+    return testBit(val, bit);
   }
 
   /**
-   * Sets the given bit in the number.
-   * <p>
-   * NOT DEFINED FOR NEGATIVE INDEXES
+   * Sets the specified bit in this {@link BigInt}.
    *
-   * @param i The index of the bit to set.
+   * @param bit The bit to set.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt setBit(final int i) {
-    val = setBit(val, i);
+  public BigInt setBit(final int bit) {
+    val = setBit(val, bit);
     return this;
   }
 
   /**
-   * Clears the given bit in the number.
-   * <p>
-   * NOT DEFINED FOR NEGATIVE INDEXES
+   * Clears the specified bit in this {@link BigInt}.
    *
-   * @param i The index of the bit to clear.
+   * @param bit The bit to clear.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt clearBit(final int i) {
-    val = clearBit(val, i);
+  public BigInt clearBit(final int bit) {
+    val = clearBit(val, bit);
     return this;
   }
 
   /**
-   * Flips the given bit in the number.
-   * <p>
-   * NOT DEFINED FOR NEGATIVE INDEXES
+   * Flips the specified bit in this {@link BigInt}.
    *
-   * @param i The index of the bit to flip.
+   * @param bit The bit to flip.
+   * @return {@code this}
    * @complexity O(n)
    */
-  public BigInt flipBit(final int i) {
-    val = flipBit(val, i);
+  public BigInt flipBit(final int bit) {
+    val = flipBit(val, bit);
     return this;
   }
 
   /**
-   * Bitwise-ands this number with the given number, i.e. this &= mask.
+   * Performs a bitwise "and" of the specified {@link BigInt} mask onto this
+   * {@link BigInt}.
    *
-   * @param mask The mask with which to bitwise-"and".
+   * <pre>
+   * this = this & mask
+   * </pre>
+   *
+   * @param mask The number with which to perform the bitwise "and".
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt and(final BigInt mask) {
@@ -837,9 +1062,15 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Bitwise-ors this number with the given number, i.e. this |= mask.
+   * Performs a bitwise "or" of the specified {@link BigInt} mask onto this
+   * {@link BigInt}.
    *
-   * @param mask The mask with which to bitwise-"or".
+   * <pre>
+   * this = this | mask
+   * </pre>
+   *
+   * @param mask The number with which to perform the bitwise "or".
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt or(final BigInt mask) {
@@ -848,9 +1079,15 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Bitwise-xors this number with the given number, i.e. this ^= mask.
+   * Performs a bitwise "xor" of the specified {@link BigInt} mask onto this
+   * {@link BigInt}.
    *
-   * @param mask The mask with which to bitwise-"xor".
+   * <pre>
+   * this = this ^ mask
+   * </pre>
+   *
+   * @param mask The number with which to perform the bitwise "xor".
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt xor(final BigInt mask) {
@@ -859,9 +1096,15 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Bitwise-and-nots this number with the given number, i.e. this &= ~mask.
+   * Performs a bitwise "and-not" of the specified {@link BigInt} mask onto this
+   * {@link BigInt}.
    *
-   * @param mask The mask with which to bitwise-"and-not".
+   * <pre>
+   * this = this & ~mask
+   * </pre>
+   *
+   * @param mask The number with which to perform the bitwise "and-not".
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt andNot(final BigInt mask) {
@@ -870,9 +1113,18 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Inverts sign and all bits of this number, i.e. this = ~this. The identity
-   * -this = ~this + 1 holds.
+   * Inverts the sign and all bits of this {@link BigInt}.
    *
+   * <pre>
+   * val = ~val
+   * </pre>
+   *
+   * The identity {@code -val = ~val + 1} holds.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the number resulting from the operation requires a larger array.</i>
+   *
+   * @return {@code this}
    * @complexity O(n)
    */
   public BigInt not() {
@@ -881,9 +1133,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * {@inheritDoc} Returns this BigInt as a {@code byte}.
+   * Returns the value of this {@link BigInt} as a {@code byte}.
    *
-   * @return {@code sign * (this & 0x7F)}
+   * @return The value of this {@link BigInt} as a {@code byte}.
+   * @complexity O(1)
    */
   @Override
   public byte byteValue() {
@@ -891,9 +1144,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * {@inheritDoc} Returns this BigInt as a {@code short}.
+   * Returns the value of this {@link BigInt} as a {@code short}.
    *
-   * @return {@code sign * (this & 0x7FFF)}
+   * @return The value of this {@link BigInt} as a {@code short}.
+   * @complexity O(1)
    */
   @Override
   public short shortValue() {
@@ -901,9 +1155,10 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * {@inheritDoc} Returns this BigInt as an {@code int}.
+   * Returns the value of this {@link BigInt} as an {@code int}.
    *
-   * @return {@code sign * (this & 0x7FFFFFFF)}
+   * @return The value of this {@link BigInt} as an {@code int}.
+   * @complexity O(1)
    */
   @Override
   public int intValue() {
@@ -911,27 +1166,31 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * {@inheritDoc} Returns this BigInt as a {@code long}.
+   * Returns the value of this {@link BigInt} as a {@code long}.
    *
-   * @return {@code sign * (this & 0x7FFFFFFFFFFFFFFF)}
+   * @return The value of this {@link BigInt} as a {@code long}.
+   * @complexity O(1)
    */
   @Override
   public long longValue() {
     return longValue(val);
   }
 
+  /**
+   * Returns the value of this {@link BigInt} as an <i>unsigned</i> {@code long}.
+   *
+   * @return The value of this {@link BigInt} as an <i>unsigned</i> {@code long}.
+   * @complexity O(1)
+   */
   public long longValueUnsigned() {
     return longValueUnsigned(val);
   }
 
   /**
-   * {@inheritDoc} Returns this BigInt as a {@code float}.
+   * Returns the value of this {@link BigInt} as a {@code float}.
    *
-   * @return the most significant 24 bits in the mantissa (the highest order bit
-   *         obviously being implicit), the exponent value which will be
-   *         consistent for {@code BigInt}s up to 128 bits (should it not fit
-   *         it'll be calculated modulo 256), and the sign bit set if this
-   *         number is negative.
+   * @return The value of this {@link BigInt} as a {@code float}.
+   * @complexity O(1)
    */
   @Override
   public float floatValue() {
@@ -939,29 +1198,43 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * {@inheritDoc} Returns this BigInt as a {@code double}.
+   * Returns the value of this {@link BigInt} as a {@code double}.
    *
-   * @return the most significant 53 bits in the mantissa (the highest order bit
-   *         obviously being implicit), the exponent value which will be
-   *         consistent for {@code BigInt}s up to 1024 bits (should it not fit
-   *         it'll be calculated modulo 2048), and the sign bit set if this
-   *         number is negative.
+   * @return The value of this {@link BigInt} as a {@code double}.
+   * @complexity O(1)
    */
   @Override
   public double doubleValue() {
     return doubleValue(val);
   }
 
+  /**
+   * Returns a byte array containing the two's-complement representation of this
+   * {@link BigInt}. The byte array will be in the endian order as specified by
+   * the {@code littleEndian} argument. The array will contain the minimum
+   * number of bytes required to represent this {@link BigInt}, including at
+   * least one sign bit, which is {@code (ceil((bitLength(val) + 1) / 8))}.
+   *
+   * @param littleEndian Whether the produced byte array is to be encoded in
+   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
+   * @return A byte array containing the two's-complement representation of this
+   *         {@link BigInt}.
+   */
   public byte[] toByteArray(final boolean littleEndian) {
     return toByteArray(val, littleEndian);
   }
 
   /**
-   * Compares the absolute value of this and the given number.
+   * Compares the absolute values of this {@link BigInt} to the provided
+   * {@link BigInt}, and returns one of {@code -1}, {@code 0}, or {@code 1}
+   * whether the absolute value of {@code this} is less than, equal to, or
+   * greater than that of the provided {@link BigInt}, respectively.
    *
-   * @param o The number to be compared with.
-   * @return -1 if the absolute value of this number is less, 0 if it's equal, 1
-   *         if it's greater.
+   * @param o The {@link BigInt} with which to compare.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if the absolute value of
+   *         {@code this} is less than, equal to, or greater than that of he
+   *         provided {@link BigInt}, respectively.
    * @complexity O(n)
    */
   public int compareToAbs(final BigInt o) {
@@ -969,11 +1242,15 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Compares the value of this and the given number.
+   * Compares the values of this {@link BigInt} to the provided {@link BigInt},
+   * and returns one of {@code -1}, {@code 0}, or {@code 1} whether the value of
+   * {@code this} is less than, equal to, or greater than that of the provided
+   * {@link BigInt}, respectively.
    *
-   * @param o The number to be compared with.
-   * @return -1 if the value of this number is less, 0 if it's equal, 1 if it's
-   *         greater.
+   * @param o The {@link BigInt} with which to compare.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if the value of
+   *         {@code this} is less than, equal to, or greater than that of he
+   *         provided {@link BigInt}, respectively.
    * @complexity O(n)
    */
   @Override
@@ -982,30 +1259,44 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Tests equality of this number and the given one.
+   * Tests equality of this {@link BigInt} and the provided {@link BigInt}.
    *
-   * @param n The number to be compared with.
-   * @return true if the two numbers are equal, false otherwise.
+   * @param n The {@link BigInt} with which to test for equality.
+   * @return {@code true} if the two numbers are equal, otherwise {@code false}.
    * @complexity O(n)
    */
   public boolean equals(final BigInt n) {
     return equals(val, n.val);
   }
 
+  /**
+   * Tests equality of this {@link BigInt} and the provided object.
+   *
+   * @param obj The object with which to test for equality.
+   * @return {@code true} if this {@link BigInt} and the provided object are
+   *         equal, otherwise {@code false}.
+   * @complexity O(n)
+   */
   @Override
   public boolean equals(final Object obj) {
     return obj == this || obj instanceof BigInt && equals((BigInt)obj);
   }
 
+  /**
+   * Computes the hash code of this {@link BigInt}.
+   *
+   * @return The hash code of this {@link BigInt}.
+   * @complexity O(n)
+   */
   @Override
   public int hashCode() {
     return hashCode(val);
   }
 
   /**
-   * Converts this number into a string of radix 10.
+   * Converts this {@link BigInt} into a string of radix 10.
    *
-   * @return The string representation of this number in decimal.
+   * @return The string representation of this {@link BigInt} in radix 10.
    * @complexity O(n^2)
    */
   @Override
@@ -1014,13 +1305,20 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   }
 
   /**
-   * Creates a copy of this number.
+   * Returns a copy of this {@link BigInt}.
    *
-   * @return The BigInt copy.
+   * @return A copy of this {@link BigInt}.
    * @complexity O(n)
    */
   @Override
   public BigInt clone() {
-    return new BigInt(val.clone());
+    try {
+      final BigInt clone = (BigInt)super.clone();
+      clone.val = val.clone();
+      return clone;
+    }
+    catch (final CloneNotSupportedException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

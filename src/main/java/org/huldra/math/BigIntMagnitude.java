@@ -1,17 +1,30 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
+ * Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- * You should have received a copy of The MIT License (MIT) along with this
- * program. If not, see <http://opensource.org/licenses/MIT/>.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
 package org.huldra.math;
@@ -26,7 +39,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * the increase of the provided number by the specified amount requires a
    * larger array.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param add The amount by which to increase (unsigned).
@@ -56,7 +69,7 @@ abstract class BigIntMagnitude extends BigIntValue {
   /**
    * Decreases the magnitude of the provided number by the specified amount.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param sub The amount by which to decrease (unsigned).
@@ -93,7 +106,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * the increase of the provided number by the specified amount requires a
    * larger array.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param addl The lower limb of the amount by which to increase (unsigned).
@@ -139,7 +152,7 @@ abstract class BigIntMagnitude extends BigIntValue {
   /**
    * Decreases the magnitude of the provided number by the specified amount.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param val0 The value of {@code val[1]}.
@@ -176,10 +189,11 @@ abstract class BigIntMagnitude extends BigIntValue {
    * the increase (or decrease) of the provided number by the specified amount
    * requires a larger array.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
-   * @param add The value-encoded amount by which to increase (or decrease).
+   * @param add The {@linkplain BigInt#val() value-encoded amount} by which to
+   *          increase (or decrease).
    * @param alen The count of limbs in the number by which to increase.
    * @return The provided number increased (or decreased) by the specified
    *         amount.
@@ -230,10 +244,11 @@ abstract class BigIntMagnitude extends BigIntValue {
   /**
    * Decreased the magnitude of the provided number by the specified amount.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
-   * @param sub The value-encoded amount by which to decrease.
+   * @param sub The {@linkplain BigInt#val() value-encoded amount} by which to
+   *          decrease.
    * @param slen The count of limbs in the number by which to decrease.
    * @complexity O(n)
    */

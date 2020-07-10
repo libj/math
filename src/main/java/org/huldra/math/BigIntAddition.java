@@ -1,17 +1,30 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
+ * Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- * You should have received a copy of The MIT License (MIT) along with this
- * program. If not, see <http://opensource.org/licenses/MIT/>.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
 package org.huldra.math;
@@ -20,7 +33,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static final long serialVersionUID = 2873086066678372875L;
 
   /**
-   * Adds an {@code int} to the provided value-encoded addend.
+   * Adds an {@code int} to the provided {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -30,20 +43,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the increase of the provided addend by the specified {@code int} requires a
    * larger array.</i>
    *
-   * @param val The value-encoded addend.
+   * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The amount to add.
-   * @return The result of the addition of the specified amount to the provided
-   *         value-encoded addend.
+   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
+  // Has not amortized O(1) due to the risk of
+  // alternating +1 -1 on continuous sequence of
+  // 1-set bits.
   public static int[] add(final int[] val, final int add) {
     return add > 0 ? add(val, 1, add) : add < 0 ? sub(val, 1, -add) : val;
   }
 
   /**
-   * Subtracts an {@code int} subtrahend from the provided value-encoded
-   * minuend.
+   * Subtracts an {@code int} subtrahend from the provided {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
@@ -53,19 +66,18 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the decrease of the provided minuend by the specified {@code int} requires
    * a larger array.</i>
    *
-   * @param val The value-encoded minuend.
+   * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The subtrahend.
    * @return The result of the subtraction of the specified amount from the
-   *         provided value-encoded minuend.
+   *         provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] sub(final int[] val, final int sub) {
     return sub > 0 ? sub(val, 1, sub) : sub < 0 ? add(val, 1, -sub) : val;
   }
 
   /**
-   * Adds an <i>unsigned</i> {@code int} to the provided value-encoded addend.
+   * Adds an <i>unsigned</i> {@code int} to the provided {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -75,13 +87,12 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the increase of the provided addend by the specified {@code int} requires a
    * larger array.</i>
    *
-   * @param val The value-encoded addend.
+   * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param sig The sign of the unsigned {@code int} to add.
    * @param add The amount to add (unsigned).
    * @return The result of the addition of the specified amount to the provided
-   *         value-encoded addend.
+   *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] add(final int[] val, final int sig, final int add) {
     return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
@@ -111,7 +122,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
   /**
    * Subtracts an <i>unsigned</i> {@code int} subtrahend from the provided
-   * value-encoded minuend.
+   * {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
@@ -121,13 +132,12 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the decrease of the provided minuend by the specified {@code int} requires
    * a larger array.</i>
    *
-   * @param val The value-encoded minuend.
+   * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sig The sign of the unsigned {@code int} to subtract.
    * @param sub The subtrahend (unsigned).
    * @return The result of the subtraction of the specified amount from the
-   *         provided value-encoded minuend.
+   *         provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] sub(final int[] val, final int sig, final int sub) {
     return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
@@ -154,7 +164,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds a {@code long} to the provided value-encoded addend.
+   * Adds a {@code long} to the provided {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -164,12 +174,10 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the increase of the provided addend by the specified {@code long} requires
    * a larger array.</i>
    *
-   * @param val The value-encoded addend.
+   * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The amount to add.
-   * @return The result of the addition of the specified amount to the provided
-   *         value-encoded addend.
+   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] add(final int[] val, final long add) {
     return add > 0 ? add(val, 1, add) : add < 0 ? sub(val, 1, -add) : val;
@@ -187,19 +195,18 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the decrease of the provided minuend by the specified {@code long} requires
    * a larger array.</i>
    *
-   * @param val The value-encoded minuend.
+   * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The subtrahend.
    * @return The result of the subtraction of the specified amount from the
-   *         provided value-encoded minuend.
+   *         provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] sub(final int[] val, final long sub) {
     return sub > 0 ? sub(val, 1, sub) : sub < 0 ? add(val, 1, -sub) : val;
   }
 
   /**
-   * Adds an <i>unsigned</i> {@code long} to the provided value-encoded addend.
+   * Adds an <i>unsigned</i> {@code long} to the provided {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -209,13 +216,11 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the increase of the provided addend by the specified {@code long} requires
    * a larger array.</i>
    *
-   * @param val The value-encoded addend.
+   * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param sig The sign of the unsigned {@code long} to add.
    * @param add The amount to add (unsigned).
-   * @return The result of the addition of the specified amount to the provided
-   *         value-encoded addend.
+   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] add(final int[] val, final int sig, final long add) {
     return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
@@ -235,8 +240,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Subtracts an <i>unsigned</i> {@code long} subtrahend from the provided
-   * value-encoded minuend.
+   * Subtracts an <i>unsigned</i> {@code long} subtrahend from the provided {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
@@ -246,13 +250,12 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * the decrease of the provided minuend by the specified {@code long} requires
    * a larger array.</i>
    *
-   * @param val The value-encoded minuend.
+   * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sig The sign of the unsigned {@code long} to subtract.
    * @param sub The subtrahend (unsigned).
    * @return The result of the subtraction of the specified amount from the
-   *         provided value-encoded minuend.
+   *         provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] sub(final int[] val, final int sig, final long sub) {
     return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
@@ -272,23 +275,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds (or subtracts) an unsigned {@code long} to (or from) the provided
-   * value-encoded addend.
+   * Adds (or subtracts) an unsigned {@code long} to (or from) the provided {@linkplain BigInt#val() value-encoded addend}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the increase (or decrease) of the provided addend (or minuend) by the
    * specified {@code long} requires a larger array.</i>
    *
-   * @param val The value-encoded addend (or minuend).
+   * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param addl The lower limb of the amount to add (unsigned).
    * @param addh The higher limb of the amount to add (unsigned).
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
-   * @return The result of the addition of the specified amount to the provided
-   *         value-encoded addend.
+   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   private static int[] uaddSub(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
     if (addOrSub == sig) {
@@ -325,65 +325,59 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds a value-encoded number to the provided value-encoded addend.
+   * Adds a {@linkplain BigInt#val() value-encoded number} to the provided {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified value-encoded number
-   * requires a larger array.</i>
+   * the increase of the provided addend by the specified
+   * {@linkplain BigInt#val() value-encoded number} requires a larger array.</i>
    *
-   * @param val The value-encoded addend.
-   * @param add The value-encoded amount to add.
-   * @return The result of the addition of the specified value-encoded number to
-   *         the provided value-encoded addend.
+   * @param val The {@linkplain BigInt#val() value-encoded addend}.
+   * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
+   * @return The result of the addition of the specified
+   *         {@linkplain BigInt#val() value-encoded number} to the provided {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] add(final int[] val, final int[] add) {
     return addSub(val, add, true);
   }
 
   /**
-   * Subtracts a value-encoded subtrahend from the provided value-encoded
-   * minuend.
+   * Subtracts a {@linkplain BigInt#val() value-encoded subtrahend} from the provided {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified value-encoded
-   * subtrahend requires a larger array.</i>
+   * the decrease of the provided minuend by the specified {@linkplain BigInt#val() value-encoded subtrahend} requires a larger array.</i>
    *
-   * @param val The value-encoded minuend.
-   * @param sub The value-encoded subtrahend.
-   * @return The result of the subtraction of the specified value-encoded
-   *         subtrahend from the provided value-encoded minuend.
+   * @param val The {@linkplain BigInt#val() value-encoded minuend}.
+   * @param sub The {@linkplain BigInt#val() value-encoded subtrahend}.
+   * @return The result of the subtraction of the specified {@linkplain BigInt#val() value-encoded subtrahend} from the provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
-   * @amortized O(1)
    */
   public static int[] sub(final int[] val, final int[] sub) {
     return addSub(val, sub, false);
   }
 
   /**
-   * Adds (or subtracts) a value-encoded number to (or from) the provided
-   * value-encoded addend (or minuend).
+   * Adds (or subtracts) a {@linkplain BigInt#val() value-encoded number} to (or
+   * from) the provided {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified value-encoded number
-   * requires a larger array.</i>
+   * the increase of the provided addend by the specified
+   * {@linkplain BigInt#val() value-encoded number} requires a larger array.</i>
    *
-   * @param val The value-encoded addend (or minuend).
-   * @param add The value-encoded amount to add.
+   * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
+   * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
    * @return The result of the addition (or subtraction) of the specified amount
-   *         to (or from) the provided value-encoded addend (or minuend).
+   *         to (or from) the provided {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @complexity O(n)
-   * @amortized O(1)
    */
   private static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
     int len = val[0];

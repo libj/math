@@ -1,17 +1,30 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
+ * Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- * You should have received a copy of The MIT License (MIT) along with this
- * program. If not, see <http://opensource.org/licenses/MIT/>.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
 package org.huldra.math;
@@ -63,32 +76,35 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Assigns an {@code int} magnitude to the provided value-encoded number.
+   * Assigns an {@code int} magnitude to the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mag The magnitude.
    * @return The result of assigning an {@code int} magnitude to the provided
-   *         value-encoded number.
+   *         {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(1)
    */
-  public static int[] assign(int[] val, final int mag) {
+  public static int[] assign(final int[] val, final int mag) {
     return mag == 0 ? setToZero(val) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
   /**
    * Assigns an <i>unsigned</i> {@code int} magnitude to the provided
-   * value-encoded number.
+   * {@linkplain BigInt#val() value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code int}.
    * @param mag The magnitude (unsigned).
    * @return The result of assigning an <i>unsigned</i> {@code int} magnitude to
-   *         the provided value-encoded number.
+   *         the provided {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(1)
    */
   public static int[] assign(final int[] val, final boolean sig, final int mag) {
     return assign(val, sig ? 1 : -1, mag);
@@ -96,18 +112,19 @@ abstract class BigIntValue extends Number {
 
   /**
    * Assigns an <i>unsigned</i> {@code int} magnitude to the provided
-   * value-encoded number.
+   * {@linkplain BigInt#val() value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code int}.
    * @param mag The magnitude (unsigned).
    * @return The result of assigning an <i>unsigned</i> {@code int} magnitude to
-   *         the provided value-encoded number.
+   *         the provided {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(1)
    */
-  public static int[] assign(int[] val, final int sig, final int mag) {
+  public static int[] assign(final int[] val, final int sig, final int mag) {
     return mag == 0 ? setToZero(val) : assign0(val.length > 1 ? val : alloc(2), sig, mag);
   }
 
@@ -119,15 +136,17 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Assigns an {@code long} magnitude to the provided value-encoded number.
+   * Assigns an {@code long} magnitude to the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mag The magnitude.
    * @return The result of assigning an {@code long} magnitude to the provided
-   *         value-encoded number.
+   *         {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(1)
    */
   public static int[] assign(final int[] val, final long mag) {
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
@@ -135,16 +154,17 @@ abstract class BigIntValue extends Number {
 
   /**
    * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
-   * value-encoded number.
+   * {@linkplain BigInt#val() value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code long}.
    * @param mag The magnitude (unsigned).
    * @return The result of assigning an <i>unsigned</i> {@code long} magnitude
-   *         to the provided value-encoded number.
+   *         to the provided {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(1)
    */
   public static int[] assign(final int[] val, final boolean sig, final long mag) {
     return assign(val, sig ? 1 : -1, mag);
@@ -152,16 +172,17 @@ abstract class BigIntValue extends Number {
 
   /**
    * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
-   * value-encoded number.
+   * {@linkplain BigInt#val() value-encoded number}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code long}.
    * @param mag The magnitude (unsigned).
    * @return The result of assigning an <i>unsigned</i> {@code long} magnitude
-   *         to the provided value-encoded number.
+   *         to the provided {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(1)
    */
   public static int[] assign(int[] val, final int sig, final long mag) {
     if (mag == 0)
@@ -184,20 +205,23 @@ abstract class BigIntValue extends Number {
 
   /**
    * Assigns a byte array containing the two's-complement binary representation
-   * of a value-encoded {@code int[]} into a value-encoded {@code int[]}.
+   * of a {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
+   * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
    * @param val The target array of the assignment.
-   * @param mag The two's-complement binary representation of a value-encoded
-   *          {@code int[]}.
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
    * @return The result of assigning a byte array containing the
-   *         two's-complement binary representation of a value-encoded
-   *         {@code int[]} into a value-encoded {@code int[]}.
+   *         two's-complement binary representation of a
+   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
+   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @complexity O(1)
    */
   public static int[] assign(final int[] val, final byte[] mag, final boolean littleEndian) {
     return assign(val, mag, 0, mag.length, littleEndian);
@@ -205,22 +229,25 @@ abstract class BigIntValue extends Number {
 
   /**
    * Assigns a byte array containing the two's-complement binary representation
-   * of a value-encoded {@code int[]} into a value-encoded {@code int[]}.
+   * of a {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
+   * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
    * @param val The target array of the assignment.
-   * @param mag The two's-complement binary representation of a value-encoded
-   *          {@code int[]}.
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @param off The start offset of the binary representation.
    * @param len The number of bytes to use.
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
    * @return The result of assigning a byte array containing the
-   *         two's-complement binary representation of a value-encoded
-   *         {@code int[]} into a value-encoded {@code int[]}.
+   *         two's-complement binary representation of a
+   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
+   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @complexity O(1)
    */
   public static int[] assign(int[] val, final byte[] mag, final int off, final int len, final boolean littleEndian) {
     return littleEndian ? assignLittleEndian(val, mag, off, len) : assignBigEndian(val, mag, off, len);
@@ -403,8 +430,8 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Assigns the specified number as a string to the provided value-encoded
-   * array.
+   * Assigns the specified number as a string to the provided
+   * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
@@ -412,7 +439,9 @@ abstract class BigIntValue extends Number {
    * @param val The target array of the assignment.
    * @param s The number as a string.
    * @return The result of assigning the specified number as a string to the
-   *         provided value-encoded array.
+   *         provided {@linkplain BigInt#val() value-encoded
+   *         <code>int[]</code>}.
+   * @complexity O(n^2)
    */
   public static int[] assign(final int[] val, final String s) {
     return assign(val, s.toCharArray());
@@ -420,7 +449,7 @@ abstract class BigIntValue extends Number {
 
   /**
    * Assigns the specified number as a {@code char[]} to the provided
-   * value-encoded array.
+   * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
@@ -428,7 +457,9 @@ abstract class BigIntValue extends Number {
    * @param val The target array of the assignment.
    * @param s The number as a {@code char[]}.
    * @return The result of assigning the specified number as a {@code char[]} to
-   *         the provided value-encoded array.
+   *         the provided {@linkplain BigInt#val() value-encoded
+   *         <code>int[]</code>}.
+   * @complexity O(n^2)
    */
   public static int[] assign(int[] val, final char[] s) {
     final int sig = s[0] == '-' ? -1 : 1;
@@ -481,14 +512,14 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Multiplies the provided value-encoded number with {@code mul}, and then
-   * adds {@code add}.
+   * Multiplies the provided {@linkplain BigInt#val() value-encoded number} with
+   * {@code mul}, and then adds {@code add}.
    *
    * <pre>
    * val = val * mul + add
    * </pre>
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param fromIndex The starting index in the val array.
    * @param toIndex The ending index in the val array.
    * @param mul The value we multiply our number with, mul < 2^31.
@@ -539,123 +570,137 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns a new value-encoded number with the provided magnitude as an
-   * {@code int}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * provided magnitude as an {@code int}.
    *
    * @param mag The magnitude.
-   * @return A new value-encoded number with the provided magnitude as an
-   *         {@code int}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         provided magnitude as an {@code int}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final int mag) {
     return assign(emptyVal, mag);
   }
 
   /**
-   * Returns a new value-encoded number with the provided magnitude as an
-   * <i>unsigned</i> {@code int}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * provided magnitude as an <i>unsigned</i> {@code int}.
    *
    * @param sig The sign of the magnitude.
    * @param mag The magnitude (unsigned).
-   * @return A new value-encoded number with the provided magnitude as an
-   *         <i>unsigned</i> {@code int}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         provided magnitude as an <i>unsigned</i> {@code int}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final int sig, final int mag) {
     return assign(emptyVal, sig, mag);
   }
 
   /**
-   * Returns a new value-encoded number with the provided magnitude as a
-   * {@code long}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * provided magnitude as a {@code long}.
    *
    * @param mag The magnitude.
-   * @return A new value-encoded number with the provided magnitude as a
-   *         {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         provided magnitude as a {@code long}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final long mag) {
     return assign(emptyVal, mag);
   }
 
   /**
-   * Returns a new value-encoded number with the provided magnitude as an
-   * <i>unsigned</i> {@code long}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * provided magnitude as an <i>unsigned</i> {@code long}.
    *
    * @param sig The sign of the magnitude.
    * @param mag The magnitude (unsigned).
-   * @return A new value-encoded number with the provided magnitude as an
-   *         <i>unsigned</i> {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         provided magnitude as an <i>unsigned</i> {@code long}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final int sig, final long mag) {
     return assign(emptyVal, sig, mag);
   }
 
   /**
-   * Returns a new value-encoded number with the magnitude of the provided byte
-   * array containing the two's-complement binary representation of a
-   * value-encoded {@code int[]}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * magnitude of the provided byte array containing the two's-complement binary
+   * representation of a {@linkplain BigInt#val() value-encoded
+   * <code>int[]</code>}.
    *
-   * @param mag The two's-complement binary representation of a value-encoded
-   *          {@code int[]}.
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @param off The start offset of the binary representation.
    * @param len The number of bytes to use.
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @return A new value-encoded number with the magnitude of the provided byte
-   *         array containing the two's-complement binary representation of a
-   *         value-encoded {@code int[]}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         magnitude of the provided byte array containing the
+   *         two's-complement binary representation of a
+   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final byte[] mag, final int off, final int len, final boolean littleEndian) {
     return assign(emptyVal, mag, off, len, littleEndian);
   }
 
   /**
-   * Returns a new value-encoded number with the magnitude of the provided byte
-   * array containing the two's-complement binary representation of a
-   * value-encoded {@code int[]}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * magnitude of the provided byte array containing the two's-complement binary
+   * representation of a {@linkplain BigInt#val() value-encoded
+   * <code>int[]</code>}.
    *
-   * @param mag The two's-complement binary representation of a value-encoded
-   *          {@code int[]}.
+   * @param mag The two's-complement binary representation of a
+   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @return A new value-encoded number with the magnitude of the provided byte
-   *         array containing the two's-complement binary representation of a
-   *         value-encoded {@code int[]}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         magnitude of the provided byte array containing the
+   *         two's-complement binary representation of a
+   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final byte[] mag, final boolean littleEndian) {
     return assign(emptyVal, mag, 0, mag.length, littleEndian);
   }
 
   /**
-   * Returns a new value-encoded number with the provided magnitude as a
-   * {@code char[]}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * provided magnitude as a {@code char[]}.
    *
    * @param s The magnitude.
-   * @return A new value-encoded number with the magnitude of the provided
-   *         {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         magnitude of the provided {@code long}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final char[] s) {
     return assign(emptyVal, s);
   }
 
   /**
-   * Returns a new value-encoded number with the provided magnitude as a
-   * {@code String}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
+   * provided magnitude as a {@code String}.
    *
    * @param s The magnitude.
-   * @return A new value-encoded number with the magnitude of the provided
-   *         {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the
+   *         magnitude of the provided {@code long}.
+   * @complexity O(1)
    */
   public static int[] valueOf(final String s) {
     return assign(emptyVal, s);
   }
 
   /**
-   * Returns the signum of the provided value-encoded number.
+   * Returns the signum of the provided {@linkplain BigInt#val() value-encoded
+   * number}.
    *
-   * @param val The value-encoded number.
-   * @return -1, 0 or 1 as the value of the provided value-encoded number is
-   *         negative, zero or positive.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return -1, 0 or 1 as the value of the provided {@linkplain BigInt#val()
+   *         value-encoded number} is negative, zero or positive.
+   * @complexity O(1)
    */
   public static int signum(final int[] val) {
     final int v = val[0];
@@ -663,11 +708,12 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Tests if the provided value-encoded number is zero.
+   * Tests if the provided {@linkplain BigInt#val() value-encoded number} is
+   * zero.
    *
-   * @param val The value-encoded number.
-   * @return {@code true} if the provided value-encoded number is zero,
-   *         otherwise {@code false}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return {@code true} if the provided {@linkplain BigInt#val() value-encoded
+   *         number} is zero, otherwise {@code false}.
    * @complexity O(1)
    */
   public static boolean isZero(final int[] val) {
@@ -675,13 +721,14 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Sets the provided value-encoded number to zero.
+   * Sets the provided {@linkplain BigInt#val() value-encoded number} to zero.
    * <p>
    * <i><b>Note:</b> The returned array will be a {@code new int[]} instance if
    * the length of the provided array is zero.</i>
    *
-   * @param val The value-encoded number.
-   * @return The provided value-encoded number set to zero.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set to
+   *         zero.
    * @complexity O(1)
    */
   public static int[] setToZero(final int[] val) {
@@ -694,93 +741,91 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as a
-   * <i>signed</i> {@code byte}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as a {@code byte}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as a
-   *         <i>signed</i> {@code byte}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code byte}.
+   * @complexity O(1)
    */
   public static byte byteValue(final int[] val) {
     return byteValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
   /**
-   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
-   * {@code byte}.
+   * Returns the value of the the provided magnitude array as a {@code byte}.
    *
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
-   * @param sig The sign with which to decode magnitude values.
-   * @return The value of the the provided magnitude array as an <i>unsigned</i>
-   *         {@code byte}.
+   * @param sig The sign of the magnitude.
+   * @return The value of the the provided magnitude array as a {@code byte}.
+   * @complexity O(1)
    */
-  // FIXME: Javadoc for "sig" is confusing.
   public static byte byteValue(final int[] mag, final int off, final int sig) {
     return (byte)(sig < 0 ? ~mag[off] + 1 : mag[off]);
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as a
-   * <i>signed</i> {@code short}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as a {@code short}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as a
-   *         <i>signed</i> {@code short}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code short}.
+   * @complexity O(1)
    */
   public static short shortValue(final int[] val) {
     return shortValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
   /**
-   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
-   * {@code short}.
+   * Returns the value of the the provided magnitude array as a {@code short}.
    *
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
-   * @param sig The sign with which to decode magnitude values.
-   * @return The value of the the provided magnitude array as an <i>unsigned</i>
-   *         {@code short}.
+   * @param sig The sign of the magnitude.
+   * @return The value of the the provided magnitude array as a {@code short}.
+   * @complexity O(1)
    */
-  // FIXME: Javadoc for "sig" is confusing.
   public static short shortValue(final int[] mag, final int off, final int sig) {
     return (short)(sig < 0 ? ~mag[off] + 1 : mag[off]);
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as a
-   * <i>signed</i> {@code int}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as a {@code int}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as a
-   *         <i>signed</i> {@code long}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code long}.
+   * @complexity O(1)
    */
   public static int intValue(final int[] val) {
     return intValue(val, 1, val[0] < 0 ? -1 : 1);
   }
 
   /**
-   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
-   * {@code int}.
+   * Returns the value of the the provided magnitude array as an {@code int}.
    *
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
-   * @param sig The sign with which to decode magnitude values.
-   * @return The value of the the provided magnitude array as an <i>unsigned</i>
-   *         {@code int}.
+   * @param sig The sign of the magnitude.
+   * @return The value of the the provided magnitude array as an {@code int}.
+   * @complexity O(1)
    */
-  // FIXME: Javadoc for "sig" is confusing.
   public static int intValue(final int[] mag, final int off, final int sig) {
     return sig < 0 ? ~mag[off] + 1 : mag[off];
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as a
-   * <i>signed</i> {@code long}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as a {@code long}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as a
-   *         <i>signed</i> {@code long}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code long}.
+   * @complexity O(1)
    */
   public static long longValue(final int[] val) {
     int sig = 1; int len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -788,17 +833,15 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
-   * {@code long}.
+   * Returns the value of the the provided magnitude array as a {@code long}.
    *
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
    * @param len The number of magnitude elements to use.
-   * @param sig The sign with which to decode magnitude values.
-   * @return The value of the the provided magnitude array as an <i>unsigned</i>
-   *         {@code long}.
+   * @param sig The sign of the magnitude.
+   * @return The value of the the provided magnitude array as a {@code long}.
+   * @complexity O(1)
    */
-  // FIXME: Javadoc for "sig" is confusing.
   public static long longValue(final int[] mag, final int off, final int len, final int sig) {
     if (len == 0)
       return 0;
@@ -808,12 +851,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as an
-   * <i>unsigned</i> {@code long}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as an <i>unsigned</i> {@code long}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as an
-   *         <i>unsigned</i> {@code long}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as an <i>unsigned</i> {@code long}.
+   * @complexity O(1)
    */
   public static long longValueUnsigned(final int[] val) {
     int len = val[0]; if (len < 0) { len = -len; }
@@ -821,14 +865,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the value of the the provided magnitude array as an <i>unsigned</i>
-   * {@code long}.
+   * Returns the value of the the provided magnitude array as a {@code long}.
    *
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
    * @param len The number of magnitude elements to use.
-   * @return The value of the the provided magnitude array as an <i>unsigned</i>
-   *         {@code long}.
+   * @return The value of the the provided magnitude array as a {@code long}.
+   * @complexity O(1)
    */
   public static long longValue(final int[] mag, final int off, final int len) {
     return len == 0 ? 0 : longValue0(mag, off, len);
@@ -840,12 +883,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as a
-   * {@code float}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as a {@code float}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as a
-   *         {@code float}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code float}.
+   * @complexity O(1)
    */
   public static float floatValue(final int[] val) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -858,11 +902,11 @@ abstract class BigIntValue extends Number {
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
    * @param len The number of magnitude elements to use.
-   * @param sig The sign with which to decode magnitude values.
-   * @return The value of the the provided value-encoded number as a
-   *         {@code float}.
+   * @param sig The sign of the magnitude.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code float}.
+   * @complexity O(1)
    */
-  // FIXME: Javadoc for "sig" is confusing.
   public static float floatValue(final int[] mag, final int off, final int len, final int sig) {
     if (len == 0)
       return 0;
@@ -895,12 +939,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the value of the the provided value-encoded number as a
-   * {@code double}.
+   * Returns the value of the the provided {@linkplain BigInt#val()
+   * value-encoded number} as a {@code double}.
    *
-   * @param val The value-encoded number.
-   * @return The value of the the provided value-encoded number as a
-   *         {@code double}.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code double}.
+   * @complexity O(1)
    */
   public static double doubleValue(final int[] val) {
     int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
@@ -913,9 +958,10 @@ abstract class BigIntValue extends Number {
    * @param mag The magnitude array.
    * @param off The start index in the magnitude array.
    * @param len The number of magnitude elements to use.
-   * @param sig The sign with which to decode magnitude values.
-   * @return The value of the the provided value-encoded number as a
-   *         {@code double}.
+   * @param sig The sign of the magnitude.
+   * @return The value of the the provided {@linkplain BigInt#val()
+   *         value-encoded number} as a {@code double}.
+   * @complexity O(1)
    */
   public static double doubleValue(final int[] mag, final int off, final int len, final int sig) {
     if (len == 0)
@@ -957,13 +1003,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Compares the absolute values of the provided value-encoded numbers, and
-   * returns one of {@code -1}, {@code 0}, or {@code 1} whether the first
-   * number's absolute value is less than, equal to, or greater than that of the
-   * second argument, respectively.
+   * Compares the absolute values of the provided {@linkplain BigInt#val()
+   * value-encoded numbers}, and returns one of {@code -1}, {@code 0}, or
+   * {@code 1} whether the first number's absolute value is less than, equal to,
+   * or greater than that of the second argument, respectively.
    *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
    * @return One of {@code -1}, {@code 0}, or {@code 1} if the first number's
    *         absolute value is less than, equal to, or greater than that of the
    *         second argument, respectively.
@@ -974,14 +1020,14 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Compares the absolute values of the provided value-encoded numbers, and
-   * returns one of {@code -1}, {@code 0}, or {@code 1} whether the first
-   * number's absolute value is less than, equal to, or greater than that of the
-   * second argument, respectively.
+   * Compares the absolute values of the provided {@linkplain BigInt#val()
+   * value-encoded numbers}, and returns one of {@code -1}, {@code 0}, or
+   * {@code 1} whether the first number's absolute value is less than, equal to,
+   * or greater than that of the second argument, respectively.
    *
-   * @param val1 The first value-encoded number.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
    * @param len1 The length of the first number.
-   * @param val2 The second value-encoded number.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
    * @param len2 The length of the second number.
    * @return One of {@code -1}, {@code 0}, or {@code 1} if the first number's
    *         absolute value is less than, equal to, or greater than that of the
@@ -1009,13 +1055,13 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Compares the values of the provided value-encoded numbers, and returns one
-   * of {@code -1}, {@code 0}, or {@code 1} whether the first number's value is
-   * less than, equal to, or greater than that of the second argument,
-   * respectively.
+   * Compares the values of the provided {@linkplain BigInt#val() value-encoded
+   * numbers}, and returns one of {@code -1}, {@code 0}, or {@code 1} whether
+   * the first number's value is less than, equal to, or greater than that of
+   * the second argument, respectively.
    *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
    * @return One of {@code -1}, {@code 0}, or {@code 1} if the first number's
    *         value is less than, equal to, or greater than that of the second
    *         argument, respectively.
@@ -1041,14 +1087,17 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Sets the provided value-encoded number its absolute value.
+   * Sets the provided {@linkplain BigInt#val() value-encoded number} to its
+   * absolute value.
    *
    * <pre>
    * {@code val = | val |}
    * </pre>
    *
-   * @param val The value-encoded number.
-   * @return The provided value-encoded number set to its absolute value.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set to
+   *         its absolute value.
+   * @complexity O(1)
    */
   public static int[] abs(final int[] val) {
     if (val[0] < 0)
@@ -1059,34 +1108,41 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the maximum of the provided value-encoded numbers.
+   * Returns the maximum of the provided {@linkplain BigInt#val() value-encoded
+   * numbers}.
    *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
-   * @return The value-encoded number whose value is the greater of the provided
-   *         value-encoded numbers.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
+   * @return The {@linkplain BigInt#val() value-encoded number} whose value is
+   *         the greater of the provided {@linkplain BigInt#val() value-encoded
+   *         numbers}.
+   * @complexity O(n)
    */
   public static int[] max(final int[] val1, final int[] val2) {
     return compareTo(val1, val2) > 0 ? val1 : val2;
   }
 
   /**
-   * Returns the minimum of the provided value-encoded numbers.
+   * Returns the minimum of the provided {@linkplain BigInt#val() value-encoded
+   * numbers}.
    *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
-   * @return The value-encoded number whose value is the lesser of the provided
-   *         value-encoded numbers.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
+   * @return The {@linkplain BigInt#val() value-encoded number} whose value is
+   *         the lesser of the provided {@linkplain BigInt#val() value-encoded
+   *         numbers}.
+   * @complexity O(n)
    */
   public static int[] min(final int[] val1, final int[] val2) {
     return compareTo(val1, val2) < 0 ? val1 : val2;
   }
 
   /**
-   * Tests the provided value-encoded numbers for equality.
+   * Tests the provided {@linkplain BigInt#val() value-encoded numbers} for
+   * equality.
    *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
    * @return {@code true} if the two provided numbers are equal, otherwise
    *         {@code false}.
    * @complexity O(n)
@@ -1111,10 +1167,12 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Computes the hash code of the provided value-encoded number.
+   * Computes the hash code of the provided {@linkplain BigInt#val()
+   * value-encoded number}.
    *
-   * @param val The value-encoded number.
-   * @return The hash code of the provided value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The hash code of the provided {@linkplain BigInt#val()
+   *         value-encoded number}.
    * @complexity O(n)
    */
   public static int hashCode(final int[] val) {
@@ -1135,13 +1193,15 @@ abstract class BigIntValue extends Number {
   private static final int pow2 = 1 << 13;
 
   /**
-   * Divides the provided value-encoded number by {@code 10^13} and returns the
-   * remainder. Does not change the sign of the number.
+   * Divides the provided {@linkplain BigInt#val() value-encoded number} by
+   * {@code 10^13} and returns the remainder. Does not change the sign of the
+   * number.
    *
-   * @param val The value-encoded number.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs to divide.
    * @return The remainder of the division of the provided value-encode number
    *         by {@code 10^13}.
+   * @complexity O(n)
    */
   private static long toStringDiv(final int[] val, int len) {
     int q1 = 0;
@@ -1169,11 +1229,12 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Converts the provided value-encoded number into a string of radix 10.
+   * Converts the provided {@linkplain BigInt#val() value-encoded number} into a
+   * string of radix 10.
    *
-   * @param val The value-encoded number.
-   * @return The string representation of the provided value-encoded number in
-   *         radix 10.
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The string representation of the provided {@linkplain BigInt#val()
+   *         value-encoded number} in radix 10.
    * @complexity O(n^2)
    */
   public static String toString(final int[] val) {
@@ -1210,14 +1271,14 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the number of digits in the provided value-encoded number (radix
-   * 10).
+   * Returns the number of digits in the provided {@linkplain BigInt#val()
+   * value-encoded number} (radix 10).
    *
-   * @param val The value-encoded number.
-   * @return The number of digits in the provided value-encoded number (radix
-   *         10).
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The number of digits in the provided {@linkplain BigInt#val()
+   *         value-encoded number} (radix 10).
+   * @complexity O(n^2) // FIXME: There must be a more efficient way to do this!
    */
-  // FIXME: There must be a more efficient way to do this!
   public static int precision(final int[] val) {
     if (isZero(val))
       return 1;

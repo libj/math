@@ -1,17 +1,30 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
+ * Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- * You should have received a copy of The MIT License (MIT) along with this
- * program. If not, see <http://opensource.org/licenses/MIT/>.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
 package org.huldra.math;
@@ -31,7 +44,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
    *
-   * @param val The value-encoded multiplicand.
+   * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The multiplier.
    * @return The result of the multiplication of the provided number by the
    *         {@code int} multiplier.
@@ -54,7 +67,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
    *
-   * @param val The value-encoded multiplicand.
+   * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param sig The sign of the unsigned {@code int} multiplier.
    * @param mul The multiplier (unsigned).
    * @return The result of the multiplication of the provided number by the
@@ -82,7 +95,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
    *
-   * @param val The value-encoded multiplicand.
+   * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The multiplier.
    * @return The result of the multiplication of the provided number by the
    *         {@code long} multiplier.
@@ -105,7 +118,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
    *
-   * @param val The value-encoded multiplicand.
+   * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param sig The sign of the unsigned {@code long} multiplier.
    * @param mul The multiplier (unsigned).
    * @return The result of the multiplication of the provided number by the
@@ -215,17 +228,19 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided number by a value-encoded multiplicand.
+   * Multiplies the provided number by a {@linkplain BigInt#val() value-encoded
+   * multiplicand}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
    *
-   * @param val The value-encoded multiplicand.
-   * @param mul The value-encoded multiplier.
-   * @return The result of the multiplication of the provided value-encoded
-   *         number by the value-encoded multiplier.
-   * @complexity O(n^2)
+   * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
+   * @param mul The {@linkplain BigInt#val() value-encoded multiplier}.
+   * @return The result of the multiplication of the provided
+   *         {@linkplain BigInt#val() value-encoded number} by the
+   *         {@linkplain BigInt#val() value-encoded multiplier}.
+   * @complexity O(n^2) - O(n log n)
    */
   public static int[] mul(int[] val, int[] mul) {
     if (isZero(val))
@@ -311,9 +326,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * @param mul The number to multiply with.
    */
   /**
-   * Multiplies the provided value-encoded numbers, and puts the result in
-   * {@code res}. Uses a quadratic algorithm which is often suitable for smaller
-   * numbers.
+   * Multiplies the provided {@linkplain BigInt#val() value-encoded numbers},
+   * and puts the result in {@code res}. Uses a quadratic algorithm which is
+   * often suitable for smaller numbers.
    *
    * <pre>
    * res = val1 * val2
@@ -322,9 +337,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <i><b>Note:</b> It is expected that
    * {@code res.length >= len1 + len2 + 1}.</i>
    *
-   * @param val1 The first value-encoded number.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
    * @param len1 The number of limbs of the first number.
-   * @param val2 The second value-encoded number.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
    * @param len2 The number of limbs of the second number.
    * @param off The offset of the first limb for the first and second numbers,
    *          as well as the result array.
@@ -590,18 +605,18 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided value-encoded numbers using the Karatsuba
-   * algorithm, and returns the result. The caller can choose to use a parallel
-   * version which is more suitable for larger numbers.
+   * Multiplies the provided {@linkplain BigInt#val() value-encoded numbers}
+   * using the Karatsuba algorithm, and returns the result. The caller can
+   * choose to use a parallel version which is more suitable for larger numbers.
    * <p>
    * <i><b>Note:</b> The size of {@code val1} and {@code val2} must be the
    * same.</i>
    *
-   * @param val1 The first value-encoded number.
-   * @param val2 The second value-encoded number.
+   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
    * @param parallel Whether to attempt to use the parallel algorithm.
-   * @return The result of the multiplication of the provided value-encoded
-   *         numbers.
+   * @return The result of the multiplication of the provided
+   *         {@linkplain BigInt#val() value-encoded numbers}.
    * @throws ExecutionException If the computation in a worker thread threw an
    *           exception.
    * @throws InterruptedException If the current thread was interrupted while
