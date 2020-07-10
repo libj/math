@@ -16,7 +16,6 @@
 
 package org.libj.math;
 
-import org.huldra.math.BigInt;
 import org.libj.lang.Numbers;
 
 abstract class DecimalDivision extends FixedPoint {

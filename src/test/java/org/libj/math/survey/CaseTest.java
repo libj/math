@@ -26,10 +26,10 @@ import java.util.function.IntFunction;
 import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
-import org.huldra.math.BigInt;
 import org.junit.internal.ArrayComparisonFailure;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
+import org.libj.math.BigInt;
 import org.libj.test.TestAide;
 import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;

@@ -27,7 +27,7 @@
  * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
-package org.huldra.math;
+package org.libj.math;
 
 import java.util.concurrent.ExecutionException;
 

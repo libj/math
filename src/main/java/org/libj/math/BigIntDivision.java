@@ -27,7 +27,7 @@
  * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
-package org.huldra.math;
+package org.libj.math;
 
 abstract class BigIntDivision extends BigIntMultiplication {
   private static final long serialVersionUID = -4156041218135948540L;

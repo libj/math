@@ -14,7 +14,7 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.huldra.math;
+package org.libj.math;
 
 import java.math.BigInteger;
 import java.util.Arrays;

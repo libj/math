@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 
-import org.huldra.math.BigIntTest;
 import org.junit.Test;
 
 public class BigIntegersTest extends BigIntTest {

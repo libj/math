@@ -14,12 +14,11 @@
  * program. If not, see <http://opensource.org/licenses/MIT/>.
  */
 
-package org.huldra.math;
+package org.libj.math;
 
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.libj.math.BigIntegers;
 
 import gnu.java.math.MPN;
 

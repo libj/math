@@ -27,7 +27,7 @@
  * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
-package org.huldra.math;
+package org.libj.math;
 
 abstract class BigIntMagnitude extends BigIntValue {
   private static final long serialVersionUID = 734086338662551150L;

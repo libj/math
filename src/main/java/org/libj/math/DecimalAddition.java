@@ -47,8 +47,8 @@ abstract class DecimalAddition extends FixedPoint {
     final long maxValue = Decimal.maxValue(valueBits);
     final short minScale = minScale(scaleBits);
     final short maxScale = maxScale(scaleBits);
-    short s1 = decodeScale(ld1, scaleBits);
-    short s2 = decodeScale(ld2, scaleBits);
+    final short s1 = decodeScale(ld1, scaleBits);
+    final short s2 = decodeScale(ld2, scaleBits);
     final byte maxPrecision = s1 == s2 ? -1 : valueBits;
     final Decimal result = threadLocal.get();
     if (add0(v1, s1, v2, s2, maxPrecision, minValue, maxValue, minScale, maxScale, false, result))
