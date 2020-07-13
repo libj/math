@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.libj.lang.Numbers;
 import org.libj.math.survey.CaseTest;
 
 public abstract class BigIntTest extends CaseTest {
@@ -73,7 +74,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInteger scaledBigInteger(final int a) {
-    setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+
     if (shoudlScale)
       return new BigInteger(stringScale(String.valueOf(a)));
 
@@ -81,7 +84,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInteger scaledBigInteger(final long a) {
-    setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+
     if (shoudlScale)
       return new BigInteger(stringScale(String.valueOf(a)));
 
@@ -89,12 +94,16 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInteger scaledBigInteger(final String a) {
-    setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+
     return new BigInteger(shoudlScale ? stringScale(a) : a);
   }
 
   public int[] scaledVal(final int a) {
-    setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+
     final int[] val = BigInt.assign(newVal(2), a);
     if (shoudlScale)
       return BigInt.valueOf(stringScale(BigInt.toString(val)));
@@ -103,7 +112,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public int[] scaledVal(final long a) {
-    setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+
     final int[] val = BigInt.assign(newVal(2), a);
     if (shoudlScale)
       return BigInt.valueOf(stringScale(BigInt.toString(val)));
@@ -112,7 +123,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public int[] scaledVal(final String a) {
-    setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+
     if (shoudlScale)
       return BigInt.valueOf(stringScale(a));
 
@@ -120,7 +133,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInt scaledBigInt(final int a) {
-    setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+
     if (shoudlScale)
       return newBigInt().assign(stringScale(String.valueOf(a)));
 
@@ -128,7 +143,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInt scaledBigInt(final long a) {
-    setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+
     if (shoudlScale)
       return newBigInt().assign(stringScale(String.valueOf(a)));
 
@@ -136,7 +153,9 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   public BigInt scaledBigInt(final String a) {
-    setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+
     if (shoudlScale)
       return newBigInt().assign(stringScale(a));
 
@@ -144,47 +163,81 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   private static BigInt newBigInt() {
-    return shouldInflate ? new BigInt(new int[random.nextInt(1024) + 1]) : new BigInt(0);
+//    AuditReport.foo = true;
+//    System.err.println("-->");
+    final BigInt x;
+    if (shouldInflate) {
+//      System.err.println("1");
+      final int[] val = new int[random.nextInt(1024) + 1];
+//      System.err.println("2");
+      x = new BigInt(val);
+//      System.err.println("3");
+    }
+    else {
+//      System.err.println("4");
+      x = new BigInt(0);
+//      System.err.println("5");
+    }
+//    AuditReport.foo = false;
+//    System.err.println("<--");
+    return x;
   }
 
   private static int[] newVal(final int size) {
     return shouldInflate ? new int[random.nextInt(1024) + 1] : new int[size];
   }
 
+  static int randomInt(final int precision) {
+    final long min = FastMath.e10[precision - 1];
+    final long max = FastMath.e10[precision];
+    return (int)(random.nextInt((int)(max - min)) + min);
+  }
+
+  static long randomLong(final int precision) {
+    if (precision < 10)
+      return randomInt(precision);
+
+    long v = randomInt(precision - 9) * randomInt(9);
+    while (Numbers.precision(v) < precision)
+      v *= 9;
+
+    return v;
+  }
+
   @Override
-  public int[] randomInputs(final int[] values) {
+  public int[] randomInputs(final int precision, final int[] values) {
     if (shouldBeEqual) {
-      Arrays.fill(values, random.nextInt());
+      Arrays.fill(values, randomInt(precision));
     }
     else {
       for (int i = 0; i < values.length; ++i)
-        values[i] = random.nextInt();
+        values[i] = randomInt(precision);
     }
 
     return values;
   }
 
   @Override
-  public long[] randomInputs(final long[] values) {
+  public long[] randomInputs(final int precision, final long[] values) {
     if (shouldBeEqual) {
-      Arrays.fill(values, random.nextInt());
+      Arrays.fill(values, randomLong(precision));
     }
     else {
       for (int i = 0; i < values.length; ++i)
-        values[i] = random.nextInt();
+        values[i] = randomLong(precision);
     }
 
     return values;
   }
 
   @Override
-  public String[] randomInputs(final int len, final String[] values) {
+  public String[] randomInputs(final int precision, final String[] values) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomBig(random.nextInt(len + 1) + 1, true));
+      Arrays.fill(values, randomBig(precision, true));
     }
     else {
       for (int i = 0; i < values.length; ++i)
-        values[i] = randomBig(random.nextInt(len + 1) + 1, true);
+        values[i] = randomBig(precision, true);
     }
 
     return values;
@@ -197,18 +250,21 @@ public abstract class BigIntTest extends CaseTest {
     shouldBeEqual = random.nextDouble() < equalFactor;
   }
 
-  public int scaleFactorFactor() {
+  private static int scaleFactorFactor() {
     return 2;
   }
 
   public String stringScale(final String a) {
-    if (scaleFactorFactor() == 1)
+    if (scaleFactorFactor() == 1 || a.charAt(0) == '0')
       return a;
 
-    final String copy = a.replace("-", "");
+    final char ch = a.charAt(a.length() - 1);
     final StringBuilder builder = new StringBuilder(a);
-    for (int i = 1; i < scaleFactorFactor(); ++i)
-      builder.append(copy);
+    for (int i = 1, p; i < scaleFactorFactor(); ++i) {
+      p = builder.length();
+      builder.append(a);
+      builder.setCharAt(p, ch);
+    }
 
     return builder.toString();
   }
@@ -217,16 +273,19 @@ public abstract class BigIntTest extends CaseTest {
     return randomBig(len, false);
   }
 
-  public static String randomBig(final int len, final boolean positive) {
+  public static String randomBig(int len, final boolean positive) {
     final int sign = positive ? 0 : random.nextInt(2);
-    final char[] num = new char[len + sign];
+    final char[] num = new char[len += sign];
     if (sign > 0)
       num[0] = '-';
 
     num[sign] = (char)('1' + random.nextInt(9));
-    for (int i = sign + 1; i < len + sign; i++)
+    for (int i = sign + 1; i < len; ++i)
       num[i] = (char)('0' + random.nextInt(10));
 
-    return new String(num);
+    final String x = new String(num);
+    if (x.length() == 2049)
+        System.console();
+    return x;
   }
 }

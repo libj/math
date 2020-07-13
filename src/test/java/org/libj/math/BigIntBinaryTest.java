@@ -19,50 +19,56 @@ package org.libj.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.libj.math.survey.AuditReport;
+import org.libj.math.survey.AuditRunner;
 
+@RunWith(AuditRunner.class)
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntBinaryTest extends BigIntTest {
   @Test
-  public void testAnd() {
-    test("and(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.and(a, b), BigInt::toString)
+  public void testAnd(final AuditReport report) {
+    test("and(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.and(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testOr() {
-    test("or(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.or(a, b), BigInt::toString)
+  public void testOr(final AuditReport report) {
+    test("or(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.or(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testXor() {
-    test("xor(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.xor(a, b), BigInt::toString)
+  public void testXor(final AuditReport report) {
+    test("xor(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.xor(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testNot() {
-    test("not()",
-      s("BigInteger", this::scaledBigInteger, (BigInteger a) -> a.not(), String::valueOf),
-      s("BigInt", this::scaledBigInt, (BigInt a) -> a.not(), String::valueOf),
-      s("int[]", this::scaledVal, (int[] a) -> BigInt.not(a), BigInt::toString)
+  public void testNot(final AuditReport report) {
+    test("not()", report,
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.not(), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.not(), String::valueOf),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.not(a), BigInt::toString)
     );
   }
 
   @Test
-  public void testAndNot() {
-    test("andNot(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.andNot(a, b), BigInt::toString)
+  public void testAndNot(final AuditReport report) {
+    test("andNot(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.andNot(a, b), BigInt::toString)
     );
   }
 }

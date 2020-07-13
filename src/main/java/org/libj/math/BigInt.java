@@ -262,7 +262,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
   public BigInt assign(final int[] val) {
     // FIXME: Should this assert that val.length != 0?
     this.val = val;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return this;
   }
 

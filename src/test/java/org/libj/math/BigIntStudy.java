@@ -16,7 +16,13 @@
 
 package org.libj.math;
 
+import static org.junit.Assert.*;
+
+import java.security.DrbgParameters.NextBytes;
+import java.util.function.Predicate;
+
 import org.junit.Test;
+import org.libj.lang.Numbers;
 
 public class BigIntStudy extends BigIntTest {
   /**
@@ -55,5 +61,35 @@ public class BigIntStudy extends BigIntTest {
         return len * sig;
       }, Integer::valueOf)
     );
+  }
+
+  @Test
+  public void testRandomIntPrecision() {
+    for (int i = 0; i < 1000; ++i) {
+      for (int j = 1; j < 10; ++j) {
+        final int random = randomInt(j);
+        assertEquals(String.valueOf(random), j, Numbers.precision(random));
+      }
+    }
+  }
+
+  @Test
+  public void testRandomLongPrecision() {
+    for (int i = 0; i < 1000; ++i) {
+      for (int j = 1; j < 19; ++j) {
+        final long random = randomLong(j);
+        if (Numbers.precision(random) != j) {
+          System.console();
+          randomLong(j);
+          randomLong(j);
+          randomLong(j);
+          randomLong(j);
+          randomLong(j);
+          randomLong(j);
+        }
+
+        assertEquals(j + " " + String.valueOf(random), j, Numbers.precision(random));
+      }
+    }
   }
 }

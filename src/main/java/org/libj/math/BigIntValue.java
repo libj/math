@@ -47,7 +47,7 @@ abstract class BigIntValue extends Number {
    * @return A new {@code int[]} with a length that is at least {@code len}.
    */
   static int[] alloc(final int len) {
-    return new int[len + len];
+    return new int[8 + len + len];
   }
 
   /**
@@ -131,7 +131,7 @@ abstract class BigIntValue extends Number {
   static int[] assign0(final int[] val, final int sig, final int mag) {
     val[0] = sig;
     val[1] = mag;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -199,7 +199,7 @@ abstract class BigIntValue extends Number {
     val[0] = sig < 0 ? -2 : 2;
     val[1] = (int)mag;
     val[2] = magh;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -312,7 +312,7 @@ abstract class BigIntValue extends Number {
     }
 
     val[0] = -vlen;
-    _debugLenSig(val);;
+    // _debugLenSig(val);;
     return val;
   }
 
@@ -344,7 +344,7 @@ abstract class BigIntValue extends Number {
     }
 
     val[0] = vlen;
-    _debugLenSig(val);;
+    // _debugLenSig(val);;
     return val;
   }
 
@@ -393,7 +393,7 @@ abstract class BigIntValue extends Number {
     }
 
     val[0] = -vlen;
-    _debugLenSig(val);;
+    // _debugLenSig(val);;
     return val;
   }
 
@@ -425,7 +425,7 @@ abstract class BigIntValue extends Number {
     }
 
     val[0] = vlen;
-    _debugLenSig(val);;
+    // _debugLenSig(val);;
     return val;
   }
 
@@ -490,7 +490,7 @@ abstract class BigIntValue extends Number {
       val[0] = 0;
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -1103,7 +1103,7 @@ abstract class BigIntValue extends Number {
     if (val[0] < 0)
       val[0] = -val[0];
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 

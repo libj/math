@@ -62,7 +62,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       }
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -85,18 +85,18 @@ abstract class BigIntMagnitude extends BigIntValue {
         --val[i];
 
       if (--val[i] != 0 || i != len) {
-        _debugLenSig(val);
+        // _debugLenSig(val);
         return;
       }
     }
     else if (val[len] != 0) {
-      _debugLenSig(val);
+      // _debugLenSig(val);
       return;
     }
 
     --len;
     val[0] = sig ? len : -len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
   }
 
   /**
@@ -145,7 +145,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     }
 
     val[0] = sig ? len : -len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -178,7 +178,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       --len;
 
     val[0] = sig ? len : -len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
   }
 
   /**
@@ -237,7 +237,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       }
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -275,6 +275,6 @@ abstract class BigIntMagnitude extends BigIntValue {
         break;
 
     val[0] = sig ? len : -len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
   }
 }

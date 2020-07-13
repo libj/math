@@ -30,6 +30,9 @@
   <description>
     Supplementary extensions to the java.math package.
   </description>
+  <properties>
+    <version.bytebuddy>1.10.13</version.bytebuddy>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -76,6 +79,24 @@
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
       <version>4.3.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>${version.bytebuddy}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy-agent</artifactId>
+      <version>${version.bytebuddy}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman</artifactId>
+      <version>4.0.11</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

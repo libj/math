@@ -116,7 +116,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       val[0] = len;
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -159,7 +159,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       usubVal(val, len, true, sub);
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -180,7 +180,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final long add) {
-    return add > 0 ? add(val, 1, add) : add < 0 ? sub(val, 1, -add) : val;
+    return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
   }
 
   /**
@@ -202,7 +202,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final long sub) {
-    return sub > 0 ? sub(val, 1, sub) : sub < 0 ? add(val, 1, -sub) : val;
+    return sub > 0 ? sub0(val, sub) : sub < 0 ? add0(val, -sub) : val;
   }
 
   /**
@@ -320,7 +320,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       }
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -437,7 +437,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       val[0] = sig ? len : -len;
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 }

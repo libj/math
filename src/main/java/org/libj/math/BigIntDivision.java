@@ -106,7 +106,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     }
 
     val[0] = sig != dsig ? -len : len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return (int)r;
   }
 
@@ -272,7 +272,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
     val[0] = sig < 0 != dsig < 0 ? -len : len;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
 
     final long tmp = u1 << 32 - s | u0 >>> s;
     r = s == 0 ? tmp : u2 << 64 - s | tmp;
@@ -446,7 +446,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     // Sign of remainder does not depend on the sign of the operand
     val[0] = sig1 < 0 ? -len2 : len2;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
   }
 
   /**
@@ -496,7 +496,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       }
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -590,7 +590,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     int vsig = 1, len = val[0]; if (len < 0) { len = -len; vsig = -1; }
     val[1] = div = rem(val, 1, len, sig, div);
     val[0] = val[1] == 0 ? 0 : vsig;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return div;
   }
 
@@ -717,7 +717,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       val[2] = (int)(modh);
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return div;
   }
 
@@ -787,7 +787,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       }
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -820,7 +820,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     if (len < 0)
       val = addSub0(val, -len, false, div, true);
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 }

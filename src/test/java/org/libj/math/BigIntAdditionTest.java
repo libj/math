@@ -19,103 +19,115 @@ package org.libj.math;
 import java.math.BigInteger;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.libj.math.survey.AuditReport;
+import org.libj.math.survey.AuditRunner;
 
+@RunWith(AuditRunner.class)
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntAdditionTest extends BigIntTest {
   @Test
-  public void testAddUnsignedInt() {
+  public void testAddUnsignedInt(final AuditReport report) {
     final BigInteger[] big = {null};
     final int[] sig = {0};
-    test("add(int,int)",
-      i("BigInteger", this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, int b) -> a.add(big[0]), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(sig[0], b), String::valueOf),
-      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.add(a, sig[0], b), BigInt::toString)
+    test("add(int,int)", report,
+      i(BigInteger.class, this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, int b) -> a.add(big[0]), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.add(sig[0], b), String::valueOf),
+      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.add(a, sig[0], b), BigInt::toString)
+    );
+
+//    report.dump();
+//    System.err.println("Total int[]: " + report.getAllocations(int[].class));
+//    System.err.println("Total BigInt: " + report.getAllocations(BigInt.class));
+//    System.err.println("Total BigInteger: " + report.getAllocations(BigInteger.class));
+//    System.err.println(AuditReport.xxx);
+  }
+
+  @Test
+  public void testAddSignedInt(final AuditReport report) {
+    test("add(int)", report,
+      i(BigInteger.class, this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf),
+      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.add(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testAddSignedInt() {
-    test("add(int)",
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf),
-      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.add(a, b), BigInt::toString)
-    );
-  }
-
-  @Test
-  public void testAddUnsignedLong() {
+  public void testAddUnsignedLong(final AuditReport report) {
     final BigInteger[] big = {null};
     final int[] sig = {0};
-    test("add(int,long)",
-      l("BigInteger", this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, long b) -> a.add(big[0]), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(sig[0], b), String::valueOf),
-      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.add(a, sig[0], b), BigInt::toString)
+    test("add(int,long)", report,
+      l(BigInteger.class, this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, long b) -> a.add(big[0]), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.add(sig[0], b), String::valueOf),
+      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.add(a, sig[0], b), BigInt::toString)
     );
   }
 
   @Test
-  public void testAddSignedLong() {
-    test("add(long)",
-      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf),
-      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.add(a, b), BigInt::toString)
+  public void testAddSignedLong(final AuditReport report) {
+    test("add(long)", report,
+      l(BigInteger.class, this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf),
+      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.add(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testAddBig() {
-    test("add(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.add(a, b), BigInt::toString)
+  public void testAddBig(final AuditReport report) {
+    test("add(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.add(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubUnsignedInt() {
+  public void testSubUnsignedInt(final AuditReport report) {
     final BigInteger[] big = {null};
     final int[] sig = {0};
-    test("sub(int,int)",
-      i("BigInteger", this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, int b) -> a.subtract(big[0]), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.sub(sig[0], b), String::valueOf),
-      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.sub(a, sig[0], b), BigInt::toString)
+    test("sub(int,int)", report,
+      i(BigInteger.class, this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, int b) -> a.subtract(big[0]), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.sub(sig[0], b), String::valueOf),
+      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.sub(a, sig[0], b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubSignedInt() {
-    test("sub(int)",
-      i("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      i("BigInt", this::scaledBigInt, (BigInt a, int b) -> a.sub(b), String::valueOf),
-      i("int[]", this::scaledVal, (int[] a, int b) -> BigInt.sub(a, b), BigInt::toString)
+  public void testSubSignedInt(final AuditReport report) {
+    test("sub(int)", report,
+      i(BigInteger.class, this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.sub(b), String::valueOf),
+      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.sub(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubUnsignedLong() {
+  public void testSubUnsignedLong(final AuditReport report) {
     final BigInteger[] big = {null};
     final int[] sig = {0};
-    test("sub(int,long)",
-      l("BigInteger", this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, long b) -> a.subtract(big[0]), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.sub(sig[0], b), String::valueOf),
-      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.sub(a, sig[0], b), BigInt::toString)
+    test("sub(int,long)", report,
+      l(BigInteger.class, this::scaledBigInteger, b -> { big[0] = BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b); return b; }, (BigInteger a, long b) -> a.subtract(big[0]), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.sub(sig[0], b), String::valueOf),
+      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.sub(a, sig[0], b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubSignedLong() {
-    test("sub(long)",
-      l("BigInteger", this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      l("BigInt", this::scaledBigInt, (BigInt a, long b) -> a.sub(b), String::valueOf),
-      l("int[]", this::scaledVal, (int[] a, long b) -> BigInt.sub(a, b), BigInt::toString)
+  public void testSubSignedLong(final AuditReport report) {
+    test("sub(long)", report,
+      l(BigInteger.class, this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.sub(b), String::valueOf),
+      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.sub(a, b), BigInt::toString)
     );
   }
 
   @Test
-  public void testSubBig() {
-    test("sub(T)",
-      s("BigInteger", this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      s("BigInt", this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.sub(b), String::valueOf),
-      s("int[]", this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.sub(a, b), BigInt::toString)
+  public void testSubBig(final AuditReport report) {
+    test("sub(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.sub(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.sub(a, b), BigInt::toString)
     );
   }
 }

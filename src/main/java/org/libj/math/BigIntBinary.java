@@ -170,7 +170,7 @@ abstract class BigIntBinary extends BigIntDivision {
     if (oneLost)
       uaddVal(val, len, sig, 1);
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -251,7 +251,7 @@ abstract class BigIntBinary extends BigIntDivision {
       val = smallShiftLeft(val, shiftBig + 1, len, sig, shiftSmall);
     }
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -282,7 +282,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
     --newLen;
     val[0] = sig ? newLen : -newLen;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -437,7 +437,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
     for (; val[len] == 0; --len);
     val[0] = sig < 0 ? -len : len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -527,7 +527,7 @@ abstract class BigIntBinary extends BigIntDivision {
       for (; val[len] == 0; --len);
 
     val[0] = sig < 0 ? -len : len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -587,13 +587,13 @@ abstract class BigIntBinary extends BigIntDivision {
         final int k = 1 << smallBit;
         if (j - k > 0) {
           val[bigBit] ^= ((j << 1) - 1) ^ (k - 1);
-          _debugLenSig(val);
+          // _debugLenSig(val);
           return val;
         }
 
         if (j - k < 0) {
           val[bigBit] ^= k;
-          _debugLenSig(val);
+          // _debugLenSig(val);
           return val;
         }
 
@@ -620,7 +620,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
     for (; val[len] == 0; --len);
     val[0] = sig < 0 ? -len : len;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -788,7 +788,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
               val[blen] = 1;
               val[0] = sig1 < 0 ? -blen : blen;
-              _debugLenSig(val);
+              // _debugLenSig(val);
               return val;
             }
 
@@ -809,7 +809,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
     val[0] = sig1 < 0 ? -len1 : len1;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -964,7 +964,7 @@ abstract class BigIntBinary extends BigIntDivision {
 
     val[0] = sig1 < 0 ? -len1 : len1;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -1003,18 +1003,18 @@ abstract class BigIntBinary extends BigIntDivision {
     len1 += off;
     len2 += off;
 
-    if (len1 < len2 || sig1 < sig2) {
-      // Copy so that the provided val2 reference does not get modified
-      final int[] copy = Arrays.copyOf(mask, len2);
-      mask = val;
-      val = copy;
-      sig1 ^= sig2;
-      sig2 ^= sig1;
-      sig1 ^= sig2;
-      len1 ^= len2;
-      len2 ^= len1;
-      len1 ^= len2;
-    }
+//    if (len1 < len2 || sig1 < sig2) {
+//      // Copy so that the provided val2 reference does not get modified
+//      final int[] copy = Arrays.copyOf(mask, len2);
+//      mask = val;
+//      val = copy;
+//      sig1 ^= sig2;
+//      sig2 ^= sig1;
+//      sig1 ^= sig2;
+//      len1 ^= len2;
+//      len2 ^= len1;
+//      len1 ^= len2;
+//    }
 
     if (sig1 > 0) {
       if (len2 > len1) {
@@ -1082,7 +1082,7 @@ abstract class BigIntBinary extends BigIntDivision {
     else {
       if (len2 > len1) {
         if (len2 > val.length)
-          val = realloc(val, len1, len2 + 2);
+          val = realloc(val, len1 - off, len2 + 2);
 
         System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
@@ -1111,6 +1111,28 @@ abstract class BigIntBinary extends BigIntDivision {
         }
         else { // a!=0 && b!=0
           val[j - 1] = -(-a ^ b);
+          if (val[j - 1] == 0) { // Perform carry.
+            for (; val[j - 1] == 0 && j < mlen; j++) {
+              val[j] ^= mask[j];
+              ++val[j];
+            }
+
+            final int blen = Math.max(len1, len2);
+            for (; val[j - 1] == 0 && j < blen; j++)
+              ++val[j];
+
+            if (j == val.length)
+              val = realloc(val, len1, j + 1);
+
+            if (val[j - 1] == 0) {
+              val[j] = 1;
+              len1 = j;
+              val[0] = sig1 < 0 ? -len1 : len1;
+
+              // _debugLenSig(val);
+              return val;
+            }
+          }
         }
 
         for (; j < mlen; j++)
@@ -1162,7 +1184,7 @@ abstract class BigIntBinary extends BigIntDivision {
     for (; len1 > 0 && val[len1] == 0; --len1);
     val[0] = sig1 < 0 ? -len1 : len1;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -1244,7 +1266,7 @@ abstract class BigIntBinary extends BigIntDivision {
               len1 = blen + 1;
               len1 -= off;
               val[0] = sig1 < 0 ? -len1 : len1;
-              _debugLenSig(val);
+              // _debugLenSig(val);
               return val;
             }
 
@@ -1301,7 +1323,7 @@ abstract class BigIntBinary extends BigIntDivision {
       for (; val[len1] == 0; --len1);
 
     val[0] = sig1 < 0 ? -len1 : len1;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -1328,7 +1350,7 @@ abstract class BigIntBinary extends BigIntDivision {
     if (len == 0) {
       val[0] = -1;
       val[1] = 1;
-      _debugLenSig(val);
+      // _debugLenSig(val);
       return val;
     }
 
@@ -1338,7 +1360,7 @@ abstract class BigIntBinary extends BigIntDivision {
       val = uaddVal(val, len, true, 1);
 
     val[0] = -val[0];
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 

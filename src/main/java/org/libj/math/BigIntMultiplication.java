@@ -84,7 +84,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     sig = umul(val, 1, len, mul);
     val[0] = flipSig ? -sig : sig;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -140,7 +140,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     sig = umul0(val, 1, len, mull, mulh);
     val[0] = flipSig ? -sig : sig;
 
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 
@@ -318,7 +318,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     }
 
     val[0] = flipSig ? -len1 : len1;
-    _debugLenSig(val);
+    // _debugLenSig(val);
     return val;
   }
 

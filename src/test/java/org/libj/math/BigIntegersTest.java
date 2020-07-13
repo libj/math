@@ -21,7 +21,12 @@ import static org.junit.Assert.*;
 import java.math.BigInteger;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.libj.math.survey.AuditRunner;
 
+@RunWith(AuditRunner.class)
+@AuditRunner.Instrument({BigInt.class, int[].class})
+@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntegersTest extends BigIntTest {
   @Test
   public void testInternBigInteger() {

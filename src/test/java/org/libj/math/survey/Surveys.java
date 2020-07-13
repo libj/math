@@ -21,21 +21,25 @@ import java.util.Arrays;
 import org.libj.lang.Ansi;
 import org.libj.lang.Ansi.Color;
 import org.libj.lang.Ansi.Intensity;
+import org.libj.lang.Classes;
 import org.libj.lang.Strings;
+import org.libj.math.survey.CaseTest.Case;
 
 public abstract class Surveys {
   private final int variables;
   private final int divisions;
   private final Survey[] surveys;
+  private final AuditReport report;
   private int count;
 
-  public Surveys(final int size, final int variables, final int divisions, final int warmup) {
+  public Surveys(final Case<?,?,?,?,?>[] cases, final int variables, final int divisions, final int warmup, final AuditReport report) {
     this.variables = variables;
     this.divisions = divisions;
-    this.count = -warmup;
-    surveys = new Survey[size];
-    for (int i = 0; i < size; ++i) {
-      surveys[i] = new Survey(variables, divisions) {
+    this.report = report;
+    this.count = 0;
+    surveys = new Survey[cases.length];
+    for (int i = 0; i < cases.length; ++i) {
+      surveys[i] = new Survey(cases[i], report, variables, divisions, warmup) {
         @Override
         public int getDivision(final int variable, final Object obj) {
           return Surveys.this.getDivision(variable, obj);
@@ -46,9 +50,12 @@ public abstract class Surveys {
 
   public abstract int getDivision(int variable, Object obj);
 
-  public void addTime(final int survey, final int variable, final Object obj, final long time) {
-    if (++count >= 0)
-      surveys[survey].addTime(variable, obj, time);
+  public void addSample(final int survey, final int variable, final Object obj, final long time) {
+    surveys[survey].addSample(variable, obj, time, report);
+  }
+
+  public void onSuccess() {
+    ++count;
   }
 
   public void reset() {
@@ -60,7 +67,7 @@ public abstract class Surveys {
 
   public void print(final String label, final long ts, final String ... headings) {
     for (int s = 0; s < surveys.length; ++s)
-      surveys[s].normalize();
+      surveys[s].normalize(count);
 
     final long[][] min = new long[variables][divisions];
     for (int v = 0; v < variables; ++v)
@@ -81,31 +88,48 @@ public abstract class Surveys {
     }
 
     final String[][] columns = new String[surveys.length + 1][];
-    columns[0] = new String[variables * divisions + 1];
-    columns[0][0] = "";
-    for (int v = 0; v < variables; ++v)
-      for (int d = 0; d < divisions; ++d)
-        columns[0][v + d * variables + 1] = key(v, d);
+    if (report != null) {
+      String[] rows = columns[0] = new String[1 + 2];
+      rows[0] = "";
+      rows[1] = "T";
+      rows[2] = Classes.getProperSimpleName(int[].class);
 
-    for (int s = 0; s < surveys.length; ++s) {
-      columns[s + 1] = new String[variables * divisions + 1];
-      columns[s + 1][0] = headings[s];
-      final long[][] times = surveys[s].getTimes();
-      for (int v = 0; v < variables; ++v) {
-        for (int d = 0; d < divisions; ++d) {
-          final long time = times[v][d];
-          final int c = v + d * variables + 1;
-          columns[s + 1][c] = String.valueOf(time);
-          if (time == min[v][d])
-            columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, Color.GREEN);
-          else if (surveys.length > 2 ? s >= surveys.length - 2 : s >= surveys.length - 1)
-            columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, time == max[v][d] ? Color.RED : Color.YELLOW);
-          else
-            columns[s + 1][c] = Ansi.apply(columns[s + 1][c], Intensity.BOLD, Color.WHITE);
+      for (int s = 0; s < surveys.length; ++s) {
+        final Survey survey = surveys[s];
+        rows = columns[s + 1] = new String[1 + 2];
+        rows[0] = headings[s];
+        rows[1] = String.valueOf(survey.getAllocs(survey.getSubject()));
+        rows[2] = String.valueOf(survey.getAllocs(int[].class));
+      }
+    }
+    else {
+      String[] rows = columns[0] = new String[1 + variables * divisions];
+      rows[0] = "";
+      for (int v = 0; v < variables; ++v)
+        for (int d = 0; d < divisions; ++d)
+          rows[v + d * variables + 1] = key(v, d);
+
+      for (int s = 0; s < surveys.length; ++s) {
+        final Survey survey = surveys[s];
+        rows = columns[s + 1] = new String[1 + variables * divisions];
+        rows[0] = headings[s];
+        final long[][] times = survey.getTimes();
+        for (int v = 0; v < variables; ++v) {
+          for (int d = 0; d < divisions; ++d) {
+            final long time = times[v][d];
+            final int c = 1 + v + d * variables;
+            rows[c] = String.valueOf(time);
+            if (time == min[v][d])
+              rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.GREEN);
+            else if (surveys.length > 2 ? s >= surveys.length - 2 : s >= surveys.length - 1)
+              rows[c] = Ansi.apply(rows[c], Intensity.BOLD, time == max[v][d] ? Color.RED : Color.YELLOW);
+            else
+              rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.WHITE);
+          }
         }
       }
     }
 
-    System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Strings.printTable(true, true, variables, false, columns));
+    System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Strings.printTable(true, false, variables, false, columns));
   }
 }
