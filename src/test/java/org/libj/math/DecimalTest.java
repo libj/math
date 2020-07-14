@@ -16,8 +16,8 @@
 
 package org.libj.math;
 
+import static org.libj.lang.Strings.Align.*;
 import static org.libj.math.Decimal.*;
-import static org.libj.math.FixedPoint.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -278,7 +278,7 @@ public abstract class DecimalTest {
             }
             errorBuilder.append('}');
 
-            logger.info(function + " = " + expe + "\n" + Strings.padLeft("= " + actu, 3 + actu.length() + function.length()) + Strings.padLeft(errorBuilder.toString(), 1 + errorBuilder.length() + Math.abs(expe.length() - actu.length())));
+            logger.info(function + " = " + expe + "\n" + Strings.pad("= " + actu, LEFT, 3 + actu.length() + function.length()) + Strings.pad(errorBuilder.toString(), LEFT, 1 + errorBuilder.length() + Math.abs(expe.length() - actu.length())));
             try {
               actual = operation.test(ld1, ld2, bd1, bd2, scaleBits, defaultValue, time);
             }

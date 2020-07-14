@@ -24,10 +24,10 @@ import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntBitwiseTest extends BigIntTest {
-  private static long randomBit(final String seed, final int bitCount) {
+  private static int randomBit(final String seed, final int bitCount) {
     return Math.abs(seed.hashCode() % (bitCount + 1));
   }
 
@@ -70,54 +70,54 @@ public class BigIntBitwiseTest extends BigIntTest {
   @Test
   public void testTestBit(final AuditReport report) {
     test("testBit(int)", report,
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.testBit((int)b), Boolean::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.testBit((int)b), Boolean::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, long b) -> BigInt.testBit(a, (int)b), Boolean::valueOf)
+      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.testBit(b), Boolean::valueOf),
+      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.testBit(b), Boolean::valueOf),
+      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.testBit(a, b), Boolean::valueOf)
     );
   }
 
   @Test
   public void testSetBit(final AuditReport report) {
     test("setBit(int)", report,
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.setBit((int)b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.setBit((int)b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, long b) -> BigInt.setBit(a, (int)b), BigInt::toString)
+      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.setBit(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.setBit(b), String::valueOf),
+      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.setBit(a, b), BigInt::toString)
     );
   }
 
   @Test
   public void testFlipBit(final AuditReport report) {
     test("flipBit(int)", report,
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.flipBit((int)b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.flipBit((int)b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, long b) -> BigInt.flipBit(a, (int)b), BigInt::toString)
+      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.flipBit(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.flipBit(b), String::valueOf),
+      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.flipBit(a, b), BigInt::toString)
     );
   }
 
   @Test
   public void testClearBit(final AuditReport report) {
     test("clearBit(int)", report,
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.clearBit((int)b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.clearBit((int)b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, long b) -> BigInt.clearBit(a, (int)b), BigInt::toString)
+      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.clearBit(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.clearBit(b), String::valueOf),
+      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.clearBit(a, b), BigInt::toString)
     );
   }
 
   @Test
   public void testShiftLeft(final AuditReport report) {
     test("shiftLeft(int)", report,
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.shiftLeft((int)b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.shiftLeft((int)b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, long b) -> BigInt.shiftLeft(a, (int)b), BigInt::toString)
+      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.shiftLeft(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.shiftLeft(b), String::valueOf),
+      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.shiftLeft(a, b), BigInt::toString)
     );
   }
 
   @Test
   public void testShiftRight(final AuditReport report) {
     test("shiftRight(int)", report,
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, long b) -> a.shiftRight((int)b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, long b) -> a.shiftRight((int)b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, long b) -> BigInt.shiftRight(a, (int)b), BigInt::toString)
+      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.shiftRight(b), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.shiftRight(b), String::valueOf),
+      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.shiftRight(a, b), BigInt::toString)
     );
   }
 }

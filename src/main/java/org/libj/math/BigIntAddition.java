@@ -52,7 +52,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   // alternating +1 -1 on continuous sequence of
   // 1-set bits.
   public static int[] add(final int[] val, final int add) {
-    return add > 0 ? add(val, 1, add) : add < 0 ? sub(val, 1, -add) : val;
+    return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
   }
 
   /**
@@ -73,7 +73,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sub) {
-    return sub > 0 ? sub(val, 1, sub) : sub < 0 ? add(val, 1, -sub) : val;
+    return sub > 0 ? sub0(val, sub) : sub < 0 ? add0(val, -sub) : val;
   }
 
   /**
@@ -103,7 +103,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     if (len == 0) {
       assign0(val.length >= 2 ? val : alloc(2), 1, add);
     }
-    else if (len >= 0) {
+    else if (len > 0) {
       val = uaddVal(val, len, true, add);
     }
     else if ((len = -len) > 1 || (val[1] & LONG_INT_MASK) > (add & LONG_INT_MASK)) {
@@ -296,7 +296,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
     else {
       if (val.length <= 2)
-        val = realloc(val, len, 3);
+        val = realloc(val, len + 1, 3);
 
       final long val0 = val[1] & LONG_INT_MASK;
       final long val1 = val[2] & LONG_INT_MASK;
@@ -310,7 +310,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
         long dif = addl - val0;
         val[1] = (int)dif;
         dif >>= 32;
-        dif = addh - val1 + dif;
+        dif += addh - val1;
         val[2] = (int)dif;
         // dif >> 32 != 0 should be impossible
         if (dif == 0)
@@ -407,13 +407,13 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
     else {
       if (len2 >= val.length)
-        val = realloc(val, len, len2 + 2);
+        val = realloc(val, len + 1, len2 + 2);
 
       sig = !sig;
       long dif = 0;
       int i = 1;
       for (; i <= len; ++i) {
-        dif = (add[i] & LONG_INT_MASK) - (val[i] & LONG_INT_MASK) + dif;
+        dif += (add[i] & LONG_INT_MASK) - (val[i] & LONG_INT_MASK);
         val[i] = (int)dif;
         dif >>= 32;
       }

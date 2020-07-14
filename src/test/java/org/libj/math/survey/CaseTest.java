@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -33,6 +34,7 @@ import org.libj.test.TestAide;
 import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;
 import org.libj.util.function.BiLongToLongFunction;
+import org.libj.util.function.BiObjToIntFunction;
 import org.libj.util.function.BiObjToLongFunction;
 import org.libj.util.function.IntToIntFunction;
 import org.libj.util.function.LongToLongFunction;
@@ -42,7 +44,9 @@ import org.libj.util.function.ObjLongFunction;
 import org.libj.util.function.ObjLongToLongFunction;
 
 public abstract class CaseTest {
-  protected static final int numTests = /*System.getProperty("fast") != null ?*/ 20000 ;//: 1000000;
+  protected static final Random random = new Random();
+  protected static final int skip = 17; // 0 is "don't skip (full range)", n is "skip each n"
+  protected static final int numTests = 1024;
   private static final int warmup = 100;
 
   @SuppressWarnings("rawtypes")
@@ -181,7 +185,7 @@ public abstract class CaseTest {
 
   public static class IntCase<S,A,B,R,O> extends Case<S,int[],Integer,R,O> {
     private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE};
-    private static final int NUM_RANDOM = 4 * numTests;
+    private static final int NUM_RANDOM = 9 * numTests;
     private final int[] inputs = {0, 0};
     private static final int MAX_PRECISION = 10;
 
@@ -204,15 +208,17 @@ public abstract class CaseTest {
         }
       }
 
-      for (int i = 0; i < NUM_RANDOM; ++i) {
-        caseTest.randomInputs(i % MAX_PRECISION + 1, inputs);
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[0] *= -1;
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[1] *= -1;
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[0] *= -1;
-        test(caseTest, label, cases, surveys, inputs);
+      for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
+        for (int j = 0; j < NUM_RANDOM; j += (random.nextInt(skip) + 1)) {
+          caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[0] *= -1;
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[1] *= -1;
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[0] *= -1;
+          test(caseTest, label, cases, surveys, inputs);
+        }
       }
     }
 
@@ -279,7 +285,7 @@ public abstract class CaseTest {
           }
           else if (cse.test instanceof ObjIntFunction) {
             final ObjIntFunction test = (ObjIntFunction)cse.test;
-            in1 = a0;
+            in1 = CaseTest.clone(a0);
             in2 = b;
 
             time = System.nanoTime();
@@ -287,15 +293,15 @@ public abstract class CaseTest {
           }
           else if (cse.test instanceof BiFunction) {
             final BiFunction test = (BiFunction)cse.test;
-            in1 = a0;
-            in2 = b0;
+            in1 = CaseTest.clone(a0);
+            in2 = CaseTest.clone(b0);
 
             time = System.nanoTime();
             result = test.apply(a0, b0);
           }
           else {
             final Function test = (Function)cse.test;
-            in1 = a0;
+            in1 = CaseTest.clone(a0);
 
             time = System.nanoTime();
             result = test.apply(a0);
@@ -316,7 +322,7 @@ public abstract class CaseTest {
 
   public static class LongCase<S,A,B,R,O> extends Case<S,long[],Long,R,O> {
     private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE + 1, Long.MIN_VALUE, Long.MAX_VALUE};
-    private static final int NUM_RANDOM = 3 * numTests;
+    private static final int NUM_RANDOM = 7 * numTests;
     private final long[] inputs = {0, 0};
     private static final int MAX_PRECISION = 19;
 
@@ -339,15 +345,17 @@ public abstract class CaseTest {
         }
       }
 
-      for (int i = 0; i < NUM_RANDOM; ++i) {
-        caseTest.randomInputs(i % MAX_PRECISION + 1, inputs);
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[0] *= -1;
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[1] *= -1;
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[0] *= -1;
-        test(caseTest, label, cases, surveys, inputs);
+      for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
+        for (int j = 0; j < NUM_RANDOM; j += (random.nextInt(skip) + 1)) {
+          caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[0] *= -1;
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[1] *= -1;
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[0] *= -1;
+          test(caseTest, label, cases, surveys, inputs);
+        }
       }
     }
 
@@ -420,7 +428,7 @@ public abstract class CaseTest {
           }
           else if (cse.test instanceof ObjLongFunction) {
             final ObjLongFunction test = (ObjLongFunction)cse.test;
-            in1 = a0;
+            in1 = CaseTest.clone(a0);
             in2 = b;
 
             time = System.nanoTime();
@@ -428,8 +436,8 @@ public abstract class CaseTest {
           }
           else if (cse.test instanceof BiFunction) {
             final BiFunction test = (BiFunction)cse.test;
-            in1 = a0;
-            in2 = b0;
+            in1 = CaseTest.clone(a0);
+            in2 = CaseTest.clone(b0);
 
             time = System.nanoTime();
             result = test.apply(a0, b0);
@@ -444,7 +452,7 @@ public abstract class CaseTest {
           }
           else {
             final Function test = (Function)cse.test;
-            in1 = a0;
+            in1 = CaseTest.clone(a0);
 
             time = System.nanoTime();
             result = test.apply(a0);
@@ -465,7 +473,7 @@ public abstract class CaseTest {
 
   public static class StringCase<S,A,B,R,O> extends Case<S,String[],String,R,O> {
     private static final String[] SPECIAL = {"0", "-1", "1", String.valueOf(Byte.MIN_VALUE), String.valueOf(Byte.MAX_VALUE), String.valueOf(Short.MIN_VALUE), String.valueOf(Short.MAX_VALUE + 1), String.valueOf(Integer.MIN_VALUE), String.valueOf(Integer.MAX_VALUE + 1), String.valueOf(Long.MIN_VALUE), "9223372036854775808", "-18446744073709551616", "18446744073709551615", "-79228162514264337593543950336", "79228162514264337593543950335", "-340282366920938463463374607431768211456", "340282366920938463463374607431768211455", "-1461501637330902918203684832716283019655932542976", "1461501637330902918203684832716283019655932542975", "-6277101735386680763835789423207666416102355444464034512896", "6277101735386680763835789423207666416102355444464034512895", "-26959946667150639794667015087019630673637144422540572481103610249216", "26959946667150639794667015087019630673637144422540572481103610249215", "-115792089237316195423570985008687907853269984665640564039457584007913129639936", "115792089237316195423570985008687907853269984665640564039457584007913129639935"};
-    private static final int NUM_RANDOM = 5 * numTests / 20;
+    private static final int NUM_RANDOM = numTests;
     private static final int MAX_PRECISION = 1024;
 
     private final String[] inputs = {null, null};
@@ -489,15 +497,17 @@ public abstract class CaseTest {
         }
       }
 
-      for (int i = 0; i < NUM_RANDOM; ++i) {
-        caseTest.randomInputs(i % MAX_PRECISION + 1, inputs);
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[0] = neg(inputs[0]);
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[1] = neg(inputs[1]);
-        test(caseTest, label, cases, surveys, inputs);
-        inputs[0] = neg(inputs[0]);
-        test(caseTest, label, cases, surveys, inputs);
+      for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
+        for (int j = 0; j < NUM_RANDOM; j += (random.nextInt(skip) + 1)) {
+          caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[0] = neg(inputs[0]);
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[1] = neg(inputs[1]);
+          test(caseTest, label, cases, surveys, inputs);
+          inputs[0] = neg(inputs[0]);
+          test(caseTest, label, cases, surveys, inputs);
+        }
       }
     }
 
@@ -516,7 +526,7 @@ public abstract class CaseTest {
             caseTest.setScaleFactorFactor(StringCase.class, 1);
 
           if (castCase.aToA instanceof Function)
-            a0 = ((Function)castCase.aToA).apply(a);
+            a0 = ((Function)castCase.aToA).apply(a0);
           else if (castCase.aToA != null)
             throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
 
@@ -525,15 +535,18 @@ public abstract class CaseTest {
 
           final String b = inputs[1];
           Object b0 = b;
-          long b1 = Long.MIN_VALUE;
+          int b1 = Integer.MIN_VALUE;
+          long b2 = Long.MIN_VALUE;
 
           if (!caseTest.initialized())
             caseTest.setScaleFactorFactor(StringCase.class, 1);
 
           if (castCase.bToB instanceof Function)
             b0 = ((Function)castCase.bToB).apply(b);
+          else if (castCase.bToB instanceof BiObjToIntFunction)
+            b1 = ((BiObjToIntFunction)castCase.bToB).applyAsInt(a0, b);
           else if (castCase.bToB instanceof BiObjToLongFunction)
-            b1 = ((BiObjToLongFunction)castCase.bToB).applyAsLong(a0, b);
+            b2 = ((BiObjToLongFunction)castCase.bToB).applyAsLong(a0, b);
           else if (castCase.bToB != null)
             throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
 
@@ -542,25 +555,37 @@ public abstract class CaseTest {
 
           final Object result;
           long time;
-          if (cse.test instanceof ObjLongFunction) {
-            final ObjLongFunction test = (ObjLongFunction)cse.test;
-            in1 = a0;
+          if (cse.test instanceof ObjIntFunction) {
+            final ObjIntFunction test = (ObjIntFunction)cse.test;
+            in1 = CaseTest.clone(a0);
             in2 = b1;
+            if (b1 == Integer.MIN_VALUE)
+              throw new IllegalArgumentException();
 
             time = System.nanoTime();
             result = test.apply(a0, b1);
           }
+          else if (cse.test instanceof ObjLongFunction) {
+            final ObjLongFunction test = (ObjLongFunction)cse.test;
+            in1 = CaseTest.clone(a0);
+            in2 = b2;
+            if (b2 == Long.MIN_VALUE)
+              throw new IllegalArgumentException();
+
+            time = System.nanoTime();
+            result = test.apply(a0, b2);
+          }
           else if (cse.test instanceof BiFunction) {
             final BiFunction test = (BiFunction)castCase.test;
-            in1 = a0;
-            in2 = b0;
+            in1 = CaseTest.clone(a0);
+            in2 = CaseTest.clone(b0);
 
             time = System.nanoTime();
             result = test.apply(a0, b0);
           }
           else {
             final Function test = (Function)castCase.test;
-            in1 = a0;
+            in1 = CaseTest.clone(a0);
 
             time = System.nanoTime();
             result = test.apply(a0);
@@ -577,6 +602,16 @@ public abstract class CaseTest {
 
       onSuccess(caseTest, surveys.get());
     }
+  }
+
+  private static Object clone(final Object obj) {
+    if (obj instanceof BigInt)
+      return ((BigInt)obj).clone();
+
+    if (obj instanceof int[])
+      return ((int[])obj).clone();
+
+    return obj;
   }
 
   public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final IntFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
@@ -695,9 +730,13 @@ public abstract class CaseTest {
     return new StringCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  protected abstract int[] randomInputs(int precision, int[] inputs);
-  protected abstract long[] randomInputs(int precision, long[] inputs);
-  protected abstract String[] randomInputs(int precision, String[] inputs);
+  public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToIntFunction<A,String> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+    return new StringCase<>(subject, 2, aToA, bToB, test, out);
+  }
+
+  protected abstract int[] randomInputs(int p1, int p2, int[] inputs);
+  protected abstract long[] randomInputs(int p1, int p2, long[] inputs);
+  protected abstract String[] randomInputs(int p1, int p2, String[] inputs);
   protected abstract void onSuccess();
 
   @SafeVarargs
@@ -759,7 +798,7 @@ public abstract class CaseTest {
 
           final int maxPrecision = prototype.maxPrecision(variable);
           final double width = 2d * maxPrecision / divisions;
-          final int dig;
+          int dig;
           if (obj instanceof Integer) {
             final int val = (Integer)obj;
             dig = Numbers.precision(val) * Numbers.signum(val);
@@ -787,9 +826,10 @@ public abstract class CaseTest {
           }
           else if (obj instanceof byte[]) {
             final byte[] val = (byte[])obj;
-            // FIXME: This is incorrect!
-            final int bits = (val.length - 1) * 8;
-            dig = (int)Math.floor(Math.log10((1L << bits) - 1));
+            // FIXME: This is incorrect! But, whatever!
+            dig = val.length % (divisions * 2);
+//            final int bits = (val.length - 1) * 8;
+//            dig = (int)Math.floor(Math.log10((1L << bits) - 1));
           }
           else if (obj instanceof String) {
             final String val = (String)obj;
@@ -799,7 +839,15 @@ public abstract class CaseTest {
             throw new UnsupportedOperationException(obj.getClass().getName());
           }
 
-          return (int)((maxPrecision + dig - 1) / width);
+          // Special case for unsigned long, because signed long has max precision of 19, but unsigned long is 20
+          if (dig == 20 && maxPrecision == 19)
+            dig = 19;
+
+          final int division = (int)((maxPrecision + dig - 1) / width);
+          if (0 > division || division > divisions - 1)
+            throw new IllegalStateException();
+
+          return division;
         }
       };
     });

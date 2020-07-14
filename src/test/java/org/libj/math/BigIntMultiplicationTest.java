@@ -26,14 +26,14 @@ import org.libj.math.survey.AuditRunner;
 import gnu.java.math.MPN;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
     final int[] sig = {0};
     test("mul(int,int)", report,
-      i(BigInteger.class, this::scaledBigInteger, b -> BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, int b) -> a.multiply(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.mul(sig[0], b), String::valueOf),
       i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.mul(a, sig[0], b), BigInt::toString)
     );
@@ -42,7 +42,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testSignedInt(final AuditReport report) {
     test("mul(int)", report,
-      i(BigInteger.class, this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
       i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.mul(a, b), BigInt::toString)
     );
@@ -52,7 +52,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testUnsignedLong(final AuditReport report) {
     final int[] sig = {0};
     test("mul(int,long)", report,
-      l(BigInteger.class, this::scaledBigInteger, b -> BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, b), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, long b) -> a.multiply(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.mul(sig[0], b), String::valueOf),
       l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.mul(a, sig[0], b), BigInt::toString)
     );
@@ -61,13 +61,14 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testSignedLong(final AuditReport report) {
     test("mul(long)", report,
-      l(BigInteger.class, this::scaledBigInteger, BigInteger::valueOf, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
       l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 
   @Test
+  // FIXME: BigIntMultiplication#mulQuad is slow!
   public void testBig(final AuditReport report) {
     test("mul(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),

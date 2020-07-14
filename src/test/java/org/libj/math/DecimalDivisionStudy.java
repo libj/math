@@ -16,6 +16,7 @@
 
 package org.libj.math;
 
+import static org.libj.lang.Strings.Align.*;
 import static org.libj.math.FixedPoint.*;
 
 import java.util.Random;
@@ -100,18 +101,18 @@ public class DecimalDivisionStudy {
       test3(v1, v2, zds, x, y, buf);
     }
 
-    System.err.println(Strings.padRight("LD", 12) + Strings.padRight("MPN", 12));
+    System.err.println(Strings.pad("LD", RIGHT, 12) + Strings.pad("MPN", RIGHT, 12));
     final long[] sum = new long[2];
     for (int i = 0; i < time.length; ++i) {
       final boolean c = time[i][0] < time[i][1];
-      System.err.println(Ansi.apply(Strings.padRight(String.valueOf(time[i][0]), 12), c ? Color.GREEN : Color.RED) + Ansi.apply(Strings.padRight(String.valueOf(time[i][1]), 12), c ? Color.RED : Color.GREEN));
+      System.err.println(Ansi.apply(Strings.pad(String.valueOf(time[i][0]), RIGHT, 12), c ? Color.GREEN : Color.RED) + Ansi.apply(Strings.pad(String.valueOf(time[i][1]), RIGHT, 12), c ? Color.RED : Color.GREEN));
       sum[0] += time[i][0];
       sum[1] += time[i][1];
     }
 
     sum[0] /= time.length;
     sum[1] /= time.length;
-    System.err.println(Ansi.apply(Strings.padRight(String.valueOf(sum[0]), 12), Color.MAGENTA) + Ansi.apply(Strings.padRight(String.valueOf(sum[1]), 12), Color.MAGENTA));
+    System.err.println(Ansi.apply(Strings.pad(String.valueOf(sum[0]), RIGHT, 12), Color.MAGENTA) + Ansi.apply(Strings.pad(String.valueOf(sum[1]), RIGHT, 12), Color.MAGENTA));
   }
 
   private static long[][] time = new long[19][];

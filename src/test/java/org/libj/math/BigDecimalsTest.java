@@ -39,7 +39,7 @@ public class BigDecimalsTest {
   @Test
   public void testInternString() {
     for (int i = 0; i < 100; ++i) {
-      new Thread(() -> {
+      new Thread(() -> { 
         for (int j = 0; j < 1000; ++j) {
           BigDecimals.intern(String.valueOf(j));
         }

@@ -25,8 +25,8 @@ import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testByteValue(final AuditReport report) {

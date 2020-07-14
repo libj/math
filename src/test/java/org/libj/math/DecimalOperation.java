@@ -16,6 +16,7 @@
 
 package org.libj.math;
 
+import static org.libj.lang.Strings.Align.*;
 import static org.libj.math.DecimalTest.*;
 import static org.libj.math.FixedPoint.*;
 
@@ -132,13 +133,13 @@ abstract class DecimalOperation<T,C> {
     final long timePerf = timeDecimal == 0 ? 0 : ((timeBigDecimal - timeDecimal) * 1000) / timeDecimal;
     String perf = String.valueOf(timePerf);
     perf = perf.substring(0, perf.length() - 1) + "." + perf.substring(perf.length() - 1);
-    perf = c(timePerf <= 0 ? Color.RED : Color.GREEN, Strings.padLeft(timePerf > 0 ? "+" + perf : perf, 8) + "%");
+    perf = c(timePerf <= 0 ? Color.RED : Color.GREEN, Strings.pad(timePerf > 0 ? "+" + perf : perf, LEFT, 8) + "%");
 
-    final String f = Strings.padLeft(label + "(" + arg.getSimpleName() + ")", 18);
-    final String l = Strings.padRight("Decimal=" + timeDecimal, 17);
-    final String b = Strings.padRight("BigDecimal=" + timeBigDecimal, 20);
-    final String c = Strings.padRight(String.valueOf(count), 12);
-    final String e = Strings.padRight(epsilonFormatter.format(error), 6);
+    final String f = Strings.pad(label + "(" + arg.getSimpleName() + ")", LEFT, 18);
+    final String l = Strings.pad("Decimal=" + timeDecimal, RIGHT, 17);
+    final String b = Strings.pad("BigDecimal=" + timeBigDecimal, RIGHT, 20);
+    final String c = Strings.pad(String.valueOf(count), RIGHT, 12);
+    final String e = Strings.pad(epsilonFormatter.format(error), RIGHT, 6);
     logger.info(f + " | " + l + " | " + b  + " | count=" + c + " | perf=" + perf + " | error=" + e + builder);
   }
 

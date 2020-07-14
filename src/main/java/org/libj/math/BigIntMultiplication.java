@@ -51,12 +51,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, int mul) {
-    int sig = 1;
-    if (mul < 0) {
-      sig = -1;
-      mul = -mul;
-    }
-    return mul(val, sig, mul);
+    return mul < 0 ? mul0(val, -1, -mul) : mul > 0 ? mul0(val, 1, mul) : setToZero0(val);
   }
 
   /**
@@ -74,15 +69,19 @@ abstract class BigIntMultiplication extends BigIntAddition {
    *         <i>unsigned</i> {@code int} multiplier.
    * @complexity O(n)
    */
-  public static int[] mul(int[] val, int sig, final int mul) {
+  public static int[] mul(final int[] val, final int sig, final int mul) {
+    return mul == 0 ? setToZero0(val) : mul0(val, sig, mul);
+  }
+
+  private static int[] mul0(int[] val, final int sig, final int mul) {
     final boolean flipSig;
     int len = val[0];
     if (len < 0) { len = -len; flipSig = sig >= 0; } else { flipSig = sig < 0; }
     if (len + 1 >= val.length)
-      val = realloc(val, len, len + len + 1);
+      val = realloc(val, len + 1, len + len + 1);
 
-    sig = umul(val, 1, len, mul);
-    val[0] = flipSig ? -sig : sig;
+    len = umul0(val, 1, len, mul);
+    val[0] = flipSig ? -len : len;
 
     // _debugLenSig(val);
     return val;
@@ -102,12 +101,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, long mul) {
-    int sig = 1;
-    if (mul < 0) {
-      sig = -1;
-      mul = -mul;
-    }
-    return mul(val, sig, mul);
+    return mul < 0 ? mul(val, -1, -mul) : mul(val, 1, mul);
   }
 
   /**
@@ -135,7 +129,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     int len = val[0];
     if (len < 0) { len = -len; flipSig = sig >= 0; } else { flipSig = sig < 0; }
     if (len + 2 >= val.length)
-      val = realloc(val, len, len + len + 2);
+      val = realloc(val, len + 1, len + len + 2);
 
     sig = umul0(val, 1, len, mull, mulh);
     val[0] = flipSig ? -sig : sig;
@@ -249,22 +243,16 @@ abstract class BigIntMultiplication extends BigIntAddition {
     if (isZero(mul))
       return setToZero0(val);
 
-    // FIXME: Determine the actual size necessary for the result before the
-    // FIXME: execution of this method, and pass the result array into here.
     int len1 = val[0];
     int len2 = mul[0];
     final boolean flipSig = len1 < 0 != len2 < 0;
-    if (len1 < 0) {
-      len1 = -len1;
-    }
-    if (len2 < 0) {
-      len2 = -len2;
-    }
+    if (len1 < 0) { len1 = -len1; }
+    if (len2 < 0) { len2 = -len2; }
 
     if (len2 <= 2 || len1 <= 2) {
       if (len2 == 1) {
         if (len1 + 2 >= val.length)
-          val = realloc(val, len1, 2 * len1 + 1);
+          val = realloc(val, len1 + 1, len1 + len1);
 
         len1 = umul0(val, 1, len1, mul[1]);
       }
@@ -278,7 +266,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
         final long mh;
         if (len2 == 2) {
           if (len1 + 2 >= val.length)
-            val = realloc(val, len1, 2 * len1 + 1);
+            val = realloc(val, len1 + 1, len1 + len1);
 
           ml = mul[1] & LONG_INT_MASK;
           mh = mul[2] & LONG_INT_MASK;
@@ -302,9 +290,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
     }
     else {
       if (mul.length < len1)
-        mul = realloc(mul, len2, len1);
+        mul = realloc(mul, len2 + 1, len1);
       else if (val.length < len2)
-        val = realloc(val, len1, len2);
+        val = realloc(val, len1 + 1, len2);
 
       try {
         // FIXME: Tune thresholds
@@ -326,9 +314,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * @param mul The number to multiply with.
    */
   /**
-   * Multiplies the provided {@linkplain BigInt#val() value-encoded numbers},
-   * and puts the result in {@code res}. Uses a quadratic algorithm which is
-   * often suitable for smaller numbers.
+   * Multiplies the provided magnitude arrays, and puts the result in
+   * {@code res}. Uses a quadratic algorithm which is often suitable for smaller
+   * numbers.
    *
    * <pre>
    * res = val1 * val2
@@ -337,40 +325,40 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <i><b>Note:</b> It is expected that
    * {@code res.length >= len1 + len2 + 1}.</i>
    *
-   * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
+   * @param mag1 The first magnitude array.
    * @param len1 The number of limbs of the first number.
-   * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
+   * @param mag2 The second magnitude array.
    * @param len2 The number of limbs of the second number.
    * @param off The offset of the first limb for the first and second numbers,
    *          as well as the result array.
    * @param res The array into which the result is to be put.
    * @complexity O(n^2)
    */
-  private static void mulQuad(final int[] val1, final int len1, final int[] val2, final int len2, final int off, final int[] res) {
+  private static void mulQuad(final int[] mag1, final int len1, final int[] mag2, final int len2, final int off, final int[] res) {
     if (len1 < len2)
-      mulQuad0(val1, len1, val2, len2, off, res);
+      mulQuad0(mag1, len1, mag2, len2, off, res);
     else
-      mulQuad0(val2, len2, val1, len1, off, res);
+      mulQuad0(mag2, len2, mag1, len1, off, res);
   }
 
-  private static void mulQuad0(final int[] val1, final int len1, final int[] val2, final int len2, final int off, final int[] res) {
+  private static void mulQuad0(final int[] mag1, final int len1, final int[] mag2, final int len2, final int off, final int[] res) {
     int i, j, k, l;
     long v, r = 0;
-    long val1l = val1[off] & LONG_INT_MASK;
+    long val1l = mag1[off] & LONG_INT_MASK;
     for (j = off; j < len2; ++j) {
-      v = val1l * (val2[j] & LONG_INT_MASK) + r;
+      v = val1l * (mag2[j] & LONG_INT_MASK) + r;
       res[j] = (int)v;
       r = v >>> 32;
     }
 
     res[len2] = (int)r;
     for (i = off + 1; i < len1; ++i) {
-      val1l = val1[i] & LONG_INT_MASK;
+      val1l = mag1[i] & LONG_INT_MASK;
       r = 0;
       k = i - off;
       for (j = off; j < len2; ++j) {
         l = j + k;
-        v = val1l * (val2[j] & LONG_INT_MASK) + (res[l] & LONG_INT_MASK) + r;
+        v = val1l * (mag2[j] & LONG_INT_MASK) + (res[l] & LONG_INT_MASK) + r;
         res[l] = (int)v;
         r = v >>> 32;
       }
@@ -378,7 +366,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
       res[k + len2] = (int)r;
     }
 
-    _debugLenSig(res);
+    // _debugLenSig(res);
   }
 
   /**
@@ -431,7 +419,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
       final int[] y2 = new int[len - b + 1];
       long carry = 0;
       for (int i = 0; i < b; ++i) {
-        carry = (val1[off + b + i] & LONG_INT_MASK) + (val1[off + i] & LONG_INT_MASK) + carry;
+        carry += (val1[off + b + i] & LONG_INT_MASK) + (val1[off + i] & LONG_INT_MASK);
         x2[i] = (int)carry;
         carry >>>= 32;
       }
@@ -439,13 +427,12 @@ abstract class BigIntMultiplication extends BigIntAddition {
       if ((len & 1) != 0)
         x2[b] = val1[off + b + b];
 
-      if (carry != 0)
-        if (++x2[b] == 0)
-          ++x2[b + 1];
+      if (carry != 0 && ++x2[b] == 0)
+        ++x2[b + 1];
 
       carry = 0;
       for (int i = 0; i < b; ++i) {
-        carry = (val2[off + b + i] & LONG_INT_MASK) + (val2[off + i] & LONG_INT_MASK) + carry;
+        carry += (val2[off + b + i] & LONG_INT_MASK) + (val2[off + i] & LONG_INT_MASK);
         y2[i] = (int)carry;
         carry >>>= 32;
       }
@@ -453,9 +440,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
       if ((len & 1) != 0)
         y2[b] = val2[off + b + b];
 
-      if (carry != 0)
-        if (++y2[b] == 0)
-          ++y2[b + 1];
+      if (carry != 0 && ++y2[b] == 0)
+        ++y2[b + 1];
 
       final int l = len - b + (x2[len - b] != 0 || y2[len - b] != 0 ? 1 : 0);
       final int[] z1 = new int[2 * l];
@@ -469,19 +455,19 @@ abstract class BigIntMultiplication extends BigIntAddition {
       carry = 0;
       int i = 0;
       for (; i < 2 * b; ++i) {
-        carry = (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) - (z0[i] & LONG_INT_MASK) + carry;
+        carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) - (z0[i] & LONG_INT_MASK);
         res[i + b] = (int)carry;
         carry >>= 32;
       }
 
       for (; i < 2 * (len - b); ++i) {
-        carry = (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) + carry;
+        carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK);
         res[i + b] = (int)carry;
         carry >>= 32;
       }
 
       for (; i < z1.length; ++i) {
-        carry = (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) + carry;
+        carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK);
         res[i + b] = (int)carry;
         carry >>= 32;
       }
@@ -491,7 +477,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
           ++i;
     }
 
-    _debugLenSig(res);
+    // _debugLenSig(res);
   }
 
   /**
@@ -535,7 +521,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     final int[] y2 = new int[toIndex - b + 1];
     long carry = 0;
     for (int i = 0; i < b; ++i) {
-      carry = (val1[off + b + i] & LONG_INT_MASK) + (val1[off + i] & LONG_INT_MASK) + carry;
+      carry += (val1[off + b + i] & LONG_INT_MASK) + (val1[off + i] & LONG_INT_MASK);
       x2[i] = (int)carry;
       carry >>>= 32;
     }
@@ -548,7 +534,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
     carry = 0;
     for (int i = 0; i < b; ++i) {
-      carry = (val2[off + b + i] & LONG_INT_MASK) + (val2[off + i] & LONG_INT_MASK) + carry;
+      carry += (val2[off + b + i] & LONG_INT_MASK) + (val2[off + i] & LONG_INT_MASK);
       y2[i] = (int)carry;
       carry >>>= 32;
     }
@@ -557,9 +543,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
       y2[b] = val2[off + b + b];
     }
 
-    if (carry != 0)
-      if (++y2[b] == 0)
-        ++y2[b + 1];
+    if (carry != 0 && ++y2[b] == 0)
+      ++y2[b + 1];
 
     final Future<int[]> mid = pool.submit(() -> {
       final int l = toIndex - b + (x2[toIndex - b] != 0 || y2[toIndex - b] != 0 ? 1 : 0);
@@ -582,19 +567,19 @@ abstract class BigIntMultiplication extends BigIntAddition {
     carry = 0;
     int i = 0;
     for (; i < 2 * b; ++i) {
-      carry = (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) - (z0[i] & LONG_INT_MASK) + carry;
+      carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) - (z0[i] & LONG_INT_MASK);
       res[i + b] = (int)carry;
       carry >>= 32;
     }
 
     for (; i < 2 * (toIndex - b); ++i) {
-      carry = (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) + carry;
+      carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK);
       res[i + b] = (int)carry;
       carry >>= 32;
     }
 
     for (; i < z1.length; ++i) {
-      carry = (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) + carry;
+      carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK);
       res[i + b] = (int)carry;
       carry >>= 32;
     }
@@ -626,13 +611,11 @@ abstract class BigIntMultiplication extends BigIntAddition {
   // FIXME: Not fully tested on small numbers... fix naming?
   static int[] karatsuba(int[] val1, int[] val2, final boolean parallel) throws ExecutionException, InterruptedException {
     int len1 = val1[0];
-    if (len1 < 0) {
-      len1 = -len1;
-    }
+    if (len1 < 0) { len1 = -len1; }
+
     int len2 = val2[0];
-    if (len2 < 0) {
-      len2 = -len2;
-    }
+    if (len2 < 0) { len2 = -len2; }
+
     final int mlen = Math.max(len1, len2);
     if (len2 < len1) {
       do
@@ -659,7 +642,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
       kmul(val1, val2, 1, mlen, res);
     }
 
-    _debugLenSig(res);
+    // _debugLenSig(res);
     return res;
   }
 }

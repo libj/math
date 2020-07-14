@@ -237,7 +237,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
       while (qhat + hbit >= (1L << 32) + hbit || qhat * dl + hbit > (rhat << 32) + u0 + hbit) { // Unsigned comparison
         --qhat;
-        rhat = rhat + divh;
+        rhat += divh;
         if (rhat + hbit >= (1L << 32) + hbit)
           break;
       }
@@ -439,7 +439,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     for (; q[qlen] == 0; --qlen);
     q[0] = sig1 != sig2 ? -qlen : qlen;
 
-    _debugLenSig(q);
+    // _debugLenSig(q);
 
     // Set the new length of val1
     for (; val[len2] == 0; --len2);
@@ -488,7 +488,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       }
       else {
         if (len1 + 1 == val.length)
-          val = realloc(val, len1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
+          val = realloc(val, len1 + 1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
 
         final int[] q = alloc(len1 - len2 + 2);
         div0(val, len1, sig1, div, len2, sig2, q);
@@ -777,7 +777,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       final int c = compareToAbs(val, div);
       if (c > 0) {
         if (len1 + 1 == val.length)
-          val = realloc(val, len1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
+          val = realloc(val, len1 + 1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
 
         final int[] q = new int[len1 - len2 + 2];
         div0(val, len1, sig1, div, len2, sig2, q);

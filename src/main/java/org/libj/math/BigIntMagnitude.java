@@ -55,7 +55,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (++len == val.length)
-          val = realloc(val, len - 1, len + 1);
+          val = realloc(val, len, len + 1);
 
         val[len] = 1;
         val[0] = sig ? len : -len;
@@ -84,18 +84,13 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; val[i] == 0; ++i)
         --val[i];
 
-      if (--val[i] != 0 || i != len) {
-        // _debugLenSig(val);
-        return;
-      }
+      --val[i];
     }
-    else if (val[len] != 0) {
-      // _debugLenSig(val);
-      return;
+    else if (val[len] == 0) {
+      --len;
+      val[0] = sig ? len : -len;
     }
 
-    --len;
-    val[0] = sig ? len : -len;
     // _debugLenSig(val);
   }
 
@@ -117,14 +112,14 @@ abstract class BigIntMagnitude extends BigIntValue {
    */
   static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh) {
     if (val.length <= 3)
-      val = realloc(val, len, 4);
+      val = realloc(val, len + 1, 4);
 
     final long val0 = val[1] & LONG_INT_MASK;
     final long val1 = val[2] & LONG_INT_MASK;
     long carry = val0 + addl;
     val[1] = (int)carry;
     carry >>>= 32;
-    carry = val1 + addh + carry;
+    carry += val1 + addh;
     val[2] = (int)carry;
     if (carry != 0 && len < 2)
       ++len;
@@ -133,10 +128,10 @@ abstract class BigIntMagnitude extends BigIntValue {
       int i = 3;
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
-        len = i;
-        if (len == val.length)
-          val = realloc(val, len, len);
+        if (i == val.length)
+          val = realloc(val, len + 1, i + 1);
 
+        len = i;
         val[len] = 1;
       }
     }
@@ -166,7 +161,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     long dif = val0 - subl;
     val[1] = (int)dif;
     dif >>= 32;
-    dif = val1 - subh + dif;
+    dif += val1 - subh;
     val[2] = (int)dif;
 
     // Subtract remainder of longer number while borrow propagates
@@ -210,12 +205,12 @@ abstract class BigIntMagnitude extends BigIntValue {
     }
 
     if (alen >= val.length)
-      val = realloc(val, len, alen + 2);
+      val = realloc(val, len + 1, alen + 2);
 
     long carry = 0;
     int i = 1;
     for (; i <= len1; ++i) {
-      carry = (val1[i] & LONG_INT_MASK) + (add[i] & LONG_INT_MASK) + carry;
+      carry += (val1[i] & LONG_INT_MASK) + (add[i] & LONG_INT_MASK);
       val[i] = (int)carry;
       carry >>>= 32;
     }
@@ -228,11 +223,11 @@ abstract class BigIntMagnitude extends BigIntValue {
 
     if (carry != 0) { // carry == 1
       for (; i <= len && ++val[i] == 0; ++i);
-      if (i > len) { // len == len2
+      if (i > len++) { // len == len2
         if (i == val.length)
           val = realloc(val, len, i + 1);
 
-        val[++len] = 1;
+        val[len] = 1;
         val[0] = sig ? len : -len;
       }
     }
@@ -253,7 +248,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @complexity O(n)
    */
   static void subVal(final int[] val, int len, final boolean sig, final int[] sub, final int slen) {
-    // Assumes len == len2 and v == dig
+    // Assumes len == len2
     long dif = 0;
     int i = 1;
     for (; i <= slen; ++i) {

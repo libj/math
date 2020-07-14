@@ -24,14 +24,14 @@ import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivInt(final AuditReport report) {
     final int[] sig = {0};
     test("udivRem(int)", report,
-      i(BigInteger.class, this::scaledBigInteger, b -> BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
+      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.div(sig[0], b), String::valueOf),
       i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> b == 0 ? ZERO : BigInt.div(a, sig[0], b), BigInt::toString)
     );
@@ -41,7 +41,7 @@ public class BigIntDivisionTest extends BigIntTest {
   public void testUnsignedDivLong(final AuditReport report) {
     final int[] sig = {0};
     test("udiv(long)", report,
-      l(BigInteger.class, this::scaledBigInteger, b -> BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
+      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.div(sig[0], b), String::valueOf),
       l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> b == 0 ? ZERO : BigInt.div(a, sig[0], b), BigInt::toString)
     );
@@ -50,7 +50,7 @@ public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testSignedDivInt(final AuditReport report) {
     test("divRem(int)", report,
-      i(BigInteger.class, this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
+      i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.divide(BigInteger.valueOf(b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.div(b), String::valueOf),
       i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> b == 0 ? ZERO : BigInt.div(a, b), BigInt::toString)
     );
@@ -59,7 +59,7 @@ public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testSignedDivLong(final AuditReport report) {
     test("divRem(long)", report,
-      l(BigInteger.class, this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
+      l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.divide(BigInteger.valueOf(b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.div(b), String::valueOf),
       l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> b == 0 ? ZERO : BigInt.div(a, b), BigInt::toString)
     );
@@ -78,9 +78,9 @@ public class BigIntDivisionTest extends BigIntTest {
   public void testUnsignedDivRemInt(final AuditReport report) {
     final int[] sig = {0};
     test("udivRem(int)", report,
-      i(BigInteger.class, this::scaledBigInteger, b -> BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> {a.divRem(sig[0], b); return a;}, String::valueOf),
-      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> {BigInt.divRem(a, sig[0], b); return a;}, BigInt::toString)
+      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> { a.divRem(sig[0], b); return a; }, String::valueOf),
+      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.divRem(a, sig[0], b); return a; }, BigInt::toString)
     );
   }
 
@@ -88,27 +88,27 @@ public class BigIntDivisionTest extends BigIntTest {
   public void testUnsignedDivRemLong(final AuditReport report) {
     final int[] sig = {0};
     test("udiv(long)", report,
-      l(BigInteger.class, this::scaledBigInteger, b -> BigIntegers.valueOf(sig[0] = b % 2 == 0 ? -1 : 1, nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> {a.divRem(sig[0], b); return a;}, String::valueOf),
-      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> {BigInt.divRem(a, sig[0], b); return a;}, BigInt::toString)
+      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> { a.divRem(sig[0], b); return a; }, String::valueOf),
+      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.divRem(a, sig[0], b); return a; }, BigInt::toString)
     );
   }
 
   @Test
   public void testSignedDivRemInt(final AuditReport report) {
     test("divRem(int)", report,
-      i(BigInteger.class, this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> {a.divRem(b); return a;}, String::valueOf),
-      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
+      i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.divide(BigInteger.valueOf(b)), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> { a.divRem(b); return a; }, String::valueOf),
+      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.divRem(a, b); return a; }, BigInt::toString)
     );
   }
 
   @Test
   public void testSignedDivRemLong(final AuditReport report) {
     test("divRem(long)", report,
-      l(BigInteger.class, this::scaledBigInteger, b -> BigInteger.valueOf(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> {a.divRem(b); return a;}, String::valueOf),
-      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
+      l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.divide(BigInteger.valueOf(b)), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> { a.divRem(b); return a; }, String::valueOf),
+      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.divRem(a, b); return a; }, BigInt::toString)
     );
   }
 
@@ -116,8 +116,8 @@ public class BigIntDivisionTest extends BigIntTest {
   public void testDivRemBig(final AuditReport report) {
     test("div(T)", report,
       s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.divide(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> {a.divRem(b); return a;}, String::valueOf),
-      s(int[].class, this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> {BigInt.divRem(a, b); return a;}, BigInt::toString)
+      s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> { a.divRem(b); return a; }, String::valueOf),
+      s(int[].class, this::scaledVal, b -> BigInt.valueOf(nz(b)), (int[] a, int[] b) -> { BigInt.divRem(a, b); return a; }, BigInt::toString)
     );
   }
 }

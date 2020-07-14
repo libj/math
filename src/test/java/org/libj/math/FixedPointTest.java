@@ -17,8 +17,8 @@
 package org.libj.math;
 
 import static org.junit.Assert.*;
+import static org.libj.lang.Strings.Align.*;
 import static org.libj.math.Decimal.*;
-import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 
@@ -86,7 +86,7 @@ public class FixedPointTest extends DecimalTest {
     for (int i = 63, j = 63; i >= 1;) {
       final BigDecimal a = BigDecimals.TWO.pow(i);
       final BigDecimal b = BigDecimals.TWO.pow(j);
-      logger.info(Strings.padLeft(i + " + " + j, 8) + " " + Strings.padLeft(String.valueOf(i + j), 4) + " " + formatOverflowPoint(a.multiply(b), i <= 55 ? 18 : 17));
+      logger.info(Strings.pad(i + " + " + j, LEFT, 8) + " " + Strings.pad(String.valueOf(i + j), LEFT, 4) + " " + formatOverflowPoint(a.multiply(b), i <= 55 ? 18 : 17));
       if (flip)
         --i;
       else

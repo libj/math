@@ -87,6 +87,10 @@ public abstract class Survey {
     return 0;
   }
 
+  public int[][] getCounts() {
+    return counts;
+  }
+
   public long[][] getTimes() {
     return times;
   }

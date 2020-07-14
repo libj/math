@@ -24,8 +24,8 @@ import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+//@AuditRunner.Instrument({BigInt.class, int[].class})
+//@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {

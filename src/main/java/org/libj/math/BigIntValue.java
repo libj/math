@@ -34,7 +34,6 @@ import java.util.Arrays;
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
 
-  static final int INT_MASK = 0xFFFFFFFF;
   static final long LONG_INT_MASK = 0xFFFFFFFFL;
   static final int[] emptyVal = {};
 
@@ -89,7 +88,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] assign(final int[] val, final int mag) {
-    return mag == 0 ? setToZero(val) : mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
+    return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
   /**
@@ -530,7 +529,7 @@ abstract class BigIntValue extends Number {
     long carry = 0;
     int i = fromIndex;
     for (; i < toIndex; ++i) {
-      carry = mul * (val[i] & LONG_INT_MASK) + carry;
+      carry += mul * (val[i] & LONG_INT_MASK);
       val[i] = (int)carry;
       carry >>>= 32;
     }
@@ -544,7 +543,7 @@ abstract class BigIntValue extends Number {
       i = fromIndex + 1;
       for (; i < toIndex && ++val[i] == 0; ++i);
       if (i == toIndex)
-        val[toIndex++] = 1; // TODO: realloc() for general case?
+        val[toIndex++] = 1;
     }
 
     return toIndex;
@@ -565,7 +564,7 @@ abstract class BigIntValue extends Number {
   // FIXME: Tune this like alloc(), and make sure this is not being called when not needed
   static int[] realloc(final int[] array, final int len, final int newLen) {
     final int[] v = new int[newLen];
-    System.arraycopy(array, 0, v, 0, len + 1);
+    System.arraycopy(array, 0, v, 0, len);
     return v;
   }
 
@@ -704,7 +703,7 @@ abstract class BigIntValue extends Number {
    */
   public static int signum(final int[] val) {
     final int v = val[0];
-    return v == 0 ? 0 : v < 0 ? -1 : 1;
+    return v < 0 ? -1 : v > 0 ? 1 : 0;
   }
 
   /**
@@ -917,23 +916,23 @@ abstract class BigIntValue extends Number {
       return sig < 0 ? -mag[off] : mag[off];
 
     final int exponent = ((len - 1) << 5) + (32 - s) - 1;
-    if (exponent < Long.SIZE - 1) // FIXME: Can optimize the "- 1"
+    if (exponent < Long.SIZE - 1)
       return longValue(mag, off, len, sig);
 
     if (exponent > Float.MAX_EXPONENT)
       return sig < 0 ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
 
-    int bits = mag[end]; // Mask out the 24 MSBits.
+    int bits = mag[end]; // Mask out the 24 MSBits
     if (s <= 8)
       bits >>>= 8 - s;
     else
-      bits = bits << s - 8 | mag[end - 1] >>> 32 - (s - 8); // s-8==additional bits we need.
+      bits = bits << s - 8 | mag[end - 1] >>> 32 - (s - 8); // s-8==additional bits we need
 
-    bits ^= 1L << 23; // The leading bit is implicit, cancel it out.
+    bits ^= 1L << 23; // The leading bit is implicit, so cancel it out
 
     final int exp = (int)(((32 - s + 32L * (len - 1)) - 1 + 127) & 0xFF);
-    bits |= exp << 23; // Add exponent.
-    bits |= sig & (1 << 31); // Add sign-bit. // FIXME: Can this be simplified?
+    bits |= exp << 23; // Add exponent
+    bits |= sig & (1 << 31); // Add sign-bit
 
     return Float.intBitsToFloat(bits);
   }
@@ -986,18 +985,17 @@ abstract class BigIntValue extends Number {
       return sig < 0 ? -v : v;
     }
 
-    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_INT_MASK); // Mask out
-    // the 53 MSBits.
+    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_INT_MASK); // Mask out the 53 MSBits
     if (z <= 11)
       bits >>>= 11 - z;
     else
-      bits = bits << z - 11 | mag[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need.
+      bits = bits << z - 11 | mag[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need
 
-    bits ^= 1L << 52; // The leading bit is implicit, cancel it out.
+    bits ^= 1L << 52; // The leading bit is implicit, cancel it out
 
     final long exp = ((32 - z + 32L * (len - 1)) - 1 + 1023) & 0x7FF;
-    bits |= exp << 52; // Add exponent.
-    bits |= sig & (1L << 63); // Add sign-bit. // FIXME: Can this be simplified?
+    bits |= exp << 52; // Add exponent
+    bits |= sig & (1L << 63); // Add sign-bit
 
     return Double.longBitsToDouble(bits);
   }
@@ -1034,7 +1032,7 @@ abstract class BigIntValue extends Number {
    *         second argument, respectively.
    * @complexity O(n)
    */
-  static int compareToAbs(final int[] val1, int len1, final int[] val2, int len2) {
+  static int compareToAbs(final int[] val1, int len1, final int[] val2, final int len2) {
     if (len1 > len2)
       return 1;
 
@@ -1182,11 +1180,11 @@ abstract class BigIntValue extends Number {
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
 
-    int hash = 0;
+    int hashCode = 0;
     for (; len >= 1; --len)
-      hash = 31 * hash + val[len] & INT_MASK;
+      hashCode = (int)(31 * hashCode + (val[len] & LONG_INT_MASK));
 
-    return sig ? hash : -hash;
+    return sig ? hashCode : -hashCode;
   }
 
   private static final int pow5 = 1_220_703_125;
@@ -1209,7 +1207,7 @@ abstract class BigIntValue extends Number {
     for (int q0; len > 0; --len) {
       r = (r << 32) + (val[len] & LONG_INT_MASK);
       q0 = (int)(r / pow5);
-      r = r % pow5;
+      r %= pow5;
       val[len] = q1 | q0 >>> 13;
       q1 = q0 << 32 - 13;
     }

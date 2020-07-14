@@ -44,7 +44,7 @@ public class BigIntegersTest extends BigIntTest {
   @Test
   public void testInternString() {
     for (int i = 0; i < 100; ++i) {
-      new Thread(() -> {
+      new Thread(() -> { 
         for (int j = 0; j < 1000; ++j) {
           BigIntegers.intern(String.valueOf(j));
         }

@@ -18,13 +18,11 @@ package org.libj.math;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Random;
 
 import org.libj.lang.Numbers;
 import org.libj.math.survey.CaseTest;
 
 public abstract class BigIntTest extends CaseTest {
-  protected static final Random random = new Random();
   protected static final int IRRELEVANT = 1;
   protected static final int[] ZERO = {0};
 
@@ -188,16 +186,22 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   static int randomInt(final int precision) {
+    if (precision > 10)
+      throw new IllegalArgumentException(String.valueOf(precision));
+
     final long min = FastMath.e10[precision - 1];
     final long max = FastMath.e10[precision];
     return (int)(random.nextInt((int)(max - min)) + min);
   }
 
   static long randomLong(final int precision) {
-    if (precision < 10)
+    if (precision < 11)
       return randomInt(precision);
 
-    long v = randomInt(precision - 9) * randomInt(9);
+    if (precision > 19)
+      throw new IllegalArgumentException(String.valueOf(precision));
+
+    long v = randomInt(precision - 10) * randomInt(10);
     while (Numbers.precision(v) < precision)
       v *= 9;
 
@@ -205,39 +209,45 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   @Override
-  public int[] randomInputs(final int precision, final int[] values) {
+  public int[] randomInputs(final int p1, final int p2, final int[] values) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomInt(precision));
+      Arrays.fill(values, randomInt(p1));
     }
     else {
-      for (int i = 0; i < values.length; ++i)
-        values[i] = randomInt(precision);
+      values[0] = randomInt(p1);
+      values[1] = randomInt(p2);
+      if (values.length > 2)
+        throw new UnsupportedOperationException();
     }
 
     return values;
   }
 
   @Override
-  public long[] randomInputs(final int precision, final long[] values) {
+  public long[] randomInputs(final int p1, final int p2, final long[] values) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomLong(precision));
+      Arrays.fill(values, randomLong(p1));
     }
     else {
-      for (int i = 0; i < values.length; ++i)
-        values[i] = randomLong(precision);
+      values[0] = randomLong(p1);
+      values[1] = randomLong(p2);
+      if (values.length > 2)
+        throw new UnsupportedOperationException();
     }
 
     return values;
   }
 
   @Override
-  public String[] randomInputs(final int precision, final String[] values) {
+  public String[] randomInputs(final int p1, final int p2, final String[] values) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomBig(precision, true));
+      Arrays.fill(values, randomBig(p1, true));
     }
     else {
-      for (int i = 0; i < values.length; ++i)
-        values[i] = randomBig(precision, true);
+      values[0] = randomBig(p1, true);
+      values[1] = randomBig(p2, true);
+      if (values.length > 2)
+        throw new UnsupportedOperationException();
     }
 
     return values;
@@ -258,13 +268,10 @@ public abstract class BigIntTest extends CaseTest {
     if (scaleFactorFactor() == 1 || a.charAt(0) == '0')
       return a;
 
-    final char ch = a.charAt(a.length() - 1);
     final StringBuilder builder = new StringBuilder(a);
-    for (int i = 1, p; i < scaleFactorFactor(); ++i) {
-      p = builder.length();
-      builder.append(a);
-      builder.setCharAt(p, ch);
-    }
+    final boolean isNegative = builder.charAt(0) == '-';
+    for (int i = 1, len = a.length(); i < scaleFactorFactor(); ++i)
+      builder.append(a, isNegative ? 1 : 0, len);
 
     return builder.toString();
   }
