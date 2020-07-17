@@ -55,15 +55,6 @@ abstract class BigIntMultiplication extends BigIntBinary {
   private static final int TOOM_COOK_THRESHOLD = 240;
 
   /**
-   * The threshold value for using Karatsuba squaring.  If the number
-   * of ints in the number are larger than this value,
-   * Karatsuba squaring will be used.   This value is found
-   * experimentally to work well.
-   */
-  private static final int KARATSUBA_SQUARE_THRESHOLD = 12800000; // 128
-
-
-  /**
    * The threshold value for using squaring code to perform multiplication
    * of a {@code BigInteger} instance by itself.  If the number of ints in
    * the number are larger than this value, {@code multiply(this)} will
@@ -72,10 +63,12 @@ abstract class BigIntMultiplication extends BigIntBinary {
   private static final int MULTIPLY_SQUARE_THRESHOLD = 20;
 
   /**
-   * This constant limits {@code mag.length} of BigIntegers to the supported
-   * range.
+   * The threshold value for using Karatsuba squaring.  If the number
+   * of ints in the number are larger than this value,
+   * Karatsuba squaring will be used.   This value is found
+   * experimentally to work well.
    */
-  private static final int MAX_MAG_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
+  static final int KARATSUBA_SQUARE_THRESHOLD = 128; // 128
 
   /**
    * The threshold value for using Toom-Cook squaring.  If the number
@@ -83,7 +76,13 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * Toom-Cook squaring will be used.   This value is found
    * experimentally to work well.
    */
-  private static final int TOOM_COOK_SQUARE_THRESHOLD = 216;
+  static final int TOOM_COOK_SQUARE_THRESHOLD = 216;
+
+  /**
+   * This constant limits {@code mag.length} of BigIntegers to the supported
+   * range.
+   */
+  private static final int MAX_MAG_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
 
   /**
    * Multiplies the provided number by an {@code int} multiplicand.
@@ -296,7 +295,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @param isRecursion whether this is a recursive invocation
    * @return {@code this * val}
    */
-  private static int[] mul(int[] val, final int[] mul, final boolean isRecursion, final int exactLen) {
+  private static int[] mul(int[] val, final int[] mul, final boolean isRecursion, final int fixedLen) {
     int len = val[0];
     if (len == 0)
       return val;
@@ -308,20 +307,20 @@ abstract class BigIntMultiplication extends BigIntBinary {
     boolean sig = true;
     if (len < 0) { len = -len; sig = !sig; }
     if (mul == val && len > MULTIPLY_SQUARE_THRESHOLD)
-      return square(val, 1, len, false);
+      return square(val, 1, len, false, -1);
 
     if (mlen < 0) { mlen = -mlen; sig = !sig; }
     if (len < KARATSUBA_THRESHOLD || mlen < KARATSUBA_THRESHOLD) {
       if (mlen <= 2 || len <= 2) {
         if (mlen == 1) {
           if (len + 2 >= val.length)
-            val = realloc(val, len + 1, len + len, exactLen < 0);
+            val = realloc(val, len + 1, len + len, fixedLen < 0);
 
           len = umul0(val, 1, len, mul[1]);
         }
         else if (len == 1) {
           final int m = val[1];
-          val = copy(mul, val, mlen + 1, mlen + 2, exactLen < 0);
+          val = copy(mul, val, mlen + 1, mlen + 2, fixedLen < 0);
           len = umul0(val, 1, mlen, m);
         }
         else {
@@ -329,7 +328,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
           final long mh;
           if (mlen == 2) {
             if (len + 2 >= val.length)
-              val = realloc(val, len + 1, len + len, exactLen < 0);
+              val = realloc(val, len + 1, len + len, fixedLen < 0);
 
             ml = mul[1] & LONG_INT_MASK;
             mh = mul[2] & LONG_INT_MASK;
@@ -337,7 +336,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
           else {
             ml = val[1] & LONG_INT_MASK;
             mh = val[2] & LONG_INT_MASK;
-            val = copy(mul, val, mlen + 1, mlen + 3, exactLen < 0);
+            val = copy(mul, val, mlen + 1, mlen + 3, fixedLen < 0);
             len = mlen;
           }
 
@@ -350,14 +349,14 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
 
       int zlen = len + mlen + 1;
-      final int[] z = exactLen < 0 ? alloc(zlen, true) : new int[exactLen];
+      final int[] z = fixedLen < 0 ? alloc(zlen, true) : new int[fixedLen];
       zlen = multiplyToLen(val, len, mul, mlen, z, zlen, OFF);
       z[0] = sig ? zlen : -zlen;
       return z;
     }
 
     if (len < TOOM_COOK_THRESHOLD && mlen < TOOM_COOK_THRESHOLD) {
-      val = mulKaratsuba(mul, mlen, val, len, exactLen < 0 ? len + mlen : exactLen); // Swap mul and val so that multiplyKaratsuba can reuse the val array
+      val = mulKaratsuba(mul, mlen, val, len, fixedLen < 0 ? len + mlen : fixedLen); // Swap mul and val so that multiplyKaratsuba can reuse the val array
       if (sig != val[0] >= 0)
         val[0] = -val[0];
 
@@ -425,7 +424,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
 
-    return mulToomCook3(val, mul);
+    return mulToomCook3(val, mul, OFF);
   }
 
   /**
@@ -816,8 +815,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
     }
 
     int[] yh = yIsSmall ? new int[half + OFF] : getUpper0(y, yUpperLen, xUpperLen, half);
-    int[] xl = getLower(x, xlen, half, false);
-    final int[] yl = getLower(y, ylen, half, true);
+    int[] xl = getLower(x, xlen, half, false, -1);
+    final int[] yl = getLower(y, ylen, half, true, -1);
 
     z = mul(z, yh, false, zlen);
 
@@ -862,7 +861,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * "WAIFI'07 proceedings", p. 116-133, LNCS #4547. Springer, Madrid, Spain,
    * June 21-22, 2007.
    */
-  private static int[] mulToomCook3(int[] x, int[] y) {
+  private static int[] mulToomCook3(int[] x, int[] y, final int off) {
     // FIXME: This is not tested
     int xlen = Math.abs(x[0]);
     int ylen = Math.abs(y[0]);
@@ -903,7 +902,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     // implemented as right shifts which are relatively efficient, leaving
     // only an exact division by 3, which is done by a specialized
     // linear-time algorithm.
-    t2 = exactDivBy3(sub(v2, vm1));
+    t2 = exactDivBy3(sub(v2, vm1), off);
     tm1 = shiftRight(sub(v1, vm1), 1);
     t1 = sub(v1, v0);
     t2 = shiftRight(sub(t2, t1), 1);
@@ -932,39 +931,39 @@ abstract class BigIntMultiplication extends BigIntBinary {
    *          to the appropriate position when multiplying different-sized
    *          numbers.
    */
-  private static int[] getToomSlice(final int[] mag, final int off, final int len, int lowerSize, int upperSize, int slice, int fullsize) {
+  private static int[] getToomSlice(final int[] mag, final int off, final int len, int lowerSize, int upperSize, int slice, int fullsize, final int addSize) {
     int start, sliceSize;
     final int end;
     final int offset = fullsize - len;
 
     if (slice == 0) {
-      start = off - offset;
+      start = 0 - offset;
       end = upperSize - 1 - offset;
     }
     else {
-      start = off + upperSize + (slice - 1) * lowerSize - offset;
+      start = upperSize + (slice - 1) * lowerSize - offset;
       end = start + lowerSize - 1;
     }
 
-    if (start < off)
-      start = off;
+    if (start < 0)
+      start = 0;
 
     if (end < 0)
-      return new int[2]; // FIXME: Use alloc()
+      return ZERO; // FIXME: Use alloc()
 
     sliceSize = (end - start) + 1;
     if (sliceSize <= 0)
-      return new int[2]; // FIXME: Use alloc()
+      return ZERO; // FIXME: Use alloc()
 
     // While performing Toom-Cook, all slices are positive and
     // the sign is adjusted when the final number is composed.
     if (start == off && sliceSize >= len)
       return abs(mag.clone()); // FIXME: Do we need to clone?
 
-    final int intSlice[] = new int[sliceSize]; // FIXME: Use alloc()
-    System.arraycopy(mag, start, intSlice, 0, sliceSize);
-    intSlice[0] = sliceSize;
+    final int[] intSlice = new int[off + sliceSize + addSize]; // FIXME: Use alloc()
+    System.arraycopy(mag, len - start + 1 - sliceSize, intSlice, 1, sliceSize);
     for (; intSlice[sliceSize] == 0; --sliceSize);
+    intSlice[0] = sliceSize;
     _debugLenSig(intSlice);
     return intSlice;
   }
@@ -976,62 +975,62 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * exactly divisible by 3, results are undefined. Note that this is expected
    * to be called with positive arguments only.
    */
-  private static int[] exactDivBy3(final int[] val) {
+  private static int[] exactDivBy3(final int[] val, final int off) {
     int len = val[0];
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    ++len;
+    len += off;
 
-    int[] result = new int[len]; // FIXME: Use alloc()
-    long x, w, q, borrow;
-    borrow = 0L;
-    for (int i = len - 1; i >= 1; i--) {
-      x = (val[i] & LONG_INT_MASK);
+    long x, w, borrow = 0;
+    for (int i = off; i < len; ++i) {
+      x = val[i] & LONG_INT_MASK;
       w = x - borrow;
-      if (borrow > x) { // Did we make the number go negative?
-        borrow = 1L;
-      }
-      else {
-        borrow = 0L;
-      }
+      if (borrow > x) // Did we make the number go negative?
+        borrow = 1;
+      else
+        borrow = 0;
 
       // 0xAAAAAAAB is the modular inverse of 3 (mod 2^32). Thus,
       // the effect of this is to divide by 3 (mod 2^32).
       // This is much faster than division on most architectures.
-      q = (w * 0xAAAAAAABL) & LONG_INT_MASK;
-      result[i] = (int)q;
+      x = (w * 0xAAAAAAABL) & LONG_INT_MASK;
+      val[i] = (int)x;
 
       // Now check the borrow. The second check can of course be
       // eliminated if the first fails.
-      if (q >= 0x55555556L) {
-        borrow++;
-        if (q >= 0xAAAAAAABL)
-          borrow++;
+      if (x >= 0x55555556L) {
+        ++borrow;
+        if (x >= 0xAAAAAAABL)
+          ++borrow;
       }
     }
 
-    for (; result[len] == 0; --len);
-    result[0] = sig ? len : -len;
-    _debugLenSig(result);
-    return result;
+    len -= off;
+    for (; val[len] == 0; --len);
+    val[0] = sig ? len : -len;
+    _debugLenSig(val);
+    return val;
   }
 
   /**
    * Returns a new BigInteger representing n lower ints of the number. This is
    * used by Karatsuba multiplication and Karatsuba squaring.
    */
-  private static int[] getLower(final int[] val, int len, int n, final boolean reuse) {
+  private static int[] getLower(final int[] val, int len, int n, final boolean reuse, int fixedLen) {
     if (len <= n)
-      return abs(reuse ? val : val.clone());
+      return abs(reuse && fixedLen <= val.length ? val : val.clone());
 
     // First trim the length
     for (; val[n] == 0; --n);
 
     final int[] lowerInts;
-    if (reuse) {
+    if (reuse && fixedLen <= val.length) {
       lowerInts = val;
     }
     else {
-      lowerInts = new int[n + OFF];
+      if (fixedLen < 0)
+        fixedLen = n + OFF;
+
+      lowerInts = new int[fixedLen];
       System.arraycopy(val, 1, lowerInts, 1, n);
     }
 
@@ -1045,11 +1044,10 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * number. This is used by Karatsuba multiplication and Karatsuba squaring.
    * Pass both lengths to make an array that will be sufficiently sized for
    * operations to follow.
+   * <p>
+   * Note: upperLen2 is not checked if it's less than 0!
    */
-  private static int[] getUpper(final int[] val, final int upperLen, int upperLen2, final int n) {
-    if (upperLen2 <=0)
-      upperLen2 = n;
-
+  private static int[] getUpper(final int[] val, final int upperLen, final int upperLen2, final int n) {
     if (upperLen <= 0)
       return new int[n + upperLen2 + OFF];
 
@@ -1071,49 +1069,57 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @param isRecursion whether this is a recursive invocation
    * @return {@code this<sup>2</sup>}
    */
-  private static int[] square(final int[] val, final boolean isRecursion) {
-    return square(val, 1, Math.abs(val[0]), isRecursion);
+  private static int[] square(final int[] val, final boolean isRecursion, final int fixedLen) {
+    return square(val, 1, Math.abs(val[0]), isRecursion, fixedLen);
   }
 
-  private static int[] square(final int[] mag, final int off, final int len, final boolean isRecursion) {
+  private static int[] square(final int[] mag, final int off, final int len, final boolean isRecursion, final int fixedLen) {
     if (len == 0)
       return mag;
 
     if (len < KARATSUBA_SQUARE_THRESHOLD)
-      return squareToLen(mag, off, len);
+      return squareToLen(mag, off, len, fixedLen);
 
     if (len < TOOM_COOK_SQUARE_THRESHOLD)
-      return squareKaratsuba(mag);
+      return squareKaratsuba(mag, len, fixedLen);
 
     // For a discussion of overflow detection see multiply()
     if (!isRecursion && bitLength(mag, len) > 16L * MAX_MAG_LENGTH)
       throw new ArithmeticException("BigInteger would overflow supported range");
 
-    return squareToomCook3(mag);
+    return squareToomCook3(mag, OFF);
   }
 
   /**
    * Squares a BigInteger using the Karatsuba squaring algorithm. It should be
    * used when both numbers are larger than a certain threshold (found
    * experimentally). It is a recursive divide-and-conquer algorithm that has
-   * better asymptotic performance than the algorithm used in squareToLen.
+   * better asymptotic performance than the algorithm used in
+   * {@link #squareToLen(int[],int,int,int)}.
    */
-  private static int[] squareKaratsuba(final int[] val) {
-    final int len = Math.abs(val[0]);
+  private static int[] squareKaratsuba(final int[] val, final int len, final int fixedLen) {
     final int half = (len + 1) / 2;
 
-    final int[] xl = getLower(val, len, half, false);
     final int upperLen = len - half;
-    final int[] xh = getUpper(val, upperLen, upperLen, half);
+    final int[] xh = getUpper(val, upperLen, 1, half);
+    int[] xl = getLower(val, len, half, false, half + 2);
 
-    final int[] xhs = square(xh, 1, half, false); // xhs = xh^2
-    final int[] xls = square(xl, 1, half, false); // xls = xl^2
+    int[] xhs = square(xh, 1, half, false, fixedLen < 0 ? (len << 1) + 2 : fixedLen);
+    int[] xhs2 = xhs.clone();
+    final int[] xls = square(xl, 1, half, false, -1);
 
-    // xh^2 << 64 + (((xl+xh)^2 - (xh^2 + xl^2)) << 32) + xl^2
+    xl = addSub(xl, xh, true, false);
+    xl = square(xl, false, -1);
+    xhs2 = addSub(xhs2, xls, true, false);
+    xl = addSub(xl, xhs2, false, false);
 
-    final int[] z = add(shiftLeft(add(shiftLeft(xhs, half * 32), sub(square(add(xl, xh), false), add(xhs, xls))), half * 32), xls);
-    _debugLenSig(z);
-    return z;
+    xhs = shiftLeft(xhs, half * 32, false);
+    xhs = addSub(xhs, xl, true, false);
+    xhs = shiftLeft(xhs, half * 32, false);
+    xhs = addSub(xhs, xls, true, false);
+
+    _debugLenSig(xhs);
+    return xhs;
   }
 
   /**
@@ -1123,30 +1129,29 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * better asymptotic performance than the algorithm used in squareToLen or
    * squareKaratsuba.
    */
-  private static int[] squareToomCook3(final int[] val) {
+  private static int[] squareToomCook3(final int[] val, final int off) {
     final int len = Math.abs(val[0]);
 
     // k is the size (in ints) of the lower-order slices.
-    int k = (len + 2) / 3; // Equal to ceil(largest/3)
+    final int k = (len + 2) / 3; // Equal to ceil(largest/3)
 
     // r is the size (in ints) of the highest-order slice.
-    int r = len - 2 * k;
+    final int r = len - 2 * k;
 
     // Obtain slices of the numbers. a2 is the most significant
     // bits of the number, and a0 the least significant.
-    int[] a0, a1, a2;
-    a2 = getToomSlice(val, 1, len, k, r, 0, len);
-    a1 = getToomSlice(val, 1, len, k, r, 1, len);
-    a0 = getToomSlice(val, 1, len, k, r, 2, len);
-    int[] v0, v1, v2, vm1, vinf, t1, t2, tm1, da1;
+    int[] a2 = getToomSlice(val, 1, len, k, r, 0, len, 3);
+    final int[] a1 = getToomSlice(val, 1, len, k, r, 1, len, 0);
+    int[] a0 = getToomSlice(val, 1, len, k, r, 2, len, 0);
 
-    v0 = square(a0, true);
-    da1 = add(a2, a0);
-    vm1 = square(sub(da1, a1), true);
-    da1 = add(da1, a1);
-    v1 = square(da1, true);
-    vinf = square(a2, true);
-    v2 = square(sub(shiftLeft(add(da1, a2), 1), a0), true);
+    int[] da1 = addSub(a2.clone(), a0, true, false);
+    final int[] vm1 = square(addSub(da1.clone(), a1, false, false), true, -1);
+    da1 = addSub(da1, a1, true, false);
+    int[] v1 = square(da1, true, -1);
+    int[] v2 = square(addSub(shiftLeft(addSub(da1, a2, true, false), 1, false), a0, false, false), true, -1);
+
+    a0 = square(a0, true, -1);
+    a2 = square(a2, true, -1);
 
     // The algorithm requires two divisions by 2 and one by 3.
     // All divisions are known to be exact, that is, they do not produce
@@ -1154,27 +1159,26 @@ abstract class BigIntMultiplication extends BigIntBinary {
     // implemented as right shifts which are relatively efficient, leaving
     // only a division by 3.
     // The division by 3 is done by an optimized algorithm for this case.
-    t2 = exactDivBy3(sub(v2, vm1));
-    tm1 = shiftRight(sub(v1, vm1), 1);
-    t1 = sub(v1, v0);
-    t2 = shiftRight(sub(t2, t1), 1);
-    t1 = sub(sub(t1, tm1), vinf);
-    t2 = sub(t2, shiftLeft(vinf, 1));
-    tm1 = sub(tm1, t2);
+    v2 = exactDivBy3(sub(v2, vm1), off);
+    int[] tm1 = shiftRight(sub(v1.clone(), vm1), 1);
+    v1 = sub(v1, a0);
+    v2 = shiftRight(sub(v2, v1), 1);
+    v1 = sub(sub(v1, tm1), a2);
+    v2 = sub(v2, shiftLeft(a2.clone(), 1));
+    tm1 = sub(tm1, v2);
 
     // Number of bits to shift left.
-    int ss = k * 32;
-
-    return add(shiftLeft(add(shiftLeft(add(shiftLeft(add(shiftLeft(vinf, ss), t2), ss), t1), ss), tm1), ss), v0);
+    final int ss = k * 32;
+    return add(shiftLeft(add(shiftLeft(add(shiftLeft(add(shiftLeft(a2, ss), v2), ss), v1), ss), tm1), ss), a0);
   }
 
   /**
    * Squares the contents of the int array x. The result is placed into the int
    * array z. The contents of x are not changed.
    */
-  private static final int[] squareToLen(final int[] mag, final int off, final int len) {
+  private static final int[] squareToLen(final int[] mag, final int off, final int len, final int fixedLen) {
     int zlen = len << 1;
-    final int[] z = new int[zlen + off];
+    final int[] z = new int[fixedLen < 0 ? zlen + off : fixedLen];
     squareToLen0(mag, len, z, zlen, off);
     for (; z[zlen] == 0; --zlen);
     z[0] = zlen;

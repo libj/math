@@ -73,7 +73,7 @@ public abstract class BigIntTest extends CaseTest {
 
   public BigInteger scaledBigInteger(final int a) {
     if (!initialized())
-      setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor);
 
     if (shoudlScale)
       return new BigInteger(stringScale(String.valueOf(a)));
@@ -83,7 +83,7 @@ public abstract class BigIntTest extends CaseTest {
 
   public BigInteger scaledBigInteger(final long a) {
     if (!initialized())
-      setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor);
 
     if (shoudlScale)
       return new BigInteger(stringScale(String.valueOf(a)));
@@ -93,14 +93,21 @@ public abstract class BigIntTest extends CaseTest {
 
   public BigInteger scaledBigInteger(final String a) {
     if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
 
     return new BigInteger(shoudlScale ? stringScale(a) : a);
   }
 
+  public BigInteger scaledBigInteger(final String a, final int factor) {
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, factor);
+
+    return new BigInteger(shoudlScale ? stringScale(a, factor) : a);
+  }
+
   public int[] scaledVal(final int a) {
     if (!initialized())
-      setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor);
 
     final int[] val = BigInt.assign(newVal(2), a);
     if (shoudlScale)
@@ -111,7 +118,7 @@ public abstract class BigIntTest extends CaseTest {
 
   public int[] scaledVal(final long a) {
     if (!initialized())
-      setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor);
 
     final int[] val = BigInt.assign(newVal(2), a);
     if (shoudlScale)
@@ -122,7 +129,7 @@ public abstract class BigIntTest extends CaseTest {
 
   public int[] scaledVal(final String a) {
     if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
 
     if (shoudlScale)
       return BigInt.valueOf(stringScale(a));
@@ -130,9 +137,19 @@ public abstract class BigIntTest extends CaseTest {
     return BigInt.valueOf(a);
   }
 
+  public int[] scaledVal(final String a, final int factor) {
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, factor);
+
+    if (shoudlScale)
+      return BigInt.valueOf(stringScale(a, factor));
+
+    return BigInt.valueOf(a);
+  }
+
   public BigInt scaledBigInt(final int a) {
     if (!initialized())
-      setScaleFactorFactor(IntCase.class, scaleFactorFactor());
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor);
 
     if (shoudlScale)
       return newBigInt().assign(stringScale(String.valueOf(a)));
@@ -142,7 +159,7 @@ public abstract class BigIntTest extends CaseTest {
 
   public BigInt scaledBigInt(final long a) {
     if (!initialized())
-      setScaleFactorFactor(LongCase.class, scaleFactorFactor());
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor);
 
     if (shoudlScale)
       return newBigInt().assign(stringScale(String.valueOf(a)));
@@ -152,7 +169,7 @@ public abstract class BigIntTest extends CaseTest {
 
   public BigInt scaledBigInt(final String a) {
     if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor());
+      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
 
     if (shoudlScale)
       return newBigInt().assign(stringScale(a));
@@ -237,17 +254,19 @@ public abstract class BigIntTest extends CaseTest {
     shouldBeEqual = random.nextDouble() < equalFactor;
   }
 
-  private static int scaleFactorFactor() {
-    return 2;
-  }
+  private static final int scaleFactorFactor = 2;
 
   public String stringScale(final String a) {
-    if (scaleFactorFactor() == 1 || a.charAt(0) == '0')
+    return stringScale(a, scaleFactorFactor);
+  }
+
+  public String stringScale(final String a, final int factor) {
+    if (factor == 1 || a.charAt(0) == '0')
       return a;
 
     final StringBuilder builder = new StringBuilder(a);
     final boolean isNegative = builder.charAt(0) == '-';
-    for (int i = 1, len = a.length(); i < scaleFactorFactor(); ++i)
+    for (int i = 1, len = a.length(); i < factor; ++i)
       builder.append(a, isNegative ? 1 : 0, len);
 
     return builder.toString();

@@ -16,6 +16,9 @@
 
 package org.libj.math;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 
 import org.junit.Test;
@@ -85,11 +88,47 @@ public class BigIntMultiplicationTest extends BigIntTest {
     );
   }
 
+  private static final Method squareToomCook;
+  private static final Field mag;
+
+  static {
+    try {
+      squareToomCook = BigInteger.class.getDeclaredMethod("squareToomCook3");
+      squareToomCook.setAccessible(true);
+
+      mag = BigInteger.class.getDeclaredField("mag");
+      mag.setAccessible(true);
+    }
+    catch (final NoSuchMethodException | NoSuchFieldException | SecurityException e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+
+  private static BigInteger sq(final BigInteger b) {
+    try {
+      if (((int[])mag.get(b)).length < BigIntMultiplication.TOOM_COOK_SQUARE_THRESHOLD)
+        return b.multiply(b);
+
+      return (BigInteger)squareToomCook.invoke(b);
+    }
+    catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @Test
   public void testSquareBig(final AuditReport report) {
     test("mul(T,T)", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a, String b) -> a.multiply(a), String::valueOf),
       s(int[].class, this::scaledVal, (int[] a, String b) -> BigInt.mul(a, a), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testSquareVeryBig(final AuditReport report) {
+    test("mul(TT,TT)", report,
+      s(BigInteger.class, a -> scaledBigInteger(a, 8), (BigInteger a, String b) -> a.multiply(a), String::valueOf),
+      s(int[].class, a -> scaledVal(a, 8), (int[] a, String b) -> BigInt.mul(a, a), BigInt::toString)
     );
   }
 
