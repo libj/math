@@ -177,6 +177,16 @@ public abstract class BigIntTest extends CaseTest {
     return newBigInt().assign(a);
   }
 
+  public BigInt scaledBigInt(final String a, final int factor) {
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, factor);
+
+    if (shoudlScale)
+      return newBigInt().assign(stringScale(a, factor));
+
+    return newBigInt().assign(a);
+  }
+
   private static BigInt newBigInt() {
 //    AuditReport.foo = true;
 //    System.err.println("-->");

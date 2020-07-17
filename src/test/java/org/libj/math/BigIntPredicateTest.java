@@ -31,63 +31,63 @@ public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testByteValue(final AuditReport report) {
     test("byeValue()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.byteValue()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.byteValue()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.byteValue(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.byteValue(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.byteValue(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.byteValue(a), o -> o)
     );
   }
 
   @Test
   public void testShortValue(final AuditReport report) {
     test("shortValue()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.shortValue()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.shortValue()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.shortValue(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.shortValue(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.shortValue(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.shortValue(a), o -> o)
     );
   }
 
   @Test
   public void testIntValue(final AuditReport report) {
     test("intValue()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.intValue()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.intValue()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.intValue(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.intValue(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.intValue(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.intValue(a), o -> o)
     );
   }
 
   @Test
   public void testLongValue(final AuditReport report) {
     test("longValue()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.longValue()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.longValue()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.longValue(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.longValue(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.longValue(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.longValue(a), o -> o)
     );
   }
 
   @Test
   public void testFloatValue(final AuditReport report) {
     test("floatValue()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.floatValue()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.floatValue()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.floatValue(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.floatValue(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.floatValue(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.floatValue(a), o -> o)
     );
   }
 
   @Test
   public void testDoubleValue(final AuditReport report) {
     test("doubleValue()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.doubleValue()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.doubleValue()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.doubleValue(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.doubleValue(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.doubleValue(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.doubleValue(a), o -> o)
     );
   }
 
   @Test
   public void testToString(final AuditReport report) {
     test("toString()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toString()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toString()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toString(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toString(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toString(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toString(a), o -> o)
     );
   }
 
@@ -130,9 +130,9 @@ public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testPrecision(final AuditReport report) {
     test("precision()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> Numbers.precision(a)),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.precision()),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.precision(a))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> Numbers.precision(a), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.precision(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.precision(a), o -> o)
     );
   }
 

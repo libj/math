@@ -43,7 +43,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * multiplication will be used. This value is found experimentally to work
    * well.
    */
-  private static final int KARATSUBA_THRESHOLD = 110; // 80
+  static final int KARATSUBA_THRESHOLD = 110;
 
   /**
    * The threshold value for using 3-way Toom-Cook multiplication.
@@ -52,7 +52,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * the mag arrays is greater than this threshold, then Toom-Cook
    * multiplication will be used.
    */
-  private static final int TOOM_COOK_THRESHOLD = 240;
+  static final int TOOM_COOK_THRESHOLD = 240;
 
   /**
    * The threshold value for using squaring code to perform multiplication
@@ -60,7 +60,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * the number are larger than this value, {@code multiply(this)} will
    * return {@code square()}.
    */
-  private static final int MULTIPLY_SQUARE_THRESHOLD = 20;
+  static final int MULTIPLY_SQUARE_THRESHOLD = 20;
 
   /**
    * The threshold value for using Karatsuba squaring.  If the number
@@ -82,7 +82,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * This constant limits {@code mag.length} of BigIntegers to the supported
    * range.
    */
-  private static final int MAX_MAG_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
+  static final int MAX_MAG_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
 
   /**
    * Multiplies the provided number by an {@code int} multiplicand.
@@ -314,21 +314,21 @@ abstract class BigIntMultiplication extends BigIntBinary {
       if (mlen <= 2 || len <= 2) {
         if (mlen == 1) {
           if (len + 2 >= val.length)
-            val = realloc(val, len + 1, len + len, fixedLen < 0);
+            val = realloc(val, len + OFF, len + len, fixedLen < 0);
 
-          len = umul0(val, 1, len, mul[1]);
+          len = umul0(val, OFF, len, mul[1]);
         }
         else if (len == 1) {
           final int m = val[1];
-          val = copy(mul, val, mlen + 1, mlen + 2, fixedLen < 0);
-          len = umul0(val, 1, mlen, m);
+          val = copy(mul, val, mlen + OFF, mlen + 2, fixedLen < 0);
+          len = umul0(val, OFF, mlen, m);
         }
         else {
           final long ml;
           final long mh;
           if (mlen == 2) {
             if (len + 2 >= val.length)
-              val = realloc(val, len + 1, len + len, fixedLen < 0);
+              val = realloc(val, len + OFF, len + len + OFF, fixedLen < 0);
 
             ml = mul[1] & LONG_INT_MASK;
             mh = mul[2] & LONG_INT_MASK;
@@ -336,11 +336,11 @@ abstract class BigIntMultiplication extends BigIntBinary {
           else {
             ml = val[1] & LONG_INT_MASK;
             mh = val[2] & LONG_INT_MASK;
-            val = copy(mul, val, mlen + 1, mlen + 3, fixedLen < 0);
+            val = copy(mul, val, mlen + OFF, mlen + 3, fixedLen < 0);
             len = mlen;
           }
 
-          len = umul0(val, 1, len, ml, mh);
+          len = umul0(val, OFF, len, ml, mh);
         }
 
         val[0] = sig ? len : -len;
@@ -349,14 +349,14 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
 
       int zlen = len + mlen + 1;
-      final int[] z = fixedLen < 0 ? alloc(zlen, true) : new int[fixedLen];
+      final int[] z = fixedLen > 0 ? new int[fixedLen] : alloc(zlen, true);
       zlen = multiplyToLen(val, len, mul, mlen, z, zlen, OFF);
       z[0] = sig ? zlen : -zlen;
       return z;
     }
 
     if (len < TOOM_COOK_THRESHOLD && mlen < TOOM_COOK_THRESHOLD) {
-      val = mulKaratsuba(mul, mlen, val, len, fixedLen < 0 ? len + mlen : fixedLen); // Swap mul and val so that multiplyKaratsuba can reuse the val array
+      val = mulKaratsuba(mul, mlen, val, len, fixedLen > 0 ? fixedLen : len + mlen); // Swap mul and val so that multiplyKaratsuba can reuse the val array
       if (sig != val[0] >= 0)
         val[0] = -val[0];
 
@@ -419,12 +419,15 @@ abstract class BigIntMultiplication extends BigIntBinary {
       // are only considering the magnitudes as non-negative. The
       // Toom-Cook multiplication algorithm determines the sign
       // at its end from the two signum values.
-      if (bitLength(val, len) + bitLength(mul, mlen) > 32L * MAX_MAG_LENGTH) {
+      if (bitLength(val, len) + bitLength(mul, mlen) > 32L * MAX_MAG_LENGTH)
         throw new ArithmeticException("BigInteger would overflow supported range");
-      }
     }
 
-    return mulToomCook3(val, mul, OFF);
+    val = mulToomCook3(val, len, mul, mlen, OFF, fixedLen);
+    if (sig != val[0] >= 0)
+      val[0] = -val[0];
+
+    return val;
   }
 
   /**
@@ -861,40 +864,34 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * "WAIFI'07 proceedings", p. 116-133, LNCS #4547. Springer, Madrid, Spain,
    * June 21-22, 2007.
    */
-  private static int[] mulToomCook3(int[] x, int[] y, final int off) {
-    // FIXME: This is not tested
-    int xlen = Math.abs(x[0]);
-    int ylen = Math.abs(y[0]);
-
-    int largest = Math.max(xlen, ylen);
+  private static int[] mulToomCook3(final int[] x, final int xlen, final int[] y, final int ylen, final int off, final int fixedLen) {
+    final int largest = Math.max(xlen, ylen);
 
     // k is the size (in ints) of the lower-order slices.
-    int k = (largest + 2) / 3; // Equal to ceil(largest/3)
+    final int k = (largest + 2) / 3; // Equal to ceil(largest/3)
 
     // r is the size (in ints) of the highest-order slice.
-    int r = largest - 2 * k;
+    final int r = largest - 2 * k;
 
     // Obtain slices of the numbers. a2 and b2 are the most significant
     // bits of the numbers a and b, and a0 and b0 the least significant.
-    int[] a0, a1, a2, b0, b1, b2;
-    a2 = getToomSlice(x, 1, xlen, k, r, 0, largest);
-    a1 = getToomSlice(x, 1, xlen, k, r, 1, largest);
-    a0 = getToomSlice(x, 1, xlen, k, r, 2, largest);
-    b2 = getToomSlice(y, 1, ylen, k, r, 0, largest);
-    b1 = getToomSlice(y, 1, ylen, k, r, 1, largest);
-    b0 = getToomSlice(y, 1, ylen, k, r, 2, largest);
+    int[] a2 = getToomSlice(x, 1, xlen, k, r, 0, largest, xlen);
+    int[] a1 = getToomSlice(x, 1, xlen, k, r, 1, largest, 0);
+    int[] a0 = getToomSlice(x, 1, xlen, k, r, 2, largest, 0);
+    int[] b2 = getToomSlice(y, 1, ylen, k, r, 0, largest, ylen);
+    int[] b1 = getToomSlice(y, 1, ylen, k, r, 1, largest, 0);
+    int[] b0 = getToomSlice(y, 1, ylen, k, r, 2, largest, 0);
 
-    int[] v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
+    int[] da1 = addSub(a2.clone(), a0, true, false);
+    int[] db1 = addSub(b2.clone(), b0, true, false);
+    final int[] vm1 = mul(addSub(da1.clone(), a1, false, false), addSub(db1.clone(), b1, false, false), true, 0);
+    da1 = addSub(da1, a1, true, false);
+    db1 = addSub(db1, b1, true, false);
+    int[] v1 = mul(da1.clone(), db1, true, 0);
+    da1 = mul(addSub(shiftLeft(addSub(da1, a2, true, false), 1, false), a0, false, false), addSub(shiftLeft(addSub(db1, b2, true, false), 1, false), b0, false, false), true, 0);
 
-    v0 = mul(a0, b0, true, -1);
-    da1 = add(a2, a0);
-    db1 = add(b2, b0);
-    vm1 = mul(sub(da1, a1), sub(db1, b1), true, -1);
-    da1 = add(da1, a1);
-    db1 = add(db1, b1);
-    v1 = mul(da1, db1, true, -1);
-    v2 = mul(sub(shiftLeft(add(da1, a2), 1), a0), sub(shiftLeft(add(db1, b2), 1), b0), true, -1);
-    vinf = mul(a2, b2, true, -1);
+    a2 = mul(a2, b2, true, fixedLen > 0 ? fixedLen : a2.length);
+    a0 = mul(a0, b0, true, 0);
 
     // The algorithm requires two divisions by 2 and one by 3.
     // All divisions are known to be exact, that is, they do not produce
@@ -902,18 +899,22 @@ abstract class BigIntMultiplication extends BigIntBinary {
     // implemented as right shifts which are relatively efficient, leaving
     // only an exact division by 3, which is done by a specialized
     // linear-time algorithm.
-    t2 = exactDivBy3(sub(v2, vm1), off);
-    tm1 = shiftRight(sub(v1, vm1), 1);
-    t1 = sub(v1, v0);
-    t2 = shiftRight(sub(t2, t1), 1);
-    t1 = sub(sub(t1, tm1), vinf);
-    t2 = sub(t2, shiftLeft(vinf, 1));
-    tm1 = sub(tm1, t2);
+    int[] t1 = addSub(v1.clone(), a0, false, false);
+    da1 = exactDivBy3(sub(da1, vm1), off);
+    v1 = shiftRight(sub(v1, vm1), 1, false);
+    da1 = shiftRight(sub(da1, t1), 1, false);
+    t1 = addSub(sub(t1, v1), a2, false, false);
+
+    final int[] vinf = new int[fixedLen > 0 ? fixedLen : a2.length + k + k + k];
+    System.arraycopy(a2, 0, vinf, 0, Math.abs(a2[0]) + 1);
+
+    da1 = addSub(da1, shiftLeft(a2, 1, false), false, false);
+    v1 = addSub(v1, da1, false, false);
 
     // Number of bits to shift left.
-    int ss = k * 32;
+    final int ss = k * 32;
 
-    int[] result = add(shiftLeft(add(shiftLeft(add(shiftLeft(add(shiftLeft(vinf, ss), t2), ss), t1), ss), tm1), ss), v0);
+    final int[] result = addSub(shiftLeft(addSub(shiftLeft(addSub(shiftLeft(addSub(shiftLeft(vinf, ss, false), da1, true, false), ss, false), t1, true, false), ss, false), v1, true, false), ss, false), a0, true, false);
     _debugLenSig(result);
     return result;
   }
@@ -949,7 +950,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       start = 0;
 
     if (end < 0)
-      return ZERO; // FIXME: Use alloc()
+      return new int[lowerSize + addSize];
 
     sliceSize = (end - start) + 1;
     if (sliceSize <= 0)

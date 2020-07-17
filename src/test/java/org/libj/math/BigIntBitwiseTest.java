@@ -52,18 +52,18 @@ public class BigIntBitwiseTest extends BigIntTest {
   @Test
   public void testToByteArrayBigEndian(final AuditReport report) {
     test("toByteArray()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toByteArray()),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(false)),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, false))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toByteArray(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(false), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, false), o -> o)
     );
   }
 
   @Test
   public void testToByteArrayLittleEndian(final AuditReport report) {
     test("toByteArray()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> reverse(a.toByteArray())),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(true)),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true))
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> reverse(a.toByteArray()), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(true), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true), o -> o)
     );
   }
 

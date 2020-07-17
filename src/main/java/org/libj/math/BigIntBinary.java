@@ -130,6 +130,10 @@ abstract class BigIntBinary extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] shiftRight(final int[] val, final int num) {
+    return shiftRight(val, num, true);
+  }
+
+  static int[] shiftRight(final int[] val, final int num, final boolean allocAllowed) {
     if (num == 0)
       return val;
 
@@ -138,7 +142,7 @@ abstract class BigIntBinary extends BigIntAddition {
       return val;
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return num < 0 ? shiftLeft0(val, len, sig, -num, true) : shiftRight0(val, len, sig, num, true);
+    return num < 0 ? shiftLeft0(val, len, sig, -num, allocAllowed) : shiftRight0(val, len, sig, num, allocAllowed);
   }
 
   private static int[] shiftRight0(final int[] val, int len, final boolean sig, final int num, final boolean allocAllowed) {

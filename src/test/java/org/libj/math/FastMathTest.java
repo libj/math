@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.libj.lang.Strings;
+import org.libj.lang.Strings.Align;
 
 public class FastMathTest extends BigIntTest {
   @Test
@@ -77,6 +78,6 @@ public class FastMathTest extends BigIntTest {
 
     time[0] /= numTests * 30;
     time[1] /= numTests * 30;
-    System.out.println(Strings.printTable(true, true, time, "Long", "FastMath"));
+    System.out.println(Strings.printTable(true, Align.RIGHT, time, "Long", "FastMath"));
   }
 }

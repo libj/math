@@ -71,7 +71,6 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
-  // FIXME: BigIntMultiplication#mulQuad is slow!
   public void testBig(final AuditReport report) {
     test("mul(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
@@ -81,39 +80,20 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
-  public void testBig2(final AuditReport report) {
-    test("mul(T)", report,
-      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+  public void testVeryBig(final AuditReport report) {
+    test("mul(TT)", report,
+      s(BigInteger.class, a -> scaledBigInteger(a, 8), BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      s(BigInt.class, a -> scaledBigInt(a, 8), BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
+      s(int[].class, a -> scaledVal(a, 8), BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 
-  private static final Method squareToomCook;
-  private static final Field mag;
-
-  static {
-    try {
-      squareToomCook = BigInteger.class.getDeclaredMethod("squareToomCook3");
-      squareToomCook.setAccessible(true);
-
-      mag = BigInteger.class.getDeclaredField("mag");
-      mag.setAccessible(true);
-    }
-    catch (final NoSuchMethodException | NoSuchFieldException | SecurityException e) {
-      throw new ExceptionInInitializerError(e);
-    }
-  }
-
-  private static BigInteger sq(final BigInteger b) {
-    try {
-      if (((int[])mag.get(b)).length < BigIntMultiplication.TOOM_COOK_SQUARE_THRESHOLD)
-        return b.multiply(b);
-
-      return (BigInteger)squareToomCook.invoke(b);
-    }
-    catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
-    }
+  @Test
+  public void testBig2(final AuditReport report) {
+    test("mul(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> BigIntegerHack.invoke(a, b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+    );
   }
 
   @Test
