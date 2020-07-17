@@ -78,6 +78,22 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
+  public void testBig2(final AuditReport report) {
+    test("mul(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testSquareBig(final AuditReport report) {
+    test("mul(T,T)", report,
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a, String b) -> a.multiply(a), String::valueOf),
+      s(int[].class, this::scaledVal, (int[] a, String b) -> BigInt.mul(a, a), BigInt::toString)
+    );
+  }
+
+  @Test
   public void testUInt(final AuditReport report) {
     final int[] zds = new int[3];
     final int[] x = new int[3];

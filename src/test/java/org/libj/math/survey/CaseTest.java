@@ -160,7 +160,7 @@ public abstract class CaseTest {
               else if (o instanceof Long)
                 message.append(Arrays.toString(BigInt.valueOf(((Long)previous).longValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Long)o).longValue())));
               else if (o instanceof String)
-                message.append(Arrays.toString(BigInt.valueOf((String)previous))).append('\n').append(((String)o).isEmpty() ? "" : Arrays.toString(BigInt.valueOf((String)o)));
+                message.append(Arrays.toString(BigInt.valueOf((String)previous))).append('\n').append(((String)o).isEmpty() ? "" : bigIntToStringSafe((String)o));
               else if (!(o instanceof Boolean))
                 throw new UnsupportedOperationException("Unsupported type: " + o.getClass().getName());
 
@@ -180,6 +180,15 @@ public abstract class CaseTest {
     void onSuccess(final CaseTest caseTest, final Surveys surveys) {
       caseTest.onSuccess();
       surveys.onSuccess();
+    }
+  }
+
+  private static String bigIntToStringSafe(final String str) {
+    try {
+      return Arrays.toString(BigInt.valueOf(str));
+    }
+    catch (final ArrayIndexOutOfBoundsException e) {
+      return str;
     }
   }
 
@@ -817,12 +826,15 @@ public abstract class CaseTest {
           }
           else if (obj instanceof int[]) {
             final int[] val = (int[])obj;
-            final int len = Math.abs(val[0]);
+            final int len = val.length == 0 ? -1 : Math.abs(val[0]);
             // Is this a BigInt value array?
             if (len != 0 && len >= val.length)
               throw new IllegalArgumentException("Expected BigInt value array: " + Arrays.toString(val));
 
-            dig = BigInt.precision(val) * BigInt.signum(val);
+            if (len < 0)
+              dig = 0;
+            else
+              dig = BigInt.precision(val) * BigInt.signum(val);
           }
           else if (obj instanceof byte[]) {
             final byte[] val = (byte[])obj;

@@ -488,9 +488,9 @@ abstract class BigIntDivision extends BigIntMultiplication {
       }
       else {
         if (len1 + 1 == val.length)
-          val = realloc(val, len1 + 1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
+          val = realloc(val, len1 + 1, len1 + 2, true); // We need an extra slot // FIXME: Can this extra slot be avoided?
 
-        final int[] q = alloc(len1 - len2 + 2);
+        final int[] q = alloc(len1 - len2 + 2, true);
         div0(val, len1, sig1, div, len2, sig2, q);
         val = q;
       }
@@ -525,7 +525,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     // FIXME: Can this be unwrapped?...
     final boolean pos = val[0] < 0 == div[0] < 0;
     if (len2 > 1) {
-      div = divRem0(val, div);
+      div = divRem0(val, div, true);
       if (pos != val[0] >= 0)
         val[0] = -val[0];
 
@@ -536,7 +536,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       if (pos != val[0] >= 0)
         val[0] = -val[0];
 
-      val = assign(new int[2], pos, r);
+      val = assign(alloc(2, true), pos, r);
     }
 
     if (val[0] < 0 != sig1 < 0)
@@ -545,17 +545,17 @@ abstract class BigIntDivision extends BigIntMultiplication {
     return val;
   }
 
-  private static int[] divRem0(int[] val1, final int[] val2) {
+  private static int[] divRem0(int[] val1, final int[] val2, final boolean allocAllowed) {
     final int c = compareToAbs(val1, val2);
     if (c == 0) {
       assign0(val1, 1, 1);
-      return alloc(2);
+      return alloc(2, allocAllowed);
     }
 
     int len1 = val1[0]; if (len1 < 0) { len1 = -len1; }
     ++len1;
     if (c < 0) {
-      final int[] r = alloc(len1);
+      final int[] r = alloc(len1, allocAllowed);
       System.arraycopy(val1, 0, r, 0, len1);
       val1.clone();
       setToZero0(val1);
@@ -563,7 +563,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     }
 
     // Prepare the q array as the replacement for val1, accounting for the extra 1 required slot // FIXME: Can this extra slot be avoided?
-    final int[] q = alloc(len1 == val1.length ? val1.length + 1 : val1.length);
+    final int[] q = alloc(len1 == val1.length ? val1.length + 1 : val1.length, allocAllowed);
     // Transfer val1 -> q
     System.arraycopy(val1, 0, q, 0, len1);
 
@@ -758,10 +758,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * @complexity O(n^2)
    */
   public static int[] rem(int[] val, final int[] div) {
-    return isZero(val) ? val : rem0(val, div);
+    return isZero(val) ? val : rem0(val, div, true);
   }
 
-  private static int[] rem0(int[] val, final int[] div) {
+  private static int[] rem0(int[] val, final int[] div, final boolean allocAllowed) {
     // -7/-3 = 2, 2*-3 + -1
     // -7/3 = -2, -2*3 + -1
     // 7/-3 = -2, -2*-3 + 1
@@ -777,9 +777,9 @@ abstract class BigIntDivision extends BigIntMultiplication {
       final int c = compareToAbs(val, div);
       if (c > 0) {
         if (len1 + 1 == val.length)
-          val = realloc(val, len1 + 1, len1 + 2); // We need an extra slot // FIXME: Can this extra slot be avoided?
+          val = realloc(val, len1 + 1, len1 + 2, allocAllowed); // We need an extra slot // FIXME: Can this extra slot be avoided?
 
-        final int[] q = new int[len1 - len2 + 2];
+        final int[] q = threadLocal.get(len1 - len2 + 2, true);
         div0(val, len1, sig1, div, len2, sig2, q);
       }
       else if (c == 0) {
@@ -815,10 +815,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
     if (len == 0)
       return val;
 
-    val = rem0(val, div);
+    val = rem0(val, div, true);
     len = val[0];
     if (len < 0)
-      val = addSub0(val, -len, false, div, true);
+      val = addSub0(val, -len, false, div, true, true);
 
     // _debugLenSig(val);
     return val;

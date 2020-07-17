@@ -58,7 +58,7 @@ import java.util.concurrent.ExecutionException;
  *
  * @author Seva Safris
  */
-public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneable {
+public class BigInt extends BigIntDivision implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
   /**
@@ -151,7 +151,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt(final int sig, final int mag) {
-    val = mag == 0 ? setToZero0(alloc(1)) : assign0(alloc(2), sig, mag);
+    val = mag == 0 ? setToZero0(alloc(1, true)) : assign0(alloc(2, true), sig, mag);
   }
 
   /**
@@ -164,11 +164,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    */
   public BigInt(final int sig, final long mag) {
     if (mag == 0) {
-      val = setToZero0(alloc(1));
+      val = setToZero0(alloc(1, true));
     }
     else {
       final int magh = (int)(mag >>> 32);
-      val = magh != 0 ? assign0(alloc(3), sig, mag, magh) : assign0(alloc(2), sig, (int)mag);
+      val = magh != 0 ? assign0(alloc(3, true), sig, mag, magh) : assign0(alloc(2, true), sig, (int)mag);
     }
   }
 
@@ -179,7 +179,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    * @complexity O(1)
    */
   public BigInt(final int mag) {
-    val = mag == 0 ? setToZero0(alloc(1)) : mag < 0 ? assign0(alloc(2), -1, -mag) : assign0(alloc(2), 1, mag);
+    val = mag == 0 ? setToZero0(alloc(1, true)) : mag < 0 ? assign0(alloc(2, true), -1, -mag) : assign0(alloc(2, true), 1, mag);
   }
 
   /**
@@ -190,12 +190,12 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    */
   public BigInt(long mag) {
     if (mag == 0) {
-      val = setToZero0(alloc(1));
+      val = setToZero0(alloc(1, true));
     }
     else {
       int sig = 1; if (mag < 0) { mag = -mag; sig = -1; }
       final int magh = (int)(mag >>> 32);
-      val = magh != 0 ? assign0(alloc(3), sig, mag, magh) : assign0(alloc(2), sig, (int)mag);
+      val = magh != 0 ? assign0(alloc(3, true), sig, mag, magh) : assign0(alloc(2, true), sig, (int)mag);
     }
   }
 
@@ -244,7 +244,7 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    */
   public BigInt assign(final BigInt b) {
     final int len = Math.abs(val[0]) + 1;
-    copy(val, b.val, len, len);
+    copy(b.val, val, len, len, true);
     return assign(b.val);
   }
 
@@ -689,8 +689,11 @@ public class BigInt extends BigIntBinary implements Comparable<BigInt>, Cloneabl
    *           waiting.
    * @complexity O(n^1.585)
    */
+  // FIXME: package private?
   BigInt karatsuba(final BigInt mul, final boolean parallel) throws ExecutionException, InterruptedException {
-    val = karatsuba(val, mul.val, parallel);
+    int len1 = val[0]; if (len1 < 0) { len1 = -len1; }
+    int len2 = mul.val[0]; if (len2 < 0) { len2 = -len2; }
+    val = karatsuba(val, len1, mul.val, len2, parallel);
     return this;
   }
 

@@ -185,29 +185,6 @@ public abstract class BigIntTest extends CaseTest {
     return shouldInflate ? new int[random.nextInt(1024) + 1] : new int[size];
   }
 
-  static int randomInt(final int precision) {
-    if (precision > 10)
-      throw new IllegalArgumentException(String.valueOf(precision));
-
-    final long min = FastMath.e10[precision - 1];
-    final long max = FastMath.e10[precision];
-    return (int)(random.nextInt((int)(max - min)) + min);
-  }
-
-  static long randomLong(final int precision) {
-    if (precision < 11)
-      return randomInt(precision);
-
-    if (precision > 19)
-      throw new IllegalArgumentException(String.valueOf(precision));
-
-    long v = randomInt(precision - 10) * randomInt(10);
-    while (Numbers.precision(v) < precision)
-      v *= 9;
-
-    return v;
-  }
-
   @Override
   public int[] randomInputs(final int p1, final int p2, final int[] values) {
     if (shouldBeEqual) {
@@ -274,6 +251,29 @@ public abstract class BigIntTest extends CaseTest {
       builder.append(a, isNegative ? 1 : 0, len);
 
     return builder.toString();
+  }
+
+  static int randomInt(final int precision) {
+    if (precision > 10)
+      throw new IllegalArgumentException(String.valueOf(precision));
+
+    final long min = FastMath.e10[precision - 1];
+    final long max = FastMath.e10[precision];
+    return (int)(random.nextInt((int)(max - min)) + min);
+  }
+
+  static long randomLong(final int precision) {
+    if (precision < 11)
+      return randomInt(precision);
+
+    if (precision > 19)
+      throw new IllegalArgumentException(String.valueOf(precision));
+
+    long v = randomInt(precision - 10) * randomInt(10);
+    while (Numbers.precision(v) < precision)
+      v *= 9;
+
+    return v;
   }
 
   public static String randomBig(final int len) {

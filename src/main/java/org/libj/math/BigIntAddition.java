@@ -33,7 +33,8 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static final long serialVersionUID = 2873086066678372875L;
 
   /**
-   * Adds an {@code int} to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * Adds an {@code int} to the provided {@linkplain BigInt#val() value-encoded
+   * addend}.
    *
    * <pre>
    * val = val + add
@@ -45,18 +46,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
    *
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The amount to add.
-   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * @return The result of the addition of the specified amount to the provided
+   *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
    */
   // Has not amortized O(1) due to the risk of
   // alternating +1 -1 on continuous sequence of
   // 1-set bits.
   public static int[] add(final int[] val, final int add) {
-    return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
+    return add > 0 ? add0(val, add, true) : add < 0 ? sub0(val, -add, true) : val;
   }
 
   /**
-   * Subtracts an {@code int} subtrahend from the provided {@linkplain BigInt#val() value-encoded minuend}.
+   * Subtracts an {@code int} subtrahend from the provided
+   * {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
@@ -73,11 +76,12 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sub) {
-    return sub > 0 ? sub0(val, sub) : sub < 0 ? add0(val, -sub) : val;
+    return sub > 0 ? sub0(val, sub, true) : sub < 0 ? add0(val, -sub, true) : val;
   }
 
   /**
-   * Adds an <i>unsigned</i> {@code int} to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * Adds an <i>unsigned</i> {@code int} to the provided
+   * {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -95,16 +99,16 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int sig, final int add) {
-    return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
+    return add == 0 ? val : sig < 0 ? sub0(val, add, true) : add0(val, add, true);
   }
 
-  private static int[] add0(int[] val, final int add) {
+  private static int[] add0(int[] val, final int add, final boolean allocAllowed) {
     int len = val[0];
     if (len == 0) {
-      assign0(val.length >= 2 ? val : alloc(2), 1, add);
+      assign0(val.length >= 2 ? val : alloc(2, allocAllowed), 1, add);
     }
     else if (len > 0) {
-      val = uaddVal(val, len, true, add);
+      val = uaddVal(val, len, true, add, allocAllowed);
     }
     else if ((len = -len) > 1 || (val[1] & LONG_INT_MASK) > (add & LONG_INT_MASK)) {
       usubVal(val, len, false, add);
@@ -140,16 +144,16 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sig, final int sub) {
-    return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
+    return sub == 0 ? val : sig < 0 ? add0(val, sub, true) : sub0(val, sub, true);
   }
 
-  private static int[] sub0(int[] val, final int sub) {
+  private static int[] sub0(int[] val, final int sub, final boolean allocAllowed) {
     final int len = val[0];
     if (len == 0) {
-      assign0(val.length >= 2 ? val : alloc(2), -1, sub);
+      assign0(val.length >= 2 ? val : alloc(2, allocAllowed), -1, sub);
     }
     else if (len < 0) {
-      val = uaddVal(val, -len, false, sub);
+      val = uaddVal(val, -len, false, sub, allocAllowed);
     }
     else if (len == 1 && (val[1] & LONG_INT_MASK) < (sub & LONG_INT_MASK)) {
       val[0] = -len;
@@ -164,7 +168,8 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds a {@code long} to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * Adds a {@code long} to the provided {@linkplain BigInt#val() value-encoded
+   * addend}.
    *
    * <pre>
    * val = val + add
@@ -176,11 +181,12 @@ abstract class BigIntAddition extends BigIntMagnitude {
    *
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The amount to add.
-   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * @return The result of the addition of the specified amount to the provided
+   *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final long add) {
-    return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
+    return add > 0 ? add0(val, add, true) : add < 0 ? sub0(val, -add, true) : val;
   }
 
   /**
@@ -202,11 +208,12 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final long sub) {
-    return sub > 0 ? sub0(val, sub) : sub < 0 ? add0(val, -sub) : val;
+    return sub > 0 ? sub0(val, sub, true) : sub < 0 ? add0(val, -sub, true) : val;
   }
 
   /**
-   * Adds an <i>unsigned</i> {@code long} to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * Adds an <i>unsigned</i> {@code long} to the provided
+   * {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -219,28 +226,30 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param sig The sign of the unsigned {@code long} to add.
    * @param add The amount to add (unsigned).
-   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * @return The result of the addition of the specified amount to the provided
+   *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int sig, final long add) {
-    return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
+    return add == 0 ? val : sig < 0 ? sub0(val, add, true) : add0(val, add, true);
   }
 
-  private static int[] add0(final int[] val, final long add) {
+  private static int[] add0(final int[] val, final long add, final boolean allocAllowed) {
     final long addh = add >>> 32;
     if (addh == 0)
-      return add0(val, (int)add);
+      return add0(val, (int)add, allocAllowed);
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3), 1, add, (int)addh);
+      return assign0(val.length >= 3 ? val : alloc(3, allocAllowed), 1, add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSub(val, len, sig, add & LONG_INT_MASK, addh, true);
+    return uaddSub(val, len, sig, add & LONG_INT_MASK, addh, true, allocAllowed);
   }
 
   /**
-   * Subtracts an <i>unsigned</i> {@code long} subtrahend from the provided {@linkplain BigInt#val() value-encoded minuend}.
+   * Subtracts an <i>unsigned</i> {@code long} subtrahend from the provided
+   * {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
@@ -258,24 +267,25 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sig, final long sub) {
-    return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
+    return sub == 0 ? val : sig < 0 ? add0(val, sub, true) : sub0(val, sub, true);
   }
 
-  private static int[] sub0(final int[] val, final long sub) {
+  private static int[] sub0(final int[] val, final long sub, final boolean allocAllowed) {
     final long subh = sub >>> 32;
     if (subh == 0)
-      return sub0(val, (int)sub);
+      return sub0(val, (int)sub, allocAllowed);
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3), -1, sub, (int)subh);
+      return assign0(val.length >= 3 ? val : alloc(3, allocAllowed), -1, sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSub(val, len, sig, sub & LONG_INT_MASK, subh, false);
+    return uaddSub(val, len, sig, sub & LONG_INT_MASK, subh, false, allocAllowed);
   }
 
   /**
-   * Adds (or subtracts) an unsigned {@code long} to (or from) the provided {@linkplain BigInt#val() value-encoded addend}.
+   * Adds (or subtracts) an unsigned {@code long} to (or from) the provided
+   * {@linkplain BigInt#val() value-encoded addend}.
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the increase (or decrease) of the provided addend (or minuend) by the
@@ -287,16 +297,17 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @param addl The lower limb of the amount to add (unsigned).
    * @param addh The higher limb of the amount to add (unsigned).
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
-   * @return The result of the addition of the specified amount to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * @return The result of the addition of the specified amount to the provided
+   *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
    */
-  private static int[] uaddSub(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
+  private static int[] uaddSub(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub, final boolean allocAllowed) {
     if (addOrSub == sig) {
-      val = uaddVal(val, len, sig, addl, addh);
+      val = uaddVal(val, len, sig, addl, addh, allocAllowed);
     }
     else {
       if (val.length <= 2)
-        val = realloc(val, len + 1, 3);
+        val = realloc(val, len + 1, 3, allocAllowed);
 
       final long val0 = val[1] & LONG_INT_MASK;
       final long val1 = val[2] & LONG_INT_MASK;
@@ -325,7 +336,8 @@ abstract class BigIntAddition extends BigIntMagnitude {
   }
 
   /**
-   * Adds a {@linkplain BigInt#val() value-encoded number} to the provided {@linkplain BigInt#val() value-encoded addend}.
+   * Adds a {@linkplain BigInt#val() value-encoded number} to the provided
+   * {@linkplain BigInt#val() value-encoded addend}.
    *
    * <pre>
    * val = val + add
@@ -338,35 +350,42 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @return The result of the addition of the specified
-   *         {@linkplain BigInt#val() value-encoded number} to the provided {@linkplain BigInt#val() value-encoded addend}.
+   *         {@linkplain BigInt#val() value-encoded number} to the provided
+   *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int[] add) {
-    return addSub(val, add, true);
+    return addSub(val, add, true, true);
   }
 
   /**
-   * Subtracts a {@linkplain BigInt#val() value-encoded subtrahend} from the provided {@linkplain BigInt#val() value-encoded minuend}.
+   * Subtracts a {@linkplain BigInt#val() value-encoded subtrahend} from the
+   * provided {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified {@linkplain BigInt#val() value-encoded subtrahend} requires a larger array.</i>
+   * the decrease of the provided minuend by the specified
+   * {@linkplain BigInt#val() value-encoded subtrahend} requires a larger
+   * array.</i>
    *
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The {@linkplain BigInt#val() value-encoded subtrahend}.
-   * @return The result of the subtraction of the specified {@linkplain BigInt#val() value-encoded subtrahend} from the provided {@linkplain BigInt#val() value-encoded minuend}.
+   * @return The result of the subtraction of the specified
+   *         {@linkplain BigInt#val() value-encoded subtrahend} from the
+   *         provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int[] sub) {
-    return addSub(val, sub, false);
+    return addSub(val, sub, false, true);
   }
 
   /**
    * Adds (or subtracts) a {@linkplain BigInt#val() value-encoded number} to (or
-   * from) the provided {@linkplain BigInt#val() value-encoded addend} (or minuend).
+   * from) the provided {@linkplain BigInt#val() value-encoded addend} (or
+   * minuend).
    * <p>
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the increase of the provided addend by the specified
@@ -375,16 +394,18 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
+   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The result of the addition (or subtraction) of the specified amount
-   *         to (or from) the provided {@linkplain BigInt#val() value-encoded addend} (or minuend).
+   *         to (or from) the provided {@linkplain BigInt#val() value-encoded
+   *         addend} (or minuend).
    * @complexity O(n)
    */
-  private static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
+  static int[] addSub(int[] val, final int[] add, final boolean addOrSub, final boolean allocAllowed) {
     int len = val[0];
     if (len == 0) {
       len = Math.abs(add[0]);
       if (len >= val.length)
-        val = alloc(len);
+        val = alloc(len, allocAllowed);
 
       System.arraycopy(add, 0, val, 0, len + 1);
       if (!addOrSub)
@@ -394,20 +415,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return addSub0(val, len, sig, add, addOrSub);
+    return addSub0(val, len, sig, add, addOrSub, allocAllowed);
   }
 
-  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub) {
+  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub, final boolean allocAllowed) {
     int len2 = add[0]; if (len2 < 0) { len2 = -len2; }
     if (addOrSub == (sig == add[0] >= 0))
-      return addVal(val, len, sig, add, len2);
+      return addVal(val, len, sig, add, len2, allocAllowed);
 
     if (compareToAbs(val, add) >= 0) {
       subVal(val, len, sig, add, len2);
     }
     else {
       if (len2 >= val.length)
-        val = realloc(val, len + 1, len2 + 2);
+        val = realloc(val, len + 1, len2 + 2, allocAllowed);
 
       sig = !sig;
       long dif = 0;

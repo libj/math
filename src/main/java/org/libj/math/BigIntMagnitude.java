@@ -43,11 +43,12 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param add The amount by which to increase (unsigned).
+   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The provided number increased by the specified amount.
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddVal(int[] val, int len, final boolean sig, final int add) {
+  static int[] uaddVal(int[] val, int len, final boolean sig, final int add, final boolean allocAllowed) {
     final long sum = (val[1] & LONG_INT_MASK) + (add & LONG_INT_MASK);
     val[1] = (int)sum;
     if ((sum >>> 32) != 0) {
@@ -55,7 +56,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (++len == val.length)
-          val = realloc(val, len, len + 1);
+          val = realloc(val, len, len + 1, allocAllowed);
 
         val[len] = 1;
         val[0] = sig ? len : -len;
@@ -106,13 +107,14 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param sig The sign of the number.
    * @param addl The lower limb of the amount by which to increase (unsigned).
    * @param addh The higher limb of the amount by which to increase (unsigned).
+   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The provided number increased by the specified amount.
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh) {
+  static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean allocAllowed) {
     if (val.length <= 3)
-      val = realloc(val, len + 1, 4);
+      val = realloc(val, len + 1, 4, allocAllowed);
 
     final long val0 = val[1] & LONG_INT_MASK;
     final long val1 = val[2] & LONG_INT_MASK;
@@ -129,7 +131,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (i == val.length)
-          val = realloc(val, len + 1, i + 1);
+          val = realloc(val, len + 1, i + 1, allocAllowed);
 
         len = i;
         val[len] = 1;
@@ -190,11 +192,12 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param add The {@linkplain BigInt#val() value-encoded amount} by which to
    *          increase (or decrease).
    * @param alen The count of limbs in the number by which to increase.
+   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The provided number increased (or decreased) by the specified
    *         amount.
    * @complexity O(n)
    */
-  static int[] addVal(int[] val, int len, final boolean sig, int[] add, int alen) {
+  static int[] addVal(int[] val, int len, final boolean sig, int[] add, int alen, final boolean allocAllowed) {
     int[] val1 = val; // len <= len2
     int len1 = len;
     if (alen < len) {
@@ -205,7 +208,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     }
 
     if (alen >= val.length)
-      val = realloc(val, len + 1, alen + 2);
+      val = realloc(val, len + 1, alen + 2, allocAllowed);
 
     long carry = 0;
     int i = 1;
@@ -225,7 +228,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len++) { // len == len2
         if (i == val.length)
-          val = realloc(val, len, i + 1);
+          val = realloc(val, len, i + 1, allocAllowed);
 
         val[len] = 1;
         val[0] = sig ? len : -len;
