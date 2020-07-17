@@ -43,7 +43,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * multiplication will be used. This value is found experimentally to work
    * well.
    */
-  private static final int KARATSUBA_THRESHOLD = 80; // 80
+  private static final int KARATSUBA_THRESHOLD = 110; // 80
 
   /**
    * The threshold value for using 3-way Toom-Cook multiplication.
@@ -357,7 +357,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     }
 
     if (len < TOOM_COOK_THRESHOLD && mlen < TOOM_COOK_THRESHOLD) {
-      val = mulKaratsuba(mul, mlen, val, len, len + mlen); // Swap mul and val so that multiplyKaratsuba can reuse the val array
+      val = mulKaratsuba(mul, mlen, val, len, exactLen < 0 ? len + mlen : exactLen); // Swap mul and val so that multiplyKaratsuba can reuse the val array
       if (sig != val[0] >= 0)
         val[0] = -val[0];
 
@@ -815,7 +815,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       z = copy0(xh, new int[zlen], xUpperLen + OFF); // This length is exact
     }
 
-    int[] yh = yIsSmall ? ZERO : getUpper0(y, yUpperLen, xUpperLen, half);
+    int[] yh = yIsSmall ? new int[half + OFF] : getUpper0(y, yUpperLen, xUpperLen, half);
     int[] xl = getLower(x, xlen, half, false);
     final int[] yl = getLower(y, ylen, half, true);
 
@@ -837,7 +837,6 @@ abstract class BigIntMultiplication extends BigIntBinary {
     z = addSub(z, xl, true, false);
 
     // _debugLenSig(z);
-    // FIXME: At this point, count how many times z != original z
     return z;
   }
 
@@ -1175,8 +1174,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
    */
   private static final int[] squareToLen(final int[] mag, final int off, final int len) {
     int zlen = len << 1;
-    int[] z = new int[zlen + off];
-    z = squareToLen0(mag, len, z, zlen, off);
+    final int[] z = new int[zlen + off];
+    squareToLen0(mag, len, z, zlen, off);
     for (; z[zlen] == 0; --zlen);
     z[0] = zlen;
     // _debugLenSig(z);
@@ -1222,34 +1221,29 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * multiplied by two again. The low bit is simply a copy of the low bit of the
    * input, so it doesn't need special care.
    */
-  private static final int[] squareToLen0(final int[] x, int xlen, final int[] z, int zlen, final int off) {
-    int i, j, t, offset;
-    long piece, product;
+  private static final void squareToLen0(final int[] x, int xlen, final int[] z, int zlen, final int off) {
+    int i, j, offset;
+    long x0 = 0;
 
     xlen += off;
     zlen += off;
 
     // Store the squares, right shifted one bit (i.e., divided by 2)
-    int lastProductLowWord = 0;
     for (i = xlen - 1, j = zlen; i >= off; --i) {
-      piece = x[i] & LONG_INT_MASK;
-      product = piece * piece;
-      z[--j] = (lastProductLowWord << 31) | (int)(product >>> 33);
-      z[--j] = (int)(product >>> 1);
-      lastProductLowWord = (int)product;
+      z[--j] = ((int)x0 << 31) | (int)((x0 = (x0 = x[i] & LONG_INT_MASK) * x0) >>> 33);
+      z[--j] = (int)(x0 >>> 1);
     }
 
     // Add in off-diagonal sums
     for (i = off, offset = off; i < xlen; ++i, offset += 2) {
-      t = x[i];
-      t = mulAdd(x, i + 1, xlen, t, z, offset + 1);
-      addOne(z, offset, zlen, xlen - i, t);
+      j = x[i];
+      j = mulAdd(x, i + 1, xlen, j, z, offset + 1);
+      addOne(z, offset, zlen, xlen - i, j);
     }
 
     // Shift back up and set low bit
     primitiveLeftShift(z, off, zlen, 1);
     z[off] |= x[off] & 1;
-    return z;
   }
 
   // shifts a up to len left n bits assumes no leading zeros, 0<=n<32
@@ -1258,11 +1252,9 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return;
 
     final int n2 = 32 - n;
-    for (int b, c = a[--end]; end > start; --end) {
-      b = c;
-      c = a[end - 1];
-      a[end] = (b << n) | (c >>> n2);
-    }
+    int c = a[--end];
+    while (end > start)
+      a[end--] = (c << n) | ((c = a[end]) >>> n2);
 
     a[start] <<= n;
     // _debugLenSig(a);
