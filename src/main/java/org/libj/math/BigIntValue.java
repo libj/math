@@ -50,10 +50,10 @@ abstract class BigIntValue extends Number {
       return new int[INITIAL_SIZE];
     }
 
-    int[] get(final int len, final boolean allocAllowed) {
+    int[] get(final int len) {
       int[] array = super.get();
       if (array.length < len)
-        set(array = alloc(len, allocAllowed));
+        set(array = alloc(len));
 
       return array;
     }
@@ -65,14 +65,48 @@ abstract class BigIntValue extends Number {
    * This method can return longer arrays tuned for optimal performance.
    *
    * @param len The minimal length of the returned {@code int[]}.
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return A new {@code int[]} with a length that is at least {@code len}.
    */
-  static int[] alloc(final int len, final boolean allocAllowed) {
-    if (!allocAllowed)
-      throw new IllegalStateException("len=" + len);
+  static int[] alloc(final int len) {
+    return new int[len]; // 8 + len + len
+  }
 
-    return new int[8 + len + len];
+  /**
+   * Reallocates the provided array up to <i>a minimum</i> length {@code len} to
+   * a new array of length {@code newLen}.
+   * <p>
+   * This method can return longer arrays tuned for optimal performance.
+   *
+   * @param array The array to reallocate.
+   * @param len The number of elements in the original array to copy to the
+   *          returned array.
+   * @param newLen The length of the returned array.
+   * @return A new array of length {@code newLen} with {@code len} number of
+   *         elements copied from {@code array}.
+   * @complexity O(n)
+   */
+  static int[] realloc(final int[] array, final int len, final int newLen) {
+    final int[] v = new int[newLen]; // 8 + newLen + newLen
+    System.arraycopy(array, 0, v, 0, len);
+    return v;
+  }
+
+  /**
+   * Reallocates the provided array up to length {@code len} to a new array of
+   * length {@code newLen}.
+   *
+   * @param array The array to reallocate.
+   * @param len The number of elements in the original array to copy to the
+   *          returned array.
+   * @param newLen The length of the returned array.
+   * @return A new array of length {@code newLen} with {@code len} number of
+   *         elements copied from {@code array}.
+   * @complexity O(n)
+   */
+  static int[] reallocExact(final int[] array, final int len, final int newLen) {
+    final int[] v = new int[newLen];
+    System.arraycopy(array, 0, v, 0, len);
+    return v;
   }
 
   /**
@@ -88,18 +122,17 @@ abstract class BigIntValue extends Number {
    * @param target The target array.
    * @param copyLength The number of elements to copy from source to target.
    * @param arrayLength The minimal length of the target array.
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The result of copying the source array to the target array.
    * @complexity O(n)
    */
-  static int[] copy(final int[] source, int[] target, final int copyLength, final int arrayLength, final boolean allocAllowed) {
+  static int[] copy(final int[] source, final int copyLength, int[] target, final int arrayLength) {
     if (arrayLength > target.length)
-      target = alloc(arrayLength, allocAllowed);
+      target = alloc(arrayLength);
 
-    return copy0(source, target, copyLength);
+    return copy0(source, copyLength, target);
   }
 
-  static int[] copy0(final int[] source, int[] target, final int copyLength) {
+  static int[] copy0(final int[] source, final int copyLength, int[] target) {
     System.arraycopy(source, 0, target, 0, copyLength);
     // _debugLenSig(target);
     return target;
@@ -155,7 +188,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] assign(final int[] val, final int sig, final int mag) {
-    return mag == 0 ? setToZero(val) : assign0(val.length > 1 ? val : alloc(2, true), sig, mag);
+    return mag == 0 ? setToZero(val) : assign0(val.length > 1 ? val : alloc(2), sig, mag);
   }
 
   static int[] assign0(final int[] val, final int sig, final int mag) {
@@ -220,9 +253,9 @@ abstract class BigIntValue extends Number {
 
     final int magh = (int)(mag >>> 32);
     if (magh != 0)
-      return assign0(val.length >= 3 ? val : alloc(3, true), sig, mag, magh);
+      return assign0(val.length >= 3 ? val : alloc(3), sig, mag, magh);
 
-    return assign0(val.length >= 2 ? val : alloc(2, true), sig, (int)mag);
+    return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
   }
 
   static int[] assign0(final int[] val, final int sig, final long mag, final int magh) {
@@ -279,22 +312,16 @@ abstract class BigIntValue extends Number {
    *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @complexity O(1)
    */
-  public static int[] assign(int[] val, final byte[] mag, final int off, final int len, final boolean littleEndian) {
+  public static int[] assign(final int[] val, final byte[] mag, final int off, final int len, final boolean littleEndian) {
     return littleEndian ? assignLittleEndian(val, mag, off, len) : assignBigEndian(val, mag, off, len);
   }
 
-  private static int[] assignLittleEndian(int[] val, final byte[] mag, final int off, final int len) {
-    if (mag[off + len - 1] < 0)
-      return assignNegativeLittleEndian(val, mag, off, len);
-
-    return assignPositiveLittleEndian(val, mag, off, len);
+  private static int[] assignLittleEndian(final int[] val, final byte[] mag, final int off, final int len) {
+    return mag[off + len - 1] < 0 ? assignNegativeLittleEndian(val, mag, off, len) : assignPositiveLittleEndian(val, mag, off, len);
   }
 
-  private static int[] assignBigEndian(int[] val, final byte[] mag, final int off, final int len) {
-    if (mag[off] < 0)
-      return assignNegativeBigEndian(val, mag, off, len);
-
-    return assignPositiveBigEndian(val, mag, off, len);
+  private static int[] assignBigEndian(final int[] val, final byte[] mag, final int off, final int len) {
+    return mag[off] < 0 ? assignNegativeBigEndian(val, mag, off, len) : assignPositiveBigEndian(val, mag, off, len);
   }
 
   /**
@@ -317,7 +344,7 @@ abstract class BigIntValue extends Number {
     final int extraByte = k == indexBound - 1 ? 1 : 0;
     final int vlen = ((keep - (indexBound - 1) + extraByte) + 3) >>> 2;
     if (val.length <= vlen)
-      val = alloc(vlen + 1, true);
+      val = alloc(vlen + 1);
 
     /*
      * Copy one's complement of input into output, leaving extra byte (if it
@@ -360,7 +387,7 @@ abstract class BigIntValue extends Number {
     // Allocate new array and copy relevant part of input array
     final int vlen = ((keep - (indexBound - 1)) + 3) >>> 2;
     if (val.length <= vlen)
-      val = alloc(vlen + 1, true);
+      val = alloc(vlen + 1);
 
     if (vlen == 0)
       return setToZero0(val);
@@ -398,7 +425,7 @@ abstract class BigIntValue extends Number {
     final int extraByte = k == indexBound ? 1 : 0;
     final int vlen = ((indexBound - keep + extraByte) + 3) >>> 2;
     if (val.length <= vlen)
-      val = alloc(vlen + 1, true);
+      val = alloc(vlen + 1);
 
     /*
      * Copy one's complement of input into output, leaving extra byte (if it
@@ -441,7 +468,7 @@ abstract class BigIntValue extends Number {
     // Allocate new array and copy relevant part of input array
     final int vlen = ((indexBound - keep) + 3) >>> 2;
     if (val.length <= vlen)
-      val = alloc(vlen + 1, true);
+      val = alloc(vlen + 1);
 
     if (vlen == 0)
       return setToZero0(val);
@@ -500,7 +527,7 @@ abstract class BigIntValue extends Number {
     // 3402 = bits per digit * 1024
     final int alloc = (len < 10 ? 1 : (int)(len * 3402L >>> 10) + 32 >>> 5) + 1;
     if (alloc > val.length)
-      val = alloc(alloc, true);
+      val = alloc(alloc);
 
     int j = len % 9;
     if (j == 0)
@@ -579,29 +606,6 @@ abstract class BigIntValue extends Number {
     }
 
     return toIndex;
-  }
-
-  /**
-   * Reallocates the provided array up to length {@code len} to a new array of
-   * length {@code newLen}.
-   *
-   * @param array The array to reallocate.
-   * @param len The number of elements in the original array to copy to the
-   *          returned array.
-   * @param newLen The length of the returned array.
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
-   * @return A new array of length {@code newLen} with {@code len} number of
-   *         elements copied from {@code array}.
-   * @complexity O(n)
-   */
-  // FIXME: Tune this like alloc(), and make sure this is not being called when not needed
-  static int[] realloc(final int[] array, final int len, final int newLen, final boolean allocAllowed) {
-    if (!allocAllowed)
-      throw new IllegalStateException("array.length=" + array.length + ", newLen=" + newLen);
-
-    final int[] v = new int[newLen];
-    System.arraycopy(array, 0, v, 0, len);
-    return v;
   }
 
   /**
@@ -767,7 +771,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] setToZero(final int[] val) {
-    return setToZero0(val.length > 0 ? val : alloc(1, true));
+    return setToZero0(val.length > 0 ? val : alloc(1));
   }
 
   static int[] setToZero0(final int[] val) {

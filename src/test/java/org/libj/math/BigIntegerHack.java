@@ -40,7 +40,7 @@ public class BigIntegerHack {
 
   static BigInteger invoke(final BigInteger a, final BigInteger b) {
     try {
-      if (((int[])mag.get(a)).length < BigIntMultiplication.TOOM_COOK_THRESHOLD)
+      if (((int[])mag.get(a)).length < BigIntegerMultiplication.TOOM_COOK_THRESHOLD)
         return a.multiply(b);
 
       return (BigInteger)multiplyToomCook3.invoke(null, a, b);

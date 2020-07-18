@@ -48,7 +48,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddVal(int[] val, int len, final boolean sig, final int add, final boolean allocAllowed) {
+  static int[] uaddVal(int[] val, int len, final boolean sig, final int add) {
     final long sum = (val[1] & LONG_INT_MASK) + (add & LONG_INT_MASK);
     val[1] = (int)sum;
     if ((sum >>> 32) != 0) {
@@ -56,7 +56,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (++len == val.length)
-          val = realloc(val, len, len + 1, allocAllowed);
+          val = realloc(val, len, len + 1);
 
         val[len] = 1;
         val[0] = sig ? len : -len;
@@ -112,9 +112,9 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @complexity O(n)
    * @amortized O(1)
    */
-  static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean allocAllowed) {
+  static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh) {
     if (val.length <= 3)
-      val = realloc(val, len + 1, 4, allocAllowed);
+      val = realloc(val, len + 1, 4);
 
     final long val0 = val[1] & LONG_INT_MASK;
     final long val1 = val[2] & LONG_INT_MASK;
@@ -131,7 +131,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
         if (i == val.length)
-          val = realloc(val, len + 1, i + 1, allocAllowed);
+          val = realloc(val, len + 1, i + 1);
 
         len = i;
         val[len] = 1;
@@ -197,7 +197,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    *         amount.
    * @complexity O(n)
    */
-  static int[] addVal(int[] val, int len, final boolean sig, int[] add, int alen, final boolean allocAllowed) {
+  static int[] addVal(int[] val, int len, final boolean sig, int[] add, int alen) {
     int[] val1 = val; // len <= len2
     int len1 = len;
     if (alen < len) {
@@ -208,7 +208,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     }
 
     if (alen >= val.length)
-      val = realloc(val, len + 1, alen + 2, allocAllowed);
+      val = realloc(val, len + 1, alen + 2);
 
     long carry = 0;
     int i = 1;
@@ -228,7 +228,7 @@ abstract class BigIntMagnitude extends BigIntValue {
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len++) { // len == len2
         if (i == val.length)
-          val = realloc(val, len, i + 1, allocAllowed);
+          val = realloc(val, len, i + 1);
 
         val[len] = 1;
         val[0] = sig ? len : -len;

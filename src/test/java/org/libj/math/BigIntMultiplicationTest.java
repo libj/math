@@ -80,19 +80,23 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
+  public void testBig3(final AuditReport report) {
+    test("mul(T)", report,
+      s(BigInteger.class, this::scaledBigInteger, this::scaledBigInteger, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      s(BigIntHuldra.class, this::scaledBigIntHuldra, this::scaledBigIntHuldra, (BigIntHuldra a, BigIntHuldra b) -> { a.mul(b); return a; }, String::valueOf),
+//      s(BigInt.class, this::scaledBigInt, this::scaledBigInt, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
+      s(int[].class, this::scaledVal, this::scaledVal, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+    );
+
+    System.out.println(BigIntHuldra.time + "\n" + BigIntMultiplication.time + "\n" + ((double)BigIntHuldra.time / BigIntMultiplication.time));
+  }
+
+  @Test
   public void testVeryBig(final AuditReport report) {
     test("mul(TT)", report,
       s(BigInteger.class, a -> scaledBigInteger(a, 8), BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       s(BigInt.class, a -> scaledBigInt(a, 8), BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
       s(int[].class, a -> scaledVal(a, 8), BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
-    );
-  }
-
-  @Test
-  public void testBig2(final AuditReport report) {
-    test("mul(T)", report,
-      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> BigIntegerHack.invoke(a, b), String::valueOf),
-      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 

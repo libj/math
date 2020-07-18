@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import org.junit.internal.ArrayComparisonFailure;
 import org.libj.lang.Numbers;
 import org.libj.math.BigInt;
+import org.libj.math.BigIntHuldra;
 import org.libj.test.TestAide;
 import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;
@@ -655,6 +656,14 @@ public abstract class CaseTest {
     return new IntCase<>(subject, 2, null, null, test, out);
   }
 
+  public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final BiIntFunction<R> test) {
+    return new IntCase<>(subject, 2, null, null, test, null);
+  }
+
+  public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final IntFunction<R> test) {
+    return new IntCase<>(subject, 1, null, null, test, null);
+  }
+
   public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final IntFunction<R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 1, null, null, test, out);
   }
@@ -824,6 +833,10 @@ public abstract class CaseTest {
             final BigInt val = (BigInt)obj;
             dig = val.precision() * val.signum();
           }
+          else if (obj instanceof BigIntHuldra) {
+            final BigIntHuldra val = (BigIntHuldra)obj;
+            dig = val.precision() * val.signum();
+          }
           else if (obj instanceof int[]) {
             final int[] val = (int[])obj;
             final int len = val.length == 0 ? -1 : Math.abs(val[0]);
@@ -848,16 +861,17 @@ public abstract class CaseTest {
             dig = val.startsWith("-") ? 1 - val.length() : val.length();
           }
           else {
-            throw new UnsupportedOperationException(obj.getClass().getName());
+            throw new UnsupportedOperationException(obj == null ? null : obj.getClass().getName());
           }
 
           // Special case for unsigned long, because signed long has max precision of 19, but unsigned long is 20
           if (dig == 20 && maxPrecision == 19)
             dig = 19;
 
-          final int division = (int)((maxPrecision + dig - 1) / width);
+          int division = (int)((maxPrecision + dig - 1) / width);
           if (0 > division || division > divisions - 1)
-            throw new IllegalStateException();
+            division = Math.max(0, Math.min(10, division));
+//            throw new IllegalStateException(String.valueOf(obj));
 
           return division;
         }

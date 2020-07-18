@@ -30,6 +30,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -73,7 +74,7 @@ public abstract class DecimalTest {
   private static long testLD1 = -1;
   private static long testLD2 = -1;
 
-  private static final Path errorPath = Path.of("target/generated-test-resources/DecimalTest.txt");
+  private static final Path errorPath = Paths.get("target/generated-test-resources/DecimalTest.txt");
   private static final File errorFile;
 
   static {

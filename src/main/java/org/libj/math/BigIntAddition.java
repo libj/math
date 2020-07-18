@@ -54,7 +54,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   // alternating +1 -1 on continuous sequence of
   // 1-set bits.
   public static int[] add(final int[] val, final int add) {
-    return add > 0 ? add0(val, add, true) : add < 0 ? sub0(val, -add, true) : val;
+    return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
   }
 
   /**
@@ -76,7 +76,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sub) {
-    return sub > 0 ? sub0(val, sub, true) : sub < 0 ? add0(val, -sub, true) : val;
+    return sub > 0 ? sub0(val, sub) : sub < 0 ? add0(val, -sub) : val;
   }
 
   /**
@@ -99,16 +99,16 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int sig, final int add) {
-    return add == 0 ? val : sig < 0 ? sub0(val, add, true) : add0(val, add, true);
+    return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
   }
 
-  private static int[] add0(int[] val, final int add, final boolean allocAllowed) {
+  private static int[] add0(int[] val, final int add) {
     int len = val[0];
     if (len == 0) {
-      assign0(val.length >= 2 ? val : alloc(2, allocAllowed), 1, add);
+      val = assign0(val.length >= 2 ? val : alloc(2), 1, add);
     }
     else if (len > 0) {
-      val = uaddVal(val, len, true, add, allocAllowed);
+      val = uaddVal(val, len, true, add);
     }
     else if ((len = -len) > 1 || (val[1] & LONG_INT_MASK) > (add & LONG_INT_MASK)) {
       usubVal(val, len, false, add);
@@ -144,16 +144,16 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sig, final int sub) {
-    return sub == 0 ? val : sig < 0 ? add0(val, sub, true) : sub0(val, sub, true);
+    return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
   }
 
-  private static int[] sub0(int[] val, final int sub, final boolean allocAllowed) {
+  private static int[] sub0(int[] val, final int sub) {
     final int len = val[0];
     if (len == 0) {
-      assign0(val.length >= 2 ? val : alloc(2, allocAllowed), -1, sub);
+      val = assign0(val.length >= 2 ? val : alloc(2), -1, sub);
     }
     else if (len < 0) {
-      val = uaddVal(val, -len, false, sub, allocAllowed);
+      val = uaddVal(val, -len, false, sub);
     }
     else if (len == 1 && (val[1] & LONG_INT_MASK) < (sub & LONG_INT_MASK)) {
       val[0] = -len;
@@ -186,7 +186,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final long add) {
-    return add > 0 ? add0(val, add, true) : add < 0 ? sub0(val, -add, true) : val;
+    return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
   }
 
   /**
@@ -208,7 +208,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final long sub) {
-    return sub > 0 ? sub0(val, sub, true) : sub < 0 ? add0(val, -sub, true) : val;
+    return sub > 0 ? sub0(val, sub) : sub < 0 ? add0(val, -sub) : val;
   }
 
   /**
@@ -231,20 +231,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int sig, final long add) {
-    return add == 0 ? val : sig < 0 ? sub0(val, add, true) : add0(val, add, true);
+    return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
   }
 
-  private static int[] add0(final int[] val, final long add, final boolean allocAllowed) {
+  private static int[] add0(final int[] val, final long add) {
     final long addh = add >>> 32;
     if (addh == 0)
-      return add0(val, (int)add, allocAllowed);
+      return add0(val, (int)add);
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3, allocAllowed), 1, add, (int)addh);
+      return assign0(val.length >= 3 ? val : alloc(3), 1, add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSub(val, len, sig, add & LONG_INT_MASK, addh, true, allocAllowed);
+    return uaddSub(val, len, sig, add & LONG_INT_MASK, addh, true);
   }
 
   /**
@@ -267,20 +267,20 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sig, final long sub) {
-    return sub == 0 ? val : sig < 0 ? add0(val, sub, true) : sub0(val, sub, true);
+    return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
   }
 
-  private static int[] sub0(final int[] val, final long sub, final boolean allocAllowed) {
+  private static int[] sub0(final int[] val, final long sub) {
     final long subh = sub >>> 32;
     if (subh == 0)
-      return sub0(val, (int)sub, allocAllowed);
+      return sub0(val, (int)sub);
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3, allocAllowed), -1, sub, (int)subh);
+      return assign0(val.length >= 3 ? val : alloc(3), -1, sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSub(val, len, sig, sub & LONG_INT_MASK, subh, false, allocAllowed);
+    return uaddSub(val, len, sig, sub & LONG_INT_MASK, subh, false);
   }
 
   /**
@@ -301,13 +301,13 @@ abstract class BigIntAddition extends BigIntMagnitude {
    *         {@linkplain BigInt#val() value-encoded addend}.
    * @complexity O(n)
    */
-  private static int[] uaddSub(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub, final boolean allocAllowed) {
+  private static int[] uaddSub(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
     if (addOrSub == sig) {
-      val = uaddVal(val, len, sig, addl, addh, allocAllowed);
+      val = uaddVal(val, len, sig, addl, addh);
     }
     else {
       if (val.length <= 2)
-        val = realloc(val, len + 1, 3, allocAllowed);
+        val = realloc(val, len + 1, 3);
 
       final long val0 = val[1] & LONG_INT_MASK;
       final long val1 = val[2] & LONG_INT_MASK;
@@ -355,7 +355,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int[] add) {
-    return addSub(val, add, true, true);
+    return addSub(val, add, true);
   }
 
   /**
@@ -379,7 +379,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int[] sub) {
-    return addSub(val, sub, false, true);
+    return addSub(val, sub, false);
   }
 
   /**
@@ -394,18 +394,17 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The result of the addition (or subtraction) of the specified amount
    *         to (or from) the provided {@linkplain BigInt#val() value-encoded
    *         addend} (or minuend).
    * @complexity O(n)
    */
-  static int[] addSub(int[] val, final int[] add, final boolean addOrSub, final boolean allocAllowed) {
+  static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
     int len = val[0];
     if (len == 0) {
       len = Math.abs(add[0]);
       if (len >= val.length)
-        val = alloc(len, allocAllowed);
+        val = alloc(len + 1);
 
       System.arraycopy(add, 0, val, 0, len + 1);
       if (!addOrSub)
@@ -415,27 +414,26 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return addSub0(val, len, sig, add, addOrSub, allocAllowed);
+    return addSub0(val, len, sig, add, addOrSub);
   }
 
-  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub, final boolean allocAllowed) {
+  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub) {
     int len2 = add[0]; if (len2 < 0) { len2 = -len2; }
     if (addOrSub == (sig == add[0] >= 0))
-      return addVal(val, len, sig, add, len2, allocAllowed);
+      return addVal(val, len, sig, add, len2);
 
     if (compareToAbs(val, add) >= 0) {
       subVal(val, len, sig, add, len2);
     }
     else {
       if (len2 >= val.length)
-        val = realloc(val, len + 1, len2 + 2, allocAllowed);
+        val = realloc(val, len + 1, len2 + 2);
 
       sig = !sig;
       long dif = 0;
       int i = 1;
       for (; i <= len; ++i) {
-        dif += (add[i] & LONG_INT_MASK) - (val[i] & LONG_INT_MASK);
-        val[i] = (int)dif;
+        val[i] = (int)(dif += (add[i] & LONG_INT_MASK) - (val[i] & LONG_INT_MASK));
         dif >>= 32;
       }
 

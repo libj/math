@@ -130,10 +130,6 @@ abstract class BigIntBinary extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] shiftRight(final int[] val, final int num) {
-    return shiftRight(val, num, true);
-  }
-
-  static int[] shiftRight(final int[] val, final int num, final boolean allocAllowed) {
     if (num == 0)
       return val;
 
@@ -142,10 +138,10 @@ abstract class BigIntBinary extends BigIntAddition {
       return val;
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return num < 0 ? shiftLeft0(val, len, sig, -num, allocAllowed) : shiftRight0(val, len, sig, num, allocAllowed);
+    return num < 0 ? shiftLeft0(val, len, sig, -num) : shiftRight0(val, len, sig, num);
   }
 
-  private static int[] shiftRight0(final int[] val, int len, final boolean sig, final int num, final boolean allocAllowed) {
+  private static int[] shiftRight0(final int[] val, int len, final boolean sig, final int num) {
     final int shiftBig = num >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig >= len)
@@ -172,7 +168,7 @@ abstract class BigIntBinary extends BigIntAddition {
     }
 
     if (oneLost)
-      uaddVal(val, len, sig, 1, allocAllowed);
+      uaddVal(val, len, sig, 1);
 
     // _debugLenSig(val);
     return val;
@@ -232,10 +228,6 @@ abstract class BigIntBinary extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] shiftLeft(final int[] val, final int num) {
-    return shiftLeft(val, num, true);
-  }
-
-  static int[] shiftLeft(final int[] val, final int num, final boolean allocAllowed) {
     if (num == 0)
       return val;
 
@@ -244,19 +236,19 @@ abstract class BigIntBinary extends BigIntAddition {
       return val;
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return num < 0 ? shiftRight0(val, len, sig, -num, allocAllowed) : shiftLeft0(val, len, sig, num, allocAllowed);
+    return num < 0 ? shiftRight0(val, len, sig, -num) : shiftLeft0(val, len, sig, num);
   }
 
-  private static int[] shiftLeft0(int[] val, int len, boolean sig, final int num, final boolean allocAllowed) {
+  private static int[] shiftLeft0(int[] val, int len, boolean sig, final int num) {
     final int shiftBig = num >>> 5;
     if (shiftBig > 0) {
-      val = bigShiftLeft(val, len, sig, shiftBig, allocAllowed);
+      val = bigShiftLeft(val, len, sig, shiftBig);
       sig = true; len = val[0]; if (len < 0) { len = -len; sig = false; }
     }
 
     final int shiftSmall = num & 31;
     if (shiftSmall > 0) {
-      val = smallShiftLeft(val, shiftBig + 1, len, sig, shiftSmall, allocAllowed);
+      val = smallShiftLeft(val, shiftBig + 1, len, sig, shiftSmall);
     }
 
     // _debugLenSig(val);
@@ -274,18 +266,18 @@ abstract class BigIntBinary extends BigIntAddition {
    * @return The length of the number, which may have changed due to the shift.
    * @complexity O(n)
    */
-  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, int num, final boolean allocAllowed) {
+  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, int num) {
     num += OFF;
     int newLen = len + num;
     if (newLen > val.length) {
-      final int[] tmp = alloc(newLen, allocAllowed);
+      final int[] tmp = alloc(newLen);
       System.arraycopy(val, 1, tmp, num, len);
       val = tmp;
     }
     else {
       System.arraycopy(val, 1, val, num, len);
 //      num -= OFF;
-//      System.arraycopy(threadLocal2.get(num, allocAllowed), 0, val, OFF, num);
+//      System.arraycopy(threadLocal2.get(num), 0, val, OFF, num);
       for (int i = 1; i < num; ++i)
         val[i] = 0;
     }
@@ -313,13 +305,13 @@ abstract class BigIntBinary extends BigIntAddition {
    *         value-encoded number} left by the specified number of bits.
    * @complexity O(n)
    */
-  private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num, final boolean allocAllowed) {
+  private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num) {
     int[] res = val;
     int next;
     if ((val[len] << num >>> num) != val[len]) { // Overflow?
       if (++len >= val.length) {
         next = 0;
-        res = realloc(val, len, len + 1, allocAllowed);
+        res = realloc(val, len, len + 1);
       }
       else {
         next = val[len];
@@ -402,7 +394,7 @@ abstract class BigIntBinary extends BigIntAddition {
     final int smallBit = bit & 31;
     if (sig >= 0) {
       if (bigBit >= val.length) {
-        val = realloc(val, len + 1, bigBit + 1, true);
+        val = realloc(val, len + 1, bigBit + 1);
         len = bigBit;
       }
       else if (bigBit > len) {
@@ -478,7 +470,7 @@ abstract class BigIntBinary extends BigIntAddition {
     }
     else {
       if (bigBit >= val.length) {
-        val = realloc(val, len + 1, bigBit + 1, true);
+        val = realloc(val, len + 1, bigBit + 1);
         len = bigBit;
         val[bigBit] |= 1 << smallBit;
       }
@@ -519,7 +511,7 @@ abstract class BigIntBinary extends BigIntAddition {
             val[j] = 0;
 
           if (j == val.length)
-            val = realloc(val, len + 1, j + 2, true);
+            val = realloc(val, len + 1, j + 2);
 
           if (j <= len) {
             val[j] = -~val[j];
@@ -563,7 +555,7 @@ abstract class BigIntBinary extends BigIntAddition {
     final int smallBit = bit & 31;
     block:
     if (bigBit >= val.length) {
-      val = realloc(val, len + 1, bigBit + 1, true);
+      val = realloc(val, len + 1, bigBit + 1);
       val[bigBit] ^= 1 << smallBit;
       len = bigBit;
     }
@@ -616,7 +608,7 @@ abstract class BigIntBinary extends BigIntAddition {
             val[j] = 0;
 
           if (j == val.length)
-            val = realloc(val, len + 1, j + 2, true);
+            val = realloc(val, len + 1, j + 2);
 
           if (j <= len)
             val[j] = -~val[j];
@@ -734,7 +726,7 @@ abstract class BigIntBinary extends BigIntAddition {
 
         if (len2 > len1) {
           if (len2 >= val.length)
-            val = realloc(val, len1 + 1, len2 + 3, true);
+            val = realloc(val, len1 + 1, len2 + 3);
 
           System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
         }
@@ -749,7 +741,7 @@ abstract class BigIntBinary extends BigIntAddition {
       else {
         if (len2 > len1) {
           if (len2 >= val.length)
-            val = realloc(val, len1 + 1, len2 + 3, true);
+            val = realloc(val, len1 + 1, len2 + 3);
 
           System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
         }
@@ -796,7 +788,7 @@ abstract class BigIntBinary extends BigIntAddition {
             else {
               ++blen;
               if (blen >= val.length)
-                val = realloc(val, len1 + 1, blen + 2, true);
+                val = realloc(val, len1 + 1, blen + 2);
 
               val[blen] = 1;
               val[0] = sig1 < 0 ? -blen : blen;
@@ -859,7 +851,7 @@ abstract class BigIntBinary extends BigIntAddition {
       if (sig2 >= 0) {
         if (len2 > len1) {
           if (len2 >= val.length)
-            val = realloc(val, len1 + 1, len2 + 2, true);
+            val = realloc(val, len1 + 1, len2 + 2);
 
           System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
           for (int i = 1; i <= len1; ++i)
@@ -874,7 +866,7 @@ abstract class BigIntBinary extends BigIntAddition {
       }
       else {
         if (len2 >= val.length)
-          val = realloc(val, len1 + 1, len2 + 2, true);
+          val = realloc(val, len1 + 1, len2 + 2);
 
         if (len2 > len1)
           System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
@@ -1006,7 +998,7 @@ abstract class BigIntBinary extends BigIntAddition {
 
     int len1 = val[0];
     if (len1 == 0)
-      return val = copy(mask, val, len2 = Math.abs(len2) + 1, len2, true);
+      return val = copy(mask, len2 = Math.abs(len2) + 1, val, len2);
 
     int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
     int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }
@@ -1031,7 +1023,7 @@ abstract class BigIntBinary extends BigIntAddition {
     if (sig1 > 0) {
       if (len2 > len1) {
         if (len2 > val.length)
-          val = realloc(val, len1 - off + 1, len2 + 2, true);
+          val = realloc(val, len1 - off + 1, len2 + 2);
 
         System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
@@ -1071,7 +1063,7 @@ abstract class BigIntBinary extends BigIntAddition {
               val[j] = 0;
 
             if (blen == val.length)
-              val = realloc(val, len1 - off + 1, blen + 2, true); // len==blen
+              val = realloc(val, len1 - off + 1, blen + 2); // len==blen
 
             if (j == blen) {
               val[blen] = 1;
@@ -1094,7 +1086,7 @@ abstract class BigIntBinary extends BigIntAddition {
     else {
       if (len2 > len1) {
         if (len2 > val.length)
-          val = realloc(val, len1 - off + 1, len2 + 2, true);
+          val = realloc(val, len1 - off + 1, len2 + 2);
 
         System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
@@ -1134,7 +1126,7 @@ abstract class BigIntBinary extends BigIntAddition {
               ++val[j];
 
             if (j == val.length)
-              val = realloc(val, len1 + 1, j + 1, true);
+              val = realloc(val, len1, j + 1);
 
             if (val[j - 1] == 0) {
               val[j] = 1;
@@ -1248,7 +1240,7 @@ abstract class BigIntBinary extends BigIntAddition {
     else {
       if (len2 > len1) {
         if (len2 > val.length)
-          val = realloc(val, len1 - off + 1, len2 + 3, true);
+          val = realloc(val, len1 - off + 1, len2 + 3);
 
         System.arraycopy(mask, len1, val, len1, len2 - len1);
       }
@@ -1271,7 +1263,7 @@ abstract class BigIntBinary extends BigIntAddition {
             }
             else {
               if (blen >= val.length)
-                val = realloc(val, len1, blen + 2, true);
+                val = realloc(val, len1, blen + 2);
 
               val[blen] = 1;
 
@@ -1369,7 +1361,7 @@ abstract class BigIntBinary extends BigIntAddition {
     if (len < 0)
       usubVal(val, -len, false, 1);
     else
-      val = uaddVal(val, len, true, 1, true);
+      val = uaddVal(val, len, true, 1);
 
     val[0] = -val[0];
     // _debugLenSig(val);
@@ -1449,7 +1441,7 @@ abstract class BigIntBinary extends BigIntAddition {
   private static int firstNonzeroIntNum(final int[] mag, int off, int len) {
     // Search for the first nonzero int
     len += off;
-    for (; off < len && mag[off] == 0; ++off);
+    for (; off < len && mag[off] == 0; ++off); // FIXME: Make more efficient
     return off;
   }
 }

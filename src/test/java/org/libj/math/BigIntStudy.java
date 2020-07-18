@@ -18,6 +18,8 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
+import java.util.function.Function;
+
 import org.junit.Test;
 import org.libj.lang.Numbers;
 
@@ -65,6 +67,27 @@ public class BigIntStudy extends BigIntTest {
     test("new vs clone",
       i("new", a -> new int[Math.abs(a / 100000)], (int[] a) -> new int[a.length], a -> a.length),
       i("clone", a -> new int[Math.abs(a / 100000)], (int[] a) -> a.clone(), a -> a.length)
+    );
+  }
+
+  @Test
+  public void testIpp() {
+    test("++i vs i++",
+      i("++i", (int a) -> ++a, a -> 0),
+      i("i++", (int a) -> a++, a -> 0)
+    );
+  }
+
+  private static final Function<Object,Object> function = f -> f;
+
+  @Test
+  public void testFunction() {
+    final Object object = new Object();
+    final int[] array = new int[10];
+
+    test("object vs array",
+      i("object", (int a) -> function.apply(object), a -> 0),
+      i("array", (int a) -> function.apply(array), a -> 0)
     );
   }
 
