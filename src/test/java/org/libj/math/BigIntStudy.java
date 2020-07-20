@@ -78,10 +78,56 @@ public class BigIntStudy extends BigIntTest {
     );
   }
 
-  private static final Function<Object,Object> function = f -> f;
+  @Test
+  public void testPlus() {
+    test("++i vs i++",
+      i("++a", (int a, int b) -> ++a, a -> 0),
+      i("a += b", (int a, int b) -> a += b, a -> 0)
+    );
+  }
+
+  private static final Function<Object,Object> function = (a) -> a;
 
   @Test
-  public void testFunction() {
+  public void testFunctionOverhead() {
+    final Object object = new Object();
+    final int[] array = new int[10];
+
+    test("int function overhead",
+      i("BiIntFunction", (int a, int b) -> a, a -> 0),
+      i("ObjIntFunction", (int a) -> Integer.valueOf(a), (Object a, int b) -> a, a -> 0),
+      i("BiFunction(Object)", (int a) -> object, (int b) -> Integer.valueOf(b), (Object a, Object b) -> a, a -> 0),
+      i("BiFunction(int[])", (int a) -> array, (int b) -> array, (int[] a, int[] b) -> a, a -> 0),
+      i("IntFunction", (int a) -> a, a -> 0),
+      i("IntToIntFunction", (int a) -> a, (int a) -> a, a -> 0),
+      i("Function(Object)", (int a) -> object, (Object a) -> a, a -> 0),
+      i("Function(int[])", (int a) -> array, (Object a) -> a, a -> 0)
+    );
+
+    test("long function overhead",
+      l("BiLongFunction", (long a, long b) -> a, a -> 0L),
+      l("BiLongToLongFunction", (long a, long b) -> 0L),
+      l("ObjLongFunction", (long a) -> Long.valueOf(a), (Object a, long b) -> a, a -> 0L),
+      l("BiFunction(Object)", (long a) -> object, (long b) -> object, (Object a, Object b) -> a, a -> 0L),
+      l("BiFunction(int[])", (long a) -> array, (long b) -> array, (int[] a, int[] b) -> a, a -> 0L),
+      l("LongFunction", (long a) -> a, a -> 0L),
+      l("LongToLongFunction", (long a) -> a, (long a) -> a, a -> 0L),
+      l("Function(Object)", (long a) -> object, (Object a) -> a, a -> 0L),
+      l("Function(int[])", (long a) -> array, (Object a) -> a, a -> 0L)
+    );
+
+    test("string function overhead",
+      s("ObjIntFunction", (String a) -> a, (String a, String b) -> 0, (String a, int b) -> a, a -> 0),
+      s("ObjLongFunction", (String a) -> a, (String a, String b) -> 0L, (String a, long b) -> a, a -> 0),
+      s("BiFunction(Object)", (String a) -> object, (String b) -> object, (Object a, Object b) -> a, a -> 0),
+      s("BiFunction(int[])", (String a) -> array, (String b) -> array, (int[] a, int[] b) -> a, a -> 0),
+      s("Function(Object)", (String a) -> object, (Object a) -> a, a -> 0),
+      s("Function(int[])", (String a) -> array, (Object a) -> a, a -> 0)
+    );
+  }
+
+  @Test
+  public void testFunctionObjectVsArray() {
     final Object object = new Object();
     final int[] array = new int[10];
 
@@ -109,5 +155,13 @@ public class BigIntStudy extends BigIntTest {
         assertEquals(j + " " + String.valueOf(random), j, Numbers.precision(random));
       }
     }
+  }
+
+  @Test
+  public void testMulVsCond() {
+    test("sig * value: '*' vs '? :'",
+      l("s * v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a * b),
+      l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
+    );
   }
 }

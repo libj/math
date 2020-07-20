@@ -72,11 +72,11 @@ public abstract class Surveys {
 
     final long[][] min = new long[variables][divisions + 1];
     for (int v = 0; v < variables; ++v)
-      Arrays.fill(min[v], 0, divisions, Long.MAX_VALUE);
+      Arrays.fill(min[v], 0, divisions + 1, Long.MAX_VALUE);
 
     final long[][] max = new long[variables][divisions + 1];
     for (int v = 0; v < variables; ++v)
-      Arrays.fill(max[v], 0, divisions, Long.MIN_VALUE);
+      Arrays.fill(max[v], 0, divisions + 1, Long.MIN_VALUE);
 
     for (int s = 0; s < surveys.length; ++s) {
       for (int v = 0; v < variables; ++v) {
@@ -85,13 +85,6 @@ public abstract class Surveys {
           min[v][d] = Math.min(min[v][d], time);
           max[v][d] = Math.max(max[v][d], time);
         }
-      }
-    }
-
-    for (int v = 0; v < variables; ++v) {
-      for (int d = 0; d < divisions; ++d) {
-        min[v][divisions] += min[v][d];
-        max[v][divisions] += max[v][d];
       }
     }
 
@@ -126,43 +119,57 @@ public abstract class Surveys {
 
       rows[rows.length - 1 - variables] = Ansi.apply("sum:", Intensity.BOLD, Color.CYAN);
       rows[rows.length - 1] = Ansi.apply("% fstr:", Intensity.BOLD, Color.CYAN);
-      for (int s = 0, c = 0, tot = 0, lo = 0, hi = 0; s < surveys.length; ++s, tot = 0, lo = 0, hi = 0) {
+      final int[][] sums = new int[surveys.length][variables];
+      for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
         rows = columns[s + 2] = new String[1 + 2 * variables + variables * divisions];
         rows[0] = headings[s];
         final long[][] times = survey.getTimes();
-        for (int v = 0, sum = 0; v < variables; ++v, tot += sum, sum = 0) {
+        for (int v = 0; v < variables; ++v) {
           for (int d = 0; d < divisions; ++d) {
             final long time = times[v][d];
-            sum += time;
+            sums[s][v] += time;
             c = 1 + v + d * variables;
             rows[c] = String.valueOf(time);
             color(rows, c, time, min[v][d], max[v][d], s, surveys.length);
           }
+        }
+      }
+
+      // Set the overall min and max for all surveys
+      for (int s = 0; s < surveys.length; ++s) {
+        for (int v = 0; v < variables; ++v) {
+          min[v][divisions] = Math.min(min[v][divisions], sums[s][v]);
+          max[v][divisions] = Math.max(max[v][divisions], sums[s][v]);
+        }
+      }
+
+      for (int s = 0, c = 0; s < surveys.length; ++s) {
+        rows = columns[s + 2];
+        for (int v = 0; v < variables; ++v) {
+          c = 1 + v + divisions * variables;
 
           // Output the "sum" row
           c = 1 + v + divisions * variables;
-          rows[c] = String.valueOf(sum);
-          color(rows, c, sum, min[v][divisions], max[v][divisions], s, surveys.length);
-          lo += min[v][divisions];
-          hi += max[v][divisions];
-        }
+          rows[c] = String.valueOf(sums[s][v]);
+          color(rows, c, sums[s][v], min[v][divisions], max[v][divisions], s, surveys.length);
 
-        // Output the "% fstr" row
-        final int percent = (int)(100d * hi / tot - 100);
-        rows[c + variables] = String.valueOf(percent >= 0 ? "+" + percent : percent);
-        color(rows, c + variables, tot, lo, hi, s, surveys.length);
+          // Output the "% fstr" row
+          final int percent = (int)(100d * max[v][divisions] / sums[s][v] - 100);
+          rows[c + variables] = String.valueOf(percent >= 0 ? "+" + percent : percent);
+          color(rows, c + variables, sums[s][v], min[v][divisions], max[v][divisions], s, surveys.length);
+        }
       }
     }
 
     System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Strings.printTable(true, Align.RIGHT, variables, false, columns));
   }
 
-  private static void color(final String[] rows, final int c, final long time, final long min, final long max, final int s, final int len) {
-    if (time == min)
+  private static void color(final String[] rows, final int c, final long val, final long min, final long max, final int s, final int len) {
+    if (val == min)
       rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.GREEN);
     else if (len > 2 ? s >= len - 2 : s >= len - 1)
-      rows[c] = Ansi.apply(rows[c], Intensity.BOLD, time == max ? Color.RED : Color.YELLOW);
+      rows[c] = Ansi.apply(rows[c], Intensity.BOLD, val == max ? Color.RED : Color.YELLOW);
     else
       rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.WHITE);
   }

@@ -59,6 +59,62 @@ abstract class BigIntValue extends Number {
     }
   }
 
+  private static volatile int[][] e10 = {new int[] {1, 1}};
+
+  static {
+    e10(8);
+  }
+
+  /**
+   * Return 10 to the power n, as a {@linkplain BigInt#val() value-encoded
+   * number}, and expand the {@link #e10} array if necessary.
+   *
+   * @param n The power of ten to be returned (>= 0).
+   * @return A {@linkplain BigInt#val() value-encoded number} with the value
+   *         (10<sup>n</sup>).
+   */
+  private static int[] e10(final int n) {
+    if (n < 0)
+      return ZERO;
+
+    int[][] pows = e10;
+    if (n < pows.length)
+      return pows[n];
+
+    synchronized (e10) {
+      final int curLen = pows.length;
+      // The following comparison and the above synchronized statement is
+      // to prevent multiple threads from expanding the same array.
+      if (curLen <= n) {
+        int newLen;
+        if (n < 256) {
+          newLen = curLen << 1;
+          while (newLen <= n)
+            newLen <<= 1;
+        }
+        else {
+          newLen = n + 64;
+        }
+
+        pows = Arrays.copyOf(pows, newLen);
+        for (int i = curLen, len; i < newLen; ++i) {
+          pows[i] = pows[i - 1].clone();
+          len = pows[i][0] + 1;
+          pows[i] = realloc(pows[i], len, len + 1);
+          pows[i] = BigIntMultiplication.mul(pows[i], 10);
+        }
+
+        // Based on the following facts:
+        // 1. pows is a private local variable;
+        // 2. the following store is a volatile store.
+        // Thus the newly created array elements can be safely published.
+        e10 = pows;
+      }
+
+      return pows[n];
+    }
+  }
+
   /**
    * Creates a new {@code int[]} with length that is at least {@code len}.
    * <p>
@@ -1309,6 +1365,57 @@ abstract class BigIntValue extends Number {
   }
 
   /**
+   * Returns the number of bits in the minimal two's-complement representation
+   * of the provided {@linkplain BigInt#val() value-encoded number},
+   * <em>excluding</em> a sign bit. For positive numbers, this is equivalent to
+   * the number of bits in the ordinary binary representation. For zero this
+   * method returns {@code 0}.
+   * <p>
+   * Computes:
+   *
+   * <pre>
+   * ceil(log2(val < 0 ? -val : val + 1))
+   * </pre>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return Number of bits in the minimal two's-complement representation of
+   *         the provided {@linkplain BigInt#val() value-encoded number},
+   *         <em>excluding</em> a sign bit.
+   * @complexity O(n)
+   */
+  public static int bitLength(final int[] val) {
+    int len = val[0];
+    return len == 0 ? 0 : bitLength0(val, len);
+  }
+
+  static int bitLength0(final int[] val, int len) {
+    if (len > 0)
+      return ((len - 1) << 5) + bitLengthForInt(val[len]);
+
+    len = -len;
+    // Use magBitLength to temporarily hold val[len], and decrement len
+    int magBitLength = val[len--];
+    // Check if magnitude is a power of two
+    boolean pow2 = Integer.bitCount(magBitLength) == 1;
+    // Calculate the bit length of the magnitude (use magBitLength for its purpose)
+    magBitLength = (len << 5) + bitLengthForInt(magBitLength);
+    for (; pow2 && len >= 1; --len)
+      pow2 = val[len] == 0;
+
+    return pow2 ? magBitLength - 1 : magBitLength;
+  }
+
+  /**
+   * Returns the bit length of the provided integer.
+   *
+   * @param n The integer.
+   * @return Bit length of the provided integer.
+   */
+  static int bitLengthForInt(final int n) {
+    return Integer.SIZE - Integer.numberOfLeadingZeros(n);
+  }
+
+  /**
    * Returns the number of digits in the provided {@linkplain BigInt#val()
    * value-encoded number} (radix 10).
    *
@@ -1318,32 +1425,18 @@ abstract class BigIntValue extends Number {
    * @complexity O(n^2) // FIXME: There must be a more efficient way to do this!
    */
   public static int precision(final int[] val) {
-    if (isZero(val))
+    final int len = val[0];
+    if (len == 0)
       return 1;
 
-    int len = val[0]; if (len < 0) { len = -len; }
-
-    final int length = len * 10 + 3;
-    int j, top = length;
-    final int[] mag = new int[len];
-    System.arraycopy(val, 1, mag, 0, len);
-    long tmp;
-    while (true) {
-      j = top;
-      tmp = toStringDiv(mag, len - 1);
-      if (mag[len - 1] == 0 && len > 1 && mag[--len - 1] == 0 && len > 1)
-        --len;
-
-      for (; tmp > 0; tmp /= 10)
-        --top;
-
-      if (len == 1 && mag[0] == 0)
-        break;
-
-      top = j - 13;
-    }
-
-    return length - top;
+    /*
+     * Same idea as the long version, but we need a better approximation of
+     * log10(2). Using 646456993/2^31 is accurate up to max possible reported
+     * bitLength.
+     */
+    final long bitLength = bitLength0(val, len);
+    final int r = (int)(((bitLength + 1) * 646456993) >>> 31);
+    return compareToAbs(val, e10(r)) < 0 ? r : r + 1;
   }
 
   static void _debugLenSig(final int[] val) {

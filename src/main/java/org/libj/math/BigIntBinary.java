@@ -62,56 +62,6 @@ abstract class BigIntBinary extends BigIntAddition {
   }
 
   /**
-   * Returns the number of bits in the minimal two's-complement representation
-   * of the provided {@linkplain BigInt#val() value-encoded number},
-   * <em>excluding</em> a sign bit. For positive numbers, this is equivalent to
-   * the number of bits in the ordinary binary representation. For zero this
-   * method returns {@code 0}.
-   * <p>
-   * Computes:
-   *
-   * <pre>
-   * ceil(log2(val < 0 ? -val : val + 1))
-   * </pre>
-   *
-   * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return Number of bits in the minimal two's-complement representation of
-   *         the provided {@linkplain BigInt#val() value-encoded number},
-   *         <em>excluding</em> a sign bit.
-   * @complexity O(n)
-   */
-  public static int bitLength(final int[] val) {
-    int len = val[0];
-    if (len == 0)
-      return 0;
-
-    if (len > 0)
-      return ((len - 1) << 5) + bitLengthForInt(val[len]);
-
-    len = -len;
-    // Use magBitLength to temporarily hold val[len], and decrement len
-    int magBitLength = val[len--];
-    // Check if magnitude is a power of two
-    boolean pow2 = Integer.bitCount(magBitLength) == 1;
-    // Calculate the bit length of the magnitude (use magBitLength for its purpose)
-    magBitLength = (len << 5) + bitLengthForInt(magBitLength);
-    for (; pow2 && len >= 1; --len)
-      pow2 = val[len] == 0;
-
-    return pow2 ? magBitLength - 1 : magBitLength;
-  }
-
-  /**
-   * Returns the bit length of the provided integer.
-   *
-   * @param n The integer.
-   * @return Bit length of the provided integer.
-   */
-  static int bitLengthForInt(final int n) {
-    return Integer.SIZE - Integer.numberOfLeadingZeros(n);
-  }
-
-  /**
    * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by
    * the specified number of bits. The shift distance, {@code num}, may be
    * negative, in which case this method performs a left shift.
@@ -1384,9 +1334,13 @@ abstract class BigIntBinary extends BigIntAddition {
    *         provided {@linkplain BigInt#val() value-encoded number}.
    */
   public static byte[] toByteArray(final int[] val, final boolean littleEndian) {
-    int sig = 0, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    int len = val[0];
+    if (len == 0)
+      return new byte[] {0};
+
+    final int byteLen = bitLength0(val, len) / 8 + 1;
+    int sig = 0; if (len < 0) { len = -len; sig = -1; }
     final int nzIndex = firstNonzeroIntNum(val, 1, len);
-    final int byteLen = bitLength(val) / 8 + 1;
     final byte[] bytes = new byte[byteLen];
 
     if (littleEndian) {

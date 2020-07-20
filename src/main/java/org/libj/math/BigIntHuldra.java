@@ -1423,7 +1423,6 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
       }
     }
     else {
-
       final int b = n >>> 1;
       final int[] z2 = kmul(x, y, off + b, n - b);
       final int[] z0 = kmul(x, y, off, b);

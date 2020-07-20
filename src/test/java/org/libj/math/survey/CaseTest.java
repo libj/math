@@ -46,9 +46,9 @@ import org.libj.util.function.ObjLongToLongFunction;
 
 public abstract class CaseTest {
   protected static final Random random = new Random();
-  protected static final int skip = 17; // 0 is "don't skip (full range)", n is "skip each n"
+  protected static final int skip = 13; // 0 is "don't skip (full range)", n is "skip each n"
   protected static final int numTests = 1024;
-  private static final int warmup = 100;
+  private static final int warmup = 1000; // Long warmup to engage JIT optimizations
 
   @SuppressWarnings("rawtypes")
   private static int getCaseIndex(final Class<? extends Case> cls) {
@@ -277,12 +277,14 @@ public abstract class CaseTest {
             scaleFactorFactorB = caseTest.getScaleFactorFactor(IntCase.class);
 
           final Object result;
+          final long overhead;
           long time;
           if (cse.test instanceof BiIntFunction) {
             final BiIntFunction test = (BiIntFunction)cse.test;
             in1 = a;
             in2 = b;
 
+            overhead = 32;
             time = System.nanoTime();
             result = test.apply(a, b);
           }
@@ -290,14 +292,24 @@ public abstract class CaseTest {
             final IntFunction test = (IntFunction)cse.test;
             in1 = a;
 
+            overhead = 32;
             time = System.nanoTime();
             result = test.apply(a);
+          }
+          else if (cse.test instanceof IntToIntFunction) {
+            final IntToIntFunction test = (IntToIntFunction)cse.test;
+            in1 = a;
+
+            overhead = 32;
+            time = System.nanoTime();
+            result = test.applyAsInt(a);
           }
           else if (cse.test instanceof ObjIntFunction) {
             final ObjIntFunction test = (ObjIntFunction)cse.test;
             in1 = CaseTest.clone(a0);
             in2 = b;
 
+            overhead = 30;
             time = System.nanoTime();
             result = test.apply(a0, b);
           }
@@ -306,6 +318,7 @@ public abstract class CaseTest {
             in1 = CaseTest.clone(a0);
             in2 = CaseTest.clone(b0);
 
+            overhead = 32;
             time = System.nanoTime();
             result = test.apply(a0, b0);
           }
@@ -313,11 +326,12 @@ public abstract class CaseTest {
             final Function test = (Function)cse.test;
             in1 = CaseTest.clone(a0);
 
+            overhead = 31;
             time = System.nanoTime();
             result = test.apply(a0);
           }
 
-          time = System.nanoTime() - time;
+          time = System.nanoTime() - time - overhead;
           verify(label, cse, in1, in2, result, c, time, surveys);
         }
         catch (final Throwable t) {
@@ -412,63 +426,70 @@ public abstract class CaseTest {
             scaleFactorFactorB = caseTest.getScaleFactorFactor(LongCase.class);
 
           final Object result;
+          final long overhead;
           long time;
-          if (cse.test instanceof BiLongToLongFunction) {
-            final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
-            in1 = a;
-            in2 = b;
-
-            time = System.nanoTime();
-            result = test.applyAsLong(a, b);
-          }
-          else if (cse.test instanceof BiLongFunction) {
+          if (cse.test instanceof BiLongFunction) {
             final BiLongFunction test = (BiLongFunction)cse.test;
             in1 = a;
             in2 = b;
 
+            overhead = 32;
             time = System.nanoTime();
             result = test.apply(a, b);
           }
-          else if (cse.test instanceof LongFunction) {
-            final LongFunction test = (LongFunction)cse.test;
+          else if (cse.test instanceof BiLongToLongFunction) {
+            final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
             in1 = a;
+            in2 = b;
 
+            overhead = 31;
             time = System.nanoTime();
-            result = test.apply(a);
+            result = test.applyAsLong(a, b);
           }
           else if (cse.test instanceof ObjLongFunction) {
             final ObjLongFunction test = (ObjLongFunction)cse.test;
             in1 = CaseTest.clone(a0);
             in2 = b;
 
+            overhead = 31;
             time = System.nanoTime();
             result = test.apply(a0, b);
+          }
+          else if (cse.test instanceof LongFunction) {
+            final LongFunction test = (LongFunction)cse.test;
+            in1 = a;
+
+            overhead = 32;
+            time = System.nanoTime();
+            result = test.apply(a);
+          }
+          else if (cse.test instanceof LongToLongFunction) {
+            final LongToLongFunction test = (LongToLongFunction)cse.test;
+            in1 = a;
+
+            overhead = 32;
+            time = System.nanoTime();
+            result = test.applyAsLong(a);
           }
           else if (cse.test instanceof BiFunction) {
             final BiFunction test = (BiFunction)cse.test;
             in1 = CaseTest.clone(a0);
             in2 = CaseTest.clone(b0);
 
+            overhead = 33;
             time = System.nanoTime();
             result = test.apply(a0, b0);
-          }
-          else if (cse.test instanceof BiLongFunction) {
-            final BiLongFunction test = (BiLongFunction)cse.test;
-            in1 = a;
-            in2 = b;
-
-            time = System.nanoTime();
-            result = test.apply(a, b);
           }
           else {
             final Function test = (Function)cse.test;
             in1 = CaseTest.clone(a0);
 
+            overhead = 33;
             time = System.nanoTime();
             result = test.apply(a0);
           }
 
-          time = System.nanoTime() - time;
+          time = System.nanoTime() - time - overhead;
           verify(label, cse, in1, in2, result, c, time, surveys);
         }
         catch (final Throwable t) {
@@ -564,6 +585,7 @@ public abstract class CaseTest {
             scaleFactorFactorB = caseTest.getScaleFactorFactor(StringCase.class);
 
           final Object result;
+          final long overhead;
           long time;
           if (cse.test instanceof ObjIntFunction) {
             final ObjIntFunction test = (ObjIntFunction)cse.test;
@@ -572,6 +594,7 @@ public abstract class CaseTest {
             if (b1 == Integer.MIN_VALUE)
               throw new IllegalArgumentException();
 
+            overhead = 33;
             time = System.nanoTime();
             result = test.apply(a0, b1);
           }
@@ -582,6 +605,7 @@ public abstract class CaseTest {
             if (b2 == Long.MIN_VALUE)
               throw new IllegalArgumentException();
 
+            overhead = 33;
             time = System.nanoTime();
             result = test.apply(a0, b2);
           }
@@ -590,6 +614,7 @@ public abstract class CaseTest {
             in1 = CaseTest.clone(a0);
             in2 = CaseTest.clone(b0);
 
+            overhead = 38;
             time = System.nanoTime();
             result = test.apply(a0, b0);
           }
@@ -597,11 +622,12 @@ public abstract class CaseTest {
             final Function test = (Function)castCase.test;
             in1 = CaseTest.clone(a0);
 
+            overhead = 37;
             time = System.nanoTime();
             result = test.apply(a0);
           }
 
-          time = System.nanoTime() - time;
+          time = System.nanoTime() - time - overhead;
           verify(label, cse, in1, in2, result, c, time, surveys);
         }
         catch (final Throwable t) {
@@ -617,6 +643,9 @@ public abstract class CaseTest {
   private static Object clone(final Object obj) {
     if (obj instanceof BigInt)
       return ((BigInt)obj).clone();
+
+    if (obj instanceof BigIntHuldra)
+      return ((BigIntHuldra)obj).clone();
 
     if (obj instanceof int[])
       return ((int[])obj).clone();
@@ -676,8 +705,20 @@ public abstract class CaseTest {
     return new LongCase<>(subject, 2, aToA, bToB, test, out);
   }
 
+  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final Function<A,R> test, final Function<R,O> out) {
+    return new LongCase<>(subject, 1, aToA, null, test, out);
+  }
+
+  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final LongToLongFunction test, final Function<R,O> out) {
+    return new LongCase<>(subject, 1, aToA, null, test, out);
+  }
+
   public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongFunction<R> test) {
     return new LongCase<>(subject, 2, aToA, bToB, test, null);
+  }
+
+  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongFunction<R> test) {
+    return new LongCase<>(subject, 2, aToA, null, test, null);
   }
 
   public static <S,R,O>LongCase<S,Long,Long,R,O> l(final S subject, final BiLongFunction<R> test, final Function<R,O> out) {
@@ -706,10 +747,6 @@ public abstract class CaseTest {
 
   public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongToLongFunction test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, null, test, out);
-  }
-
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongToLongFunction test) {
-    return new LongCase<>(subject, 2, aToA, null, test, null);
   }
 
   public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final BiLongToLongFunction test) {
@@ -860,6 +897,10 @@ public abstract class CaseTest {
             final String val = (String)obj;
             dig = val.startsWith("-") ? 1 - val.length() : val.length();
           }
+          else if (obj != null && obj.getClass() == Object.class) {
+            // Special case for testFunctionOverhead()
+            return 0;
+          }
           else {
             throw new UnsupportedOperationException(obj == null ? null : obj.getClass().getName());
           }
@@ -880,6 +921,7 @@ public abstract class CaseTest {
 
     ts = System.currentTimeMillis() - ts;
     surveys.print(label, ts, headings);
+    initialized = false;
   }
 
   private Surveys surveys;

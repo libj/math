@@ -29,12 +29,22 @@
 
 package org.libj.math;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 abstract class BigIntMultiplication extends BigIntBinary {
+  private static final boolean noNative;
+
+  static {
+    final String noNativeProp = System.getProperty("org.libj.math.BigInt.noNative");
+    noNative = noNativeProp != null && !noNativeProp.equals("false");
+    if (!noNative)
+      System.load(new File("target/libmath.so").getAbsolutePath());
+  }
+
   private static final long serialVersionUID = -4907342078241892616L;
 
   /**
@@ -295,42 +305,82 @@ abstract class BigIntMultiplication extends BigIntBinary {
    */
   private static int[] multiplyQuad(final int[] x, final int xlen, final int[] y, final int ylen, final boolean sig) {
     int zlen = xlen + ylen + 1;
-    final long ts = System.nanoTime();
-    final int[] z = alloc(zlen);
-    multiplyQuad(x, xlen, y, ylen, z);
-    time += System.nanoTime() - ts;
+    final int[] z;
+    if (x.length >= zlen + xlen) {
+      if (noNative)
+        multiplyQuadInline(y, ylen, x, xlen, zlen - 2);
+      else
+        nativeMultiplyQuadInline(y, ylen, x, xlen, zlen - 2);
+
+      z = x;
+    }
+    else {
+      z = alloc(zlen);
+      if (xlen < ylen) {
+        if (noNative)
+          multiplyQuad(x, xlen, y, ylen, z);
+        else
+          nativeMultiplyQuad(x, xlen, y, ylen, z);
+      }
+      else {
+        if (noNative)
+          multiplyQuad(y, ylen, x, xlen, z);
+        else
+          nativeMultiplyQuad(y, ylen, x, xlen, z);
+      }
+    }
+
     if (z[--zlen] == 0) --zlen;
     z[0] = sig ? zlen : -zlen;
     // _debugLenSig(z);
     return z;
   }
 
-  private static int multiplyQuad(final int[] x, final int xlen, final int[] y, final int ylen, final int[] z) {
-    return xlen < ylen ? multiplyQuad0(x, xlen, y, ylen, z) : multiplyQuad0(y, ylen, x, xlen, z);
-  }
+  private static native void nativeMultiplyQuad(int[] x, int xlen, int[] y, int ylen, int[] z);
 
-  private static int multiplyQuad0(final int[] x, int xlen, final int[] y, final int ylen, final int[] z) {
-    int i, j;
-    ++xlen; // Keeping this results in a performance boost
+  private static void multiplyQuad(final int[] x, final int xlen, final int[] y, final int ylen, final int[] z) {
+    int i, j, k;
 
     long carry = 0, x0 = x[1] & LONG_INT_MASK;
-    for (j = 1; j <= ylen; carry >>>= 32)
-      z[j] = (int)(carry += x0 * (y[j++] & LONG_INT_MASK));
-
-    z[j] = (int)carry;
-    for (i = 2; i < xlen; i -= ylen) {
-      x0 = x[i] & LONG_INT_MASK;
-      carry = 0;
-      for (j = 1; j <= ylen; carry >>>= 32)
-        z[i] = (int)(carry += x0 * (y[j++] & LONG_INT_MASK) + (z[i++] & LONG_INT_MASK));
-
-      z[i++] = (int)carry;
+    for (j = 1; j <= ylen; ++j) {
+      z[j] = (int)(carry += x0 * (y[j] & LONG_INT_MASK));
+      carry >>>= 32;
     }
 
-    // Returning 0 here actually makes this faster than if this method returned
-    // void, probably due to the method right above this one, so as to be able
-    // to use ternary conditional.
-    return 0;
+    z[j] = (int)carry;
+    for (i = 2; i <= xlen; ++i) {
+      x0 = x[i] & LONG_INT_MASK;
+      for (carry = 0, j = 1, k = i; j <= ylen; ++j, ++k) {
+        z[k] = (int)(carry += x0 * (y[j] & LONG_INT_MASK) + (z[k] & LONG_INT_MASK));
+        carry >>>= 32;
+      }
+
+      z[k] = (int)carry;
+    }
+  }
+
+  private static native void nativeMultiplyQuadInline(int[] x, int xlen, int[] y, int ylen, int zlen);
+
+  private static void multiplyQuadInline(final int[] x, final int xlen, final int[] y, final int ylen, final int zlen) {
+    int i, j, k, l;
+
+    long carry = 0, x0 = x[1] & LONG_INT_MASK;
+    for (j = 1, k = 1 + zlen; j <= ylen; ++j, ++k) {
+      y[j] = (int)(carry += x0 * ((y[k] = y[j]) & LONG_INT_MASK));
+      carry >>>= 32;
+    }
+
+    y[k] = y[j];
+    y[j] = (int)carry;
+    for (i = 2; i <= xlen; ++i) {
+      x0 = x[i] & LONG_INT_MASK;
+      for (carry = 0, j = 1, k = i, l = 1 + zlen; j <= ylen; ++j, ++k, ++l) {
+        y[k] = (int)(carry += x0 * (y[l] & LONG_INT_MASK) + (y[k] & LONG_INT_MASK));
+        carry >>>= 32;
+      }
+
+      y[k] = (int)carry;
+    }
   }
 
   /**
@@ -392,8 +442,6 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return z;
   }
 
-  public static long time;
-
   /**
    * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
    * puts the result in {@code z}. Algorithm: Karatsuba
@@ -408,6 +456,15 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n^1.585)
    */
   static void kmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff) {
+    if (noNative)
+      javaKmul(x, y, off, yoff, len, z, zoff);
+    else
+      nativeKmul(x, y, off, yoff, len, z, zoff);
+  }
+
+  private static native void nativeKmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff);
+
+  static void javaKmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff) {
     int i, j, k, l;
     long carry = 0;
     final int ooff = OFF + off;
@@ -417,39 +474,58 @@ abstract class BigIntMultiplication extends BigIntBinary {
     // xy = z2*B^2m + z1*B^m + z0
     // z2 = x1*y1, z0 = x0*y0, z1 = (x1+x0)(y1+y0)-z2-z0
     if (len <= 32) {
-      final int zoff2 = zoff - off, yooff = ooff + yoff;
+      final int zoff2 = zoff - off, yooff = ooff + yoff, loff = len + off, lyoff = loff + yoff;
 
       long x0;
-      for (x0 = x[ooff] & LONG_INT_MASK, k = yooff, j = OFF + zoff, len += zoff; j <= len; ++j, ++k, carry >>>= 32)
+      for (x0 = x[ooff] & LONG_INT_MASK, k = yooff, j = OFF + zoff, len += zoff; j <= len; ++j, ++k) {
         z[j] = (int)(carry += x0 * (y[k] & LONG_INT_MASK));
+        carry >>>= 32;
+      }
 
       z[j] = (int)carry;
-      for (len -= zoff2, i = ooff + 1, l = zoff2 + len + i - off; i <= len; z[l] = (int)carry, ++i, ++l, len -= yoff)
-        for (x0 = x[i] & LONG_INT_MASK, j = yooff, k = i + zoff2, carry = 0, len += yoff; j <= len; ++j, ++k, carry >>>= 32)
+      for (i = ooff + 1, l = len + OFF + 1; i <= loff; ++i, ++l) {
+        carry = 0;
+        for (x0 = x[i] & LONG_INT_MASK, j = yooff, k = i + zoff2; j <= lyoff; ++j, ++k) {
           z[k] = (int)(carry += x0 * (y[j] & LONG_INT_MASK) + (z[k] & LONG_INT_MASK));
+          carry >>>= 32;
+        }
+
+        z[l] = (int)carry;
+      }
     }
     else {
-      final int b = len >>> 1, b1 = b + 1, bb = b + b, lb = len - b, lblb = lb + lb, bbo = bb + OFF, lbo = lb + OFF, lbbo1 = b + lbo + 1, lbo1 = lbo + 1;
+      final int b = len >> 1, b1 = b + 1, bb = b + b, lb = len - b, lblb = lb + lb, bbo = bb + OFF, lbo = lb + OFF, lbo1 = lbo + 1, lbbo1 = b + lbo1;
 
       final int[] x2 = new int[lbo + lbo1];
-      for (i = 0, j = ooff + i, k = j + b; i < b; ++i, ++j, ++k, carry >>>= 32)
+      for (i = 0, j = ooff + i, k = j + b; i < b; ++i, ++j, ++k) {
         x2[i] = (int)(carry += (x[k] & LONG_INT_MASK) + (x[j] & LONG_INT_MASK));
+        carry >>>= 32;
+      }
 
-      if ((len & 1) != 0) x2[b] = x[off + bbo];
-      if (carry != 0 && ++x2[b] == 0) ++x2[b1];
+      if ((len & 1) != 0)
+        x2[b] = x[off + bbo];
 
-      for (i = lbo1, j = off + i + yoff - lbo, k = j + b, carry = 0; i < lbbo1; ++i, ++j, ++k, carry >>>= 32)
+      if (carry != 0 && ++x2[b] == 0)
+        ++x2[b1];
+
+      carry = 0;
+      for (i = lbo1, j = off + yoff + i - lbo, k = j + b; i < lbbo1; ++i, ++j, ++k) {
         x2[i] = (int)(carry += (y[k] & LONG_INT_MASK) + (y[j] & LONG_INT_MASK));
+        carry >>>= 32;
+      }
 
-      if ((len & 1) != 0) x2[lbbo1] = y[off + bbo + yoff];
-      if (carry != 0 && ++x2[lbbo1] == 0) ++x2[lbbo1 + 1];
+      if ((len & 1) != 0)
+        x2[lbbo1] = y[off + bbo + yoff];
+
+      if (carry != 0 && ++x2[lbbo1] == 0)
+        ++x2[lbbo1 + 1];
 
       k = lb + (x2[lb] != 0 || x2[lbo + lbo] != 0 ? 1 : 0);
       final int kk = k + k, kkbb = kk + bb;
       final int[] z0 = new int[kkbb + lblb];
-      kmul(x2, x2, -OFF, lbo1, k, z0, -OFF);
-      kmul(x, y, off, yoff, b, z0, kk - OFF);
-      kmul(x, y, off + b, yoff, lb, z0, kkbb - OFF);
+      javaKmul(x2, x2, -OFF, lbo1, k, z0, -OFF);
+      javaKmul(x, y, off, yoff, b, z0, kk - OFF);
+      javaKmul(x, y, off + b, yoff, lb, z0, kkbb - OFF);
 
       System.arraycopy(z0, kk, z, OFF + zoff, bb + lblb);
 

@@ -44,7 +44,7 @@ public class BigIntegersTest extends BigIntTest {
   @Test
   public void testInternString() {
     for (int i = 0; i < 100; ++i) {
-      new Thread(() -> { 
+      new Thread(() -> {
         for (int j = 0; j < 1000; ++j) {
           BigIntegers.intern(String.valueOf(j));
         }
@@ -87,14 +87,6 @@ public class BigIntegersTest extends BigIntTest {
     test("new unsigned BigInteger: byte[] vs shift",
       l("byte[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInteger((int)a, toByteArray(b)), String::valueOf),
       l("shift", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf)
-    );
-  }
-
-  @Test
-  public void testUnsignedBigInteger2() {
-    test("sig * value: '*' vs '? :'",
-      l("s * v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a * b),
-      l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
     );
   }
 }
