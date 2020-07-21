@@ -62,9 +62,6 @@ public abstract class Survey {
   public void addSample(final int variable, final Object obj, final long time, final AuditReport report) {
     final int division = getDivision(variable, obj);
     if (++this.counts[variable][division] >= 0) {
-      if (obj instanceof BigIntHuldra && division == 10)
-        System.console();
-
       this.max[variable][division] = Math.max(this.max[variable][division], time);
       this.min[variable][division] = Math.min(this.min[variable][division], time);
       this.times[variable][division] += time;

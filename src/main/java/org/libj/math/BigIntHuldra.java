@@ -1246,26 +1246,22 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	*/
 	public void mul(final BigIntHuldra mul)
 	{
-    try {
-  		if(isZero()) return;
+		if(isZero()) return;
 
-  	  if(mul.isZero()) setToZero();
-  		else {
-  		  if(mul.len<=2 || len<=2)
-    		{
-    			sign *= mul.sign;
-    			if(mul.len==1) umul(mul.dig[0]);
-    			else if(len==1){ final int tmp = dig[0]; assign(mul.dig, mul.len); umul(tmp); }
-    			else if(mul.len==2) umul((long)mul.dig[1]<<32|(mul.dig[0]&mask));
-    			else{ final long tmp = (long)dig[1]<<32|(dig[0]&mask); assign(mul.dig, mul.len); umul(tmp); }
-    		}
-    		else if(len<110 || mul.len<110) smallMul(mul); //Remove overhead?
-    		else if(Math.max(len,mul.len)<20000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
-    		else karatsuba(mul,true);
-      }
-		}
-	  finally {
-	  }
+	  if(mul.isZero()) setToZero();
+		else {
+		  if(mul.len<=2 || len<=2)
+  		{
+  			sign *= mul.sign;
+  			if(mul.len==1) umul(mul.dig[0]);
+  			else if(len==1){ final int tmp = dig[0]; assign(mul.dig, mul.len); umul(tmp); }
+  			else if(mul.len==2) umul((long)mul.dig[1]<<32|(mul.dig[0]&mask));
+  			else{ final long tmp = (long)dig[1]<<32|(dig[0]&mask); assign(mul.dig, mul.len); umul(tmp); }
+  		}
+  		else if(len<10 || mul.len<10) smallMul(mul); //Remove overhead?
+  		else if(Math.max(len,mul.len)<2000000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
+  		else karatsuba(mul,true);
+    }
 	}
 	/**
 	* Multiplies this number by the given (suitably small) BigInt.
@@ -1507,32 +1503,35 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 
     final Future<int[]> left = pool.submit(new Callable<int[]>() {
       public int[] call() throws Exception {
-        return lim == 0 ? kmul(x, y, off, b) : pmul(x, y, off, b, lim - 1, pool);
+        final int[] z0 = lim == 0 ? kmul(x, y, off, b) : pmul(x, y, off, b, lim - 1, pool);
+        return z0;
       }
     });
 
     final Future<int[]> right = pool.submit(new Callable<int[]>() {
       public int[] call() throws Exception {
-        return lim == 0 ? kmul(x, y, off + b, n - b) : pmul(x, y, off + b, n - b, lim - 1, pool);
+        final int[] z2 = lim == 0 ? kmul(x, y, off + b, n - b) : pmul(x, y, off + b, n - b, lim - 1, pool);
+        return z2;
       }
     });
 
-    final int[] x2 = new int[n - b + 1], y2 = new int[n - b + 1];
+    final int[] x2 = new int[n - b + 1];
+    final int[] y2 = new int[n - b + 1];
     long carry = 0;
-    for (int i = 0; i < b; i++) {
+    for (int i = 0; i < b; ++i) {
       carry = (x[off + b + i] & mask) + (x[off + i] & mask) + carry;
       x2[i] = (int)carry;
       carry >>>= 32;
     }
+
     if ((n & 1) != 0)
       x2[b] = x[off + b + b];
 
-    if (carry != 0)
-      if (++x2[b] == 0)
-        ++x2[b + 1];
+    if (carry != 0 && ++x2[b] == 0)
+      ++x2[b + 1];
 
     carry = 0;
-    for (int i = 0; i < b; i++) {
+    for (int i = 0; i < b; ++i) {
       carry = (y[off + b + i] & mask) + (y[off + i] & mask) + carry;
       y2[i] = (int)carry;
       carry >>>= 32;
@@ -1541,13 +1540,13 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
     if ((n & 1) != 0)
       y2[b] = y[off + b + b];
 
-    if (carry != 0)
-      if (++y2[b] == 0)
-        ++y2[b + 1];
+    if (carry != 0 && ++y2[b] == 0)
+      ++y2[b + 1];
 
     final Future<int[]> mid = pool.submit(new Callable<int[]>() {
       public int[] call() throws Exception {
-        return lim == 0 ? kmul(x2, y2, 0, n - b + (x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0)) : pmul(x2, y2, 0, n - b + (x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0), lim - 1, pool);
+        final int[] z1 = lim == 0 ? kmul(x2, y2, 0, n - b + (x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0)) : pmul(x2, y2, 0, n - b + (x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0), lim - 1, pool);
+        return z1;
       }
     });
 
@@ -1562,24 +1561,28 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 
     carry = 0;
     int i = 0;
-    for (; i < 2 * b; i++) {
+    for (; i < 2 * b; ++i) {
       carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) - (z0[i] & mask) + carry;
       z[i + b] = (int)carry;
       carry >>= 32;
     }
-    for (; i < 2 * (n - b); i++) {
+
+    for (; i < 2 * (n - b); ++i) {
       carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) + carry;
       z[i + b] = (int)carry;
       carry >>= 32;
     }
-    for (; i < z1.length; i++) {
+
+    for (; i < z1.length; ++i) {
       carry = (z[i + b] & mask) + (z1[i] & mask) + carry;
       z[i + b] = (int)carry;
       carry >>= 32;
     }
+
     if (carry != 0)
       while (++z[i + b] == 0)
         ++i;
+
     return z;
   }
 	/*** </Mul Helper> ***/

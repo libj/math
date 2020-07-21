@@ -36,11 +36,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 abstract class BigIntMultiplication extends BigIntBinary {
-  private static final boolean noNative;
+  private static final boolean noNative = true;
 
   static {
     final String noNativeProp = System.getProperty("org.libj.math.BigInt.noNative");
-    noNative = noNativeProp != null && !noNativeProp.equals("false");
+//    noNative = noNativeProp != null && !noNativeProp.equals("false");
     if (!noNative)
       System.load(new File("target/libmath.so").getAbsolutePath());
   }
@@ -53,7 +53,15 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * multiplication will be used. This value is found experimentally to work
    * well.
    */
-  static final int KARATSUBA_THRESHOLD = 110; // 110
+  static final int KARATSUBA_THRESHOLD = 10; // 110
+
+  /**
+   * The threshold value for using parallel Karatsuba multiplication. If the
+   * number of ints in both mag arrays are greater than this number, then
+   * Karatsuba multiplication will be used. This value is found experimentally
+   * to work well.
+   */
+  static final int PARALLEL_KARATSUBA_THRESHOLD = 2000000; // 20000
 
   /**
    * Multiplies the provided number by an {@code int} multiplicand.
@@ -240,18 +248,25 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n^2) - O(n log n)
    */
   public static int[] mul(final int[] val, final int[] mul) {
-    try {
-      int len = val[0]; if (len == 0) return val;
-      int mlen = mul[0]; if (mlen == 0) return setToZero0(val);
+      int len = val[0];
+      if (len == 0)
+        return val;
+
+      int mlen = mul[0];
+      if (mlen == 0)
+        return setToZero0(val);
+
       boolean sig = true;
       if (len < 0) { len = -len; sig = false; }
       if (mlen < 0) { mlen = -mlen; sig = !sig; }
-      if (len <= 2 || mlen <= 2) return multiplySmall(val, len, mul, mlen, sig);
-      if (len < KARATSUBA_THRESHOLD || mlen < KARATSUBA_THRESHOLD) return multiplyQuad(val, len, mul, mlen, sig);
-      return karatsuba(val, len, mul, mlen, sig, Math.max(len, mlen) > 20000);
-    }
-    finally {
-    }
+
+      if (len <= 2 || mlen <= 2)
+        return multiplySmall(val, len, mul, mlen, sig);
+
+      if (len < KARATSUBA_THRESHOLD || mlen < KARATSUBA_THRESHOLD)
+        return multiplyQuad(val, len, mul, mlen, sig);
+
+      return karatsuba(val, len, mul, mlen, sig, len > PARALLEL_KARATSUBA_THRESHOLD || mlen > PARALLEL_KARATSUBA_THRESHOLD);
   }
 
   private static int[] multiplySmall(int[] val, int len, final int[] mul, final int mlen, final boolean sig) {
@@ -418,11 +433,11 @@ abstract class BigIntMultiplication extends BigIntBinary {
       for (--xlen; ++xlen < ylen; x[xlen] = 0);
 
     int zlen = mlen + mlen;
-    final int[] z = new int[zlen + OFF];
+    final int[] z = alloc((zlen + OFF) * ((int)(1 + 10 /** Math.random()*/))); // zlen + OFF is all that's needed, but increase for optimization
     if (parallel) {
       try {
         final ExecutorService pool = Executors.newFixedThreadPool(12);
-        pmul(x, y, mlen, 0, 1, z, pool);
+        pmul(x, y, 0, 0, mlen, z, 0, 1, pool);
         pool.shutdown();
       }
       catch (final ExecutionException | InterruptedException e) {
@@ -430,10 +445,10 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
     else if (xlen < ylen) {
-      kmul(x, y, 0, 0, mlen, z, 0);
+      kmul(x, OFF, y, OFF, z, OFF, zlen, 0, mlen);
     }
     else {
-      kmul(y, x, 0, 0, mlen, z, 0);
+      kmul(y, OFF, x, OFF, z, OFF, zlen, 0, mlen);
     }
 
     for (; z[zlen] == 0 && zlen > 0; --zlen);
@@ -455,37 +470,38 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @param zoff Offset for {@code z}.
    * @complexity O(n^1.585)
    */
-  static void kmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff) {
+  static void kmul(final int[] x, final int xoff, final int[] y, final int yoff, final int[] z, final int zoff, final int zlen, final int off, int len) {
     if (noNative)
-      javaKmul(x, y, off, yoff, len, z, zoff);
+      javaKmul(x, xoff, y, yoff, z, zoff, zlen, off, len);
     else
       nativeKmul(x, y, off, yoff, len, z, zoff);
   }
 
   private static native void nativeKmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff);
 
-  static void javaKmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff) {
-    int i, j, k, l;
+  static void javaKmul(final int[] x, final int xoff, final int[] y, final int yoff, final int[] z, final int zoff, final int zlen, final int off, final int len) {
+    int i, j, k, l, m;
     long carry = 0;
-    final int ooff = OFF + off;
+
+    final int xoffoff = xoff + off, yoffoff = yoff + off;
 
     // x = x1*B^m + x0
     // y = y1*B^m + y0
     // xy = z2*B^2m + z1*B^m + z0
     // z2 = x1*y1, z0 = x0*y0, z1 = (x1+x0)(y1+y0)-z2-z0
     if (len <= 32) {
-      final int zoff2 = zoff - off, yooff = ooff + yoff, loff = len + off, lyoff = loff + yoff;
+      final int yoffoffl = yoffoff + len, zxoffoff = zoff - xoff - off, zoffl = zoff + len, xoffoffl = xoffoff + len;
 
       long x0;
-      for (x0 = x[ooff] & LONG_INT_MASK, k = yooff, j = OFF + zoff, len += zoff; j <= len; ++j, ++k) {
+      for (x0 = x[xoffoff] & LONG_INT_MASK, k = yoffoff, j = zoff; j < zoffl; ++j, ++k) {
         z[j] = (int)(carry += x0 * (y[k] & LONG_INT_MASK));
         carry >>>= 32;
       }
 
       z[j] = (int)carry;
-      for (i = ooff + 1, l = len + OFF + 1; i <= loff; ++i, ++l) {
+      for (i = xoffoff + 1, l = zoffl + 1, m = i + zxoffoff; i < xoffoffl; ++i, ++l, ++m) {
         carry = 0;
-        for (x0 = x[i] & LONG_INT_MASK, j = yooff, k = i + zoff2; j <= lyoff; ++j, ++k) {
+        for (x0 = x[i] & LONG_INT_MASK, j = yoffoff, k = m; j < yoffoffl; ++j, ++k) {
           z[k] = (int)(carry += x0 * (y[j] & LONG_INT_MASK) + (z[k] & LONG_INT_MASK));
           carry >>>= 32;
         }
@@ -494,50 +510,65 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
     else {
-      final int b = len >> 1, b1 = b + 1, bb = b + b, lb = len - b, lblb = lb + lb, bbo = bb + OFF, lbo = lb + OFF, lbo1 = lbo + 1, lbbo1 = b + lbo1;
+      final int b = len >> 1, bb = b + b, ll = len + len, l_b = len - b, l_bl_b = l_b + l_b;
+      int tmpoff = zoff + zlen, x2offl_bl_b = ll + l_bl_b + 2, y2offl_b = x2offl_bl_b + l_bl_b;
+      final int[] tmp;
+      if (z.length >= tmpoff + y2offl_b + 1) {
+        x2offl_bl_b += tmpoff;
+        y2offl_b += tmpoff;
+        tmp = z;
+      }
+      else {
+        tmpoff = 0;
+        tmp = new int[y2offl_b + 2];
+      }
 
-      final int[] x2 = new int[lbo + lbo1];
-      for (i = 0, j = ooff + i, k = j + b; i < b; ++i, ++j, ++k) {
-        x2[i] = (int)(carry += (x[k] & LONG_INT_MASK) + (x[j] & LONG_INT_MASK));
+      final int x2offl_bl_bb = x2offl_bl_b + b, x2offl_bl_bl_b = x2offl_bl_b + l_b, x2offl_bl_bl_b1 = x2offl_bl_bl_b + 1, x2offl_bl_bl_b1b = x2offl_bl_bl_b1 + b;
+      final int tmplen = tmpoff + l_bl_b + l_bl_b + 3;
+
+      for (i = x2offl_bl_b, j = xoffoff, k = j + b; i < x2offl_bl_bb; ++i, ++j, ++k) {
+        tmp[i] = (int)(carry += (x[j] & LONG_INT_MASK) + (x[k] & LONG_INT_MASK));
         carry >>>= 32;
       }
 
       if ((len & 1) != 0)
-        x2[b] = x[off + bbo];
+        tmp[x2offl_bl_bb] = x[xoffoff + bb];
 
-      if (carry != 0 && ++x2[b] == 0)
-        ++x2[b1];
+      if (carry != 0 && ++tmp[x2offl_bl_bb] == 0)
+        ++tmp[x2offl_bl_bb + 1];
 
       carry = 0;
-      for (i = lbo1, j = off + yoff + i - lbo, k = j + b; i < lbbo1; ++i, ++j, ++k) {
-        x2[i] = (int)(carry += (y[k] & LONG_INT_MASK) + (y[j] & LONG_INT_MASK));
+
+      for (i = x2offl_bl_bl_b1, j = yoffoff, k = j + b; i < x2offl_bl_bl_b1b; ++i, ++j, ++k) {
+        tmp[i] = (int)(carry += (y[j] & LONG_INT_MASK) + (y[k] & LONG_INT_MASK));
         carry >>>= 32;
       }
 
       if ((len & 1) != 0)
-        x2[lbbo1] = y[off + bbo + yoff];
+        tmp[x2offl_bl_bl_b1b] = y[yoffoff + bb];
 
-      if (carry != 0 && ++x2[lbbo1] == 0)
-        ++x2[lbbo1 + 1];
+      if (carry != 0 && ++tmp[x2offl_bl_bl_b1b] == 0)
+        ++tmp[x2offl_bl_bl_b1b + 1];
 
-      k = lb + (x2[lb] != 0 || x2[lbo + lbo] != 0 ? 1 : 0);
-      final int kk = k + k, kkbb = kk + bb;
-      final int[] z0 = new int[kkbb + lblb];
-      javaKmul(x2, x2, -OFF, lbo1, k, z0, -OFF);
-      javaKmul(x, y, off, yoff, b, z0, kk - OFF);
-      javaKmul(x, y, off + b, yoff, lb, z0, kkbb - OFF);
+      k = l_b + (tmp[x2offl_bl_bl_b] != 0 || tmp[y2offl_b] != 0 ? 1 : 0);
+      final int kk = k + k, tmpoffkk = tmpoff + kk;
+      javaKmul(tmp, x2offl_bl_b, tmp, x2offl_bl_bl_b1, tmp, tmpoff, tmplen, 0, k);
+      javaKmul(x, xoff, y, yoff, tmp, tmpoffkk, tmplen, off, b);
+      javaKmul(x, xoff, y, yoff, tmp, tmpoffkk + bb, tmplen, off + b, l_b);
 
-      System.arraycopy(z0, kk, z, OFF + zoff, bb + lblb);
+      System.arraycopy(tmp, tmpoffkk, z, zoff, ll);
+
+      final int zoffb = zoff + b - tmpoff;
 
       // Add z1
-      for (i = 0, j = b1 + zoff, k = kkbb, l = kk, carry = 0; i < bb; ++i, ++j, ++k, ++l, carry >>= 32)
-        z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK) - (z0[k] & LONG_INT_MASK) - (z0[l] & LONG_INT_MASK));
+      for (i = tmpoff, j = zoff + b, k = tmpoffkk + bb, l = tmpoffkk, carry = 0, m = tmpoff + bb; i < m; ++i, ++j, ++k, ++l, carry >>= 32)
+        z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (tmp[i] & LONG_INT_MASK) - (tmp[k] & LONG_INT_MASK) - (tmp[l] & LONG_INT_MASK));
 
-      for (j = i + b1 + zoff, k = i + kkbb; i < lblb; ++i, ++j, ++k, carry >>= 32)
-        z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK) - (z0[k] & LONG_INT_MASK));
+      for (j = i + zoffb, k = i + kk + bb, m = tmpoff + l_bl_b; i < m; ++i, ++j, ++k, carry >>= 32)
+        z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (tmp[i] & LONG_INT_MASK) - (tmp[k] & LONG_INT_MASK));
 
-      for (j = i + b1 + zoff, len = kk - OFF; i < len; ++i, ++j, carry >>= 32)
-        z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK));
+      for (j = i + zoffb, k = tmpoffkk - 1; i < k; ++i, ++j, carry >>= 32)
+        z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (tmp[i] & LONG_INT_MASK));
 
       if (carry != 0)
         while (++z[j++] == 0);
@@ -546,110 +577,95 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
   /**
    * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
-   * puts the result in {@code res}. Algorithm: Parallel Karatsuba
+   * puts the result in {@code z}. Algorithm: Parallel Karatsuba
    *
-   * @param val1 The first magnitude array.
-   * @param val2 The second magnitude array.
+   * @param x The first magnitude array.
+   * @param y The second magnitude array.
    * @param off The offset of the first element.
    * @param len The length of each of the two partial arrays.
    * @param lim The recursion depth until which to spawn new threads.
    * @param pool Where spawned threads are to be added and executed.
-   * @param res The array into which the result is to be put (length = 2 * n).
+   * @param z The array into which the result is to be put (length = 2 * n).
    * @complexity O(n^1.585)
    */
-  private static void pmul(final int[] val1, final int[] val2, final int off, final int len, final int lim, final int[] res, final ExecutorService pool) throws ExecutionException, InterruptedException {
-    final int toIndex = len + OFF;
-    final int b = toIndex >>> 1;
-
-    final Future<int[]> left = pool.submit(() -> {
-      final int[] z = new int[2 * b];
-      if (lim == 0)
-        kmul(val1, val2, off, 0, b, z, 0);
-      else
-        pmul(val1, val2, off, b, lim - 1, z, pool);
-
-      return z;
-    });
-
-    final Future<int[]> right = pool.submit(() -> {
-      final int[] z = new int[2 * (toIndex - b)];
-      if (lim == 0)
-        kmul(val1, val2, off + b, 0, len - b, z, 0);
-      else
-        pmul(val1, val2, off + b, len - b, lim - 1, z, pool);
-
-      return z;
-    });
-
-    final int[] x2 = new int[toIndex - b + 1];
-    final int[] y2 = new int[toIndex - b + 1];
+  private static void pmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff, final int lim, final ExecutorService pool) throws ExecutionException, InterruptedException {
+    int i, j, k, l;
     long carry = 0;
-    for (int i = 0; i < b; ++i) {
-      carry += (val1[OFF + b + i] & LONG_INT_MASK) + (val1[OFF + i] & LONG_INT_MASK);
-      x2[i] = (int)carry;
+    final int ooff = OFF + off;
+    final int b = len >> 1, b1 = b + 1, bb = b + b, lb = len - b, lblb = lb + lb, bbo = bb + OFF, lbo = lb + OFF, lbo1 = lbo + 1, lbbo1 = b + lbo1;
+
+    final int[] x2 = new int[lbo + lbo1];
+    for (i = 0, j = ooff + i, k = j + b; i < b; ++i, ++j, ++k) {
+      x2[i] = (int)(carry += (x[k] & LONG_INT_MASK) + (x[j] & LONG_INT_MASK));
       carry >>>= 32;
     }
 
-    if ((toIndex & 1) != 0)
-      x2[b] = val1[OFF + b + b];
+    if ((len & 1) != 0)
+      x2[b] = x[off + bbo];
 
     if (carry != 0 && ++x2[b] == 0)
-      ++x2[b + 1];
+      ++x2[b1];
 
     carry = 0;
-    for (int i = 0; i < b; ++i) {
-      carry += (val2[OFF + b + i] & LONG_INT_MASK) + (val2[OFF + i] & LONG_INT_MASK);
-      y2[i] = (int)carry;
+    for (i = lbo1, j = yoff + off + i - lbo, k = j + b; i < lbbo1; ++i, ++j, ++k) {
+      x2[i] = (int)(carry += (y[k] & LONG_INT_MASK) + (y[j] & LONG_INT_MASK));
       carry >>>= 32;
     }
 
-    if ((toIndex & 1) != 0) {
-      y2[b] = val2[OFF + b + b];
-    }
+    if ((len & 1) != 0)
+      x2[lbbo1] = y[off + bbo + yoff];
 
-    if (carry != 0 && ++y2[b] == 0)
-      ++y2[b + 1];
+    if (carry != 0 && ++x2[lbbo1] == 0)
+      ++x2[lbbo1 + 1];
 
-    final Future<int[]> mid = pool.submit(() -> {
-      final int l = toIndex - b + (x2[toIndex - b] != 0 || y2[toIndex - b] != 0 ? 1 : 0);
-      final int[] Z = new int[2 * l];
+    final int len2 = lb + (x2[lb] != 0 || x2[lbo + lbo] != 0 ? 1 : 0);
+    final int kk = len2 + len2, kkbb = kk + bb;
+    final int[] z0 = new int[kkbb + lblb];
+
+    final Future<Void> left = pool.submit(() -> {
       if (lim == 0)
-        kmul(x2, y2, 0, 0, l - OFF, Z, 0);
+        javaKmul(x2, 0, x2, lbo1, z0, -OFF, z0.length, -OFF, len2);
       else
-        pmul(x2, y2, 0, l - OFF, lim - 1, Z, pool);
+        pmul(x2, x2, -OFF, lbo1, len2, z0, -OFF, lim - 1, pool);
 
-      return Z;
+      return null;
     });
 
-    final int[] z0 = left.get();
-    System.arraycopy(z0, 0, res, 0, 2 * b);
-    final int[] z2 = right.get();
-    System.arraycopy(z2, 0, res, b + b, 2 * (toIndex - b));
+    final Future<Void> right = pool.submit(() -> {
+      if (lim == 0)
+        javaKmul(x, 0, y, yoff, z0, kk - OFF, z0.length, off, b);
+      else
+        pmul(x, y, off, yoff, b, z0, kk - OFF, lim - 1, pool);
 
-    final int[] z1 = mid.get();
+      return null;
+    });
 
-    carry = 0;
-    int i = 0;
-    for (; i < 2 * b; ++i) {
-      carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK) - (z0[i] & LONG_INT_MASK);
-      res[i + b] = (int)carry;
-      carry >>= 32;
-    }
+    final Future<Void> mid = pool.submit(() -> {
+      if (lim == 0)
+        javaKmul(x, 0, y, yoff, z0, kkbb - OFF, z0.length, off + b, lb);
+      else
+        pmul(x, y, off + b, yoff, lb, z0, kkbb - OFF, lim - 1, pool);
 
-    for (; i < 2 * (toIndex - b); ++i) {
-      carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK) - (z2[i] & LONG_INT_MASK);
-      res[i + b] = (int)carry;
-      carry >>= 32;
-    }
+      return null;
+    });
 
-    for (; i < z1.length; ++i) {
-      carry += (res[i + b] & LONG_INT_MASK) + (z1[i] & LONG_INT_MASK);
-      res[i + b] = (int)carry;
-      carry >>= 32;
-    }
+    left.get();
+    right.get();
+    mid.get();
+
+    System.arraycopy(z0, kk, z, OFF + zoff, bb + lblb);
+
+    // Add z1
+    for (i = 0, j = b1 + zoff, k = kkbb, l = kk, carry = 0; i < bb; ++i, ++j, ++k, ++l, carry >>= 32)
+      z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK) - (z0[k] & LONG_INT_MASK) - (z0[l] & LONG_INT_MASK));
+
+    for (j = i + b1 + zoff, k = i + kkbb; i < lblb; ++i, ++j, ++k, carry >>= 32)
+      z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK) - (z0[k] & LONG_INT_MASK));
+
+    for (j = i + b1 + zoff, len = kk - OFF; i < len; ++i, ++j, carry >>= 32)
+      z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK));
 
     if (carry != 0)
-      while (++res[i + b] == 0)
-        ++i;
+      while (++z[j++] == 0);
   }
 }
