@@ -124,7 +124,7 @@ abstract class BigIntValue extends Number {
    * @return A new {@code int[]} with a length that is at least {@code len}.
    */
   static int[] alloc(final int len) {
-    return new int[len]; // 8 + len + len
+    return new int[4 + len + len]; // 4 + len + len
   }
 
   /**
@@ -142,7 +142,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(n)
    */
   static int[] realloc(final int[] array, final int len, final int newLen) {
-    final int[] v = new int[newLen]; // 8 + newLen + newLen
+    final int[] v = new int[4 + newLen + newLen]; // 4 + newLen + newLen
     System.arraycopy(array, 0, v, 0, len);
     return v;
   }

@@ -16,6 +16,10 @@
 
 package org.libj.math;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
 abstract class BigIntegerMultiplication extends BigIntMultiplication {
   private static final long serialVersionUID = 877413432467388241L;
 
@@ -660,5 +664,99 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    */
   private static int bitLength(final int[] val, final int len) {
     return len == 0 ? 0 : ((len - 1) << 5) + bitLengthForInt(val[0]);
+  }
+
+  /**
+   * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
+   * puts the result in {@code z}. Algorithm: Parallel Karatsuba
+   *
+   * @param x The first magnitude array.
+   * @param y The second magnitude array.
+   * @param off The offset of the first element.
+   * @param len The length of each of the two partial arrays.
+   * @param lim The recursion depth until which to spawn new threads.
+   * @param pool Where spawned threads are to be added and executed.
+   * @param z The array into which the result is to be put (length = 2 * n).
+   * @complexity O(n^1.585)
+   */
+  private static void pmul(final int[] x, final int[] y, final int off, final int yoff, int len, final int[] z, final int zoff, final int lim, final ExecutorService pool) throws ExecutionException, InterruptedException {
+    int i, j, k, l;
+    long carry = 0;
+    final int ooff = OFF + off;
+    final int b = len >> 1, b1 = b + 1, bb = b + b, lb = len - b, lblb = lb + lb, bbo = bb + OFF, lbo = lb + OFF, lbo1 = lbo + 1, lbbo1 = b + lbo1;
+
+    final int[] x2 = new int[lbo + lbo1];
+    for (i = 0, j = ooff + i, k = j + b; i < b; ++i, ++j, ++k) {
+      x2[i] = (int)(carry += (x[k] & LONG_INT_MASK) + (x[j] & LONG_INT_MASK));
+      carry >>>= 32;
+    }
+
+    if ((len & 1) != 0)
+      x2[b] = x[off + bbo];
+
+    if (carry != 0 && ++x2[b] == 0)
+      ++x2[b1];
+
+    carry = 0;
+    for (i = lbo1, j = yoff + off + i - lbo, k = j + b; i < lbbo1; ++i, ++j, ++k) {
+      x2[i] = (int)(carry += (y[k] & LONG_INT_MASK) + (y[j] & LONG_INT_MASK));
+      carry >>>= 32;
+    }
+
+    if ((len & 1) != 0)
+      x2[lbbo1] = y[off + bbo + yoff];
+
+    if (carry != 0 && ++x2[lbbo1] == 0)
+      ++x2[lbbo1 + 1];
+
+    final int len2 = lb + (x2[lb] != 0 || x2[lbo + lbo] != 0 ? 1 : 0);
+    final int kk = len2 + len2, kkbb = kk + bb;
+    final int[] z0 = new int[kkbb + lblb];
+
+    final Future<Void> left = pool.submit(() -> {
+      if (lim == 0)
+        javaKmul(x2, 0, x2, lbo1, z0, -OFF, z0.length, -OFF, len2, 0);
+      else
+        pmul(x2, x2, -OFF, lbo1, len2, z0, -OFF, lim - 1, pool);
+
+      return null;
+    });
+
+    final Future<Void> right = pool.submit(() -> {
+      if (lim == 0)
+        javaKmul(x, 0, y, yoff, z0, kk - OFF, z0.length, off, b, 0);
+      else
+        pmul(x, y, off, yoff, b, z0, kk - OFF, lim - 1, pool);
+
+      return null;
+    });
+
+    final Future<Void> mid = pool.submit(() -> {
+      if (lim == 0)
+        javaKmul(x, 0, y, yoff, z0, kkbb - OFF, z0.length, off + b, lb, 0);
+      else
+        pmul(x, y, off + b, yoff, lb, z0, kkbb - OFF, lim - 1, pool);
+
+      return null;
+    });
+
+    left.get();
+    right.get();
+    mid.get();
+
+    System.arraycopy(z0, kk, z, OFF + zoff, bb + lblb);
+
+    // Add z1
+    for (i = 0, j = b1 + zoff, k = kkbb, l = kk, carry = 0; i < bb; ++i, ++j, ++k, ++l, carry >>= 32)
+      z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK) - (z0[k] & LONG_INT_MASK) - (z0[l] & LONG_INT_MASK));
+
+    for (j = i + b1 + zoff, k = i + kkbb; i < lblb; ++i, ++j, ++k, carry >>= 32)
+      z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK) - (z0[k] & LONG_INT_MASK));
+
+    for (j = i + b1 + zoff, len = kk - OFF; i < len; ++i, ++j, carry >>= 32)
+      z[j] = (int)(carry += (z[j] & LONG_INT_MASK) + (z0[i] & LONG_INT_MASK));
+
+    if (carry != 0)
+      while (++z[j++] == 0);
   }
 }
