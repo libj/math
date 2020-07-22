@@ -187,6 +187,16 @@ public abstract class BigIntTest extends CaseTest {
     return newBigInt().assign(a);
   }
 
+  public BigIntHuldra scaledBigIntHuldra(final String a, final int factor) {
+    if (!initialized())
+      setScaleFactorFactor(StringCase.class, factor);
+
+    if (shoudlScale)
+      return new BigIntHuldra(stringScale(a, factor));
+
+    return new BigIntHuldra(a);
+  }
+
   public BigIntHuldra scaledBigIntHuldra(final String a) {
     if (!initialized())
       setScaleFactorFactor(StringCase.class, scaleFactorFactor);
@@ -203,7 +213,7 @@ public abstract class BigIntTest extends CaseTest {
     final BigInt x;
     if (shouldInflate) {
 //      System.err.println("1");
-      final int[] val = new int[random.nextInt(1024) + 1];
+      final int[] val = new int[random.nextInt(2048) + 1];
 //      System.err.println("2");
       x = new BigInt(val);
 //      System.err.println("3");
@@ -219,7 +229,7 @@ public abstract class BigIntTest extends CaseTest {
   }
 
   private static int[] newVal(final int size) {
-    return shouldInflate ? new int[random.nextInt(1024) + 1] : new int[size];
+    return shouldInflate ? new int[random.nextInt(2048) + 1] : new int[size];
   }
 
   @Override

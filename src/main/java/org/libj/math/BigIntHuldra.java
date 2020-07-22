@@ -1259,7 +1259,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
   			else{ final long tmp = (long)dig[1]<<32|(dig[0]&mask); assign(mul.dig, mul.len); umul(tmp); }
   		}
   		else if(len<110 || mul.len<110) smallMul(mul); //Remove overhead?
-  		else if(Math.max(len,mul.len)<2000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
+  		else if(Math.max(len,mul.len)<5000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
   		else karatsuba(mul,true);
     }
 	}

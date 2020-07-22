@@ -164,4 +164,13 @@ public class BigIntStudy extends BigIntTest {
       l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
     );
   }
+
+  @Test
+  public void testMulVsPlus() {
+    test("sig * value: '*' vs '? :'",
+      l("s * 2", (long a, long b) -> a * 2),
+      l("s << 1", (long a, long b) -> a << 1),
+      l("s + s", (long a, long b) -> a + a)
+    );
+  }
 }

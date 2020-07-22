@@ -89,6 +89,20 @@ public class BigIntMultiplicationTest extends BigIntTest {
     );
 
 //    System.out.println(BigIntHuldra.time + "\n" + BigIntMultiplication.time + "\n" + ((double)BigIntHuldra.time / BigIntMultiplication.time));
+//    System.out.println(BigIntMultiplication.MAX);
+  }
+
+  @Test
+  public void testVeryBig3(final AuditReport report) {
+    test("mul(T)", report,
+      s(BigInteger.class, a -> scaledBigInteger(a, 8), this::scaledBigInteger, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, 8), this::scaledBigIntHuldra, (BigIntHuldra a, BigIntHuldra b) -> { a.mul(b); return a; }, String::valueOf),
+      s(BigInt.class, a -> scaledBigInt(a, 8), this::scaledBigInt, (BigInt a, BigInt b) -> a.mul(b), String::valueOf)
+//      s(int[].class, this::scaledVal, this::scaledVal, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+    );
+
+//    System.out.println(BigIntHuldra.time + "\n" + BigIntMultiplication.time + "\n" + ((double)BigIntHuldra.time / BigIntMultiplication.time));
+//    System.out.println(BigIntMultiplication.MAX);
   }
 
   @Test
