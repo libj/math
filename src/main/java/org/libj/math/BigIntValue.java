@@ -34,7 +34,7 @@ import java.util.Arrays;
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
 
-  static final long LONG_INT_MASK = 0xFFFFFFFFL;
+  static final long LONG_MASK = 0xFFFFFFFFL;
   static final int[] emptyVal = {};
   static final int[] ZERO = {0};
   static final int OFF = 1;
@@ -419,7 +419,7 @@ abstract class BigIntValue extends Number {
 
     // Add one to one's complement to generate two's complement
     for (int i = 1; i <= vlen; ++i) {
-      val[i] = (int)((val[i] & LONG_INT_MASK) + 1);
+      val[i] = (int)((val[i] & LONG_MASK) + 1);
       if (val[i] != 0)
         break;
     }
@@ -500,7 +500,7 @@ abstract class BigIntValue extends Number {
 
     // Add one to one's complement to generate two's complement
     for (int i = 1; i <= vlen; ++i) {
-      val[i] = (int)((val[i] & LONG_INT_MASK) + 1);
+      val[i] = (int)((val[i] & LONG_MASK) + 1);
       if (val[i] != 0)
         break;
     }
@@ -644,7 +644,7 @@ abstract class BigIntValue extends Number {
     long carry = 0;
     int i = fromIndex;
     for (; i < toIndex; ++i) {
-      carry += mul * (val[i] & LONG_INT_MASK);
+      carry += mul * (val[i] & LONG_MASK);
       val[i] = (int)carry;
       carry >>>= 32;
     }
@@ -652,7 +652,7 @@ abstract class BigIntValue extends Number {
     if (carry != 0)
       val[toIndex++] = (int)carry;
 
-    carry = (val[fromIndex] & LONG_INT_MASK) + add;
+    carry = (val[fromIndex] & LONG_MASK) + add;
     val[fromIndex] = (int)carry;
     if ((carry >>> 32) != 0) {
       i = fromIndex + 1;
@@ -973,7 +973,7 @@ abstract class BigIntValue extends Number {
   }
 
   static long longValue0(final int[] mag, final int off, final int len) {
-    final long val0l = mag[off] & LONG_INT_MASK;
+    final long val0l = mag[off] & LONG_MASK;
     return len > 1 ? (long)mag[off + 1] << 32 | val0l : val0l;
   }
 
@@ -1063,7 +1063,7 @@ abstract class BigIntValue extends Number {
       return 0;
 
     if (len == 1) {
-      final double v = mag[off] & LONG_INT_MASK;
+      final double v = mag[off] & LONG_MASK;
       return sig < 0 ? -v : v;
     }
 
@@ -1077,11 +1077,11 @@ abstract class BigIntValue extends Number {
       return sig < 0 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 
     if (len == 2 && 32 - z + 32 <= 53) {
-      final double v = ((long)mag[off + 1] << 32 | (mag[off] & LONG_INT_MASK));
+      final double v = ((long)mag[off + 1] << 32 | (mag[off] & LONG_MASK));
       return sig < 0 ? -v : v;
     }
 
-    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_INT_MASK); // Mask out the 53 MSBits
+    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_MASK); // Mask out the 53 MSBits
     if (z <= 11)
       bits >>>= 11 - z;
     else
@@ -1136,8 +1136,8 @@ abstract class BigIntValue extends Number {
       return -1;
 
     for (long v1, v2; len1 >= 1; --len1) {
-      v1 = val1[len1] & LONG_INT_MASK;
-      v2 = val2[len1] & LONG_INT_MASK;
+      v1 = val1[len1] & LONG_MASK;
+      v2 = val2[len1] & LONG_MASK;
       if (v1 > v2)
         return 1;
 
@@ -1278,7 +1278,7 @@ abstract class BigIntValue extends Number {
 
     int hashCode = 0;
     for (; len >= 1; --len)
-      hashCode = (int)(31 * hashCode + (val[len] & LONG_INT_MASK));
+      hashCode = (int)(31 * hashCode + (val[len] & LONG_MASK));
 
     return sig ? hashCode : -hashCode;
   }
@@ -1301,14 +1301,14 @@ abstract class BigIntValue extends Number {
     int q1 = 0;
     long r = 0;
     for (int q0; len > 0; --len) {
-      r = (r << 32) + (val[len] & LONG_INT_MASK);
+      r = (r << 32) + (val[len] & LONG_MASK);
       q0 = (int)(r / pow5);
       r %= pow5;
       val[len] = q1 | q0 >>> 13;
       q1 = q0 << 32 - 13;
     }
 
-    r = (r << 32) + (val[0] & LONG_INT_MASK);
+    r = (r << 32) + (val[0] & LONG_MASK);
     final int mod2 = val[0] & pow2 - 1;
     val[0] = q1 | (int)(r / pow5 >>> 13);
     r %= pow5;

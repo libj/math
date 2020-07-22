@@ -49,7 +49,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @amortized O(1)
    */
   static int[] uaddVal(int[] val, int len, final boolean sig, final int add) {
-    final long sum = (val[1] & LONG_INT_MASK) + (add & LONG_INT_MASK);
+    final long sum = (val[1] & LONG_MASK) + (add & LONG_MASK);
     val[1] = (int)sum;
     if ((sum >>> 32) != 0) {
       int i = 2;
@@ -78,7 +78,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @amortized O(1)
    */
   static void usubVal(final int[] val, int len, final boolean sig, final int sub) {
-    final long dif = (val[1] & LONG_INT_MASK) - (sub & LONG_INT_MASK);
+    final long dif = (val[1] & LONG_MASK) - (sub & LONG_MASK);
     val[1] = (int)dif;
     if ((dif >> 32) != 0) {
       int i = 2;
@@ -116,8 +116,8 @@ abstract class BigIntMagnitude extends BigIntValue {
     if (val.length <= 3)
       val = realloc(val, len + 1, 4);
 
-    final long val0 = val[1] & LONG_INT_MASK;
-    final long val1 = val[2] & LONG_INT_MASK;
+    final long val0 = val[1] & LONG_MASK;
+    final long val1 = val[2] & LONG_MASK;
     long carry = val0 + addl;
     val[1] = (int)carry;
     carry >>>= 32;
@@ -213,7 +213,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     long carry = 0;
     int i = 1;
     for (; i <= len1; ++i) {
-      carry += (val1[i] & LONG_INT_MASK) + (add[i] & LONG_INT_MASK);
+      carry += (val1[i] & LONG_MASK) + (add[i] & LONG_MASK);
       val[i] = (int)carry;
       carry >>>= 32;
     }
@@ -255,7 +255,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     long dif = 0;
     int i = 1;
     for (; i <= slen; ++i) {
-      dif += (val[i] & LONG_INT_MASK) - (sub[i] & LONG_INT_MASK);
+      dif += (val[i] & LONG_MASK) - (sub[i] & LONG_MASK);
       val[i] = (int)dif;
       dif >>= 32;
     }

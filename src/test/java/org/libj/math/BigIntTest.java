@@ -141,10 +141,13 @@ public abstract class BigIntTest extends CaseTest {
     if (!initialized())
       setScaleFactorFactor(StringCase.class, factor);
 
-    if (shoudlScale)
-      return BigInt.valueOf(stringScale(a, factor));
+    if (shoudlScale) {
+      final int[] val = newVal(a.length() * factor);
+      return BigInt.assign(val, stringScale(a, factor));
+    }
 
-    return BigInt.valueOf(a);
+    final int[] val = newVal(a.length());
+    return BigInt.assign(val, a);
   }
 
   public BigInt scaledBigInt(final int a) {

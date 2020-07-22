@@ -74,7 +74,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
   private static int divRem0(final int[] val, int len, final int sig, final int dsig, final int div) {
     long r = 0, rh;
-    final long divl = div & LONG_INT_MASK;
+    final long divl = div & LONG_MASK;
     boolean zeroes = true;
     if (div < 0) {
       long hq = (hbit - 1) / divl;
@@ -84,7 +84,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       final long rl = hbit - hq * divl;
       long q;
       for (int i = len; i >= 1; --i) {
-        r = (r << 32) + (val[i] & LONG_INT_MASK);
+        r = (r << 32) + (val[i] & LONG_MASK);
         rh = r >> 63;
         q = (hq & rh) + ((r & hbit - 1) + (rl & rh)) / divl;
         r -= q * divl;
@@ -96,7 +96,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     else {
       for (int i = len; i >= 1; --i) {
         r <<= 32;
-        r += val[i] & LONG_INT_MASK;
+        r += val[i] & LONG_MASK;
         val[i] = (int)(r / divl);
         if (zeroes && (zeroes = val[i] == 0))
           --len;
@@ -191,11 +191,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
   private static long divRem0(final int[] val, int len, final int sig, final int dsig, final long div, long divh) {
     if (divh == 0)
-      return divRem0(val, len, sig, dsig, (int)div) & LONG_INT_MASK;
+      return divRem0(val, len, sig, dsig, (int)div) & LONG_MASK;
 
     final long r;
     if (len <= 1) {
-      r = val[1] & LONG_INT_MASK;
+      r = val[1] & LONG_MASK;
       if (div == 1) {
         val[1] = 1;
         if (sig < 0 != dsig < 0)
@@ -210,22 +210,22 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
     final int s = Integer.numberOfLeadingZeros((int)(divh));
     divh = div >>> 32 - s;
-    final long dl = (div << s) & LONG_INT_MASK;
+    final long dl = (div << s) & LONG_MASK;
     final long hbit = Long.MIN_VALUE;
 
     long u2 = 0;
     long u1 = val[len] >>> 32 - s;
-    long u0 = (val[len] << s | val[len - 1] >>> 32 - s) & LONG_INT_MASK;
+    long u0 = (val[len] << s | val[len - 1] >>> 32 - s) & LONG_MASK;
     if (s == 0) {
       u1 = 0;
-      u0 = val[len] & LONG_INT_MASK;
+      u0 = val[len] & LONG_MASK;
     }
 
     long k, qhat, t, rhat, p;
     for (int j = len - 1; j >= 1; --j) {
       u2 = u1;
       u1 = u0;
-      u0 = s > 0 && j > 0 ? (val[j] << s | val[j - 1] >>> 32 - s) & LONG_INT_MASK : (val[j] << s) & LONG_INT_MASK;
+      u0 = s > 0 && j > 0 ? (val[j] << s | val[j - 1] >>> 32 - s) & LONG_MASK : (val[j] << s) & LONG_MASK;
 
       k = (u2 << 32) + u1;
       qhat = (k >>> 1) / divh << 1;
@@ -244,26 +244,26 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
       // Multiply and subtract. Unfolded loop.
       p = qhat * dl;
-      t = u0 - (p & LONG_INT_MASK);
-      u0 = t & LONG_INT_MASK;
+      t = u0 - (p & LONG_MASK);
+      u0 = t & LONG_MASK;
       k = (p >>> 32) - (t >> 32);
       p = qhat * divh;
-      t = u1 - k - (p & LONG_INT_MASK);
-      u1 = t & LONG_INT_MASK;
+      t = u1 - k - (p & LONG_MASK);
+      u1 = t & LONG_MASK;
       k = (p >>> 32) - (t >> 32);
       t = u2 - k;
-      u2 = t & LONG_INT_MASK;
+      u2 = t & LONG_MASK;
 
       val[j] = (int)qhat; // Store quotient digit. If we subtracted too much, add back.
       if (t < 0) {
         --val[j]; // Unfolded loop.
         t = u0 + dl;
-        u0 = t & LONG_INT_MASK;
+        u0 = t & LONG_MASK;
         t >>>= 32;
         t = u1 + divh + t;
-        u1 = t & LONG_INT_MASK;
+        u1 = t & LONG_MASK;
         t >>>= 32;
-        u2 += t & LONG_INT_MASK;
+        u2 += t & LONG_MASK;
       }
     }
 
@@ -373,13 +373,13 @@ abstract class BigIntDivision extends BigIntMultiplication {
       val[fromIndex] = val[fromIndex] << s;
     }
 
-    final long dh = div[len2 - 1] & LONG_INT_MASK;
-    final long dl = div[len2 - 2] & LONG_INT_MASK;
+    final long dh = div[len2 - 1] & LONG_MASK;
+    final long dl = div[len2 - 2] & LONG_MASK;
     final long hbit = Long.MIN_VALUE;
 
     for (j = len1 - len2; j >= 0; --j) {
       // Compute estimate qhat of q[j]
-      k = val[j + len2] * b + (val[j + len2 - 1] & LONG_INT_MASK);
+      k = val[j + len2] * b + (val[j + len2 - 1] & LONG_MASK);
       qhat = (k >>> 1) / dh << 1;
       t = k - qhat * dh;
       if (t + hbit >= dh + hbit)
@@ -387,7 +387,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
       rhat = k - qhat * dh;
 
-      while (qhat + hbit >= b + hbit || qhat * dl + hbit > b * rhat + (val[j + len2 - 2] & LONG_INT_MASK) + hbit) { // Unsigned comparison.
+      while (qhat + hbit >= b + hbit || qhat * dl + hbit > b * rhat + (val[j + len2 - 2] & LONG_MASK) + hbit) { // Unsigned comparison.
         qhat -= 1;
         rhat += dh;
         if (rhat + hbit >= b + hbit)
@@ -397,13 +397,13 @@ abstract class BigIntDivision extends BigIntMultiplication {
       // Multiply and subtract
       k = 0;
       for (i = fromIndex; i < len2; ++i) {
-        p = qhat * (div[i] & LONG_INT_MASK);
-        t = (val[i + j] & LONG_INT_MASK) - k - (p & LONG_INT_MASK);
+        p = qhat * (div[i] & LONG_MASK);
+        t = (val[i + j] & LONG_MASK) - k - (p & LONG_MASK);
         val[i + j] = (int)t;
         k = (p >>> 32) - (t >> 32);
       }
 
-      t = (val[j + len2] & LONG_INT_MASK) - k;
+      t = (val[j + len2] & LONG_MASK) - k;
       val[j + len2] = (int)t;
 
       // Store quotient digit. If we subtracted too much, add back
@@ -412,7 +412,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
         q[j + fromIndex] -= 1;
         k = 0;
         for (i = fromIndex; i < len2; ++i) {
-          t = (val[i + j] & LONG_INT_MASK) + (div[i] & LONG_INT_MASK) + k;
+          t = (val[i + j] & LONG_MASK) + (div[i] & LONG_MASK) + k;
           val[i + j] = (int)t;
           k = t >>> 32; // >>
         }
@@ -636,7 +636,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     final int toIndex = len + off - 1;
     long r = 0;
     if (div < 0) {
-      final long d = div & LONG_INT_MASK;
+      final long d = div & LONG_MASK;
       final long hbit = Long.MIN_VALUE;
       // Precompute hrem = (1<<63) % d
       // I.e. the remainder caused by the highest bit.
@@ -645,7 +645,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
         hrem = 0;
 
       for (int i = toIndex; i >= off; --i) {
-        r = (r << 32) + (mag[i] & LONG_INT_MASK);
+        r = (r << 32) + (mag[i] & LONG_MASK);
         // Calculate rem %= d.
         // Do this by calculating the lower 63 bits and highest bit separately.
         // The highest bit remainder only gets added if it's set.
@@ -656,10 +656,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
       }
     }
     else {
-      final long d = div & LONG_INT_MASK;
+      final long d = div & LONG_MASK;
       for (int i = toIndex; i >= off; --i) {
         r <<= 32;
-        r = (r + (mag[i] & LONG_INT_MASK)) % d;
+        r = (r + (mag[i] & LONG_MASK)) % d;
       }
     }
 

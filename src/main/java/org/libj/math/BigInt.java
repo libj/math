@@ -29,8 +29,6 @@
 
 package org.libj.math;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * An arbitrary-precision integer replacement for {@link java.math.BigInteger},
  * with the following differences:
@@ -671,30 +669,6 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    */
   public BigInt mul(final BigInt mul) {
     val = mul(val, mul.val);
-    return this;
-  }
-
-  /**
-   * Multiplies this {@link BigInt} by the given {@link BigInt} using the
-   * Karatsuba algorithm.
-   * <p>
-   * <i><b>Note:</b> Size of mag1 and mag2 must be the same.</i>
-   *
-   * @param mul The amount to multiply.
-   * @param parallel Whether to attempt to use the parallel algorithm.
-   * @return {@code this}
-   * @throws ExecutionException If the computation in a worker thread threw an
-   *           exception.
-   * @throws InterruptedException If the current thread was interrupted while
-   *           waiting.
-   * @complexity O(n^1.585)
-   */
-  // FIXME: package private?
-  BigInt karatsuba(final BigInt mul, final boolean parallel) throws ExecutionException, InterruptedException {
-    boolean sig = true;
-    int len1 = val[0]; if (len1 < 0) { len1 = -len1; sig = false; }
-    int len2 = mul.val[0]; if (len2 < 0) { len2 = -len2; sig = !sig; }
-    val = karatsuba(val, len1, mul.val, len2, sig, parallel);
     return this;
   }
 

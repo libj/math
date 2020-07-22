@@ -110,7 +110,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     else if (len > 0) {
       val = uaddVal(val, len, true, add);
     }
-    else if ((len = -len) > 1 || (val[1] & LONG_INT_MASK) > (add & LONG_INT_MASK)) {
+    else if ((len = -len) > 1 || (val[1] & LONG_MASK) > (add & LONG_MASK)) {
       usubVal(val, len, false, add);
     }
     else {
@@ -155,7 +155,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     else if (len < 0) {
       val = uaddVal(val, -len, false, sub);
     }
-    else if (len == 1 && (val[1] & LONG_INT_MASK) < (sub & LONG_INT_MASK)) {
+    else if (len == 1 && (val[1] & LONG_MASK) < (sub & LONG_MASK)) {
       val[0] = -len;
       val[1] = sub - val[1];
     }
@@ -244,7 +244,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       return assign0(val.length >= 3 ? val : alloc(3), 1, add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSub(val, len, sig, add & LONG_INT_MASK, addh, true);
+    return uaddSub(val, len, sig, add & LONG_MASK, addh, true);
   }
 
   /**
@@ -280,7 +280,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       return assign0(val.length >= 3 ? val : alloc(3), -1, sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSub(val, len, sig, sub & LONG_INT_MASK, subh, false);
+    return uaddSub(val, len, sig, sub & LONG_MASK, subh, false);
   }
 
   /**
@@ -309,8 +309,8 @@ abstract class BigIntAddition extends BigIntMagnitude {
       if (val.length <= 2)
         val = realloc(val, len + 1, 3);
 
-      final long val0 = val[1] & LONG_INT_MASK;
-      final long val1 = val[2] & LONG_INT_MASK;
+      final long val0 = val[1] & LONG_MASK;
+      final long val1 = val[2] & LONG_MASK;
       if (len > 2 || len == 2 && (val1 > addh || val1 == addh && val0 >= addl) || addh == 0 && val0 >= addl) {
         usubVal(val, len, sig, val0, val1, addl, addh);
       }
@@ -433,7 +433,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       long dif = 0;
       int i = 1;
       for (; i <= len; ++i) {
-        val[i] = (int)(dif += (add[i] & LONG_INT_MASK) - (val[i] & LONG_INT_MASK));
+        val[i] = (int)(dif += (add[i] & LONG_MASK) - (val[i] & LONG_MASK));
         dif >>= 32;
       }
 

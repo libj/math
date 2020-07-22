@@ -16,7 +16,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include <math.h>
+#include <stdbool.h>
 #include <jni.h>
 
 #ifndef _Included_org_libj_math_BigInt
@@ -25,14 +27,18 @@
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMultiplyQuad(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jintArray z);
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMultiplyQuadInline(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jint zlen);
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKmul(JNIEnv *env, jobject obj, jintArray xarr, jintArray yarr, jint off, jint yoff, jint len, jintArray zarr, jint zoff);
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKmul1(JNIEnv *env, jobject obj, jintArray xarr, jintArray yarr, jint off, jint yoff, jint len, jintArray zarr, jint zoff);
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKmul2(JNIEnv *env, jobject obj, jintArray xarr, jintArray yarr, jint off, jint yoff, jint len, jintArray x2arr);
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKmul3(JNIEnv *env, jobject obj, jintArray z0arr, jint off, jint k, jint len, jintArray zarr, jint zoff);
-void kmul1(jint *x, jint *y, jint off, jint yoff, jint len, jint *z, jint zoff);
-void kmul(jint *xarr, jint *yarr, jint off, jint yoff, jint len, jint *z, jint zoff);
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuad(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jintArray z);
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuadInline(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jint zlen);
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint xoff, jintArray yarr, jint yoff, jintArray zarr, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallel);
+void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallel);
+void* karatsubaThread(void *args);
+
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(JNIEnv *env, jobject obj, jintArray x, jint len, jintArray z, jint zlen, jint zlength, jint parallel, jboolean yCopy);
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareToLen(JNIEnv *env, jobject obj, jintArray x, jint xoff, jint xlen, jintArray z, jint zoff, jint zlen);
+void squareToLen(jint *x, jint xoff, jint xlen, jint *z, jint zoff, jint zlen);
+void primitiveLeftShift(jint *a, jint start, jint end, jint n);
+jint mulAdd(jint *x, jint from, jint to, jint mul, jint *z, jint zoff);
+jint addOne(jint *x, jint xoff, jint xlen, jint mlen, jint carry);
 
 #ifdef __cplusplus
 }
