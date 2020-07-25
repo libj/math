@@ -14,11 +14,13 @@
 # program. If not, see <http://opensource.org/licenses/MIT/>.
 
 # C Library Name
-C_TARGET_LIB_NAME=math
+TARGET_LIB_NAME=math
 
 # Directories
-C_SRC_DIR=src/main/c
-BLD_DIR=target
+SRC_DIR=src/main/c
+TARGET_DIR=target
+
+TARGET_LIB=$(TARGET_DIR)/lib$(TARGET_LIB_NAME)
 
 # Java Headers Directories
 JAVA_INCLUDE=$(shell echo $$JAVA_HOME)/include
@@ -44,32 +46,29 @@ ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 endif
 
 # C Compiler
-CC=gcc
+CC=icpc
 
-# C_LIB
-C_TARGET_LIB_FILENAME=lib$(C_TARGET_LIB_NAME).so
-C_TARGET_LIB=$(BLD_DIR)/$(C_TARGET_LIB_FILENAME)
+# gcc: -shared -Ofast -fPIC
+# -axCORE-AVX512,CORE-AVX2,AVX -xSSE4.2
+# -axCORE-AVX2,AVX,SSE4.2
+CC_ARGS=-I$(JAVA_PLATFORM_INCLUDE) \
+				-I$(JAVA_INCLUDE) \
+				-shared \
+				-fast -fp-model fast=2 \
+				$(shell find $(SRC_DIR) -name '*.c')
 
-# Default Target
-default: $(C_TARGET_LIB)
+BUILD=$(CC) -o $(TARGET_LIB)$(1).so $(2) $(CC_ARGS)
 
-# C Library
-$(C_TARGET_LIB):
-	@mkdir -p $(BLD_DIR)
-	@echo Creating C library...
-	@$(CC) \
-		-I$(JAVA_PLATFORM_INCLUDE) \
-		-I$(JAVA_INCLUDE) \
-		-shared \
-		-Ofast \
-		-fPIC \
-		-o $(C_TARGET_LIB) \
-		$(shell find $(C_SRC_DIR) -name '*.c')
+default: $(TARGET_DIR)
+	$(call BUILD,j)
+	$(call BUILD,c,-Dcritical)
+
+$(TARGET_DIR):
+	mkdir -p $(TARGET_DIR)
 
 # Delete Compiled Object and Binary Files
 clean:
-	@echo Deleting class files...
-	@rm -rf $(BLD_DIR)
+	@rm -rf $(TARGET_DIR)
 
 # Fake targets
 .PHONY: default clean

@@ -18,10 +18,12 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
+import java.nio.ByteBuffer;
 import java.util.function.Function;
 
 import org.junit.Test;
 import org.libj.lang.Numbers;
+import org.libj.lang.Strings;
 
 public class BigIntStudy extends BigIntTest {
   /**
@@ -171,6 +173,22 @@ public class BigIntStudy extends BigIntTest {
       l("s * 2", (long a, long b) -> a * 2),
       l("s << 1", (long a, long b) -> a << 1),
       l("s + s", (long a, long b) -> a + a)
+    );
+  }
+
+  @Test
+  public void testArrayVsBuffer2() {
+    for (int i = 1; i < 10000; i += 10) {
+      final int[] x = BigInt.valueOf("9" + Strings.repeat('9', i));
+      System.out.println(i + " " + x.length + " " + i / x.length);
+    }
+  }
+
+  @Test
+  public void testArrayVsBuffer() {
+    test("sig * value: '*' vs '? :'",
+      l("s * 2", (long a, long b) -> { final int[] x = new int[100]; return x.length; }),
+      l("s << 1", (long a, long b) -> { final ByteBuffer x = ByteBuffer.allocateDirect(100); return x.capacity(); })
     );
   }
 }

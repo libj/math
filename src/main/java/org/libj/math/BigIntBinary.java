@@ -383,7 +383,7 @@ abstract class BigIntBinary extends BigIntAddition {
           val[bigBit] &= ~k; // Unsigned compare.
         }
         else {
-          val[bigBit] ^= ((j << 1) - 1) ^ (k - 1);
+          val[bigBit] ^= ((j * 2) - 1) ^ (k - 1);
           val[bigBit] |= k;
         }
       }
@@ -540,7 +540,7 @@ abstract class BigIntBinary extends BigIntAddition {
         j = Integer.lowestOneBit(val[j]); // more efficient than numberOfTrailingZeros
         final int k = 1 << smallBit;
         if (j - k > 0) {
-          val[bigBit] ^= ((j << 1) - 1) ^ (k - 1);
+          val[bigBit] ^= ((j * 2) - 1) ^ (k - 1);
           // _debugLenSig(val);
           return val;
         }
@@ -948,7 +948,7 @@ abstract class BigIntBinary extends BigIntAddition {
 
     int len1 = val[0];
     if (len1 == 0)
-      return val = copy(mask, len2 = Math.abs(len2) + 1, val, len2);
+      return copy(mask, len2 = Math.abs(len2) + 1, val, len2);
 
     int sig1 = 1; if (len1 < 0) { len1 = -len1; sig1 = -1; }
     int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }

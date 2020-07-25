@@ -16,10 +16,6 @@
 
 package org.libj.math;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 abstract class BigIntegerMultiplication extends BigIntMultiplication {
   private static final long serialVersionUID = 877413432467388241L;
 
@@ -457,7 +453,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     final int[] xh = getUpper(val, upperLen, 1, half);
     int[] xl = getLower(val, len, half, false, half + 2);
 
-    int[] xhs = square(xh, 1, half, false, fixedLen < 0 ? (len << 1) + 2 : fixedLen);
+    int[] xhs = square(xh, 1, half, false, fixedLen < 0 ? (len * 2) + 2 : fixedLen);
     int[] xhs2 = xhs.clone();
     final int[] xls = square(xl, 1, half, false, -1);
 
@@ -530,7 +526,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    * array z. The contents of x are not changed.
    */
   private static final int[] squareToLen(final int[] mag, final int off, final int len, final int fixedLen) {
-    int zlen = len << 1;
+    int zlen = len * 2;
     final int[] z = new int[fixedLen < 0 ? zlen + off : fixedLen];
     squareToLen0(mag, len, z, zlen, off);
     for (; z[zlen] == 0; --zlen);

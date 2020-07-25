@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 
 import org.junit.internal.ArrayComparisonFailure;
 import org.libj.lang.Numbers;
+import org.libj.lang.Strings;
 import org.libj.math.BigInt;
 import org.libj.math.BigIntHuldra;
 import org.libj.test.TestAide;
@@ -46,7 +47,7 @@ import org.libj.util.function.ObjLongToLongFunction;
 
 public abstract class CaseTest {
   protected static final Random random = new Random();
-  protected static final int skip = 13; // 0 is "don't skip (full range)", n is "skip each n"
+  protected static final int skip = 7; // 0 is "don't skip (full range)", n is "skip each n"
   protected static final int numTests = 1024;
   private static final int warmup = 1000; // Long warmup to engage JIT optimizations
 
@@ -156,6 +157,8 @@ public abstract class CaseTest {
             else if (!previous.equals(o)) {
               final StringBuilder message = new StringBuilder("\n");
               message.append(label).append('\n');
+              message.append("in1: ").append(toString(in1)).append('\n');
+              message.append("in2: ").append(toString(in2)).append('\n');
               if (o instanceof Byte || o instanceof Short || o instanceof Integer)
                 message.append(Arrays.toString(BigInt.valueOf(((Number)previous).intValue()))).append('\n').append(Arrays.toString(BigInt.valueOf(((Number)o).intValue())));
               else if (o instanceof Long)
@@ -178,6 +181,10 @@ public abstract class CaseTest {
       previous = o;
     }
 
+    public static String toString(final Object o) {
+      return o instanceof int[] ? BigInt.toString((int[])o) : o.toString();
+    }
+
     void onSuccess(final CaseTest caseTest, final Surveys surveys) {
       caseTest.onSuccess();
       surveys.onSuccess();
@@ -196,8 +203,10 @@ public abstract class CaseTest {
   public static class IntCase<S,A,B,R,O> extends Case<S,int[],Integer,R,O> {
     private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE};
     private static final int NUM_RANDOM = 9 * numTests;
-    private final int[] inputs = {0, 0};
     private static final int MAX_PRECISION = 10;
+
+    private final int[] inputs = {0, 0};
+    private boolean specialDone;
 
     IntCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
       super(subject, variables, aToA, bToB, test, out);
@@ -210,12 +219,16 @@ public abstract class CaseTest {
 
     @Override
     final void test(final CaseTest caseTest, final String label, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
-      for (int i = 0; i < SPECIAL.length; ++i) {
-        inputs[0] = SPECIAL[i];
-        for (int j = 0; j < SPECIAL.length; ++j) {
-          inputs[1] = SPECIAL[j];
-          test(caseTest, label, cases, surveys, inputs);
+      if (!specialDone) {
+        for (int i = 0; i < SPECIAL.length; ++i) {
+          inputs[0] = SPECIAL[i];
+          for (int j = 0; j < SPECIAL.length; ++j) {
+            inputs[1] = SPECIAL[j];
+            test(caseTest, label, cases, surveys, inputs);
+          }
         }
+
+        specialDone = true;
       }
 
       for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
@@ -347,8 +360,10 @@ public abstract class CaseTest {
   public static class LongCase<S,A,B,R,O> extends Case<S,long[],Long,R,O> {
     private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE + 1, Long.MIN_VALUE, Long.MAX_VALUE};
     private static final int NUM_RANDOM = 7 * numTests;
-    private final long[] inputs = {0, 0};
     private static final int MAX_PRECISION = 19;
+
+    private final long[] inputs = {0, 0};
+    private boolean specialDone;
 
     LongCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
       super(subject, variables, aToA, bToB, test, out);
@@ -361,12 +376,16 @@ public abstract class CaseTest {
 
     @Override
     final void test(final CaseTest caseTest, final String label, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
-      for (int i = 0; i < SPECIAL.length; ++i) {
-        inputs[0] = SPECIAL[i];
-        for (int j = 0; j < SPECIAL.length; ++j) {
-          inputs[1] = SPECIAL[j];
-          test(caseTest, label, cases, surveys, inputs);
+      if (!specialDone) {
+        for (int i = 0; i < SPECIAL.length; ++i) {
+          inputs[0] = SPECIAL[i];
+          for (int j = 0; j < SPECIAL.length; ++j) {
+            inputs[1] = SPECIAL[j];
+            test(caseTest, label, cases, surveys, inputs);
+          }
         }
+
+        specialDone = true;
       }
 
       for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
@@ -505,9 +524,10 @@ public abstract class CaseTest {
   public static class StringCase<S,A,B,R,O> extends Case<S,String[],String,R,O> {
     private static final String[] SPECIAL = {"0", "-1", "1", String.valueOf(Byte.MIN_VALUE), String.valueOf(Byte.MAX_VALUE), String.valueOf(Short.MIN_VALUE), String.valueOf(Short.MAX_VALUE + 1), String.valueOf(Integer.MIN_VALUE), String.valueOf(Integer.MAX_VALUE + 1), String.valueOf(Long.MIN_VALUE), "9223372036854775808", "-18446744073709551616", "18446744073709551615", "-79228162514264337593543950336", "79228162514264337593543950335", "-340282366920938463463374607431768211456", "340282366920938463463374607431768211455", "-1461501637330902918203684832716283019655932542976", "1461501637330902918203684832716283019655932542975", "-6277101735386680763835789423207666416102355444464034512896", "6277101735386680763835789423207666416102355444464034512895", "-26959946667150639794667015087019630673637144422540572481103610249216", "26959946667150639794667015087019630673637144422540572481103610249215", "-115792089237316195423570985008687907853269984665640564039457584007913129639936", "115792089237316195423570985008687907853269984665640564039457584007913129639935"};
     private static final int NUM_RANDOM = numTests;
-    private static final int MAX_PRECISION = 1024;
+    private static final int MAX_PRECISION = 64;
 
     private final String[] inputs = {null, null};
+    private boolean specialDone;
 
     StringCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
       super(subject, variables, aToA, bToB, test, out);
@@ -520,12 +540,16 @@ public abstract class CaseTest {
 
     @Override
     final void test(final CaseTest caseTest, final String label, final Case<?,?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
-      for (int i = 0; i < SPECIAL.length; ++i) {
-        inputs[0] = SPECIAL[i];
-        for (int j = 0; j < SPECIAL.length; ++j) {
-          inputs[1] = SPECIAL[j];
-          test(caseTest, label, cases, surveys, inputs);
+      if (!specialDone) {
+        for (int i = 0; i < SPECIAL.length; ++i) {
+          inputs[0] = SPECIAL[i];
+          for (int j = 0; j < SPECIAL.length; ++j) {
+            inputs[1] = SPECIAL[j];
+            test(caseTest, label, cases, surveys, inputs);
+          }
         }
+
+        specialDone = true;
       }
 
       for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
@@ -840,10 +864,11 @@ public abstract class CaseTest {
       initialized = true;
       return CaseTest.this.surveys = new Surveys(cases, variables, divisions, warmup, report) {
         @Override
-        public String key(final int variable, final int division) {
-          final int maxPrec = prototype.maxPrecision(variable);
-          final double width = 2d * maxPrec / (divisions - 1);
-          return String.valueOf((int)(division * width - maxPrec));
+        public String getLabel(final int index, final int variable, final int division) {
+          final int maxPrecision = prototype.maxPrecision(variable);
+          final double width = 2d * maxPrecision / (divisions - 1);
+          final int precision = (int)(division * width - maxPrecision);
+          return String.valueOf(index == 0 ? BigInt.valueOf("9" + Strings.repeat('9', Math.abs(precision))).length : precision);
         }
 
         @Override

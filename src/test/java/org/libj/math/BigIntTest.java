@@ -26,9 +26,9 @@ public abstract class BigIntTest extends CaseTest {
   protected static final int IRRELEVANT = 1;
   protected static final int[] ZERO = {0};
 
-  private static final double scaleFactor = 0.2;
-  private static final double inflateFactor = 0.2;
-  private static final double equalFactor = 0.1;
+  private static final double scaleFactor = 1;
+  private static final double inflateFactor = 0; // 0.2;
+  private static final double equalFactor = 0; // 0.1;
 
   private static boolean shoudlScale;
   private static boolean shouldInflate;
@@ -75,27 +75,14 @@ public abstract class BigIntTest extends CaseTest {
     if (!initialized())
       setScaleFactorFactor(IntCase.class, scaleFactorFactor);
 
-    if (shoudlScale)
-      return new BigInteger(stringScale(String.valueOf(a)));
-
-    return BigInteger.valueOf(a);
+    return shoudlScale ? new BigInteger(stringScale(String.valueOf(a))) : BigInteger.valueOf(a);
   }
 
   public BigInteger scaledBigInteger(final long a) {
     if (!initialized())
       setScaleFactorFactor(LongCase.class, scaleFactorFactor);
 
-    if (shoudlScale)
-      return new BigInteger(stringScale(String.valueOf(a)));
-
-    return BigInteger.valueOf(a);
-  }
-
-  public BigInteger scaledBigInteger(final String a) {
-    if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
-
-    return new BigInteger(shoudlScale ? stringScale(a) : a);
+    return shoudlScale ? new BigInteger(stringScale(String.valueOf(a))) : BigInteger.valueOf(a);
   }
 
   public BigInteger scaledBigInteger(final String a, final int factor) {
@@ -105,109 +92,81 @@ public abstract class BigIntTest extends CaseTest {
     return new BigInteger(shoudlScale ? stringScale(a, factor) : a);
   }
 
+  public BigInteger scaledBigInteger(final String a) {
+    return scaledBigInteger(a, scaleFactorFactor);
+  }
+
   public int[] scaledVal(final int a) {
     if (!initialized())
       setScaleFactorFactor(IntCase.class, scaleFactorFactor);
 
-    final int[] val = BigInt.assign(newVal(2), a);
-    if (shoudlScale)
-      return BigInt.valueOf(stringScale(BigInt.toString(val)));
-
-    return val;
+    final int[] val = newVal(2);
+    return shoudlScale ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
   }
 
   public int[] scaledVal(final long a) {
     if (!initialized())
       setScaleFactorFactor(LongCase.class, scaleFactorFactor);
 
-    final int[] val = BigInt.assign(newVal(2), a);
-    if (shoudlScale)
-      return BigInt.valueOf(stringScale(BigInt.toString(val)));
-
-    return val;
-  }
-
-  public int[] scaledVal(final String a) {
-    if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
-
-    if (shoudlScale)
-      return BigInt.valueOf(stringScale(a));
-
-    return BigInt.valueOf(a);
+    final int[] val = newVal(3);
+    return shoudlScale ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
   }
 
   public int[] scaledVal(final String a, final int factor) {
     if (!initialized())
       setScaleFactorFactor(StringCase.class, factor);
 
-    if (shoudlScale) {
-      final int[] val = newVal(a.length() * factor);
-      return BigInt.assign(val, stringScale(a, factor));
-    }
+    int[] val = BigInt.valueOf(a);
+    val = newVal(val.length * factor);
+    return shoudlScale ? BigInt.assign(val, stringScale(a, factor)) : BigInt.assign(val, a);
+  }
 
-    final int[] val = newVal(a.length());
-    return BigInt.assign(val, a);
+  public int[] scaledVal(final String a) {
+    return scaledVal(a, scaleFactorFactor);
   }
 
   public BigInt scaledBigInt(final int a) {
-    if (!initialized())
-      setScaleFactorFactor(IntCase.class, scaleFactorFactor);
-
-    if (shoudlScale)
-      return newBigInt().assign(stringScale(String.valueOf(a)));
-
-    return newBigInt().assign(a);
+    return new BigInt(scaledVal(a));
   }
 
   public BigInt scaledBigInt(final long a) {
-    if (!initialized())
-      setScaleFactorFactor(LongCase.class, scaleFactorFactor);
-
-    if (shoudlScale)
-      return newBigInt().assign(stringScale(String.valueOf(a)));
-
-    return newBigInt().assign(a);
+    return new BigInt(scaledVal(a));
   }
 
   public BigInt scaledBigInt(final String a) {
-    if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
-
-    if (shoudlScale)
-      return newBigInt().assign(stringScale(a));
-
-    return newBigInt().assign(a);
+    return new BigInt(scaledVal(a));
   }
 
   public BigInt scaledBigInt(final String a, final int factor) {
+    return new BigInt(scaledVal(a, factor));
+  }
+
+  public BigIntHuldra scaledBigIntHuldra(final int a) {
     if (!initialized())
-      setScaleFactorFactor(StringCase.class, factor);
+      setScaleFactorFactor(IntCase.class, scaleFactorFactor);
 
-    if (shoudlScale)
-      return newBigInt().assign(stringScale(a, factor));
+    final BigIntHuldra v = newBigIntHuldra();
+    return shoudlScale ? v.assign(stringScale(String.valueOf(a))) : v.assign(a);
+  }
 
-    return newBigInt().assign(a);
+  public BigIntHuldra scaledBigIntHuldra(final long a) {
+    if (!initialized())
+      setScaleFactorFactor(LongCase.class, scaleFactorFactor);
+
+    final BigIntHuldra v = newBigIntHuldra();
+    return shoudlScale ? v.assign(stringScale(String.valueOf(a))) : v.assign(a);
   }
 
   public BigIntHuldra scaledBigIntHuldra(final String a, final int factor) {
     if (!initialized())
       setScaleFactorFactor(StringCase.class, factor);
 
-    if (shoudlScale)
-      return new BigIntHuldra(stringScale(a, factor));
-
-    return new BigIntHuldra(a);
+    final BigIntHuldra v = newBigIntHuldra();
+    return shoudlScale ? v.assign(stringScale(String.valueOf(a), factor)) : v.assign(a);
   }
 
   public BigIntHuldra scaledBigIntHuldra(final String a) {
-    if (!initialized())
-      setScaleFactorFactor(StringCase.class, scaleFactorFactor);
-
-    if (shoudlScale)
-      return new BigIntHuldra(stringScale(a));
-
-    return new BigIntHuldra(a);
+    return scaledBigIntHuldra(a, scaleFactorFactor);
   }
 
   private static BigInt newBigInt() {
@@ -231,8 +190,29 @@ public abstract class BigIntTest extends CaseTest {
     return x;
   }
 
+  private static BigIntHuldra newBigIntHuldra() {
+//    AuditReport.foo = true;
+//    System.err.println("-->");
+    final BigIntHuldra x;
+    if (shouldInflate) {
+//      System.err.println("1");
+      final int[] val = new int[random.nextInt(2048) + 1];
+//      System.err.println("2");
+      x = new BigIntHuldra(val);
+//      System.err.println("3");
+    }
+    else {
+//      System.err.println("4");
+      x = new BigIntHuldra(0);
+//      System.err.println("5");
+    }
+//    AuditReport.foo = false;
+//    System.err.println("<--");
+    return x;
+  }
+
   private static int[] newVal(final int size) {
-    return shouldInflate ? new int[random.nextInt(2048) + 1] : new int[size];
+    return shouldInflate ? new int[Math.min(size, random.nextInt(2048) + 1)] : new int[size];
   }
 
   @Override

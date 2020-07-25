@@ -17,6 +17,7 @@
 package org.libj.math;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +44,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testSignedInt(final AuditReport report) {
     test("mul(int)", report,
       i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
+      i(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, int b) -> { a.mul(b); return a; }, String::valueOf),
       i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
       i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.mul(a, b), BigInt::toString)
     );
@@ -62,69 +64,79 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testSignedLong(final AuditReport report) {
     test("mul(long)", report,
       l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
+      l(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, long b) -> { a.mul(b); return a; }, String::valueOf),
       l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
       l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.mul(a, b), BigInt::toString)
     );
   }
 
+  public void testBig(final AuditReport report, final int scale) {
+    test("mul(T): " + scale, report,
+      s(BigInteger.class, a -> scaledBigInteger(a, scale), a -> scaledBigInteger(a, scale), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
+      s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) -> a.mul(b), String::valueOf),
+      s(BigInt.class, a -> scaledBigInt(a, scale), a -> scaledBigInt(a, scale), (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
+      s(int[].class, a -> scaledVal(a, scale), a -> scaledVal(a, scale), (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+    );
+
+    if (BigIntMultiplication.X_Q[0] != Integer.MAX_VALUE)
+      System.out.println("               quad: " + Arrays.toString(BigIntMultiplication.X_Q));
+    if (BigIntMultiplication.X_QI[0] != Integer.MAX_VALUE)
+      System.out.println("       quad inplace: " + Arrays.toString(BigIntMultiplication.X_QI));
+    if (BigIntMultiplication.X_K[0] != Integer.MAX_VALUE)
+      System.out.println("          karatsuba: " + Arrays.toString(BigIntMultiplication.X_K));
+    if (BigIntMultiplication.X_KI[0] != Integer.MAX_VALUE)
+      System.out.println("  karatsuba inplace: " + Arrays.toString(BigIntMultiplication.X_KI));
+
+    if (BigIntMultiplication.X_QN[0] != Integer.MAX_VALUE)
+      System.out.println("native         quad: " + Arrays.toString(BigIntMultiplication.X_QN));
+    if (BigIntMultiplication.X_QIN[0] != Integer.MAX_VALUE)
+      System.out.println("native quad inplace: " + Arrays.toString(BigIntMultiplication.X_QIN));
+
+    System.out.println();
+  }
+
   @Test
   public void testBig(final AuditReport report) {
-    test("mul(T)", report,
-      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
-      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
-    );
+    for (int i = 2; i <= 64; i *= 2)
+      testBig(report, i);
   }
 
   @Test
-  public void testBig3(final AuditReport report) {
-    test("mul(T)", report,
-      s(BigInteger.class, this::scaledBigInteger, this::scaledBigInteger, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s(BigIntHuldra.class, this::scaledBigIntHuldra, this::scaledBigIntHuldra, (BigIntHuldra a, BigIntHuldra b) -> { a.mul(b); return a; }, String::valueOf),
-      s(BigInt.class, this::scaledBigInt, this::scaledBigInt, (BigInt a, BigInt b) -> a.mul(b), String::valueOf)
-//      s(int[].class, this::scaledVal, this::scaledVal, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
-    );
-
-//    System.out.println(BigIntHuldra.time + "\n" + BigIntMultiplication.time + "\n" + ((double)BigIntHuldra.time / BigIntMultiplication.time));
-//    System.out.println(BigIntMultiplication.MAX);
+  public void testHuge(final AuditReport report) {
+    for (int i = 64; i <= 128; i *= 2)
+      testBig(report, i);
   }
 
-  @Test
-  public void testVeryBig3(final AuditReport report) {
-    test("mul(T)", report,
-      s(BigInteger.class, a -> scaledBigInteger(a, 8), this::scaledBigInteger, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, 8), this::scaledBigIntHuldra, (BigIntHuldra a, BigIntHuldra b) -> { a.mul(b); return a; }, String::valueOf),
-      s(BigInt.class, a -> scaledBigInt(a, 8), this::scaledBigInt, (BigInt a, BigInt b) -> a.mul(b), String::valueOf)
-//      s(int[].class, this::scaledVal, this::scaledVal, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
-    );
-
-//    System.out.println(BigIntHuldra.time + "\n" + BigIntMultiplication.time + "\n" + ((double)BigIntHuldra.time / BigIntMultiplication.time));
-//    System.out.println(BigIntMultiplication.MAX);
-  }
-
-  @Test
-  public void testVeryBig(final AuditReport report) {
-    test("mul(TT)", report,
-      s(BigInteger.class, a -> scaledBigInteger(a, 8), BigInteger::new, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s(BigInt.class, a -> scaledBigInt(a, 8), BigInt::new, (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
-      s(int[].class, a -> scaledVal(a, 8), BigInt::valueOf, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
+  public void testSquareBig(final AuditReport report, final int scale) {
+    test("mul(T,T)", report,
+      s(BigInteger.class, a -> scaledBigInteger(a, scale), (BigInteger a) -> a.multiply(a), String::valueOf),
+      s(BigInt.class, a -> scaledBigInt(a, scale), (BigInt a) -> a.mul(a), String::valueOf),
+      s(int[].class, a -> scaledVal(a, scale), (int[] a) -> BigInt.mul(a, a), BigInt::toString)
     );
   }
 
   @Test
   public void testSquareBig(final AuditReport report) {
-    test("mul(T,T)", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a, String b) -> a.multiply(a), String::valueOf),
-      s(int[].class, this::scaledVal, (int[] a, String b) -> BigInt.mul(a, a), BigInt::toString)
-    );
+    for (int i = 1; i <= 128; i *= 2)
+      testSquareBig(report, i);
   }
 
   @Test
-  public void testSquareVeryBig(final AuditReport report) {
-    test("mul(TT,TT)", report,
-      s(BigInteger.class, a -> scaledBigInteger(a, 8), (BigInteger a, String b) -> a.multiply(a), String::valueOf),
-      s(int[].class, a -> scaledVal(a, 8), (int[] a, String b) -> BigInt.mul(a, a), BigInt::toString)
-    );
+  @SuppressWarnings("unchecked")
+  public void testProfileKaratsubaThreshold() {
+    final int min = 100;
+    final int max = 400;
+    final int steps = 20;
+
+    final StringCase<String,?,?,?,Object>[] cases = new StringCase[steps];
+    cases[0] = s("BigInteger", a -> scaledBigInteger(a, 16), this::scaledBigInteger, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf);
+    for (int i = 1; i < steps; ++i) {
+      final int v = ((max - min) / steps) * i + min;
+      // FIXME: To run test, uncomment this line...
+//      cases[i] = s("int[] " + v, a -> { BigIntMultiplication.KARATSUBA_THRESHOLD = v; return scaledVal(a, 16); }, this::scaledVal, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString);
+    }
+
+    test("mul(T)", cases);
   }
 
   @Test

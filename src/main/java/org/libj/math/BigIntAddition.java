@@ -241,7 +241,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3), 1, add, (int)addh);
+      return assign0(val.length >= 3 ? val : alloc(3), 1, (int)add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, add & LONG_MASK, addh, true);
@@ -277,7 +277,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3), -1, sub, (int)subh);
+      return assign0(val.length >= 3 ? val : alloc(3), -1, (int)sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, sub & LONG_MASK, subh, false);

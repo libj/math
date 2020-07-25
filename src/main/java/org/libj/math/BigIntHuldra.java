@@ -145,7 +145,10 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	}
 	/*** </Constructors> ***/
 
-	/*** <General Helper> ***/
+	public BigIntHuldra(final int[] dig) {
+	  this.dig = dig;
+  }
+  /*** <General Helper> ***/
 	/**
 	* Parses a part of a char array as an unsigned decimal number.
 	*
@@ -295,9 +298,10 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param s		A string representing the number in decimal.
 	* @complexity	O(n^2)
 	*/
-	public void assign(final String s)
+	public BigIntHuldra assign(final String s)
 	{
 		assign(s.toCharArray());
+		return this;
 	}
 	/**
 	* Assigns the given number to this BigInt object.
@@ -376,9 +380,10 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The number to be assigned.
 	* @complexity	O(1)
 	*/
-	public void assign(final int val)
+	public BigIntHuldra assign(final int val)
 	{
 		uassign(val<0 ? -1 : 1, val<0 ? -val : val);
+		return this;
 	}
 	/**
 	* Assigns the given number to this BigInt object.
@@ -386,9 +391,10 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The number to be assigned.
 	* @complexity	O(1)
 	*/
-	public void assign(final long val)
+	public BigIntHuldra assign(final long val)
 	{
 		uassign(val<0 ? -1 : 1, val<0 ? -val : val);
+		return this;
 	}
 	/**
 	* Tells whether this number is zero or not.
@@ -936,7 +942,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	      u2 = u1; u1 = u0; u0 = s>0&&j>0 ? (dig[j]<<s | dig[j-1]>>>32-s)&mask : (dig[j]<<s)&mask;
 
 	      long k = (u2<<32) + u1; //Unsigned division is a pain in the ass! ='(
-	      long qhat = (k >>> 1)/dh << 1;
+	      long qhat = (k >>> 1) / (dh * 2);
 		  long t = k - qhat*dh;
 		  if(t + hbit >= dh + hbit) qhat++; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];
 	      long rhat = k - qhat*dh;
@@ -1244,9 +1250,9 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mul	The number to multiply with.
 	* @complexity	O(n^2) - O(n log n)
 	*/
-	public void mul(final BigIntHuldra mul)
+	public BigIntHuldra mul(final BigIntHuldra mul)
 	{
-		if(isZero()) return;
+		if(isZero()) return this;
 
 	  if(mul.isZero()) setToZero();
 		else {
@@ -1258,10 +1264,12 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
   			else if(mul.len==2) umul((long)mul.dig[1]<<32|(mul.dig[0]&mask));
   			else{ final long tmp = (long)dig[1]<<32|(dig[0]&mask); assign(mul.dig, mul.len); umul(tmp); }
   		}
-  		else if(len<110 || mul.len<110) smallMul(mul); //Remove overhead?
+  		else if(len<240 || mul.len<240) smallMul(mul); //Remove overhead?
   		else if(Math.max(len,mul.len)<5000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
   		else karatsuba(mul,true);
     }
+
+	  return this;
 	}
 	/**
 	* Multiplies this number by the given (suitably small) BigInt.
@@ -1730,7 +1738,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	   {
 	      // Compute estimate qhat of q[j].
 	      k = u[j+n]*b + (u[j+n-1]&mask); //Unsigned division is a pain in the ass! ='(
-	      qhat = (k >>> 1)/dh << 1;
+	      qhat = (k >>> 1)/ (dh * 2);
 		  t = k - qhat*dh;
 		  if(t + hbit >= dh + hbit) qhat++; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];
 	      rhat = k - qhat*dh;

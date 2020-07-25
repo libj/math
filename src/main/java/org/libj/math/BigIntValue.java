@@ -29,18 +29,33 @@
 
 package org.libj.math;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
+
+  static final int NATIVE_THRESHOLD;
+
+  static {
+    final String noNativeProp = System.getProperty("org.libj.math.BigInt.noNative");
+    if (noNativeProp != null && !noNativeProp.equals("false")) {
+      NATIVE_THRESHOLD = Integer.MAX_VALUE;
+    }
+    else {
+      final boolean useCritical = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-Xcomp") > 0;
+      NATIVE_THRESHOLD = useCritical ? 0 : 15;
+      System.load(new File("target/libmath" + (useCritical ? "c" : "j") + ".so").getAbsolutePath());
+    }
+  }
 
   static final long LONG_MASK = 0xFFFFFFFFL;
   static final int[] emptyVal = {};
   static final int[] ZERO = {0};
   static final int OFF = 1;
 
-  static final LocalArray threadLocal = new LocalArray();
-  static final LocalArray threadLocal2 = new LocalArray(); // FIXME: Experimental
+  static final LocalArray threadLocal = new LocalArray(); // FIXME: Experimental
 
   static final class LocalArray extends ThreadLocal<int[]> {
     private static final int INITIAL_SIZE = 17;
@@ -88,9 +103,9 @@ abstract class BigIntValue extends Number {
       if (curLen <= n) {
         int newLen;
         if (n < 256) {
-          newLen = curLen << 1;
+          newLen = curLen * 2;
           while (newLen <= n)
-            newLen <<= 1;
+            newLen *= 2;
         }
         else {
           newLen = n + 64;
@@ -101,7 +116,7 @@ abstract class BigIntValue extends Number {
           pows[i] = pows[i - 1].clone();
           len = pows[i][0] + 1;
           pows[i] = realloc(pows[i], len, len + 1);
-          pows[i] = BigIntMultiplication.mul(pows[i], 10);
+          pows[i] = BigIntMultiplication.mul0(pows[i], 1, 10);
         }
 
         // Based on the following facts:
@@ -124,7 +139,7 @@ abstract class BigIntValue extends Number {
    * @return A new {@code int[]} with a length that is at least {@code len}.
    */
   static int[] alloc(final int len) {
-    return new int[4 + len * 2]; // 4 + len * 2
+    return new int[32 + len]; // FIXME: Tune
   }
 
   /**
@@ -142,7 +157,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(n)
    */
   static int[] realloc(final int[] array, final int len, final int newLen) {
-    final int[] v = new int[4 + newLen * 2]; // 4 + newLen * 2
+    final int[] v = new int[32 + newLen]; // FIXME: Tune
     System.arraycopy(array, 0, v, 0, len);
     return v;
   }
@@ -309,14 +324,14 @@ abstract class BigIntValue extends Number {
 
     final int magh = (int)(mag >>> 32);
     if (magh != 0)
-      return assign0(val.length >= 3 ? val : alloc(3), sig, mag, magh);
+      return assign0(val.length >= 3 ? val : alloc(3), sig, (int)mag, magh);
 
     return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
   }
 
-  static int[] assign0(final int[] val, final int sig, final long mag, final int magh) {
+  static int[] assign0(final int[] val, final int sig, final int mag, final int magh) {
     val[0] = sig < 0 ? -2 : 2;
-    val[1] = (int)mag;
+    val[1] = mag;
     val[2] = magh;
     // _debugLenSig(val);
     return val;

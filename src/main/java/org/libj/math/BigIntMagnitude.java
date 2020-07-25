@@ -114,7 +114,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    */
   static int[] uaddVal(int[] val, int len, final boolean sig, final long addl, final long addh) {
     if (val.length <= 3)
-      val = realloc(val, len + 1, 4);
+      val = realloc(val, len + OFF, 4);
 
     final long val0 = val[1] & LONG_MASK;
     final long val1 = val[2] & LONG_MASK;

@@ -64,7 +64,7 @@ public abstract class Surveys {
       surveys[s].reset();
   }
 
-  public abstract String key(int variable, int division);
+  public abstract String getLabel(int index, int variable, int division);
 
   public void print(final String label, final long ts, final String ... headings) {
     for (int s = 0; s < surveys.length; ++s)
@@ -88,7 +88,7 @@ public abstract class Surveys {
       }
     }
 
-    final String[][] columns = new String[2 + surveys.length][];
+    final String[][] columns = new String[3 + surveys.length][];
     if (report != null) {
       String[] rows = columns[0] = new String[1 + 2];
       rows[0] = "";
@@ -106,12 +106,18 @@ public abstract class Surveys {
     else {
       final int[][] counts = surveys[0].getCounts();
       String[] rows = columns[0] = new String[1 + 2 * variables + variables * divisions];
+      rows[0] = "length";
+      for (int v = 0; v < variables; ++v)
+        for (int d = 0; d < divisions; ++d)
+          rows[1 + v + d * variables] = getLabel(0, v, d);
+
+      rows = columns[1] = new String[1 + 2 * variables + variables * divisions];
       rows[0] = "precision";
       for (int v = 0; v < variables; ++v)
         for (int d = 0; d < divisions; ++d)
-          rows[1 + v + d * variables] = key(v, d);
+          rows[1 + v + d * variables] = getLabel(1, v, d);
 
-      rows = columns[1] = new String[1 + 2 * variables + variables * divisions];
+      rows = columns[2] = new String[1 + 2 * variables + variables * divisions];
       rows[0] = "count";
       for (int v = 0; v < variables; ++v)
         for (int d = 0; d < divisions; ++d)
@@ -122,7 +128,7 @@ public abstract class Surveys {
       final int[][] sums = new int[surveys.length][variables];
       for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
-        rows = columns[s + 2] = new String[1 + 2 * variables + variables * divisions];
+        rows = columns[s + 3] = new String[1 + 2 * variables + variables * divisions];
         rows[0] = headings[s];
         final long[][] times = survey.getTimes();
         for (int v = 0; v < variables; ++v) {
@@ -145,7 +151,7 @@ public abstract class Surveys {
       }
 
       for (int s = 0, c = 0; s < surveys.length; ++s) {
-        rows = columns[s + 2];
+        rows = columns[s + 3];
         for (int v = 0; v < variables; ++v) {
           c = 1 + v + divisions * variables;
 

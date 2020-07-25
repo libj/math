@@ -86,7 +86,7 @@ public final class FastMath {
       return;
     }
 
-    final long q = ((dividend >>> 1) / divisor) << 1;
+    final long q = ((dividend >>> 1) / divisor) * 2;
     final long r = dividend - q * divisor;
     result[0] = q + (Long.compareUnsigned(r, divisor) >= 0 ? 1 : 0);
     result[1] = r - (Long.compareUnsigned(r, divisor) >= 0 ? divisor : 0);
@@ -110,7 +110,7 @@ public final class FastMath {
     if (dividend > 0)
       return dividend / divisor;
 
-    final long q = ((dividend >>> 1) / divisor) << 1;
+    final long q = ((dividend >>> 1) / divisor) * 2;
     final long r = dividend - q * divisor;
     return q + (Long.compareUnsigned(r, divisor) >= 0 ? 1 : 0);
   }
@@ -135,7 +135,7 @@ public final class FastMath {
     if (dividend > 0)
       return dividend % divisor;
 
-    final long q = ((dividend >>> 1) / divisor) << 1;
+    final long q = ((dividend >>> 1) / divisor) * 2;
     final long r = dividend - q * divisor;
     return r - (Long.compareUnsigned(r, divisor) >= 0 ? divisor : 0);
   }

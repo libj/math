@@ -166,7 +166,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
     }
     else {
       final int magh = (int)(mag >>> 32);
-      val = magh != 0 ? assign0(alloc(3), sig, mag, magh) : assign0(alloc(2), sig, (int)mag);
+      val = magh != 0 ? assign0(alloc(3), sig, (int)mag, magh) : assign0(alloc(2), sig, (int)mag);
     }
   }
 
@@ -193,7 +193,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
     else {
       int sig = 1; if (mag < 0) { mag = -mag; sig = -1; }
       final int magh = (int)(mag >>> 32);
-      val = magh != 0 ? assign0(alloc(3), sig, mag, magh) : assign0(alloc(2), sig, (int)mag);
+      val = magh != 0 ? assign0(alloc(3), sig, (int)mag, magh) : assign0(alloc(2), sig, (int)mag);
     }
   }
 
