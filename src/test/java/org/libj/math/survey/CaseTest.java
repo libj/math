@@ -45,45 +45,45 @@ import org.libj.util.function.ObjIntToIntFunction;
 import org.libj.util.function.ObjLongFunction;
 import org.libj.util.function.ObjLongToLongFunction;
 
+@SuppressWarnings("hiding")
 public abstract class CaseTest {
   protected static final Random random = new Random();
-  protected static final int skip = 7; // 0 is "don't skip (full range)", n is "skip each n"
-  protected static final int numTests = 1024;
-  private static final int warmup = 1000; // Long warmup to engage JIT optimizations
+  private static final int warmup = 1000; // Long warmup to engage JIT compilation
+  private static final int MIN_ITERATIONS = 2;
+
+  private boolean initialized;
+  private final int[] scaleFactors = {1, 1, 1};
 
   @SuppressWarnings("rawtypes")
   private static int getCaseIndex(final Class<? extends Case> cls) {
-    if (cls == IntCase.class)
-      return 0;
-
-    if (cls == LongCase.class)
-      return 1;
-
-    if (cls == StringCase.class)
-      return 2;
-
-    throw new UnsupportedOperationException("Unsupported type: " + cls.getName());
+    return cls == IntCase.class ? 0 : cls == LongCase.class ? 1 : cls == StringCase.class ? 2 : 3;
   }
 
-  private boolean initialized;
-  private final int[] scaleFactorFactors = {1, 1, 1};
+  private static int skip(final int precision, final int skip) {
+    final int maxSkip = precision / 30; // necessary to ensure enough tests are run to get past the warmup
+    return random.nextInt(Math.min(maxSkip, (int)((skip + 1) * Math.pow(precision, 1.6d) / 400000) + 1)) + 1;
+  }
 
   public boolean initialized() {
     return initialized;
   }
 
   @SuppressWarnings("rawtypes")
-  protected void setScaleFactorFactor(final Class<? extends Case> cls, final int scaleFactorFactor) {
-    this.scaleFactorFactors[getCaseIndex(cls)] = scaleFactorFactor;
+  protected void setScaleFactor(final Class<? extends Case> cls, final int scaleFactor) {
+    this.scaleFactors[getCaseIndex(cls)] = scaleFactor;
   }
 
   @SuppressWarnings("rawtypes")
-  protected int getScaleFactorFactor(final Class<? extends Case> cls) {
-    return this.scaleFactorFactors[getCaseIndex(cls)];
+  private int getScaleFactor(final Class<? extends Case> cls) {
+    return this.scaleFactors[getCaseIndex(cls)];
   }
 
-  public static String neg(final String v) {
-    return !v.startsWith("-") ? "-" + v : v.substring(1);
+  public static String neg(final String num) {
+    return !num.startsWith("-") ? "-" + num : num.substring(1);
+  }
+
+  public static int precision(final String num) {
+    return num.startsWith("-") ? num.length() - 1 : num.length();
   }
 
   public abstract static class Case<S,T,I,R,O> {
@@ -117,14 +117,10 @@ public abstract class CaseTest {
       return (variable == 0 ? scaleFactorFactorA : scaleFactorFactorB) * maxPrecision();
     }
 
-    abstract void test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys);
-    abstract <I,O>void test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final T inputs);
+    abstract void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys);
+    abstract <I,O>int test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final T inputs);
 
-    <I,O>void verify(final String label, final Case<?,?,I,Object,O> cse, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
-//      if (time > 2000 && (in1 instanceof BigInt) && String.valueOf(in2).length() == 4) {
-//        System.err.println(in1 + " " + in2);
-//      }
-
+    <I,O>int verify(final String label, final Case<?,?,I,Object,O> cse, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
       final Object o = cse.out != null ? cse.out.apply(result) : result;
       if (previous != null) {
         if (c > 0) {
@@ -174,11 +170,15 @@ public abstract class CaseTest {
         }
       }
 
+      int precision = precision(in1);
       surveys.get().addSample(c, 0, in1, time);
-      if (cse.variables() == 2)
+      if (cse.variables() == 2) {
+        precision = Math.max(precision, precision(in2));
         surveys.get().addSample(c, 1, in2, time);
+      }
 
       previous = o;
+      return precision;
     }
 
     public static String toString(final Object o) {
@@ -202,7 +202,6 @@ public abstract class CaseTest {
 
   public static class IntCase<S,A,B,R,O> extends Case<S,int[],Integer,R,O> {
     private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE};
-    private static final int NUM_RANDOM = 9 * numTests;
     private static final int MAX_PRECISION = 10;
 
     private final int[] inputs = {0, 0};
@@ -218,7 +217,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
       if (!specialDone) {
         for (int i = 0; i < SPECIAL.length; ++i) {
           inputs[0] = SPECIAL[i];
@@ -231,63 +230,68 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
-        for (int j = 0; j < NUM_RANDOM; j += (random.nextInt(skip) + 1)) {
-          caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[0] *= -1;
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[1] *= -1;
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[0] *= -1;
-          test(caseTest, label, cases, surveys, inputs);
+      int precision = MAX_PRECISION;
+      for (int i = 0; i < precision; i += skip(precision, skip)) {
+        for (int j = 0; j < precision; j += skip(precision, skip)) {
+          for (int k = 0; k < Math.max(MIN_ITERATIONS, warmup / precision); ++k) {
+            caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
+
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[0] *= -1;
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[1] *= -1;
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[0] *= -1;
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+          }
         }
       }
     }
 
     @Override
-    <I,O>void test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    <I,O>int test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
+      int precision = 0;
       for (int c = 0; c < cases.length; ++c) {
         try {
-          final Case<?,?,I,Object,O> cse = (Case<?,?,I,Object,O>)cases[c];
-          final IntCase castCase = (IntCase)cse;
+          final IntCase cse = (IntCase)cases[c];
 
           Object in1, in2 = null;
           int a = inputs[0];
           Object a0 = a;
 
           if (!caseTest.initialized())
-            caseTest.setScaleFactorFactor(IntCase.class, 1);
+            caseTest.setScaleFactor(IntCase.class, 1);
 
-          if (castCase.aToA instanceof IntToIntFunction)
-            a = ((IntToIntFunction)castCase.aToA).applyAsInt(a);
-          else if (castCase.aToA instanceof IntFunction)
-            a0 = ((IntFunction)castCase.aToA).apply(a);
-          else if (castCase.aToA != null)
-            throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
+          if (cse.aToA instanceof IntToIntFunction)
+            a = ((IntToIntFunction)cse.aToA).applyAsInt(a);
+          else if (cse.aToA instanceof IntFunction)
+            a0 = ((IntFunction)cse.aToA).apply(a);
+          else if (cse.aToA != null)
+            throw new UnsupportedOperationException(cse.aToA.getClass().getName());
 
           if (!caseTest.initialized())
-            scaleFactorFactorA = caseTest.getScaleFactorFactor(IntCase.class);
+            scaleFactorFactorA = caseTest.getScaleFactor(IntCase.class);
 
           int b = inputs[1];
           Object b0 = b;
 
           if (!caseTest.initialized())
-            caseTest.setScaleFactorFactor(IntCase.class, 1);
+            caseTest.setScaleFactor(IntCase.class, 1);
 
-          if (castCase.bToB instanceof IntToIntFunction)
-            b = ((IntToIntFunction)castCase.bToB).applyAsInt(b);
-          else if (castCase.bToB instanceof ObjIntToIntFunction)
-            b = ((ObjIntToIntFunction)castCase.bToB).applyAsInt(a0, b);
-          else if (castCase.bToB instanceof IntFunction)
-            b0 = ((IntFunction)castCase.bToB).apply(b);
-          else if (castCase.bToB instanceof ObjIntFunction)
-            b0 = ((ObjIntFunction)castCase.bToB).apply(a0, b);
-          else if (castCase.bToB != null)
-            throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
+          if (cse.bToB instanceof IntToIntFunction)
+            b = ((IntToIntFunction)cse.bToB).applyAsInt(b);
+          else if (cse.bToB instanceof ObjIntToIntFunction)
+            b = ((ObjIntToIntFunction)cse.bToB).applyAsInt(a0, b);
+          else if (cse.bToB instanceof IntFunction)
+            b0 = ((IntFunction)cse.bToB).apply(b);
+          else if (cse.bToB instanceof ObjIntFunction)
+            b0 = ((ObjIntFunction)cse.bToB).apply(a0, b);
+          else if (cse.bToB != null)
+            throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
           if (!caseTest.initialized())
-            scaleFactorFactorB = caseTest.getScaleFactorFactor(IntCase.class);
+            scaleFactorFactorB = caseTest.getScaleFactor(IntCase.class);
 
           final Object result;
           final long overhead;
@@ -345,7 +349,7 @@ public abstract class CaseTest {
           }
 
           time = System.nanoTime() - time - overhead;
-          verify(label, cse, in1, in2, result, c, time, surveys);
+          precision = Math.max(precision, verify(label, cse, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
           checkDebug(t);
@@ -354,12 +358,12 @@ public abstract class CaseTest {
       }
 
       onSuccess(caseTest, surveys.get());
+      return precision;
     }
   }
 
   public static class LongCase<S,A,B,R,O> extends Case<S,long[],Long,R,O> {
     private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE + 1, Long.MIN_VALUE, Long.MAX_VALUE};
-    private static final int NUM_RANDOM = 7 * numTests;
     private static final int MAX_PRECISION = 19;
 
     private final long[] inputs = {0, 0};
@@ -375,7 +379,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
       if (!specialDone) {
         for (int i = 0; i < SPECIAL.length; ++i) {
           inputs[0] = SPECIAL[i];
@@ -388,61 +392,66 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
-        for (int j = 0; j < NUM_RANDOM; j += (random.nextInt(skip) + 1)) {
-          caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[0] *= -1;
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[1] *= -1;
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[0] *= -1;
-          test(caseTest, label, cases, surveys, inputs);
+      int precision = MAX_PRECISION;
+      for (int i = 0; i < precision; i += skip(precision, skip)) {
+        for (int j = 0; j < precision; j += skip(precision, skip)) {
+          for (int k = 0; k < Math.max(MIN_ITERATIONS, warmup / precision); ++k) {
+            caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
+
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[0] *= -1;
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[1] *= -1;
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[0] *= -1;
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+          }
         }
       }
     }
 
     @Override
-    <I,O>void test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    <I,O>int test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
+      int precision = 0;
       for (int c = 0; c < cases.length; ++c) {
         try {
-          final Case<?,?,I,Object,O> cse = (Case<?,?,I,Object,O>)cases[c];
-          final LongCase castCase = (LongCase)cse;
+          final LongCase cse = (LongCase)cases[c];
 
           Object in1, in2 = null;
           long a = inputs[0];
           Object a0 = a;
 
           if (!caseTest.initialized())
-            caseTest.setScaleFactorFactor(LongCase.class, 1);
+            caseTest.setScaleFactor(LongCase.class, 1);
 
-          if (castCase.aToA instanceof LongToLongFunction)
-            a = ((LongToLongFunction)castCase.aToA).applyAsLong(a);
-          else if (castCase.aToA instanceof LongFunction)
-            a0 = ((LongFunction)castCase.aToA).apply(a);
-          else if (castCase.aToA != null)
-            throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
+          if (cse.aToA instanceof LongToLongFunction)
+            a = ((LongToLongFunction)cse.aToA).applyAsLong(a);
+          else if (cse.aToA instanceof LongFunction)
+            a0 = ((LongFunction)cse.aToA).apply(a);
+          else if (cse.aToA != null)
+            throw new UnsupportedOperationException(cse.aToA.getClass().getName());
 
           if (!caseTest.initialized())
-            scaleFactorFactorA = caseTest.getScaleFactorFactor(LongCase.class);
+            scaleFactorFactorA = caseTest.getScaleFactor(LongCase.class);
 
           long b = inputs[1];
           Object b0 = b;
 
           if (!caseTest.initialized())
-            caseTest.setScaleFactorFactor(LongCase.class, 1);
+            caseTest.setScaleFactor(LongCase.class, 1);
 
-          if (castCase.bToB instanceof ObjLongToLongFunction)
-            b = ((ObjLongToLongFunction)castCase.bToB).applyAsLong(a0, b);
-          else if (castCase.bToB instanceof LongToLongFunction)
-            b = ((LongToLongFunction)castCase.bToB).applyAsLong(b);
-          else if (castCase.bToB instanceof LongFunction)
-            b0 = ((LongFunction)castCase.bToB).apply(b);
-          else if (castCase.bToB != null)
-            throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
+          if (cse.bToB instanceof ObjLongToLongFunction)
+            b = ((ObjLongToLongFunction)cse.bToB).applyAsLong(a0, b);
+          else if (cse.bToB instanceof LongToLongFunction)
+            b = ((LongToLongFunction)cse.bToB).applyAsLong(b);
+          else if (cse.bToB instanceof LongFunction)
+            b0 = ((LongFunction)cse.bToB).apply(b);
+          else if (cse.bToB != null)
+            throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
           if (!caseTest.initialized())
-            scaleFactorFactorB = caseTest.getScaleFactorFactor(LongCase.class);
+            scaleFactorFactorB = caseTest.getScaleFactor(LongCase.class);
 
           final Object result;
           final long overhead;
@@ -509,7 +518,7 @@ public abstract class CaseTest {
           }
 
           time = System.nanoTime() - time - overhead;
-          verify(label, cse, in1, in2, result, c, time, surveys);
+          precision = Math.max(precision, verify(label, cse, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
           checkDebug(t);
@@ -518,12 +527,12 @@ public abstract class CaseTest {
       }
 
       onSuccess(caseTest, surveys.get());
+      return precision;
     }
   }
 
   public static class StringCase<S,A,B,R,O> extends Case<S,String[],String,R,O> {
     private static final String[] SPECIAL = {"0", "-1", "1", String.valueOf(Byte.MIN_VALUE), String.valueOf(Byte.MAX_VALUE), String.valueOf(Short.MIN_VALUE), String.valueOf(Short.MAX_VALUE + 1), String.valueOf(Integer.MIN_VALUE), String.valueOf(Integer.MAX_VALUE + 1), String.valueOf(Long.MIN_VALUE), "9223372036854775808", "-18446744073709551616", "18446744073709551615", "-79228162514264337593543950336", "79228162514264337593543950335", "-340282366920938463463374607431768211456", "340282366920938463463374607431768211455", "-1461501637330902918203684832716283019655932542976", "1461501637330902918203684832716283019655932542975", "-6277101735386680763835789423207666416102355444464034512896", "6277101735386680763835789423207666416102355444464034512895", "-26959946667150639794667015087019630673637144422540572481103610249216", "26959946667150639794667015087019630673637144422540572481103610249215", "-115792089237316195423570985008687907853269984665640564039457584007913129639936", "115792089237316195423570985008687907853269984665640564039457584007913129639935"};
-    private static final int NUM_RANDOM = numTests;
     private static final int MAX_PRECISION = 64;
 
     private final String[] inputs = {null, null};
@@ -539,7 +548,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final Case<?,?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
       if (!specialDone) {
         for (int i = 0; i < SPECIAL.length; ++i) {
           inputs[0] = SPECIAL[i];
@@ -552,41 +561,46 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      for (int i = 0; i < NUM_RANDOM; i += (random.nextInt(skip) + 1)) {
-        for (int j = 0; j < NUM_RANDOM; j += (random.nextInt(skip) + 1)) {
-          caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[0] = neg(inputs[0]);
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[1] = neg(inputs[1]);
-          test(caseTest, label, cases, surveys, inputs);
-          inputs[0] = neg(inputs[0]);
-          test(caseTest, label, cases, surveys, inputs);
+      int precision = MAX_PRECISION;
+      for (int i = 0; i < precision; i += skip(precision, skip)) {
+        for (int j = 0; j < precision; j += skip(precision, skip)) {
+          for (int k = 0; k < Math.max(MIN_ITERATIONS, warmup / precision); ++k) {
+            caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
+
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[0] = neg(inputs[0]);
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[1] = neg(inputs[1]);
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+            inputs[0] = neg(inputs[0]);
+            precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
+          }
         }
       }
     }
 
     @Override
-    <I,O>void test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    <I,O>int test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
+      int precision = 0;
       for (int c = 0; c < cases.length; ++c) {
         try {
-          final Case<?,?,I,Object,O> cse = (Case<?,?,I,Object,O>)cases[c];
-          final StringCase castCase = (StringCase)cse;
+          final StringCase cse = (StringCase)cases[c];
 
           Object in1, in2 = null;
           final String a = inputs[0];
           Object a0 = a;
 
           if (!caseTest.initialized())
-            caseTest.setScaleFactorFactor(StringCase.class, 1);
+            caseTest.setScaleFactor(StringCase.class, 1);
 
-          if (castCase.aToA instanceof Function)
-            a0 = ((Function)castCase.aToA).apply(a0);
-          else if (castCase.aToA != null)
-            throw new UnsupportedOperationException(castCase.aToA.getClass().getName());
+          if (cse.aToA instanceof Function)
+            a0 = ((Function)cse.aToA).apply(a0);
+          else if (cse.aToA != null)
+            throw new UnsupportedOperationException(cse.aToA.getClass().getName());
 
           if (!caseTest.initialized())
-            scaleFactorFactorA = caseTest.getScaleFactorFactor(StringCase.class);
+            scaleFactorFactorA = caseTest.getScaleFactor(StringCase.class);
 
           final String b = inputs[1];
           Object b0 = b;
@@ -594,19 +608,19 @@ public abstract class CaseTest {
           long b2 = Long.MIN_VALUE;
 
           if (!caseTest.initialized())
-            caseTest.setScaleFactorFactor(StringCase.class, 1);
+            caseTest.setScaleFactor(StringCase.class, 1);
 
-          if (castCase.bToB instanceof Function)
-            b0 = ((Function)castCase.bToB).apply(b);
-          else if (castCase.bToB instanceof BiObjToIntFunction)
-            b1 = ((BiObjToIntFunction)castCase.bToB).applyAsInt(a0, b);
-          else if (castCase.bToB instanceof BiObjToLongFunction)
-            b2 = ((BiObjToLongFunction)castCase.bToB).applyAsLong(a0, b);
-          else if (castCase.bToB != null)
-            throw new UnsupportedOperationException(castCase.bToB.getClass().getName());
+          if (cse.bToB instanceof Function)
+            b0 = ((Function)cse.bToB).apply(b);
+          else if (cse.bToB instanceof BiObjToIntFunction)
+            b1 = ((BiObjToIntFunction)cse.bToB).applyAsInt(a0, b);
+          else if (cse.bToB instanceof BiObjToLongFunction)
+            b2 = ((BiObjToLongFunction)cse.bToB).applyAsLong(a0, b);
+          else if (cse.bToB != null)
+            throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
           if (!caseTest.initialized())
-            scaleFactorFactorB = caseTest.getScaleFactorFactor(StringCase.class);
+            scaleFactorFactorB = caseTest.getScaleFactor(StringCase.class);
 
           final Object result;
           final long overhead;
@@ -634,7 +648,7 @@ public abstract class CaseTest {
             result = test.apply(a0, b2);
           }
           else if (cse.test instanceof BiFunction) {
-            final BiFunction test = (BiFunction)castCase.test;
+            final BiFunction test = (BiFunction)cse.test;
             in1 = CaseTest.clone(a0);
             in2 = CaseTest.clone(b0);
 
@@ -643,7 +657,7 @@ public abstract class CaseTest {
             result = test.apply(a0, b0);
           }
           else {
-            final Function test = (Function)castCase.test;
+            final Function test = (Function)cse.test;
             in1 = CaseTest.clone(a0);
 
             overhead = 37;
@@ -652,7 +666,7 @@ public abstract class CaseTest {
           }
 
           time = System.nanoTime() - time - overhead;
-          verify(label, cse, in1, in2, result, c, time, surveys);
+          precision = Math.max(precision, verify(label, cse, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
           checkDebug(t);
@@ -661,7 +675,30 @@ public abstract class CaseTest {
       }
 
       onSuccess(caseTest, surveys.get());
+      return precision;
     }
+  }
+
+  private static int precision(final Object obj) {
+    if (obj instanceof Integer)
+      return Numbers.precision((Integer)obj);
+
+    if (obj instanceof Long)
+      return Numbers.precision((Long)obj);
+
+    if (obj instanceof BigInteger)
+      return Numbers.precision((BigInteger)obj);
+
+    if (obj instanceof BigIntHuldra)
+      return ((BigIntHuldra)obj).precision();
+
+    if (obj instanceof BigInt)
+      return ((BigInt)obj).precision();
+
+    if (obj instanceof int[])
+      return BigInt.precision((int[])obj);
+
+    throw new UnsupportedOperationException("Unsupported type: " + obj.getClass().getName());
   }
 
   private static Object clone(final Object obj) {
@@ -819,45 +856,75 @@ public abstract class CaseTest {
   protected abstract void onSuccess();
 
   @SafeVarargs
+  public final <O>void test(final String label, final int skip, final IntCase<String,?,?,?,O> ... cases) {
+    exec(label, skip, null, cases);
+  }
+
+  @SafeVarargs
   public final <O>void test(final String label, final IntCase<String,?,?,?,O> ... cases) {
-    exec(label, null, cases);
+    exec(label, 0, null, cases);
+  }
+
+  @SafeVarargs
+  public final <O>void test(final String label, final int skip, final LongCase<String,?,?,?,O> ... cases) {
+    exec(label, skip, null, cases);
   }
 
   @SafeVarargs
   public final <O>void test(final String label, final LongCase<String,?,?,?,O> ... cases) {
-    exec(label, null, cases);
+    exec(label, 0, null, cases);
+  }
+
+  @SafeVarargs
+  public final <O>void test(final String label, final int skip, final StringCase<String,?,?,?,O> ... cases) {
+    exec(label, skip, null, cases);
   }
 
   @SafeVarargs
   public final <O>void test(final String label, final StringCase<String,?,?,?,O> ... cases) {
-    exec(label, null, cases);
+    exec(label, 0, null, cases);
+  }
+
+  @SafeVarargs
+  public final <O>void test(final String label, final int skip, final AuditReport report, final IntCase<Class<?>,?,?,?,O> ... cases) {
+    exec(label, skip, report, cases);
   }
 
   @SafeVarargs
   public final <O>void test(final String label, final AuditReport report, final IntCase<Class<?>,?,?,?,O> ... cases) {
-    exec(label, report, cases);
+    exec(label, 0, report, cases);
+  }
+
+  @SafeVarargs
+  public final <O>void test(final String label, final int skip, final AuditReport report, final LongCase<Class<?>,?,?,?,O> ... cases) {
+    exec(label, skip, report, cases);
   }
 
   @SafeVarargs
   public final <O>void test(final String label, final AuditReport report, final LongCase<Class<?>,?,?,?,O> ... cases) {
-    exec(label, report, cases);
+    exec(label, 0, report, cases);
+  }
+
+  @SafeVarargs
+  public final <O>void test(final String label, final int skip, final AuditReport report, final StringCase<Class<?>,?,?,?,O> ... cases) {
+    exec(label, skip, report, cases);
   }
 
   @SafeVarargs
   public final <O>void test(final String label, final AuditReport report, final StringCase<Class<?>,?,?,?,O> ... cases) {
-    exec(label, report, cases);
+    exec(label, 0, report, cases);
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  private final <I,O>void exec(final String label, final AuditReport report, final Case<?,?,I,?,O>[] cases) {
+  private final <I,O>void exec(final String label, final int skip, final AuditReport report, final Case<?,?,I,?,O>[] cases) {
     final Case prototype = cases[0];
     final int divisions = 11;
     final int variables = prototype.variables();
 
     final String[] headings = heading(cases);
 
-    long ts = System.currentTimeMillis();
-    prototype.test(this, label, cases, () -> {
+    final long ts = System.currentTimeMillis();
+    prototype.test(this, label, skip, cases, () -> {
       if (initialized)
         return CaseTest.this.surveys;
 
@@ -914,7 +981,7 @@ public abstract class CaseTest {
           else if (obj instanceof byte[]) {
             final byte[] val = (byte[])obj;
             // FIXME: This is incorrect! But, whatever!
-            dig = val.length % (divisions * 2);
+            dig = 25 * val.length % (divisions * 2);
 //            final int bits = (val.length - 1) * 8;
 //            dig = (int)Math.floor(Math.log10((1L << bits) - 1));
           }
@@ -930,7 +997,8 @@ public abstract class CaseTest {
             throw new UnsupportedOperationException(obj == null ? null : obj.getClass().getName());
           }
 
-          // Special case for unsigned long, because signed long has max precision of 19, but unsigned long is 20
+          // Special case for unsigned long, because signed long
+          // has max precision of 19, but unsigned long is 20
           if (dig == 20 && maxPrecision == 19)
             dig = 19;
 
@@ -944,8 +1012,7 @@ public abstract class CaseTest {
       };
     });
 
-    ts = System.currentTimeMillis() - ts;
-    surveys.print(label, ts, headings);
+    surveys.print(label, System.currentTimeMillis() - ts, headings);
     initialized = false;
   }
 

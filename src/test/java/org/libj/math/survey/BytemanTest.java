@@ -9,7 +9,7 @@ import org.libj.math.BigInt;
 @RunWith(AuditRunner.class)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
-public class BytemanTest implements TracedTest {
+public class BytemanTest {
   @Test
   public void test(final AuditReport report) throws Exception {
     new BigInteger("432");

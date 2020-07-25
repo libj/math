@@ -23,6 +23,8 @@ import org.libj.lang.Strings;
 import org.libj.lang.Strings.Align;
 
 public class FastMathTest extends BigIntTest {
+  private static final int numTests = 1048576;
+
   @Test
   public void testLog2Int() {
     for (int i = 0; i < numTests; ++i) {

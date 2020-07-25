@@ -70,8 +70,8 @@ public class BigIntMultiplicationTest extends BigIntTest {
     );
   }
 
-  public void testBig(final AuditReport report, final int scale) {
-    test("mul(T): " + scale, report,
+  public void testBig(final AuditReport report, final int scale, final int skip) {
+    test("mul(T): " + scale, skip, report,
       s(BigInteger.class, a -> scaledBigInteger(a, scale), a -> scaledBigInteger(a, scale), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) -> a.mul(b), String::valueOf),
       s(BigInt.class, a -> scaledBigInt(a, scale), a -> scaledBigInt(a, scale), (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
@@ -97,14 +97,14 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testBig(final AuditReport report) {
-    for (int i = 2; i <= 64; i *= 2)
-      testBig(report, i);
+    for (int i = 128; i <= 128; i *= 2)
+      testBig(report, i, 80);
   }
 
   @Test
   public void testHuge(final AuditReport report) {
-    for (int i = 64; i <= 128; i *= 2)
-      testBig(report, i);
+    for (int i = 128; i <= 1024; i *= 2)
+      testBig(report, i, 100);
   }
 
   public void testSquareBig(final AuditReport report, final int scale) {

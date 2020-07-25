@@ -6,7 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.Collections;
 
@@ -20,7 +19,6 @@ import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.dynamic.loading.ClassInjector;
-import net.bytebuddy.implementation.auxiliary.TypeProxy;
 import net.bytebuddy.utility.JavaModule;
 
 public class InstanceCounter {
