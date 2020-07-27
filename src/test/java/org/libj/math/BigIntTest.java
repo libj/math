@@ -328,4 +328,13 @@ public abstract class BigIntTest extends CaseTest {
 
     return new String(num);
   }
+
+  static int[] randValByLength(final int length) {
+    final int[] r = new int[length + 1];
+    r[0] = length;
+    for (int i = 1; i <= length; ++i)
+      r[i] = random.nextInt();
+
+    return r;
+  }
 }

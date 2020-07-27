@@ -16,6 +16,10 @@
 
 package org.libj.math;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigInteger;
+
 abstract class BigIntegerMultiplication extends BigIntMultiplication {
   private static final long serialVersionUID = 877413432467388241L;
 
@@ -660,5 +664,41 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    */
   private static int bitLength(final int[] val, final int len) {
     return len == 0 ? 0 : ((len - 1) << 5) + bitLengthForInt(val[0]);
+  }
+
+  private static final Method m;
+  static {
+    try {
+      m = BigInteger.class.getDeclaredMethod("multiplyToLen", int[].class, int.class, int[].class, int.class, int[].class);
+      m.setAccessible(true);
+    }
+    catch (NoSuchMethodException | SecurityException e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+
+  public static void hackMultiplyToLen(final int[] x, final int xlen, final int[] y, final int ylen, final int[] z) {
+    final int[] xx = new int[xlen];
+    for (int i = 1; i <= xlen; ++i)
+      xx[xlen - i] = x[i];
+
+    final int[] yy = new int[ylen];
+    for (int i = 1; i <= ylen; ++i)
+      yy[ylen - i] = y[i];
+
+    int zlen = xlen + ylen;
+    try {
+      m.invoke(null, xx, xlen, yy, ylen, z);
+    }
+    catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+
+    z[zlen] = z[0];
+    for (int i = 1; i < zlen; ++i) {
+      int a = z[i];
+      z[i] = z[zlen - i];
+      z[zlen - i] = a;
+    }
   }
 }

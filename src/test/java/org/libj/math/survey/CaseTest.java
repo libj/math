@@ -48,7 +48,7 @@ import org.libj.util.function.ObjLongToLongFunction;
 @SuppressWarnings("hiding")
 public abstract class CaseTest {
   protected static final Random random = new Random();
-  private static final int warmup = 1000; // Long warmup to engage JIT compilation
+  private static final int warmup = 100; // Short warmup, therefore it's important to use -Xcomp to engage JIT compilation
   private static final int MIN_ITERATIONS = 2;
 
   private boolean initialized;
@@ -60,7 +60,7 @@ public abstract class CaseTest {
   }
 
   private static int skip(final int precision, final int skip) {
-    final int maxSkip = precision / 30; // necessary to ensure enough tests are run to get past the warmup
+    final int maxSkip = precision / 25; // necessary to ensure enough tests are run to get past the warmup
     return random.nextInt(Math.min(maxSkip, (int)((skip + 1) * Math.pow(precision, 1.6d) / 400000) + 1)) + 1;
   }
 
@@ -182,7 +182,7 @@ public abstract class CaseTest {
     }
 
     public static String toString(final Object o) {
-      return o instanceof int[] ? BigInt.toString((int[])o) : o.toString();
+      return o == null ? "null" : o instanceof int[] ? BigInt.toString((int[])o) : o.toString();
     }
 
     void onSuccess(final CaseTest caseTest, final Surveys surveys) {

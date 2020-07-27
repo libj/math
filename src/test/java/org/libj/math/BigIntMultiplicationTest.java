@@ -16,6 +16,8 @@
 
 package org.libj.math;
 
+import static org.junit.Assert.*;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -78,65 +80,65 @@ public class BigIntMultiplicationTest extends BigIntTest {
       s(int[].class, a -> scaledVal(a, scale), a -> scaledVal(a, scale), (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
     );
 
+    printReport();
+  }
+
+  private static void printReport() {
     if (BigIntMultiplication.X_Q[0] != Integer.MAX_VALUE)
-      System.out.println("               quad: " + Arrays.toString(BigIntMultiplication.X_Q));
+      System.out.println("                      quad: " + Arrays.toString(BigIntMultiplication.X_Q));
     if (BigIntMultiplication.X_QI[0] != Integer.MAX_VALUE)
-      System.out.println("       quad inplace: " + Arrays.toString(BigIntMultiplication.X_QI));
-    if (BigIntMultiplication.X_K[0] != Integer.MAX_VALUE)
-      System.out.println("          karatsuba: " + Arrays.toString(BigIntMultiplication.X_K));
-    if (BigIntMultiplication.X_KI[0] != Integer.MAX_VALUE)
-      System.out.println("  karatsuba inplace: " + Arrays.toString(BigIntMultiplication.X_KI));
+      System.out.println("              quad inplace: " + Arrays.toString(BigIntMultiplication.X_QI));
 
     if (BigIntMultiplication.X_QN[0] != Integer.MAX_VALUE)
-      System.out.println("native         quad: " + Arrays.toString(BigIntMultiplication.X_QN));
+      System.out.println("               native quad: " + Arrays.toString(BigIntMultiplication.X_QN));
     if (BigIntMultiplication.X_QIN[0] != Integer.MAX_VALUE)
-      System.out.println("native quad inplace: " + Arrays.toString(BigIntMultiplication.X_QIN));
+      System.out.println("       native quad inplace: " + Arrays.toString(BigIntMultiplication.X_QIN));
+
+    if (BigIntMultiplication.X_K[0] != Integer.MAX_VALUE)
+      System.out.println("                 karatsuba: " + Arrays.toString(BigIntMultiplication.X_K));
+    if (BigIntMultiplication.X_KI[0] != Integer.MAX_VALUE)
+      System.out.println("         karatsuba inplace: " + Arrays.toString(BigIntMultiplication.X_KI));
+    if (BigIntMultiplication.X_KP[0] != Integer.MAX_VALUE)
+      System.out.println("        parallel karatsuba: " + Arrays.toString(BigIntMultiplication.X_KP));
+    if (BigIntMultiplication.X_KPI[0] != Integer.MAX_VALUE)
+      System.out.println("karatsuba parallel inplace: " + Arrays.toString(BigIntMultiplication.X_KPI));
 
     System.out.println();
   }
 
+  public void testSquareBig(final AuditReport report, final int scale, final int skip) {
+    test("mul(T): " + scale, skip, report,
+      s(BigInteger.class, a -> scaledBigInteger(a, scale), (BigInteger a) -> a.multiply(a), String::valueOf),
+      s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a) -> a.mul(a), String::valueOf),
+      s(BigInt.class, a -> scaledBigInt(a, scale), (BigInt a) -> a.mul(a), String::valueOf),
+      s(int[].class, a -> scaledVal(a, scale), (int[] a) -> BigInt.mul(a, a), BigInt::toString)
+    );
+
+    printReport();
+  }
+
   @Test
   public void testBig(final AuditReport report) {
-    for (int i = 128; i <= 128; i *= 2)
-      testBig(report, i, 80);
+    for (int i = 2; i <= 128; i *= 2)
+      testBig(report, i, 60);
   }
 
   @Test
   public void testHuge(final AuditReport report) {
-    for (int i = 128; i <= 1024; i *= 2)
-      testBig(report, i, 100);
-  }
-
-  public void testSquareBig(final AuditReport report, final int scale) {
-    test("mul(T,T)", report,
-      s(BigInteger.class, a -> scaledBigInteger(a, scale), (BigInteger a) -> a.multiply(a), String::valueOf),
-      s(BigInt.class, a -> scaledBigInt(a, scale), (BigInt a) -> a.mul(a), String::valueOf),
-      s(int[].class, a -> scaledVal(a, scale), (int[] a) -> BigInt.mul(a, a), BigInt::toString)
-    );
+    for (int i = 256; i <= 1024; i *= 2)
+      testBig(report, i, 80);
   }
 
   @Test
   public void testSquareBig(final AuditReport report) {
     for (int i = 1; i <= 128; i *= 2)
-      testSquareBig(report, i);
+      testSquareBig(report, i, 60);
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void testProfileKaratsubaThreshold() {
-    final int min = 100;
-    final int max = 400;
-    final int steps = 20;
-
-    final StringCase<String,?,?,?,Object>[] cases = new StringCase[steps];
-    cases[0] = s("BigInteger", a -> scaledBigInteger(a, 16), this::scaledBigInteger, (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf);
-    for (int i = 1; i < steps; ++i) {
-      final int v = ((max - min) / steps) * i + min;
-      // FIXME: To run test, uncomment this line...
-//      cases[i] = s("int[] " + v, a -> { BigIntMultiplication.KARATSUBA_THRESHOLD = v; return scaledVal(a, 16); }, this::scaledVal, (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString);
-    }
-
-    test("mul(T)", cases);
+  public void testSquareHuge(final AuditReport report) {
+    for (int i = 256; i <= 1024; i *= 2)
+      testSquareBig(report, i, 80);
   }
 
   @Test
@@ -190,5 +192,221 @@ public class BigIntMultiplicationTest extends BigIntTest {
         return val;
       }, o -> BigIntValue.longValue(o, 1, o[0]))
     );
+  }
+
+  @Test
+  public void testKaratsubaThreshold() {
+    final ThresholdTest test = new ThresholdTest(2, 500000) {
+      @Override
+      void beforeTest(final int len1, final int len2) {
+        final int zlen = len1 + len2;
+        BigIntMultiplication.record = true;
+        // BigIntMultiplication.KARATSUBA_THRESHOLD_X = Math.min(len1, len2) - 5;
+        // BigIntMultiplication.KARATSUBA_THRESHOLD_Z = zlen - 5;
+      }
+
+      @Override
+      void test(final BigInt v1, final BigInt v2) {
+        v1.mul(v2);
+      }
+
+      @Override
+      void beforeControl() {
+        BigIntMultiplication.record = false;
+        // BigIntMultiplication.KARATSUBA_THRESHOLD_X = Integer.MAX_VALUE;
+        // BigIntMultiplication.KARATSUBA_THRESHOLD_Z = Integer.MAX_VALUE;
+      }
+    };
+
+    if (BigInt.NATIVE_THRESHOLD == Integer.MAX_VALUE) {
+      // KARATSUBA_THRESHOLD_Z0=135
+      test.runAB(65, 70);
+      // KARATSUBA_THRESHOLD_X0=70
+      test.runA(70, 63, 75);
+      test.runB(70, 63, 75);
+    }
+    else {
+      // KARATSUBA_THRESHOLD_Z0=80
+      test.runAB(35, 50);
+      // KARATSUBA_THRESHOLD_X0=50
+      test.runA(50, 43, 55);
+      test.runB(50, 43, 55);
+    }
+
+    printReport();
+  }
+
+  @Test
+  public void testKaratsubaSquareThreshold() {
+    final ThresholdTest test = new ThresholdTest(2, 10000) {
+      @Override
+      void beforeTest(final int len1, final int len2) {
+        BigIntMultiplication.record = true;
+        // BigIntMultiplication.KARATSUBA_SQUARE_THRESHOLD = len1 - 5;
+      }
+
+      @Override
+      void test(final BigInt v1, final BigInt v2) {
+        v1.mul(v1);
+      }
+
+      @Override
+      void beforeControl() {
+        BigIntMultiplication.record = false;
+        // BigIntMultiplication.KARATSUBA_SQUARE_THRESHOLD = Integer.MAX_VALUE;
+      }
+    };
+
+    if (BigInt.NATIVE_THRESHOLD == Integer.MAX_VALUE) {
+      // KARATSUBA_SQUARE_THRESHOLD=400
+      test.runAB(630, 650);
+    }
+    else {
+      // KARATSUBA_SQUARE_THRESHOLD=400
+      test.runAB(190, 210);
+    }
+
+    printReport();
+  }
+
+  @Test
+  public void testParallelKaratsubaThreshold() {
+    final ThresholdTest test = new ThresholdTest(5, 10000) {
+      @Override
+      void beforeTest(final int len1, final int len2) {
+        final int zlen = len1 + len2;
+        BigIntMultiplication.record = true;
+//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Math.min(len1, len2) - 5;
+//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = zlen - 5;
+      }
+
+      @Override
+      void test(final BigInt v1, final BigInt v2) {
+        v1.mul(v2);
+      }
+
+      @Override
+      void beforeControl() {
+        BigIntMultiplication.record = false;
+//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Integer.MAX_VALUE;
+//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = Integer.MAX_VALUE;
+      }
+    };
+
+    if (BigInt.NATIVE_THRESHOLD == Integer.MAX_VALUE) {
+      // KARATSUBA_THRESHOLD_Z0=1500
+      test.runAB(745, 765);
+      // KARATSUBA_THRESHOLD_X0=120, but raise it a bit cause threads are generally expensive
+      test.runA(120, 700, 720);
+      test.runB(120, 700, 720);
+    }
+    else {
+      // KARATSUBA_THRESHOLD_Z0=850
+      test.runAB(415, 435);
+      // KARATSUBA_THRESHOLD_X0=100, but raise it a bit cause threads are generally expensive
+      test.runA(90, 400, 450);
+      test.runB(90, 400, 450);
+    }
+
+    printReport();
+  }
+
+  private abstract static class ThresholdTest {
+    private final int step;
+    private final int iterations;
+
+    private ThresholdTest(final int step, final int iterations) {
+      this.step = step;
+      this.iterations = iterations;
+    }
+
+    private void runA(final int a, final int start, final int end) {
+      System.out.println("- [" + a + ",?] _____________");
+      for (int len = start; len <= end; len += step)
+        calc(a, len);
+    }
+
+    private void runB(final int b, final int start, final int end) {
+      System.out.println("- [?," + b + "] _____________");
+      for (int len = start; len <= end; len += step)
+        calc(len, b);
+    }
+
+    private void runAB(final int start, final int end) {
+      System.out.println("- [?,?] _____________");
+      for (int len = start; len <= end; len += step)
+        calc(len, len);
+    }
+
+    abstract void beforeTest(int len1, int len2);
+    abstract void test(BigInt v1, BigInt v2);
+    abstract void beforeControl();
+
+    private void calc(final int len1, final int len2) {
+      long ts, a = 0, b = 0;
+      final int[] v1 = randValByLength(len1);
+      final int[] v2 = randValByLength(len2);
+      BigInt t1, t2;
+      for (int i = 0; i < iterations; ++i) {
+        t1 = new BigInt(v1);
+        t2 = new BigInt(v2);
+
+        beforeTest(len1, len2);
+        ts = System.nanoTime();
+        test(t1, t2);
+        a += System.nanoTime() - ts;
+
+        t1 = new BigInt(v1);
+        t2 = new BigInt(v2);
+
+        beforeControl();
+        ts = System.nanoTime();
+        test(t1, t2);
+        b += System.nanoTime() - ts;
+      }
+
+      final int zlen = len1 + len2;
+      final double c = (double)a / (double)b;
+      System.out.println("[" + len1 + "," + len2 + "] " + zlen + " " + c);
+    }
+  }
+
+  public void testX(final String x, final String y, final int size) {
+    final String z = new BigInteger(x).multiply(new BigInteger(y)).toString();
+    final BigInt a = new BigInt(new int[size]);
+    final BigInt b = new BigInt(new int[size]);
+    a.assign(x);
+    b.assign(y);
+    assertEquals(z, a.mul(b).toString());
+    printReport();
+  }
+
+  private static final String x = "672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672672";
+  private static final String y = "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+
+  @Test
+  public void testFail() {
+    testX(x, y, 100);
+  }
+
+  @Test
+  public void testPass() {
+    testX(y, x, 100);
+  }
+
+  @Test
+  public void testHuldra() {
+    final String z = new BigInteger(x).multiply(new BigInteger(y)).toString();
+    final BigIntHuldra a = new BigIntHuldra(y);
+    final BigIntHuldra b = new BigIntHuldra(x);
+    assertEquals(z, a.mul(b).toString());
+  }
+
+  @Test
+  public void test2() {
+    testX(x, y, 1000);
+    testX(x, y, 1);
+    testX(y, x, 1000);
+    testX(y, x, 1);
   }
 }

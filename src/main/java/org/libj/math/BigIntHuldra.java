@@ -1264,7 +1264,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
   			else if(mul.len==2) umul((long)mul.dig[1]<<32|(mul.dig[0]&mask));
   			else{ final long tmp = (long)dig[1]<<32|(dig[0]&mask); assign(mul.dig, mul.len); umul(tmp); }
   		}
-  		else if(len<240 || mul.len<240) smallMul(mul); //Remove overhead?
+  		else if(len<120 || mul.len<120) smallMul(mul); //Remove overhead?
   		else if(Math.max(len,mul.len)<5000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
   		else karatsuba(mul,true);
     }
@@ -1459,7 +1459,11 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
       if (carry != 0 && ++y2[b] == 0)
         ++y2[b + 1];
 
-      final int[] z1 = kmul(x2, y2, 0, n - b + (x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0));
+      final int t = x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0;
+//      System.out.println(t);
+//      if (t == 1)
+//        System.console();
+      final int[] z1 = kmul(x2, y2, 0, n - b + t);
 
       System.arraycopy(z0, 0, z, 0, 2 * b); // Add z0
       System.arraycopy(z2, 0, z, b + b, 2 * (n - b)); // Add z2

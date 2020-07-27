@@ -22,8 +22,8 @@ import static org.libj.math.FixedPoint.*;
 import java.util.Random;
 
 import org.junit.Test;
-import org.libj.lang.Ansi;
-import org.libj.lang.Ansi.Color;
+import org.libj.console.Ansi;
+import org.libj.console.Ansi.Color;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 

@@ -35,8 +35,8 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.Random;
 
-import org.libj.lang.Ansi;
-import org.libj.lang.Ansi.Color;
+import org.libj.console.Ansi;
+import org.libj.console.Ansi.Color;
 import org.libj.lang.Strings;
 import org.libj.test.TestAide;
 import org.slf4j.Logger;
