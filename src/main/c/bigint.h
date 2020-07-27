@@ -31,8 +31,6 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
 
 #ifdef critical
 
-JNIEXPORT jint JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulInt(jint _x, jint *x, jint off, jint len, jint mul);
-JNIEXPORT jint JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulLong(jint _x, jint *x, jint off, jint len, jlong mull, jlong mulh);
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad(jint _x, jint *x, jint xlen, jint _y, jint *y, jint ylen, jint _z, jint *z);
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace(jint _x, jint *x, jint xlen, jint _y, jint *y, jint ylen, jint zlen);
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba(jint _x, jint *x, jint xoff, jint _y, jint *y, jint yoff, jint _z, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThresholdX, jint parallelThresholdZ);
@@ -41,8 +39,6 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
 
 #else
 
-JNIEXPORT jint JNICALL Java_org_libj_math_BigIntMultiplication_nativeUmulInt(JNIEnv *env, jobject obj, jintArray xarr, jint off, jint len, jint mul);
-JNIEXPORT jint JNICALL Java_org_libj_math_BigIntMultiplication_nativeUmulLong(JNIEnv *env, jobject obj, jintArray xarr, jint off, jint len, jlong mull, jlong mulh);
 JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuad(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jintArray zarr);
 JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jint zlen);
 JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint xoff, jintArray yarr, jint yoff, jintArray zarr, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThresholdX, jint parallelThresholdZ);

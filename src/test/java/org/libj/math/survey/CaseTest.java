@@ -52,7 +52,6 @@ import org.libj.util.function.ObjLongToLongFunction;
 public abstract class CaseTest {
   protected static final Random random = new Random();
   private static final int warmup = 100; // Short warmup, therefore it's important to use -Xcomp to engage JIT compilation
-  private static final int MIN_ITERATIONS = 2;
 
   private boolean initialized;
   private final int[] scaleFactors = {1, 1, 1};
@@ -210,6 +209,7 @@ public abstract class CaseTest {
   public static class IntCase<S,A,B,R,O> extends Case<S,int[],Integer,R,O> {
     private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE};
     private static final int MAX_PRECISION = 10;
+    private static final int MIN_ITERATIONS = 20000;
 
     private final int[] inputs = {0, 0};
     private boolean specialDone;
@@ -372,6 +372,7 @@ public abstract class CaseTest {
   public static class LongCase<S,A,B,R,O> extends Case<S,long[],Long,R,O> {
     private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE + 1, Long.MIN_VALUE, Long.MAX_VALUE};
     private static final int MAX_PRECISION = 19;
+    private static final int MIN_ITERATIONS = 2000;
 
     private final long[] inputs = {0, 0};
     private boolean specialDone;
@@ -541,6 +542,7 @@ public abstract class CaseTest {
   public static class StringCase<S,A,B,R,O> extends Case<S,String[],String,R,O> {
     private static final String[] SPECIAL = {"0", "-1", "1", String.valueOf(Byte.MIN_VALUE), String.valueOf(Byte.MAX_VALUE), String.valueOf(Short.MIN_VALUE), String.valueOf(Short.MAX_VALUE + 1), String.valueOf(Integer.MIN_VALUE), String.valueOf(Integer.MAX_VALUE + 1), String.valueOf(Long.MIN_VALUE), "9223372036854775808", "-18446744073709551616", "18446744073709551615", "-79228162514264337593543950336", "79228162514264337593543950335", "-340282366920938463463374607431768211456", "340282366920938463463374607431768211455", "-1461501637330902918203684832716283019655932542976", "1461501637330902918203684832716283019655932542975", "-6277101735386680763835789423207666416102355444464034512896", "6277101735386680763835789423207666416102355444464034512895", "-26959946667150639794667015087019630673637144422540572481103610249216", "26959946667150639794667015087019630673637144422540572481103610249215", "-115792089237316195423570985008687907853269984665640564039457584007913129639936", "115792089237316195423570985008687907853269984665640564039457584007913129639935"};
     private static final int MAX_PRECISION = 64;
+    private static final int MIN_ITERATIONS = 2;
 
     private final String[] inputs = {null, null};
     private boolean specialDone;

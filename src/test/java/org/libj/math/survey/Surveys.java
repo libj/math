@@ -81,12 +81,17 @@ public abstract class Surveys {
     for (int v = 0; v < variables; ++v)
       Arrays.fill(max[v], 0, divisions + 1, Long.MIN_VALUE);
 
+    long absMin = Integer.MAX_VALUE;
+    long absMax = Integer.MIN_VALUE;
+
     for (int s = 0; s < surveys.length; ++s) {
       for (int v = 0; v < variables; ++v) {
         for (int d = 0; d < divisions; ++d) {
           final long time = surveys[s].getTimes()[v][d];
           min[v][d] = Math.min(min[v][d], time);
           max[v][d] = Math.max(max[v][d], time);
+          absMin = Math.min(absMin, time);
+          absMax = Math.max(absMax, time);
         }
       }
     }
@@ -127,35 +132,33 @@ public abstract class Surveys {
 
       rows[rows.length - 1 - variables] = Ansi.apply("sum:", Intensity.BOLD, Color.CYAN);
       rows[rows.length - 1] = Ansi.apply("+%:", Intensity.BOLD, Color.CYAN);
-      final int[][] sums = new int[surveys.length][variables];
       final float[] x = new float[divisions];
       final float[] y = new float[divisions];
+      final int[][] sums = new int[surveys.length][variables];
       for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
         rows = columns[s + 3] = new String[1 + 2 * variables + variables * divisions];
         rows[0] = getColor(survey.getCase()).apply(headings[s]);
         final long[][] times = survey.getTimes();
         for (int d = 0; d < divisions; ++d) {
-          long sumTime = 0, sumMin = 0, sumMax = 0;
+          long avgTime = 0;
           for (int v = 0; v < variables; ++v) {
             final long time = times[v][d];
+            avgTime += time;
             sums[s][v] += time;
             c = 1 + v + d * variables;
             rows[c] = String.valueOf(time);
             color(rows, c, time, min[v][d], max[v][d], s, surveys.length);
-
-            sumTime += time;
-            sumMin += min[v][d];
-            sumMax += max[v][d];
           }
 
+          avgTime /= 2;
           x[d] = (float)d * canvas.getWidth() / divisions;
-          y[d] = ((float)sumTime - sumMin) / (sumMax - sumMin) * (canvas.getHeight() - 8); // Padding of 8
+          y[d] = ((float)avgTime - absMin) / (absMax - absMin) * (canvas.getHeight() - 8); // Padding of 8
         }
 
         final SplineInterpolator spline = SplineInterpolator.createMonotoneCubicSpline(x, y);
         for (int u = 0; u < canvas.getWidth(); ++u)
-          canvas.set(u, (int)Math.max(0, spline.interpolate(u)), getColor(survey.getCase()));
+          canvas.set(u, (int)Math.min(canvas.getHeight() - 1, Math.max(0, spline.interpolate(u))), getColor(survey.getCase()));
       }
 
       // Set the overall min and max for all surveys

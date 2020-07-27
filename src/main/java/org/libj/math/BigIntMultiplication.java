@@ -240,8 +240,6 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul == 0 ? mag[0] = 0 : umul0(mag, off, len, mul);
   }
 
-  private static native int nativeUmulInt(int[] mag, int off, int len, int mul);
-
   private static int umul0(final int[] mag, final int off, int len, int mul) {
     long carry = 0, longMul = mul & LONG_MASK;
     for (mul = off, len += off; mul < len; mag[mul] = (int)(carry += (mag[mul++] & LONG_MASK) * longMul), carry >>>= 32);
@@ -274,19 +272,17 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return hmul == 0 ? umul0(mag, off, len, (int)mul) : umul0(mag, off, len, mul & LONG_MASK, hmul);
   }
 
-  private static native int nativeUmulLong(int[] val, int off, int len, long mull, long mulh);
-
-  private static int umul0(final int[] val, final int off, int len, final long mull, final long mulh) {
+  private static int umul0(final int[] mag, final int off, int len, final long mull, final long mulh) {
     long carry = 0, mul;
     int i = off;
     len += off;
     for (long v0; i < len; ++i) { // Could this overflow?
-      val[i] = (int)((mul = (v0 = val[i] & LONG_MASK) * mull) + carry);
+      mag[i] = (int)((mul = (v0 = mag[i] & LONG_MASK) * mull) + carry);
       carry = (mul >>> 32) + (carry >>> 32) + ((mul & LONG_MASK) + (carry & LONG_MASK) >>> 32) + v0 * mulh;
     }
 
-    val[i] = (int)carry;
-    if (carry != 0 && (val[++i] = (int)(carry >>> 32)) != 0)
+    mag[i] = (int)carry;
+    if (carry != 0 && (mag[++i] = (int)(carry >>> 32)) != 0)
       ++i;
 
     return i - off;
@@ -339,35 +335,23 @@ abstract class BigIntMultiplication extends BigIntBinary {
         if (len + 2 >= val.length)
           val = realloc(val, len + OFF, len + 2);
 
-        if (NATIVE_THRESHOLD == 0)
-          len = nativeUmulInt(val, OFF, len, mul[1]);
-        else
-          len = umul0(val, OFF, len, mul[1]);
+        len = umul0(val, OFF, len, mul[1]);
       }
       else if (len == 1) {
         final int m = val[1];
         val = copy(mul, mlen + OFF, val, mlen + 2);
-        if (NATIVE_THRESHOLD == 0)
-          len = nativeUmulInt(val, OFF, mlen, m);
-        else
-          len = umul0(val, OFF, mlen, m);
+        len = umul0(val, OFF, mlen, m);
       }
       else if (mlen == 2) {
         if (len + 3 >= val.length)
           val = realloc(val, len + OFF, len + 3);
 
-        if (NATIVE_THRESHOLD == 0)
-          len = nativeUmulLong(val, OFF, len, mul[1] & LONG_MASK, mul[2] & LONG_MASK);
-        else
-          len = umul0(val, OFF, len, mul[1] & LONG_MASK, mul[2] & LONG_MASK);
+        len = umul0(val, OFF, len, mul[1] & LONG_MASK, mul[2] & LONG_MASK);
       }
       else {
         final long ml = val[1] & LONG_MASK, mh = val[2] & LONG_MASK;
         val = copy(mul, mlen + OFF, val, mlen + 3);
-        if (NATIVE_THRESHOLD == 0)
-          len = nativeUmulLong(val, OFF, mlen, ml, mh);
-        else
-          len = umul0(val, OFF, mlen, ml, mh);
+        len = umul0(val, OFF, mlen, ml, mh);
       }
 
       val[0] = sig ? len : -len;

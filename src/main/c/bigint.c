@@ -20,40 +20,6 @@ const jlong LONG_MASK = 0xFFFFFFFFL;
 const jint OFF = 1;
 const jint MAX_VALUE = 2147483647;
 
-JNIEXPORT jint JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulInt(jint _x, jint *x, jint off, jint len, jint mul) {
-  unsigned long carry = 0;
-  jlong low = mul & LONG_MASK;
-
-  for (mul = off, len += off; mul < len; ++mul) {
-    x[mul] = (jint)(carry += (x[mul] & LONG_MASK) * low);
-    carry >>= 32;
-  }
-
-  if (carry != 0)
-    x[len++] = (int)carry;
-
-  return len - off;
-}
-
-JNIEXPORT jint JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulLong(jint _x, jint *x, jint off, jint len, jlong mull, jlong mulh) {
-  unsigned long carry = 0;
-  jlong mul;
-
-  jint i = off;
-  len += off;
-
-  for (jlong v0; i < len; ++i) { // Could this overflow?
-    x[i] = (int)((mul = (v0 = x[i] & LONG_MASK) * mull) + carry);
-    carry = ((unsigned long)mul >> 32) + (carry >> 32) + ((mul & LONG_MASK) + (carry & LONG_MASK) >> 32) + v0 * mulh;
-  }
-
-  x[i] = (jint)carry;
-  if (carry != 0 && (x[++i] = (jint)(carry >> 32)) != 0)
-    ++i;
-
-  return i - off;
-}
-
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad(jint _x, jint *x, jint xlen, jint _y, jint *y, jint ylen, jint _z, jint *z) {
   jint i, j, k;
 
@@ -359,8 +325,6 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
 #ifdef critical
 
 static JNINativeMethod criticalMethods[] = {
-  { "nativeUmulInt", "([IIII)I", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulInt },
-  { "nativeUmulLong", "([IIIJJ)I", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulLong },
   { "nativeKaratsuba", "([II[II[IIIIIIII)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba },
   { "nativeMulQuad", "([II[II[I)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad },
   { "nativeMulQuadInPlace", "([II[III)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace },
@@ -383,26 +347,6 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 }
 
 #else
-
-JNIEXPORT jint JNICALL Java_org_libj_math_BigIntMultiplication_nativeUmulInt(JNIEnv *env, jobject obj, jintArray xarr, jint off, jint len, jint mul) {
-  jboolean xcopy;
-  jint *x = (jint*)env->GetPrimitiveArrayCritical(xarr, &xcopy);
-
-  len = JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulInt(0, x, off, len, mul);
-
-  env->ReleasePrimitiveArrayCritical(xarr, x, xcopy ? 0 : JNI_ABORT);
-  return len;
-}
-
-JNIEXPORT jint JNICALL Java_org_libj_math_BigIntMultiplication_nativeUmulLong(JNIEnv *env, jobject obj, jintArray xarr, jint off, jint len, jlong mull, jlong mulh) {
-  jboolean xcopy;
-  jint *x = (jint*)env->GetPrimitiveArrayCritical(xarr, &xcopy);
-
-  len = JavaCritical_org_libj_math_BigIntMultiplication_nativeUmulLong(0, x, off, len, mull, mulh);
-
-  env->ReleasePrimitiveArrayCritical(xarr, x, xcopy ? 0 : JNI_ABORT);
-  return len;
-}
 
 JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuad(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jintArray zarr) {
   jboolean zcopy;
