@@ -18,9 +18,11 @@ package org.libj.math.survey;
 
 import java.util.Arrays;
 
+import org.libj.console.Ansi;
 import org.libj.math.survey.CaseTest.Case;
 
 public abstract class Survey {
+  private final Case<?,?,?,?,?> cse;
   private final Class<?> subject;
   private final int variables;
   private final int divisions;
@@ -32,6 +34,7 @@ public abstract class Survey {
   private final int[] allocations;
 
   public Survey(final Case<?,?,?,?,?> cse, final AuditReport report, final int variables, final int divisions, final int warmup) {
+    this.cse = cse;
     this.subject = report == null ? null : (Class<?>)cse.subject;
     this.trackedClasses = report == null ? null : report.getTrackedClasses();
     this.allocations = trackedClasses == null ? null : new int[trackedClasses.length];
@@ -54,6 +57,10 @@ public abstract class Survey {
 
   public Class<?> getSubject() {
     return this.subject;
+  }
+
+  public Case<?,?,?,?,?> getCase() {
+    return cse;
   }
 
   public abstract int getDivision(int variable, Object obj);

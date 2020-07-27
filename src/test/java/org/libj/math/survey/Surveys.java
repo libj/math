@@ -68,8 +68,6 @@ public abstract class Surveys {
 
   public abstract String getLabel(int index, int variable, int division);
 
-  private static final Ansi.Color[] colors = {Ansi.Color.RED, Ansi.Color.DEFAULT, Ansi.Color.YELLOW, Ansi.Color.GREEN};
-
   public void print(final String label, final long ts, final String ... headings) {
     final Canvas canvas = new Canvas(90, 20);
     for (int s = 0; s < surveys.length; ++s)
@@ -102,7 +100,7 @@ public abstract class Surveys {
       for (int s = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
         rows = columns[1 + s] = new String[1 + 2];
-        rows[0] = colors[s].apply(headings[s]);
+        rows[0] = getColor(survey.getCase()).apply(headings[s]);
         rows[1] = String.valueOf(survey.getAllocs(survey.getSubject()));
         rows[2] = String.valueOf(survey.getAllocs(int[].class));
       }
@@ -135,7 +133,7 @@ public abstract class Surveys {
       for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
         rows = columns[s + 3] = new String[1 + 2 * variables + variables * divisions];
-        rows[0] = colors[s].apply(headings[s]);
+        rows[0] = getColor(survey.getCase()).apply(headings[s]);
         final long[][] times = survey.getTimes();
         for (int d = 0; d < divisions; ++d) {
           long sumTime = 0, sumMin = 0, sumMax = 0;
@@ -157,7 +155,7 @@ public abstract class Surveys {
 
         final SplineInterpolator spline = SplineInterpolator.createMonotoneCubicSpline(x, y);
         for (int u = 0; u < canvas.getWidth(); ++u)
-          canvas.set(u, (int)Math.max(0, spline.interpolate(u)), colors[s]);
+          canvas.set(u, (int)Math.max(0, spline.interpolate(u)), getColor(survey.getCase()));
       }
 
       // Set the overall min and max for all surveys
@@ -187,6 +185,7 @@ public abstract class Surveys {
     }
 
     System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns));
+    System.out.println();
     canvas.render();
   }
 
@@ -198,4 +197,6 @@ public abstract class Surveys {
     else
       rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.WHITE);
   }
+
+  public abstract Ansi.Color getColor(Case<?,?,?,?,?> cse);
 }

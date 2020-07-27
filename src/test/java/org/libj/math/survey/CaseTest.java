@@ -28,10 +28,13 @@ import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
 import org.junit.internal.ArrayComparisonFailure;
+import org.libj.console.Ansi;
+import org.libj.console.Ansi.Color;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 import org.libj.math.BigInt;
 import org.libj.math.BigIntHuldra;
+import org.libj.math.survey.CaseTest.Case;
 import org.libj.test.TestAide;
 import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;
@@ -61,7 +64,7 @@ public abstract class CaseTest {
 
   private static int skip(final int precision, final int skip) {
     final int maxSkip = precision / 25; // necessary to ensure enough tests are run to get past the warmup
-    return random.nextInt(Math.min(maxSkip, (int)((skip + 1) * Math.pow(precision, 1.6d) / 400000) + 1)) + 1;
+    return random.nextInt(Math.min(maxSkip, (int)((skip + 1) * Math.pow(precision, 1.6d) / 400000)) + 1) + 1;
   }
 
   public boolean initialized() {
@@ -105,6 +108,10 @@ public abstract class CaseTest {
       this.bToB = bToB;
       this.test = test;
       this.out = out;
+    }
+
+    public S getSubject() {
+      return this.subject;
     }
 
     int variables() {
@@ -915,6 +922,8 @@ public abstract class CaseTest {
     exec(label, 0, report, cases);
   }
 
+  public abstract Ansi.Color getColor(Case<?,?,?,?,?> cse);
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   private final <I,O>void exec(final String label, final int skip, final AuditReport report, final Case<?,?,I,?,O>[] cases) {
     final Case prototype = cases[0];
@@ -930,6 +939,11 @@ public abstract class CaseTest {
 
       initialized = true;
       return CaseTest.this.surveys = new Surveys(cases, variables, divisions, warmup, report) {
+        @Override
+        public Color getColor(final Case<?,?,?,?,?> cse) {
+          return CaseTest.this.getColor(cse);
+        }
+
         @Override
         public String getLabel(final int index, final int variable, final int division) {
           final int maxPrecision = prototype.maxPrecision(variable);

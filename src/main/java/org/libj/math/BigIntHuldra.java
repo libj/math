@@ -1460,9 +1460,6 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
         ++y2[b + 1];
 
       final int t = x2[n - b] != 0 || y2[n - b] != 0 ? 1 : 0;
-//      System.out.println(t);
-//      if (t == 1)
-//        System.console();
       final int[] z1 = kmul(x2, y2, 0, n - b + t);
 
       System.arraycopy(z0, 0, z, 0, 2 * b); // Add z0

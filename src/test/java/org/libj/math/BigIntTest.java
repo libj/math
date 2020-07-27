@@ -19,6 +19,8 @@ package org.libj.math;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import org.libj.console.Ansi;
+import org.libj.console.Ansi.Color;
 import org.libj.lang.Numbers;
 import org.libj.math.survey.CaseTest;
 
@@ -336,5 +338,19 @@ public abstract class BigIntTest extends CaseTest {
       r[i] = random.nextInt();
 
     return r;
+  }
+
+  @Override
+  public Color getColor(final Case<?,?,?,?,?> cse) {
+    if (cse.getSubject() == BigInteger.class)
+      return Ansi.Color.CYAN;
+
+    if (cse.getSubject() == BigInt.class)
+      return Ansi.Color.YELLOW;
+
+    if (cse.getSubject() == int[].class)
+      return Ansi.Color.GREEN;
+
+    return Ansi.Color.DEFAULT;
   }
 }
