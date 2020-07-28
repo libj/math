@@ -34,7 +34,6 @@ import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 import org.libj.math.BigInt;
 import org.libj.math.BigIntHuldra;
-import org.libj.math.survey.CaseTest.Case;
 import org.libj.test.TestAide;
 import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;
@@ -123,8 +122,8 @@ public abstract class CaseTest {
       return (variable == 0 ? scaleFactorFactorA : scaleFactorFactorB) * maxPrecision();
     }
 
-    abstract void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys);
-    abstract <I,O>int test(final CaseTest caseTest, final String label, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final T inputs);
+    abstract void test(CaseTest caseTest, String label, int skip, AuditReport report, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys);
+    abstract <I,O>int test(CaseTest caseTest, String label, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys, T inputs);
 
     <I,O>int verify(final String label, final Case<?,?,I,Object,O> cse, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
       final Object o = cse.out != null ? cse.out.apply(result) : result;
@@ -209,7 +208,7 @@ public abstract class CaseTest {
   public static class IntCase<S,A,B,R,O> extends Case<S,int[],Integer,R,O> {
     private static final int[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE};
     private static final int MAX_PRECISION = 10;
-    private static final int MIN_ITERATIONS = 20000;
+    private static final int MIN_ITERATIONS = 2000;
 
     private final int[] inputs = {0, 0};
     private boolean specialDone;
@@ -224,7 +223,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final int skip, final AuditReport report, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
       if (!specialDone) {
         for (int i = 0; i < SPECIAL.length; ++i) {
           inputs[0] = SPECIAL[i];
@@ -237,10 +236,11 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
+      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations();
       int precision = MAX_PRECISION;
       for (int i = 0; i < precision; i += skip(precision, skip)) {
         for (int j = 0; j < precision; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(MIN_ITERATIONS, warmup / precision); ++k) {
+          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) {
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
@@ -372,7 +372,7 @@ public abstract class CaseTest {
   public static class LongCase<S,A,B,R,O> extends Case<S,long[],Long,R,O> {
     private static final long[] SPECIAL = {0, -1, 1, -2, 2, -4, 4, -8, 8, -16, 16, -32, 32, -64, 64, Byte.MIN_VALUE, Byte.MAX_VALUE + 1, Short.MIN_VALUE, Short.MAX_VALUE + 1, Integer.MIN_VALUE, Integer.MAX_VALUE + 1, Long.MIN_VALUE, Long.MAX_VALUE};
     private static final int MAX_PRECISION = 19;
-    private static final int MIN_ITERATIONS = 2000;
+    private static final int MIN_ITERATIONS = 200;
 
     private final long[] inputs = {0, 0};
     private boolean specialDone;
@@ -387,7 +387,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final int skip, final AuditReport report, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
       if (!specialDone) {
         for (int i = 0; i < SPECIAL.length; ++i) {
           inputs[0] = SPECIAL[i];
@@ -400,10 +400,11 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
+      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations();
       int precision = MAX_PRECISION;
       for (int i = 0; i < precision; i += skip(precision, skip)) {
         for (int j = 0; j < precision; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(MIN_ITERATIONS, warmup / precision); ++k) {
+          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) {
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
@@ -557,7 +558,7 @@ public abstract class CaseTest {
     }
 
     @Override
-    final void test(final CaseTest caseTest, final String label, final int skip, final Case<?,?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
+    final void test(final CaseTest caseTest, final String label, final int skip, final AuditReport report, final Case<?,?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
       if (!specialDone) {
         for (int i = 0; i < SPECIAL.length; ++i) {
           inputs[0] = SPECIAL[i];
@@ -570,10 +571,11 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
+      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations();
       int precision = MAX_PRECISION;
       for (int i = 0; i < precision; i += skip(precision, skip)) {
         for (int j = 0; j < precision; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(MIN_ITERATIONS, warmup / precision); ++k) {
+          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) {
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             precision = Math.max(precision, test(caseTest, label, cases, surveys, inputs));
@@ -935,7 +937,7 @@ public abstract class CaseTest {
     final String[] headings = heading(cases);
 
     final long ts = System.currentTimeMillis();
-    prototype.test(this, label, skip, cases, () -> {
+    prototype.test(this, label, skip, report, cases, () -> {
       if (initialized)
         return CaseTest.this.surveys;
 

@@ -32,10 +32,21 @@ package org.libj.math;
 abstract class BigIntMultiplication extends BigIntBinary {
   private static final long serialVersionUID = -4907342078241892616L;
 
+  // For debugging
+  public static boolean record = true;
+  public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_QN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_QI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_QIN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_K = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_KI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+
   /**
    * Factor to be applied Karatsuba thresholds. This factor was determined
    * experimentally to produce better results in general applications than the
-   * exact factors that were determined in isolated manner.
+   * exact factors that were determined in isolated tests.
    */
   private static final double THRESHOLD_FACTOR = 1.2;
 
@@ -287,16 +298,6 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     return i - off;
   }
-
-  public static boolean record = true;
-  public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_QN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_QI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_QIN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_K = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_KI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
 
   /**
    * Multiplies the provided number by a {@linkplain BigInt#val() value-encoded

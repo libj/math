@@ -1,3 +1,19 @@
+/* Copyright (c) 2020 LibJ
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * You should have received a copy of The MIT License (MIT) along with this
+ * program. If not, see <http://opensource.org/licenses/MIT/>.
+ */
+
 package org.libj.math.survey;
 
 import java.io.File;
@@ -79,10 +95,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
   static JarFile createTempJarFile(final File dir) throws IOException {
     final Path dirPath = dir.toPath();
     final Path zipPath = Files.createTempFile("specialagent", ".jar");
-    try (
-      final FileOutputStream fos = new FileOutputStream(zipPath.toFile());
-      final JarOutputStream jos = new JarOutputStream(fos);
-    ) {
+    try (final JarOutputStream jos = new JarOutputStream(new FileOutputStream(zipPath.toFile()))) {
       recurseDir(dir, new Predicate<File>() {
         @Override
         public boolean test(final File t) {
@@ -146,7 +159,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
   private static void loadClassesInBootstrap(final String ... classNames) throws IOException {
     final Map<String,byte[]> nameToBytes = new HashMap<>();
     for (final String className : classNames) {
-      try (final InputStream in = InstanceCounter.class.getClassLoader().getResource(className.replace('.', '/').concat(".class")).openStream()) {
+      try (final InputStream in = AuditRunner.class.getClassLoader().getResource(className.replace('.', '/').concat(".class")).openStream()) {
         final byte[] bytes = new byte[in.available()];
         in.read(bytes);
         nameToBytes.put(className, bytes);

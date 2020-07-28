@@ -76,21 +76,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apfloat</groupId>
-      <artifactId>apfloat</artifactId>
-      <version>1.9.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jscience</groupId>
-      <artifactId>jscience</artifactId>
-      <version>4.3.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.bytebuddy</groupId>
-      <artifactId>byte-buddy</artifactId>
-      <version>${version.bytebuddy}</version>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman</artifactId>
+      <version>4.0.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -100,9 +88,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.byteman</groupId>
-      <artifactId>byteman</artifactId>
-      <version>4.0.11</version>
+      <groupId>org.apfloat</groupId>
+      <artifactId>apfloat</artifactId>
+      <version>1.9.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jscience</groupId>
+      <artifactId>jscience</artifactId>
+      <version>4.3.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

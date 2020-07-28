@@ -18,7 +18,6 @@ package org.libj.math.survey;
 
 import java.util.Arrays;
 
-import org.libj.console.Ansi;
 import org.libj.math.survey.CaseTest.Case;
 
 public abstract class Survey {
@@ -31,13 +30,13 @@ public abstract class Survey {
   private final long[][] max;
   private final long[][] min;
   private final Class<?>[] trackedClasses;
-  private final int[] allocations;
+  private final int[][] allocations;
 
   public Survey(final Case<?,?,?,?,?> cse, final AuditReport report, final int variables, final int divisions, final int warmup) {
     this.cse = cse;
     this.subject = report == null ? null : (Class<?>)cse.subject;
     this.trackedClasses = report == null ? null : report.getTrackedClasses();
-    this.allocations = trackedClasses == null ? null : new int[trackedClasses.length];
+    this.allocations = trackedClasses == null ? null : new int[trackedClasses.length][divisions];
     this.variables = variables;
     this.divisions = divisions;
     this.counts = new int[variables][divisions];
@@ -71,11 +70,11 @@ public abstract class Survey {
       this.max[variable][division] = Math.max(this.max[variable][division], time);
       this.min[variable][division] = Math.min(this.min[variable][division], time);
       this.times[variable][division] += time;
-
-      if (trackedClasses != null)
-        for (int i = 0; i < trackedClasses.length; ++i)
-          allocations[i] += report.getAllocations(trackedClasses[i]);
     }
+
+    if (trackedClasses != null)
+      for (int c = 0; c < trackedClasses.length; ++c)
+        allocations[c][division] += report.getAllocations(trackedClasses[c]);
 
     if (report != null)
       report.reset();
@@ -85,11 +84,11 @@ public abstract class Survey {
     return trackedClasses;
   }
 
-  public int getAllocs(final Class<?> subject) {
+  public int getAllocs(final Class<?> subject, final int division) {
     if (trackedClasses != null)
-      for (int i = 0; i < trackedClasses.length; ++i)
-        if (trackedClasses[i] == subject)
-          return allocations[i];
+      for (int c = 0; c < trackedClasses.length; ++c)
+        if (trackedClasses[c] == subject)
+          return allocations[c][division];
 
     return 0;
   }
@@ -102,7 +101,7 @@ public abstract class Survey {
     return times;
   }
 
-  public void normalize(final int count) {
+  public void normalize() {
     for (int v = 0; v < variables; ++v) {
       for (int d = 0; d < divisions; ++d) {
         if (counts[v][d] == 0)
@@ -112,22 +111,21 @@ public abstract class Survey {
           times[v][d] /= counts[v][d];
         }
         else {
-          times[v][d] -= max[v][d];
-          times[v][d] -= min[v][d];
+          times[v][d] -= max[v][d] + min[v][d];
           times[v][d] /= counts[v][d] - 2;
         }
       }
     }
 
-//    for (int a = 0; a < allocations.length; ++a)
-//      allocations[a] /= count;
+    for (int d = 0; d < divisions; ++d)
+      for (int c = 0; c < trackedClasses.length; ++c)
+        allocations[c][d] /= counts[0][d];
   }
 
   public void reset() {
-    for (int v = 0; v < variables; ++v)
+    for (int v = 0; v < variables; ++v) {
       Arrays.fill(times[v], 0);
-
-    for (int v = 0; v < variables; ++v)
       Arrays.fill(counts[v], 0);
+    }
   }
 }

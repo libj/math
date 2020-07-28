@@ -28,8 +28,8 @@ import org.libj.math.survey.AuditRunner;
 import gnu.java.math.MPN;
 
 @RunWith(AuditRunner.class)
-//@AuditRunner.Instrument({BigInt.class, int[].class})
-//@AuditRunner.Instrument({BigInteger.class, int[].class})
+@AuditRunner.Instrument({BigInt.class, int[].class})
+@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
@@ -45,7 +45,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testSignedInt(final AuditReport report) {
     test("mul(int)", report,
       i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
-      i(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, int b) -> { a.mul(b); return a; }, String::valueOf),
+      // i(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, int b) -> { a.mul(b); return a; }, String::valueOf),
       i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
       i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.mul(a, b), BigInt::toString)
     );
@@ -65,7 +65,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testSignedLong(final AuditReport report) {
     test("mul(long)", report,
       l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
-      l(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, long b) -> { a.mul(b); return a; }, String::valueOf),
+      // l(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, long b) -> { a.mul(b); return a; }, String::valueOf),
       l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
       l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.mul(a, b), BigInt::toString)
     );
@@ -74,7 +74,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testBig(final AuditReport report, final int scale, final int skip) {
     test("mul(T): " + scale, skip, report,
       s(BigInteger.class, a -> scaledBigInteger(a, scale), a -> scaledBigInteger(a, scale), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
-      s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) -> a.mul(b), String::valueOf),
+      // s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) -> a.mul(b), String::valueOf),
       s(BigInt.class, a -> scaledBigInt(a, scale), a -> scaledBigInt(a, scale), (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
       s(int[].class, a -> scaledVal(a, scale), a -> scaledVal(a, scale), (int[] a, int[] b) -> BigInt.mul(a, b), BigInt::toString)
     );
@@ -106,9 +106,9 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   public void testSquareBig(final AuditReport report, final int scale, final int skip) {
-    test("mul(T): " + scale, skip, report,
+    test("mul(T,T): " + scale, skip, report,
       s(BigInteger.class, a -> scaledBigInteger(a, scale), (BigInteger a) -> a.multiply(a), String::valueOf),
-      s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a) -> a.mul(a), String::valueOf),
+      // s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a) -> a.mul(a), String::valueOf),
       s(BigInt.class, a -> scaledBigInt(a, scale), (BigInt a) -> a.mul(a), String::valueOf),
       s(int[].class, a -> scaledVal(a, scale), (int[] a) -> BigInt.mul(a, a), BigInt::toString)
     );
@@ -280,8 +280,8 @@ public class BigIntMultiplicationTest extends BigIntTest {
       void beforeTest(final int len1, final int len2) {
         final int zlen = len1 + len2;
         BigIntMultiplication.record = true;
-//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Math.min(len1, len2) - 5;
-//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = zlen - 5;
+        // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Math.min(len1, len2) - 5;
+        // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = zlen - 5;
       }
 
       @Override
@@ -292,8 +292,8 @@ public class BigIntMultiplicationTest extends BigIntTest {
       @Override
       void beforeControl() {
         BigIntMultiplication.record = false;
-//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Integer.MAX_VALUE;
-//        BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = Integer.MAX_VALUE;
+        // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Integer.MAX_VALUE;
+        // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = Integer.MAX_VALUE;
       }
     };
 

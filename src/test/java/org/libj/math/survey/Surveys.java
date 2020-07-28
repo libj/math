@@ -24,6 +24,7 @@ import org.libj.console.Ansi.Intensity;
 import org.libj.console.Tables;
 import org.libj.console.drawille.Canvas;
 import org.libj.lang.Classes;
+import org.libj.lang.Strings;
 import org.libj.lang.Strings.Align;
 import org.libj.math.SplineInterpolator;
 import org.libj.math.survey.CaseTest.Case;
@@ -69,9 +70,8 @@ public abstract class Surveys {
   public abstract String getLabel(int index, int variable, int division);
 
   public void print(final String label, final long ts, final String ... headings) {
-    final Canvas canvas = new Canvas(90, 20);
     for (int s = 0; s < surveys.length; ++s)
-      surveys[s].normalize(count);
+      surveys[s].normalize();
 
     final long[][] min = new long[variables][divisions + 1];
     for (int v = 0; v < variables; ++v)
@@ -96,40 +96,50 @@ public abstract class Surveys {
       }
     }
 
+    final Canvas canvas;
     final String[][] columns = new String[3 + surveys.length][];
+    final int[][] counts = surveys[0].getCounts();
+    String[] rows = columns[0] = new String[1 + variables * divisions];
+    rows[0] = "length";
+    for (int v = 0; v < variables; ++v)
+      for (int d = 0; d < divisions; ++d)
+        if (counts[v][d] > 0)
+          rows[1 + v + d * variables] = getLabel(0, v, d);
+
+    rows = columns[1] = new String[1 + variables * divisions];
+    rows[0] = "precision";
+    for (int v = 0; v < variables; ++v)
+      for (int d = 0; d < divisions; ++d)
+        if (counts[v][d] > 0)
+          rows[1 + v + d * variables] = getLabel(1, v, d);
+
+    rows = columns[2] = new String[1 + variables * divisions];
+    rows[0] = "count";
+    for (int v = 0; v < variables; ++v)
+      for (int d = 0; d < divisions; ++d)
+        if (counts[v][d] > 0)
+          rows[1 + v + d * variables] = String.valueOf(counts[v][d]);
+
     if (report != null) {
-      String[] rows = columns[0] = new String[1 + 2];
-      rows[0] = "";
-      rows[1] = "T";
-      rows[2] = Classes.getProperSimpleName(int[].class);
-      for (int s = 0; s < surveys.length; ++s) {
+      canvas = null;
+      for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
-        rows = columns[1 + s] = new String[1 + 2];
-        rows[0] = getColor(survey.getCase()).apply(headings[s]);
-        rows[1] = String.valueOf(survey.getAllocs(survey.getSubject()));
-        rows[2] = String.valueOf(survey.getAllocs(int[].class));
+        rows = columns[s + 3] = new String[1 + divisions];
+        rows[0] = getColor(survey.getCase()).apply(headings[s]) + "\n" + getColor(survey.getCase()).apply("    T │ " + Classes.getProperSimpleName(int[].class));
+        for (int d = 0; d < divisions; ++d) {
+          c = 1 + d * variables;
+          if (variables == 1) {
+            rows[c] = survey.getAllocs(survey.getSubject(), d) + " │ " + Strings.pad(String.valueOf(survey.getAllocs(int[].class, d)), Align.RIGHT, 5);
+          }
+          else {
+            rows[c] = String.valueOf(survey.getAllocs(survey.getSubject(), d));
+            rows[c + 1] = String.valueOf(survey.getAllocs(int[].class, d));
+          }
+        }
       }
     }
     else {
-      final int[][] counts = surveys[0].getCounts();
-      String[] rows = columns[0] = new String[1 + 2 * variables + variables * divisions];
-      rows[0] = "length";
-      for (int v = 0; v < variables; ++v)
-        for (int d = 0; d < divisions; ++d)
-          rows[1 + v + d * variables] = getLabel(0, v, d);
-
-      rows = columns[1] = new String[1 + 2 * variables + variables * divisions];
-      rows[0] = "precision";
-      for (int v = 0; v < variables; ++v)
-        for (int d = 0; d < divisions; ++d)
-          rows[1 + v + d * variables] = getLabel(1, v, d);
-
-      rows = columns[2] = new String[1 + 2 * variables + variables * divisions];
-      rows[0] = "count";
-      for (int v = 0; v < variables; ++v)
-        for (int d = 0; d < divisions; ++d)
-          rows[1 + v + d * variables] = String.valueOf(counts[v][d]);
-
+      canvas = new Canvas(90, 20);
       rows[rows.length - 1 - variables] = Ansi.apply("sum:", Intensity.BOLD, Color.CYAN);
       rows[rows.length - 1] = Ansi.apply("+%:", Intensity.BOLD, Color.CYAN);
       final float[] x = new float[divisions];
@@ -188,8 +198,10 @@ public abstract class Surveys {
     }
 
     System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns));
-    System.out.println();
-    canvas.render();
+    if (canvas != null) {
+      System.out.println();
+      canvas.render();
+    }
   }
 
   private static void color(final String[] rows, final int c, final long val, final long min, final long max, final int s, final int len) {
