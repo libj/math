@@ -42,7 +42,7 @@ public class Result {
     if (index == classes.length)
       return new String[depth];
 
-    final String name = classes[index] == null ? null : Classes.getProperName(classes[index]);
+    final String name = classes[index] == null ? null : classes[index].getCanonicalName();
     if (name == null)
       return classesToNames(classes, index + 1, depth);
 
@@ -71,7 +71,7 @@ public class Result {
   }
 
   public int getAllocations(final Class<?> cls) {
-    final String className = Classes.getProperName(cls);
+    final String className = cls.getCanonicalName();
     for (int i = 0; i < resultClassNames.length; ++i)
       if (className.equals(resultClassNames[i]))
         return counts[i];

@@ -1686,7 +1686,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	 * @param  div The number to use in the division causing the remainder.
 	 * @see    #rem
 	 */
-	public void mod(BigIntHuldra div) {
+	public BigIntHuldra mod(BigIntHuldra div) {
 		if (div.sign <= 0)
 			throw new ArithmeticException("BigInt: modulus not positive");
 
@@ -1694,6 +1694,8 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 		if (this.sign < 0) {
 			this.add(div);
 		}
+
+		return this;
 	}
 	/**
 	* Divides the first magnitude u[0..m) by v[0..n) and stores the resulting quotient in q.

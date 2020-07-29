@@ -23,9 +23,9 @@ import org.libj.console.Ansi;
 import org.libj.console.Ansi.Color;
 import org.libj.lang.Numbers;
 import org.libj.math.survey.CaseTest;
+import org.libj.util.ArrayUtil;
 
 public abstract class BigIntTest extends CaseTest {
-  protected static final int IRRELEVANT = 1;
   protected static final int[] ZERO = {0};
 
   private static final int defaultScaleFactor = 2;
@@ -40,19 +40,6 @@ public abstract class BigIntTest extends CaseTest {
 
   private static int getInflatedSize() {
     return random.nextInt(2048) + 1;
-  }
-
-  public static byte[] reverse(final byte[] bytes) {
-    if (bytes == null || bytes.length <= 1)
-      return bytes;
-
-    for (int i = 0; i < bytes.length / 2; ++i) {
-      bytes[i] ^= bytes[bytes.length - 1 - i];
-      bytes[bytes.length - 1 - i] ^= bytes[i];
-      bytes[i] ^= bytes[bytes.length - 1 - i];
-    }
-
-    return bytes;
   }
 
   public int nz(final int a) {
@@ -108,7 +95,7 @@ public abstract class BigIntTest extends CaseTest {
     if (!initialized())
       setScaleFactor(IntCase.class, defaultScaleFactor);
 
-    final int[] val = newVal(2);
+    final int[] val = newMag(2);
     return shoudlScale ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
   }
 
@@ -116,7 +103,7 @@ public abstract class BigIntTest extends CaseTest {
     if (!initialized())
       setScaleFactor(LongCase.class, defaultScaleFactor);
 
-    final int[] val = newVal(3);
+    final int[] val = newMag(3);
     return shoudlScale ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
   }
 
@@ -125,7 +112,7 @@ public abstract class BigIntTest extends CaseTest {
       setScaleFactor(StringCase.class, factor);
 
     int[] val = BigInt.valueOf(a);
-    val = newVal(val.length * factor);
+    val = newMag(val.length * factor);
     return shoudlScale ? BigInt.assign(val, stringScale(a, factor)) : BigInt.assign(val, a);
   }
 
@@ -177,50 +164,12 @@ public abstract class BigIntTest extends CaseTest {
     return scaledBigIntHuldra(a, defaultScaleFactor);
   }
 
-  private static BigInt newBigInt() {
-//    AuditReport.foo = true;
-//    System.err.println("-->");
-    final BigInt x;
-    if (shouldInflate) {
-//      System.err.println("1");
-      final int[] val = new int[getInflatedSize()];
-//      System.err.println("2");
-      x = new BigInt(val);
-//      System.err.println("3");
-    }
-    else {
-//      System.err.println("4");
-      x = new BigInt(0);
-//      System.err.println("5");
-    }
-//    AuditReport.foo = false;
-//    System.err.println("<--");
-    return x;
-  }
-
   private static BigIntHuldra newBigIntHuldra() {
-//    AuditReport.foo = true;
-//    System.err.println("-->");
-    final BigIntHuldra x;
-    if (shouldInflate) {
-//      System.err.println("1");
-      final int[] val = new int[getInflatedSize()];
-//      System.err.println("2");
-      x = new BigIntHuldra(val);
-//      System.err.println("3");
-    }
-    else {
-//      System.err.println("4");
-      x = new BigIntHuldra(0);
-//      System.err.println("5");
-    }
-//    AuditReport.foo = false;
-//    System.err.println("<--");
-    return x;
+    return new BigIntHuldra(newMag(0));
   }
 
-  private static int[] newVal(final int size) {
-    return shouldInflate ? new int[Math.min(size, getInflatedSize())] : new int[size];
+  private static int[] newMag(final int size) {
+    return shouldInflate ? new int[Math.max(size, getInflatedSize())] : new int[size];
   }
 
   @Override
@@ -331,13 +280,13 @@ public abstract class BigIntTest extends CaseTest {
     return new String(num);
   }
 
-  static int[] randValByLength(final int length) {
-    final int[] r = new int[length + 1];
-    r[0] = length;
+  static int[] randomVal(final int length) {
+    final int[] val = new int[length + 1];
+    val[0] = length;
     for (int i = 1; i <= length; ++i)
-      r[i] = random.nextInt();
+      val[i] = random.nextInt();
 
-    return r;
+    return val;
   }
 
   @Override

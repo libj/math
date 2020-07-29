@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
+import org.libj.util.ArrayUtil;
 
 @RunWith(AuditRunner.class)
 //@AuditRunner.Instrument({BigInt.class, int[].class})
@@ -66,8 +67,8 @@ public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testString(final AuditReport report) {
     test("<init>(String)", report,
-      s(BigInteger.class, (String a) -> new BigInteger(a), String::valueOf),
-      s(BigInt.class, (String a) -> new BigInt(a), String::valueOf),
+      s(BigInteger.class, (String a) -> new BigInteger(a), (o) -> String.valueOf(o)),
+      s(BigInt.class, (String a) -> new BigInt(a), (o) -> String.valueOf(o)),
       s(int[].class, (String a) -> BigInt.valueOf(a), BigInt::toString)
     );
   }
@@ -86,7 +87,7 @@ public class BigIntConstructorTest extends BigIntTest {
   public void testBytesLittleEndian(final AuditReport report) {
     final byte[][] bytes = new byte[2][];
     test("<init>(byte[])", report,
-      s(BigInteger.class, a ->  { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),
+      s(BigInteger.class, a ->  { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = ArrayUtil.reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),
       s(BigInt.class, a -> bytes[1], (byte[] a) -> new BigInt(a, true), String::valueOf),
       s(int[].class, a -> bytes[1], (byte[] a) -> BigInt.valueOf(a, true), BigInt::toString)
     );

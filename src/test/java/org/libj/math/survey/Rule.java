@@ -18,8 +18,6 @@ package org.libj.math.survey;
 
 import java.lang.reflect.Executable;
 
-import org.libj.lang.Classes;
-
 public class Rule {
   private final String className;
   private final String methodSignature;
@@ -45,7 +43,7 @@ public class Rule {
         if (i > 0)
           builder.append(',');
 
-        builder.append(Classes.getProperSimpleName(parameterTypes[i]));
+        builder.append(parameterTypes[i].getCanonicalName());
       }
 
       builder.append(')');

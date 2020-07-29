@@ -21,12 +21,7 @@ import static org.junit.Assert.*;
 import java.math.BigInteger;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.libj.math.survey.AuditRunner;
 
-@RunWith(AuditRunner.class)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntegersTest extends BigIntTest {
   @Test
   public void testInternBigInteger() {
@@ -53,10 +48,12 @@ public class BigIntegersTest extends BigIntTest {
   }
 
   /**
-   * Unsigned long to bytes
+   * Returns a {@code byte} array representation of the provided unsigned
+   * {@code long}.
    *
-   * @param v
-   * @return
+   * @param v The unsigned {@code long} to return as a {@code byte} array.
+   * @return A {@code byte} array representation of the provided unsigned
+   *         {@code long}.
    */
   public static byte[] toByteArray(long v) {
     final byte[] b = new byte[8];
@@ -66,6 +63,14 @@ public class BigIntegersTest extends BigIntTest {
     return b;
   }
 
+  /**
+   * Returns a {@code byte} array representation of the provided unsigned
+   * {@code int}.
+   *
+   * @param v The unsigned {@code int} to return as a {@code byte} array.
+   * @return A {@code byte} array representation of the provided unsigned
+   *         {@code int}.
+   */
   public static byte[] toByteArray(int v) {
     final byte[] b = new byte[4];
     for (int j = 3; j >= 0; --j, v >>>= 8)

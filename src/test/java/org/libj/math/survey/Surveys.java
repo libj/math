@@ -23,7 +23,6 @@ import org.libj.console.Ansi.Color;
 import org.libj.console.Ansi.Intensity;
 import org.libj.console.Tables;
 import org.libj.console.drawille.Canvas;
-import org.libj.lang.Classes;
 import org.libj.lang.Strings;
 import org.libj.lang.Strings.Align;
 import org.libj.math.SplineInterpolator;
@@ -124,8 +123,8 @@ public abstract class Surveys {
       canvas = null;
       for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
-        rows = columns[s + 3] = new String[1 + divisions];
-        rows[0] = getColor(survey.getCase()).apply(headings[s]) + "\n" + getColor(survey.getCase()).apply("    T │ " + Classes.getProperSimpleName(int[].class));
+        rows = columns[s + 3] = new String[1 + variables * divisions];
+        rows[0] = getColor(survey.getCase()).apply(headings[s]) + "\n" + getColor(survey.getCase()).apply("    T │ " + int[].class.getCanonicalName());
         for (int d = 0; d < divisions; ++d) {
           c = 1 + d * variables;
           if (variables == 1) {

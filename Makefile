@@ -18,7 +18,7 @@ TARGET_LIB_NAME=math
 
 # Directories
 SRC_DIR=src/main/c
-TARGET_DIR=target
+TARGET_DIR=src/main/resources
 
 TARGET_LIB=$(TARGET_DIR)/lib$(TARGET_LIB_NAME)
 

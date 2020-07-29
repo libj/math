@@ -30,7 +30,13 @@
 package org.libj.math;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
 abstract class BigIntValue extends Number {
@@ -46,7 +52,33 @@ abstract class BigIntValue extends Number {
     else {
       final boolean useCritical = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-Xcomp") > 0;
       NATIVE_THRESHOLD = useCritical ? 0 : 15;
-      System.load(new File("target/libmath" + (useCritical ? "c" : "j") + ".so").getAbsolutePath());
+
+      final String fileName = "libmath" + (useCritical ? "c" : "j");
+      final String extension = ".so"; // FIXME: Detect appropriate platform here
+
+      final URL url = BigIntValue.class.getResource("/" + fileName + extension);
+      final File file;
+      try {
+        if (url.toString().startsWith("jar:file:")) {
+          final Path tempPath = Files.createTempFile(fileName, extension);
+          file = tempPath.toFile();
+          file.deleteOnExit();
+          try (final InputStream in = url.openStream()) {
+            Files.copy(in, tempPath, StandardCopyOption.REPLACE_EXISTING);
+          }
+        }
+        else if (url.toString().startsWith("file:")) {
+          file = new File(url.getPath());
+        }
+        else {
+          throw new ExceptionInInitializerError("Unsupported protocol: " + url);
+        }
+      }
+      catch (final IOException e) {
+        throw new ExceptionInInitializerError(e);
+      }
+
+      System.load(file.getAbsolutePath());
     }
   }
 

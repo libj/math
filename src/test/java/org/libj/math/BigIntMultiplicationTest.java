@@ -348,8 +348,8 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
     private void calc(final int len1, final int len2) {
       long ts, a = 0, b = 0;
-      final int[] v1 = randValByLength(len1);
-      final int[] v2 = randValByLength(len2);
+      final int[] v1 = randomVal(len1);
+      final int[] v2 = randomVal(len2);
       BigInt t1, t2;
       for (int i = 0; i < iterations; ++i) {
         t1 = new BigInt(v1);

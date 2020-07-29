@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
+import org.libj.util.ArrayUtil;
 
 @RunWith(AuditRunner.class)
 //@AuditRunner.Instrument({BigInt.class, int[].class})
@@ -61,7 +62,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   @Test
   public void testToByteArrayLittleEndian(final AuditReport report) {
     test("toByteArray()", report,
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> reverse(a.toByteArray()), o -> o),
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> ArrayUtil.reverse(a.toByteArray()), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(true), o -> o),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true), o -> o)
     );
