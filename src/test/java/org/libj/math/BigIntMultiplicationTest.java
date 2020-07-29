@@ -16,6 +16,8 @@
 
 package org.libj.math;
 
+import static org.libj.math.survey.AuditRunner.Mode.*;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -28,6 +30,7 @@ import org.libj.math.survey.AuditRunner;
 import gnu.java.math.MPN;
 
 @RunWith(AuditRunner.class)
+@AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntMultiplicationTest extends BigIntTest {

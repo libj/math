@@ -39,11 +39,10 @@ import org.junit.Test;
 import org.libj.test.TestAide;
 
 public class BasicTest {
-  static Random rnd = new Random();
+  private static Random rnd = new Random();
 
   @Test
   public void testAddInt() {
-    new BigInt("-1");
     final BigInt a = new BigInt(0);
     a.add(1, (int)3972540614L);
     assertEquals("3972540614", a.toString());

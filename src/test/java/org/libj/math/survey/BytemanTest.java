@@ -16,6 +16,8 @@
 
 package org.libj.math.survey;
 
+import static org.libj.math.survey.AuditRunner.Mode.*;
+
 import java.math.BigInteger;
 
 import org.junit.Test;
@@ -23,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.libj.math.BigInt;
 
 @RunWith(AuditRunner.class)
+@AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BytemanTest {

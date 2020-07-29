@@ -40,7 +40,11 @@ import java.util.zip.ZipEntry;
 
 import org.jboss.byteman.agent.Main;
 import org.junit.internal.runners.model.ReflectiveCallable;
+import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
@@ -60,6 +64,18 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     catch (final IOException e) {
       throw new ExceptionInInitializerError(e);
     }
+  }
+
+  public enum Mode {
+    INSTRUMENTED,
+    UNINSTRUMENTED,
+    PHASED
+  }
+
+  @Target(ElementType.TYPE)
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface Execution {
+    Mode value();
   }
 
   @Target(ElementType.TYPE)
@@ -170,33 +186,41 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     ClassInjector.UsingUnsafe.ofBootLoader().injectRaw(nameToBytes);
   }
 
-  private static void loadByteman(final Instrumentation instr, final AuditReport report) throws Exception {
-    loadJarsInBootstrap(instr, "byteman", "lang");
-    final File rulesFile = report.getRulesFile();
-    Main.premain("script:" + rulesFile.getAbsolutePath(), instr);
+  private static void loadByteman(final Instrumentation instr, final AuditReport report) {
+    try {
+      loadJarsInBootstrap(instr, "byteman", "lang");
+      final File rulesFile = report.getRulesFile();
+      Main.premain("script:" + rulesFile.getAbsolutePath(), instr);
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private final AuditReport report;
+  private final Class<?> cls;
+  private final Instrumentation instr;
+  private final Instruments instrs;
+  private final Mode mode;
+  private AuditReport report;
 
   public AuditRunner(final Class<?> cls) throws Exception {
     super(cls);
+    this.cls = cls;
 //  System.err.println(Class.forName("org.libj.math.survey.Result").getClassLoader());
 //  System.err.println(Class.forName("org.libj.math.survey.AuditReport").getClassLoader());
 //  System.err.println(Class.forName("org.libj.math.survey.Rule").getClassLoader());
-    final Instruments instrs = cls.getAnnotation(Instruments.class);
+    instrs = cls.getAnnotation(Instruments.class);
     if (instrs == null) {
-      report = null;
+      mode = Mode.UNINSTRUMENTED;
+      this.instr = null;
       return;
     }
 
-    final Instrumentation instr = ByteBuddyAgent.install();
+    final Execution execution = cls.getAnnotation(Execution.class);
+    this.mode = execution == null ? Mode.INSTRUMENTED : execution.value();
+
+    this.instr = ByteBuddyAgent.install();
     loadJarsInBootstrap(instr, "lang");
-    final Instrument[] instruments = instrs.value();
-    final Result[] results = new Result[instruments.length + 1];
-    final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
-    results[results.length - 1] = new Result(cls, allTrackedClasses);
-    this.report = AuditReport.init(results, trim(allTrackedClasses, 0, 0));
-    loadByteman(instr, report);
   }
 
   private static Class<?>[] trim(final Class<?>[] classes, final int index, final int depth) {
@@ -241,7 +265,93 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   @Override
   public void run(final RunNotifier notifier) {
-    super.run(notifier);
+    final RunNotifier delegateNotifier = new RunNotifier() {
+      @Override
+      public void addListener(final RunListener listener) {
+        notifier.addListener(listener);
+      }
+
+      @Override
+      public void removeListener(final RunListener listener) {
+        notifier.removeListener(listener);
+      }
+
+      @Override
+      public void fireTestRunStarted(final Description description) {
+        if (report == null)
+          notifier.fireTestRunStarted(description);
+      }
+
+      @Override
+      public void fireTestRunFinished(final org.junit.runner.Result result) {
+        if (mode == Mode.UNINSTRUMENTED || report != null)
+          notifier.fireTestRunFinished(result);
+      }
+
+      @Override
+      public void fireTestSuiteStarted(final Description description) {
+        if (report == null)
+          notifier.fireTestSuiteStarted(description);
+      }
+
+      @Override
+      public void fireTestSuiteFinished(final Description description) {
+        if (mode == Mode.UNINSTRUMENTED || report != null)
+          notifier.fireTestSuiteFinished(description);
+      }
+
+      @Override
+      public void fireTestStarted(final Description description) throws StoppedByUserException {
+        if (report == null)
+          notifier.fireTestStarted(description);
+      }
+
+      @Override
+      public void fireTestFailure(final Failure failure) {
+        notifier.fireTestFailure(failure);
+      }
+
+      @Override
+      public void fireTestAssumptionFailed(final Failure failure) {
+        notifier.fireTestAssumptionFailed(failure);
+      }
+
+      @Override
+      public void fireTestIgnored(final Description description) {
+        if (report == null)
+          notifier.fireTestIgnored(description);
+      }
+
+      @Override
+      public void fireTestFinished(final Description description) {
+        if (mode == Mode.UNINSTRUMENTED || report != null)
+          notifier.fireTestFinished(description);
+      }
+
+      @Override
+      public void pleaseStop() {
+        notifier.pleaseStop();
+      }
+
+      @Override
+      public void addFirstListener(final RunListener listener) {
+        notifier.addFirstListener(listener);
+      }
+    };
+
+    if (mode == Mode.PHASED || mode == Mode.UNINSTRUMENTED)
+      super.run(delegateNotifier);
+
+    if (mode == Mode.PHASED) {
+      final Instrument[] instruments = instrs.value();
+      final Result[] results = new Result[instruments.length + 1];
+      final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
+      results[results.length - 1] = new Result(cls, allTrackedClasses);
+      this.report = AuditReport.init(results, trim(allTrackedClasses, 0, 0));
+      loadByteman(instr, report);
+      super.run(delegateNotifier);
+    }
+
     AuditReport.destroy();
   }
 

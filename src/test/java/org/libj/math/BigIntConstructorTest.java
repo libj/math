@@ -16,6 +16,8 @@
 
 package org.libj.math;
 
+import static org.libj.math.survey.AuditRunner.Mode.*;
+
 import java.math.BigInteger;
 
 import org.junit.Test;
@@ -25,8 +27,9 @@ import org.libj.math.survey.AuditRunner;
 import org.libj.util.ArrayUtil;
 
 @RunWith(AuditRunner.class)
-//@AuditRunner.Instrument({BigInt.class, int[].class})
-//@AuditRunner.Instrument({BigInteger.class, int[].class})
+@AuditRunner.Execution(PHASED)
+@AuditRunner.Instrument({BigInt.class, int[].class})
+@AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
