@@ -95,24 +95,25 @@ public abstract class Surveys {
       }
     }
 
+    final int extraRows = report == null ? 1 + 2 * variables : 1;
     final Canvas canvas;
     final String[][] columns = new String[3 + surveys.length][];
     final int[][] counts = surveys[0].getCounts();
-    String[] rows = columns[0] = new String[1 + variables * divisions];
+    String[] rows = columns[0] = new String[extraRows + variables * divisions];
     rows[0] = "length";
     for (int v = 0; v < variables; ++v)
       for (int d = 0; d < divisions; ++d)
         if (counts[v][d] > 0)
           rows[1 + v + d * variables] = getLabel(0, v, d);
 
-    rows = columns[1] = new String[1 + variables * divisions];
+    rows = columns[1] = new String[extraRows + variables * divisions];
     rows[0] = "precision";
     for (int v = 0; v < variables; ++v)
       for (int d = 0; d < divisions; ++d)
         if (counts[v][d] > 0)
           rows[1 + v + d * variables] = getLabel(1, v, d);
 
-    rows = columns[2] = new String[1 + variables * divisions];
+    rows = columns[2] = new String[extraRows + variables * divisions];
     rows[0] = "count";
     for (int v = 0; v < variables; ++v)
       for (int d = 0; d < divisions; ++d)

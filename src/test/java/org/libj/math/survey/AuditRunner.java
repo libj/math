@@ -40,6 +40,7 @@ import java.util.zip.ZipEntry;
 
 import org.jboss.byteman.agent.Main;
 import org.junit.internal.runners.model.ReflectiveCallable;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
@@ -194,7 +195,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     final Result[] results = new Result[instruments.length + 1];
     final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
     results[results.length - 1] = new Result(cls, allTrackedClasses);
-    this.report = new AuditReport(results, trim(allTrackedClasses, 0, 0));
+    this.report = AuditReport.init(results, trim(allTrackedClasses, 0, 0));
     loadByteman(instr, report);
   }
 
@@ -236,6 +237,12 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
   private void beforeInvoke() {
     if (report != null)
       report.reset();
+  }
+
+  @Override
+  public void run(final RunNotifier notifier) {
+    super.run(notifier);
+    AuditReport.destroy();
   }
 
   @Override

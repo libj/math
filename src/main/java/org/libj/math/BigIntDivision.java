@@ -11,7 +11,7 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS "AS IS" AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
@@ -228,7 +228,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       u0 = s > 0 && j > 0 ? (val[j] << s | val[j - 1] >>> 32 - s) & LONG_MASK : (val[j] << s) & LONG_MASK;
 
       k = (u2 << 32) + u1;
-      qhat = (k >>> 1) / (divh * 2);
+      qhat = ((k >>> 1) / divh) * 2;
       t = k - qhat * divh;
       if (t + hbit >= divh + hbit)
         ++qhat; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];
@@ -380,7 +380,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     for (j = len1 - len2; j >= 0; --j) {
       // Compute estimate qhat of q[j]
       k = val[j + len2] * b + (val[j + len2 - 1] & LONG_MASK);
-      qhat = (k >>> 1) / (dh * 2);
+      qhat = ((k >>> 1) / dh) * 2;
       t = k - qhat * dh;
       if (t + hbit >= dh + hbit)
         ++qhat; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];

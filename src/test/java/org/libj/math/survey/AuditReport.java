@@ -48,13 +48,20 @@ public class AuditReport {
   private final Result[] results;
   private final Class<?>[] trackedClasses;
 
-  public AuditReport(final Result[] results, final Class<?>[] trackedClasses) {
+  public static AuditReport init(final Result[] results, final Class<?>[] trackedClasses) {
     if (instance != null)
       throw new IllegalStateException();
 
+    return instance = new AuditReport(results, trackedClasses);
+  }
+
+  public static void destroy() {
+    instance = null;
+  }
+  
+  private AuditReport(final Result[] results, final Class<?>[] trackedClasses) {
     this.results = results;
     this.trackedClasses = trackedClasses;
-    instance = this;
   }
 
   public Class<?>[] getTrackedClasses() {

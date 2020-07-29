@@ -709,6 +709,10 @@ public abstract class CaseTest {
     if (obj instanceof int[])
       return BigInt.precision((int[])obj);
 
+    // FIXME: This is incorrect! But, whatever!
+    if (obj instanceof byte[])
+      return 25 * ((byte[])obj).length;
+
     throw new UnsupportedOperationException("Unsupported type: " + obj.getClass().getName());
   }
 

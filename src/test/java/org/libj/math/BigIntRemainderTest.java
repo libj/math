@@ -163,7 +163,6 @@ public class BigIntRemainderTest extends BigIntTest {
   public void testModBig(final AuditReport report) {
     test("mod(T)", report,
       s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(abs(nz(b))), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
-      s(BigIntHuldra.class, this::scaledBigIntHuldra, b -> new BigIntHuldra(abs(nz(b))), (BigIntHuldra a, BigIntHuldra b) -> a.mod(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, b -> new BigInt(abs(nz(b))), (BigInt a, BigInt b) -> a.mod(b), String::valueOf),
       s(int[].class, this::scaledVal, b -> BigInt.valueOf(abs(nz(b))), (int[] a, int[] b) -> BigInt.mod(a, b), BigInt::toString)
     );

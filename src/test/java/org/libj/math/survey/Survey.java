@@ -117,9 +117,10 @@ public abstract class Survey {
       }
     }
 
-    for (int d = 0; d < divisions; ++d)
-      for (int c = 0; c < trackedClasses.length; ++c)
-        allocations[c][d] /= counts[0][d];
+    if (trackedClasses != null)
+      for (int d = 0; d < divisions; ++d)
+        for (int c = 0; c < trackedClasses.length; ++c)
+          allocations[c][d] /= counts[0][d];
   }
 
   public void reset() {

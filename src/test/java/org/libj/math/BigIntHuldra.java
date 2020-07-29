@@ -942,7 +942,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	      u2 = u1; u1 = u0; u0 = s>0&&j>0 ? (dig[j]<<s | dig[j-1]>>>32-s)&mask : (dig[j]<<s)&mask;
 
 	      long k = (u2<<32) + u1; //Unsigned division is a pain in the ass! ='(
-	      long qhat = (k >>> 1) / (dh * 2);
+	      long qhat = (k >>> 1) / dh << 1;
 		  long t = k - qhat*dh;
 		  if(t + hbit >= dh + hbit) qhat++; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];
 	      long rhat = k - qhat*dh;
@@ -1264,7 +1264,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
   			else if(mul.len==2) umul((long)mul.dig[1]<<32|(mul.dig[0]&mask));
   			else{ final long tmp = (long)dig[1]<<32|(dig[0]&mask); assign(mul.dig, mul.len); umul(tmp); }
   		}
-  		else if(len<120 || mul.len<120) smallMul(mul); //Remove overhead?
+  		else if(len<110 || mul.len<110) smallMul(mul); //Remove overhead?
   		else if(Math.max(len,mul.len)<5000) karatsuba(mul,false); //Tune thresholds and remove hardcode.
   		else karatsuba(mul,true);
     }
@@ -1642,7 +1642,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 		if(len==dig.length) realloc(len+1); //We need an extra slot.
 		div(dig, div.dig, len, div.len, q);
 
-		for(len = div.len; dig[len-1]==0; --len);
+		for(len = div.len; len > 0 && dig[len-1]==0; --len);
 	}
 	/**
 	* Divides this number by the given BigInt and returns the remainder.
@@ -1741,7 +1741,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	   {
 	      // Compute estimate qhat of q[j].
 	      k = u[j+n]*b + (u[j+n-1]&mask); //Unsigned division is a pain in the ass! ='(
-	      qhat = (k >>> 1)/ (dh * 2);
+	      qhat = (k >>> 1)/ dh << 1;
 		  t = k - qhat*dh;
 		  if(t + hbit >= dh + hbit) qhat++; // qhat = (u[j+n]*b + u[j+n-1])/v[n-1];
 	      rhat = k - qhat*dh;

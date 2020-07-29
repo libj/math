@@ -30,18 +30,14 @@
   <description>
     Supplementary extensions to the java.math package.
   </description>
-  <properties>
-    <version.bytebuddy>1.10.13</version.bytebuddy>
-  </properties>
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
-           <fast>true</fast>
-          </systemPropertyVariables>
+          <argLine>-Xcomp -Xmx2g</argLine>
+          <reuseForks>false</reuseForks>
         </configuration>
       </plugin>
     </plugins>
@@ -84,7 +80,7 @@
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy-agent</artifactId>
-      <version>${version.bytebuddy}</version>
+      <version>1.10.13</version>
       <scope>test</scope>
     </dependency>
     <dependency>

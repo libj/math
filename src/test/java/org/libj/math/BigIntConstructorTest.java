@@ -67,8 +67,8 @@ public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testString(final AuditReport report) {
     test("<init>(String)", report,
-      s(BigInteger.class, (String a) -> new BigInteger(a), (o) -> String.valueOf(o)),
-      s(BigInt.class, (String a) -> new BigInt(a), (o) -> String.valueOf(o)),
+      s(BigInteger.class, (String a) -> new BigInteger(a), o -> String.valueOf(o)),
+      s(BigInt.class, (String a) -> new BigInt(a), o -> String.valueOf(o)),
       s(int[].class, (String a) -> BigInt.valueOf(a), BigInt::toString)
     );
   }
