@@ -16,7 +16,7 @@
 
 package org.libj.math;
 
-import static org.libj.math.survey.AuditRunner.Mode.*;
+import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigInteger;
 
@@ -26,7 +26,7 @@ import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Execution(PHASED)
+@AuditRunner.Execution(INSTRUMENTED)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntAdditionTest extends BigIntTest {

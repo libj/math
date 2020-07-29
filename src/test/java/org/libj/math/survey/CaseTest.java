@@ -236,7 +236,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations();
+      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
       for (int i = 0; i < precision; i += skip(precision, skip)) {
         for (int j = 0; j < precision; j += skip(precision, skip)) {
@@ -400,7 +400,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations();
+      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
       for (int i = 0; i < precision; i += skip(precision, skip)) {
         for (int j = 0; j < precision; j += skip(precision, skip)) {
@@ -571,7 +571,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations();
+      final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
       for (int i = 0; i < precision; i += skip(precision, skip)) {
         for (int j = 0; j < precision; j += skip(precision, skip)) {
@@ -1034,7 +1034,12 @@ public abstract class CaseTest {
       };
     });
 
-    surveys.print(label, System.currentTimeMillis() - ts, headings);
+    final String result = surveys.print(label, System.currentTimeMillis() - ts, headings);
+    if (report != null)
+      report.submit(result);
+    else
+      System.out.println(result);
+
     initialized = false;
   }
 

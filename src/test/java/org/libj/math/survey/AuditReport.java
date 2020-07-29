@@ -18,11 +18,15 @@ package org.libj.math.survey;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
+
+import org.libj.math.survey.AuditMode;
 
 public class AuditReport {
   private static AuditReport instance;
@@ -58,14 +62,14 @@ public class AuditReport {
   public static void destroy() {
     instance = null;
   }
-  
+
   private AuditReport(final Result[] results, final Class<?>[] trackedClasses) {
     this.results = results;
     this.trackedClasses = trackedClasses;
   }
 
   public Class<?>[] getTrackedClasses() {
-    return this.trackedClasses;
+    return mode == 0 ? null : this.trackedClasses;
   }
 
   public File getRulesFile() throws IOException {
@@ -102,8 +106,8 @@ public class AuditReport {
     return count;
   }
 
-  public int minIterations() {
-    return 1;
+  public int minIterations(final int defaultValue) {
+    return mode == 1 ? 1 : defaultValue;
   }
 
   public void dump() {
@@ -113,5 +117,38 @@ public class AuditReport {
         System.err.println("  " + results[i].resultClassNames[j] + ": " + results[i].getCounts()[j]);
       }
     }
+  }
+
+  private Method method;
+
+  public void setMethod(final Method method) {
+    this.method = method;
+  }
+
+  private final LinkedHashMap<Method,String> methodToResults = new LinkedHashMap<>();
+
+  public void submit(final String result) {
+    String srt = methodToResults.get(method);
+    if (srt != null)
+      srt += "\n" + result;
+    else
+      srt = result;
+
+    methodToResults.put(method, srt);
+  }
+
+  public void print() {
+    for (final String result : methodToResults.values())
+      System.out.println(result);
+  }
+
+  private int mode;
+
+  public void setMode(final int mode) {
+    this.mode = mode;
+  }
+
+  public int getMode() {
+    return mode;
   }
 }

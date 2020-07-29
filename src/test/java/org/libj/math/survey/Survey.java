@@ -34,7 +34,7 @@ public abstract class Survey {
 
   public Survey(final Case<?,?,?,?,?> cse, final AuditReport report, final int variables, final int divisions, final int warmup) {
     this.cse = cse;
-    this.subject = report == null ? null : (Class<?>)cse.subject;
+    this.subject = cse.subject instanceof Class ? (Class<?>)cse.subject : null;
     this.trackedClasses = report == null ? null : report.getTrackedClasses();
     this.allocations = trackedClasses == null ? null : new int[trackedClasses.length][divisions];
     this.variables = variables;
@@ -76,7 +76,7 @@ public abstract class Survey {
       for (int c = 0; c < trackedClasses.length; ++c)
         allocations[c][division] += report.getAllocations(trackedClasses[c]);
 
-    if (report != null)
+    if (report != null && report.getMode() == 1)
       report.reset();
   }
 

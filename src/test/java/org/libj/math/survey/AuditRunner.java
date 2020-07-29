@@ -66,16 +66,10 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     }
   }
 
-  public enum Mode {
-    INSTRUMENTED,
-    UNINSTRUMENTED,
-    PHASED
-  }
-
   @Target(ElementType.TYPE)
   @Retention(RetentionPolicy.RUNTIME)
   public @interface Execution {
-    Mode value();
+    AuditMode value();
   }
 
   @Target(ElementType.TYPE)
@@ -197,30 +191,33 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     }
   }
 
-  private final Class<?> cls;
   private final Instrumentation instr;
-  private final Instruments instrs;
-  private final Mode mode;
-  private AuditReport report;
+  private final AuditMode mode;
+  private final AuditReport report;
 
   public AuditRunner(final Class<?> cls) throws Exception {
     super(cls);
-    this.cls = cls;
 //  System.err.println(Class.forName("org.libj.math.survey.Result").getClassLoader());
 //  System.err.println(Class.forName("org.libj.math.survey.AuditReport").getClassLoader());
 //  System.err.println(Class.forName("org.libj.math.survey.Rule").getClassLoader());
-    instrs = cls.getAnnotation(Instruments.class);
+    final Instruments instrs = cls.getAnnotation(Instruments.class);
     if (instrs == null) {
-      mode = Mode.UNINSTRUMENTED;
+      mode = AuditMode.UNINSTRUMENTED;
       this.instr = null;
+      this.report = null;
       return;
     }
 
     final Execution execution = cls.getAnnotation(Execution.class);
-    this.mode = execution == null ? Mode.INSTRUMENTED : execution.value();
+    this.mode = execution == null ? AuditMode.INSTRUMENTED : execution.value();
 
     this.instr = ByteBuddyAgent.install();
     loadJarsInBootstrap(instr, "lang");
+    final Instrument[] instruments = instrs.value();
+    final Result[] results = new Result[instruments.length + 1];
+    final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
+    results[results.length - 1] = new Result(cls, allTrackedClasses);
+    this.report = AuditReport.init(results, trim(allTrackedClasses, 0, 0));
   }
 
   private static Class<?>[] trim(final Class<?>[] classes, final int index, final int depth) {
@@ -265,7 +262,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   @Override
   public void run(final RunNotifier notifier) {
-    final RunNotifier delegateNotifier = new RunNotifier() {
+    final RunNotifier delegateNotifier = mode != AuditMode.PHASED ? notifier : new RunNotifier() {
       @Override
       public void addListener(final RunListener listener) {
         notifier.addListener(listener);
@@ -278,31 +275,31 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
       @Override
       public void fireTestRunStarted(final Description description) {
-        if (report == null)
+        if (report == null || report.getMode() == 0)
           notifier.fireTestRunStarted(description);
       }
 
       @Override
       public void fireTestRunFinished(final org.junit.runner.Result result) {
-        if (mode == Mode.UNINSTRUMENTED || report != null)
+        if (report == null || report.getMode() == 1)
           notifier.fireTestRunFinished(result);
       }
 
       @Override
       public void fireTestSuiteStarted(final Description description) {
-        if (report == null)
+        if (report == null || report.getMode() == 0)
           notifier.fireTestSuiteStarted(description);
       }
 
       @Override
       public void fireTestSuiteFinished(final Description description) {
-        if (mode == Mode.UNINSTRUMENTED || report != null)
+        if (report == null || report.getMode() == 1)
           notifier.fireTestSuiteFinished(description);
       }
 
       @Override
       public void fireTestStarted(final Description description) throws StoppedByUserException {
-        if (report == null)
+        if (report == null || report.getMode() == 0)
           notifier.fireTestStarted(description);
       }
 
@@ -318,13 +315,13 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
       @Override
       public void fireTestIgnored(final Description description) {
-        if (report == null)
+        if (report == null || report.getMode() == 0)
           notifier.fireTestIgnored(description);
       }
 
       @Override
       public void fireTestFinished(final Description description) {
-        if (mode == Mode.UNINSTRUMENTED || report != null)
+        if (report == null || report.getMode() == 1)
           notifier.fireTestFinished(description);
       }
 
@@ -339,20 +336,21 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
       }
     };
 
-    if (mode == Mode.PHASED || mode == Mode.UNINSTRUMENTED)
-      super.run(delegateNotifier);
-
-    if (mode == Mode.PHASED) {
-      final Instrument[] instruments = instrs.value();
-      final Result[] results = new Result[instruments.length + 1];
-      final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
-      results[results.length - 1] = new Result(cls, allTrackedClasses);
-      this.report = AuditReport.init(results, trim(allTrackedClasses, 0, 0));
-      loadByteman(instr, report);
+    if (mode == AuditMode.PHASED || mode == AuditMode.UNINSTRUMENTED) {
+      report.setMode(AuditMode.UNINSTRUMENTED.ordinal()); // 0
       super.run(delegateNotifier);
     }
 
-    AuditReport.destroy();
+    if (mode == AuditMode.PHASED || mode == AuditMode.INSTRUMENTED) {
+      loadByteman(instr, report);
+      report.setMode(AuditMode.INSTRUMENTED.ordinal()); // 1
+      super.run(delegateNotifier);
+    }
+
+    if (report != null) {
+      report.print();
+      AuditReport.destroy();
+    }
   }
 
   @Override
@@ -373,7 +371,11 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
                   protected Object runReflectiveCall() throws Throwable {
                     beforeInvoke();
                     final Method method = getMethod();
-                    return method.getParameterCount() == 1 ? method.invoke(target, report) : method.invoke(target);
+                    if (method.getParameterCount() == 0)
+                      return method.invoke(target);
+
+                    report.setMethod(method);
+                    return method.invoke(target, report);
                   }
                 }.run();
               }

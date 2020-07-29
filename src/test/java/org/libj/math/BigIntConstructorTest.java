@@ -16,7 +16,7 @@
 
 package org.libj.math;
 
-import static org.libj.math.survey.AuditRunner.Mode.*;
+import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigInteger;
 

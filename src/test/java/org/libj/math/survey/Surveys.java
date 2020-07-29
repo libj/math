@@ -68,7 +68,7 @@ public abstract class Surveys {
 
   public abstract String getLabel(int index, int variable, int division);
 
-  public void print(final String label, final long ts, final String ... headings) {
+  public String print(final String label, final long ts, final String ... headings) {
     for (int s = 0; s < surveys.length; ++s)
       surveys[s].normalize();
 
@@ -95,7 +95,7 @@ public abstract class Surveys {
       }
     }
 
-    final int extraRows = report == null ? 1 + 2 * variables : 1;
+    final int extraRows = report == null || report.getMode() == 0 ? 1 + 2 * variables : 1;
     final Canvas canvas;
     final String[][] columns = new String[3 + surveys.length][];
     final int[][] counts = surveys[0].getCounts();
@@ -120,7 +120,7 @@ public abstract class Surveys {
         if (counts[v][d] > 0)
           rows[1 + v + d * variables] = String.valueOf(counts[v][d]);
 
-    if (report != null) {
+    if (report != null && report.getMode() == 1) {
       canvas = null;
       for (int s = 0, c = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
@@ -197,11 +197,12 @@ public abstract class Surveys {
       }
     }
 
-    System.out.println(label + "\n  " + count + " in " + ts + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns));
-    if (canvas != null) {
-      System.out.println();
-      canvas.render();
-    }
+    final StringBuilder builder = new StringBuilder();
+    builder.append(label + "\n  " + count + " in " + ts + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns) + "\n");
+    if (canvas != null)
+      builder.append('\n').append(canvas.toString());
+
+    return builder.toString();
   }
 
   private static void color(final String[] rows, final int c, final long val, final long min, final long max, final int s, final int len) {
