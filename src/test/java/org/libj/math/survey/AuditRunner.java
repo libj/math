@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
@@ -59,7 +60,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   static {
     try {
-      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport");
+      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport", "org.libj.console.Tables");
     }
     catch (final IOException e) {
       throw new ExceptionInInitializerError(e);
@@ -105,7 +106,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   static JarFile createTempJarFile(final File dir) throws IOException {
     final Path dirPath = dir.toPath();
-    final Path zipPath = Files.createTempFile("specialagent", ".jar");
+    final Path zipPath = Files.createTempFile("auditrunner", ".jar");
     try (final JarOutputStream jos = new JarOutputStream(new FileOutputStream(zipPath.toFile()))) {
       recurseDir(dir, new Predicate<File>() {
         @Override
@@ -119,7 +120,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
               jos.closeEntry();
             }
             catch (final IOException e) {
-              throw new IllegalStateException(e);
+              throw new UncheckedIOException(e);
             }
           }
 

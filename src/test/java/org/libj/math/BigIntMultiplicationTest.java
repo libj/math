@@ -30,7 +30,7 @@ import org.libj.math.survey.AuditRunner;
 import gnu.java.math.MPN;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Execution(PHASED)
+@AuditRunner.Execution(UNINSTRUMENTED)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntMultiplicationTest extends BigIntTest {
@@ -134,7 +134,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSquareBig(final AuditReport report) {
-    for (int i = 1; i <= 128; i *= 2)
+    for (int i = 1; i <= 1; i *= 2)
       testSquareBig(report, i, 60);
   }
 

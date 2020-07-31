@@ -26,7 +26,7 @@ import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Execution(INSTRUMENTED)
+@AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntAdditionTest extends BigIntTest {

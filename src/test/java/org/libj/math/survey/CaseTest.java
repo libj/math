@@ -19,6 +19,7 @@ package org.libj.math.survey;
 import static org.junit.Assert.*;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -35,6 +36,7 @@ import org.libj.lang.Strings;
 import org.libj.math.BigInt;
 import org.libj.math.BigIntHuldra;
 import org.libj.test.TestAide;
+import org.libj.util.CollectionUtil;
 import org.libj.util.function.BiIntFunction;
 import org.libj.util.function.BiLongFunction;
 import org.libj.util.function.BiLongToLongFunction;
@@ -1034,9 +1036,11 @@ public abstract class CaseTest {
       };
     });
 
-    final String result = surveys.print(label, System.currentTimeMillis() - ts, headings);
+    final int categories = report != null && report.getMode() == 1 ? 2 : variables;
+    final String[] summary = new String[cases.length * categories];
+    final String result = surveys.print(label, System.currentTimeMillis() - ts, summary, headings);
     if (report != null)
-      report.submit(result);
+      report.submit(label, result, summary, categories, CollectionUtil.asCollection(new ArrayList<>(), headings));
     else
       System.out.println(result);
 

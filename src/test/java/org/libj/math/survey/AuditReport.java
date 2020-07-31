@@ -22,11 +22,16 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.libj.math.survey.AuditMode;
+import org.libj.console.Tables;
+import org.libj.lang.Strings.Align;
 
 public class AuditReport {
   private static AuditReport instance;
@@ -125,21 +130,81 @@ public class AuditReport {
     this.method = method;
   }
 
-  private final LinkedHashMap<Method,String> methodToResults = new LinkedHashMap<>();
+  private final LinkedHashMap<Method,Map<Integer,String>> methodToResults = new LinkedHashMap<>();
+  private final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = new HashMap<>();
+  private final Map<Integer,HashMap<List<String>,Integer>> headersToCategories = new HashMap<>();
 
-  public void submit(final String result) {
-    String srt = methodToResults.get(method);
-    if (srt != null)
-      srt += "\n" + result;
-    else
-      srt = result;
+  private LinkedHashMap<List<String>,List<Object>[]> getHeadersToSummaries() {
+    LinkedHashMap<List<String>,List<Object>[]> summaries = headersToSummaries.get(mode);
+    if (summaries == null)
+      headersToSummaries.put(mode, summaries = new LinkedHashMap<>());
 
-    methodToResults.put(method, srt);
+    return summaries;
+  }
+
+  private HashMap<List<String>,Integer> getHeadersToCategories() {
+    HashMap<List<String>,Integer> categories = headersToCategories.get(mode);
+    if (categories == null)
+      headersToCategories.put(mode, categories = new LinkedHashMap<>());
+
+    return categories;
+  }
+
+  @SuppressWarnings("unchecked")
+  public void submit(final String label, final String result, final String[] summary, final int categories, final List<String> headers) {
+    List<Object>[] columns = getHeadersToSummaries().get(headers);
+    if (columns == null) {
+      getHeadersToCategories().put(headers, categories);
+      getHeadersToSummaries().put(headers, columns = new List[categories * headers.size() + 1]);
+      columns[0] = new ArrayList<>();
+      columns[0].add("");
+    }
+
+    columns[0].add(label);
+    for (int c = 0; c < headers.size(); ++c) {
+      if (columns[c + 1] == null) {
+        columns[c + 1] = new ArrayList<>();
+        columns[c + 1].add(headers.get(c));
+      }
+
+      for (int i = 0; i < categories; ++i)
+        columns[c + 1].add(String.valueOf(summary[c * categories + i]));
+    }
+
+    Map<Integer,String> map = methodToResults.get(method);
+    if (map == null)
+      methodToResults.put(method, map = new HashMap<>());
+
+    if (map.get(mode) != null)
+      throw new IllegalStateException();
+
+    map.put(mode, result);
   }
 
   public void print() {
-    for (final String result : methodToResults.values())
-      System.out.println(result);
+    for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : this.headersToSummaries.entrySet()) {
+      final int mode = entry.getKey();
+      final LinkedHashMap<List<String>,List<Object>[]> headersToSummaries = entry.getValue();
+      final HashMap<List<String>,Integer> headersToCategories = this.headersToCategories.get(mode);
+      for (final Map<Integer,String> result : methodToResults.values()) {
+        System.out.println(getTitle(mode));
+        System.out.println(result.get(mode));
+      }
+
+      for (final Map.Entry<List<String>,List<Object>[]> entry2 : headersToSummaries.entrySet()) {
+        final Object[][] columns = new Object[entry2.getKey().size() + 1][];
+        for (int c = 0; c < columns.length; ++c) {
+          columns[c] = entry2.getValue()[c].toArray();
+        }
+
+        System.out.println(getTitle(mode));
+        System.out.println(Tables.printTable(true, Align.RIGHT, headersToCategories.get(entry2.getKey()), true, columns));
+      }
+    }
+  }
+
+  public String getTitle(final int mode) {
+    return mode == 0 ? "[runtime performance]" : "[heap allocation]";
   }
 
   private int mode;
