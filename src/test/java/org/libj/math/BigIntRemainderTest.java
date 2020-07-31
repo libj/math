@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedRemInt(final AuditReport report) {
     final int[] sig = {0};
-    test("rem(int,int)", report,
+    test("rem(int,int):T", report,
       i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(sig[0], b), String::valueOf),
       i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.rem(a, sig[0], b); return a; }, BigInt::toString)
@@ -53,7 +53,7 @@ public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedRemLong(final AuditReport report) {
     final int[] sig = {0};
-    test("rem(int,long)", report,
+    test("rem(int,long):T", report,
       l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(sig[0], b), String::valueOf),
       l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.rem(a, sig[0], b); return a; }, BigInt::toString)
@@ -72,7 +72,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedRemInt(final AuditReport report) {
-    test("rem(int)", report,
+    test("rem(int):T", report,
       i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(b), String::valueOf),
       i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.rem(a, b); return a; }, BigInt::toString)
@@ -90,7 +90,7 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedRemLong(final AuditReport report) {
-    test("rem(long)", report,
+    test("rem(long):T", report,
       l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(b), String::valueOf),
       l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.rem(a, b); return a; }, BigInt::toString)

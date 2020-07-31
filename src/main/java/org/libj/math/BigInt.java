@@ -42,7 +42,7 @@ package org.libj.math;
  * multiplication algorithm for very large numbers.</li>
  * <li><b>Support for {@code int} and {@code long} parameters and return
  * types:</b> {@link BigInt} does not require its parameters or return types to
- * be {@link BigInt}, saving from unnecessary instantiation of transient
+ * be {@link BigInt}, avoiding unnecessary instantiation of transient
  * {@link BigInt} objects.</li>
  * <li><b>No preemptive exception checking:</b> The {@link BigInt} does not
  * preemptively check for exceptions. If a programmer divides by zero he has
@@ -51,7 +51,7 @@ package org.libj.math;
  * are available in static form, allowing <i>bare {@code int[]}
  * {@linkplain #val() value-encoded number} arrays</i> to be used without a
  * {@link BigInt} instance, providing further reduction in heap memory
- * consumption.</li>
+ * allocation.</li>
  * </ol>
  *
  * @author Seva Safris
@@ -387,6 +387,20 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    */
   public BigInt abs() {
     abs(val);
+    return this;
+  }
+
+  /**
+   * Sets the magnitude of this {@link BigInt} to its negated value.
+   *
+   * <pre>
+   * {@code this = -this }
+   * </pre>
+   *
+   * @return {@code this}
+   */
+  public BigInt neg() {
+    neg(val);
     return this;
   }
 

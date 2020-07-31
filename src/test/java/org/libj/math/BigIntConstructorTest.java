@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,7 @@ public class BigIntConstructorTest extends BigIntTest {
   public void testBytesLittleEndian(final AuditReport report) {
     final byte[][] bytes = new byte[2][];
     test("<init>(byte[])", report,
-      s(BigInteger.class, a ->  { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = ArrayUtil.reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),
+      s(BigInteger.class, a -> { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = ArrayUtil.reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),
       s(BigInt.class, a -> bytes[1], (byte[] a) -> new BigInt(a, true), String::valueOf),
       s(int[].class, a -> bytes[1], (byte[] a) -> BigInt.valueOf(a, true), BigInt::toString)
     );

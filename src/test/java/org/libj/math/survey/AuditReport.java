@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -132,7 +132,6 @@ public class AuditReport {
 
   private final LinkedHashMap<String,Map<Integer,String>> methodLabelToResults = new LinkedHashMap<>();
   private final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = new HashMap<>();
-  private final Map<Integer,HashMap<List<String>,Integer>> headersToCategories = new HashMap<>();
 
   private LinkedHashMap<List<String>,List<Object>[]> getHeadersToSummaries() {
     LinkedHashMap<List<String>,List<Object>[]> summaries = headersToSummaries.get(mode);
@@ -142,26 +141,19 @@ public class AuditReport {
     return summaries;
   }
 
-  private HashMap<List<String>,Integer> getHeadersToCategories() {
-    HashMap<List<String>,Integer> categories = headersToCategories.get(mode);
-    if (categories == null)
-      headersToCategories.put(mode, categories = new LinkedHashMap<>());
-
-    return categories;
-  }
-
   @SuppressWarnings("unchecked")
   public void submit(final String label, final String result, final String[] summary, final int categories, final List<String> headers) {
+    final int headerSize = headers.size();
+    headers.add(String.valueOf(categories));
     List<Object>[] columns = getHeadersToSummaries().get(headers);
     if (columns == null) {
-      getHeadersToCategories().put(headers, categories);
-      getHeadersToSummaries().put(headers, columns = new List[categories * headers.size() + 1]);
+      getHeadersToSummaries().put(headers, columns = new List[categories * headerSize + 1]);
       columns[0] = new ArrayList<>();
       columns[0].add("");
     }
 
     columns[0].add(label);
-    for (int c = 0; c < headers.size(); ++c) {
+    for (int c = 0; c < headerSize; ++c) {
       if (columns[c + 1] == null) {
         columns[c + 1] = new ArrayList<>();
         columns[c + 1].add(headers.get(c));
@@ -183,23 +175,26 @@ public class AuditReport {
   }
 
   public void print() {
+    // First print the summaries
     for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : this.headersToSummaries.entrySet()) {
       final int mode = entry.getKey();
       final LinkedHashMap<List<String>,List<Object>[]> headersToSummaries = entry.getValue();
-      final HashMap<List<String>,Integer> headersToCategories = this.headersToCategories.get(mode);
-      for (final Map<Integer,String> result : methodLabelToResults.values()) {
-        System.out.println(getTitle(mode));
-        System.out.println(result.get(mode));
-      }
-
       for (final Map.Entry<List<String>,List<Object>[]> entry2 : headersToSummaries.entrySet()) {
-        final Object[][] columns = new Object[entry2.getKey().size() + 1][];
+        final Object[][] columns = new Object[entry2.getKey().size()][]; // Assumed the "categories" were added (hack)
         for (int c = 0; c < columns.length; ++c) {
           columns[c] = entry2.getValue()[c].toArray();
         }
 
         System.out.println(getTitle(mode));
-        System.out.println(Tables.printTable(true, Align.RIGHT, headersToCategories.get(entry2.getKey()), true, columns));
+        System.out.println(Tables.printTable(true, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns));
+      }
+    }
+
+    // Next print the detailed results
+    for (final Map<Integer,String> result : methodLabelToResults.values()) {
+      for (final Map.Entry<Integer,String> entry : result.entrySet()) {
+        System.out.println(getTitle(entry.getKey()));
+        System.out.println(entry.getValue());
       }
     }
   }

@@ -1254,6 +1254,25 @@ abstract class BigIntValue extends Number {
   }
 
   /**
+   * Sets the provided {@linkplain BigInt#val() value-encoded number} to its
+   * negated value.
+   *
+   * <pre>
+   * {@code val = -val }
+   * </pre>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set to
+   *         its negated value.
+   * @complexity O(1)
+   */
+  public static int[] neg(final int[] val) {
+    val[0] = -val[0];
+    // _debugLenSig(val);
+    return val;
+  }
+
+  /**
    * Returns the maximum of the provided {@linkplain BigInt#val() value-encoded
    * numbers}.
    *

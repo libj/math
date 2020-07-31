@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
+import org.libj.lang.Classes;
 import org.libj.util.ArrayUtil;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
@@ -60,7 +62,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   static {
     try {
-      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport", "org.libj.console.Tables");
+      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport", "org.libj.console.Tables", "org.libj.lang.Strings");
     }
     catch (final IOException e) {
       throw new ExceptionInInitializerError(e);
@@ -354,6 +356,17 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     }
   }
 
+  private static List<Class<?>> getSuperClasses(Class<?> testClass) {
+    List<Class<?>> results = new ArrayList<>();
+    Class<?> current = testClass;
+    while (current != null) {
+      results.add(current);
+      current = current.getSuperclass();
+    }
+
+    return results;
+  }
+
   @Override
   @Deprecated
   protected TestClass createTestClass(final Class<?> testClass) {
@@ -361,27 +374,27 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
       @Override
       protected void scanAnnotatedMembers(final Map<Class<? extends Annotation>,List<FrameworkMethod>> methodsForAnnotations, final Map<Class<? extends Annotation>,List<FrameworkField>> fieldsForAnnotations) {
         super.scanAnnotatedMembers(methodsForAnnotations, fieldsForAnnotations);
-        for (final Map.Entry<Class<? extends Annotation>,List<FrameworkMethod>> entry : methodsForAnnotations.entrySet()) {
-          final List<FrameworkMethod> value = entry.getValue();
-          for (int i = 0; i < value.size(); ++i) {
-            value.set(i, new FrameworkMethod(value.get(i).getMethod()) {
-              @Override
-              public Object invokeExplosively(final Object target, final Object ... params) throws Throwable {
-                return new ReflectiveCallable() {
-                  @Override
-                  protected Object runReflectiveCall() throws Throwable {
-                    beforeInvoke();
-                    final Method method = getMethod();
-                    if (method.getParameterCount() == 0)
-                      return method.invoke(target);
+        methodsForAnnotations.clear();
 
-                    report.setMethod(method);
-                    return method.invoke(target, report);
-                  }
-                }.run();
-              }
-            });
-          }
+        final Method[] methods = Classes.getDeclaredMethodsDeep(getJavaClass());
+        Classes.sortDeclarativeOrder(methods);
+        for (final Method method : methods) {
+          addToAnnotationLists(new FrameworkMethod(method) {
+            @Override
+            public Object invokeExplosively(final Object target, final Object ... params) throws Throwable {
+              return new ReflectiveCallable() {
+                @Override
+                protected Object runReflectiveCall() throws Throwable {
+                  beforeInvoke();
+                  if (method.getParameterCount() == 0)
+                    return method.invoke(target);
+
+                  report.setMethod(method);
+                  return method.invoke(target, report);
+                }
+              }.run();
+            }
+          }, methodsForAnnotations);
         }
       }
     };

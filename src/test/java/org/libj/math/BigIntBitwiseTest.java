@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ public class BigIntBitwiseTest extends BigIntTest {
 
   @Test
   public void testToByteArrayBigEndian(final AuditReport report) {
-    test("toByteArray()", report,
+    test("toByteArray() BE", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toByteArray(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(false), o -> o),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, false), o -> o)
@@ -64,7 +64,7 @@ public class BigIntBitwiseTest extends BigIntTest {
 
   @Test
   public void testToByteArrayLittleEndian(final AuditReport report) {
-    test("toByteArray()", report,
+    test("toByteArray() LE", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> ArrayUtil.reverse(a.toByteArray()), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(true), o -> o),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true), o -> o)

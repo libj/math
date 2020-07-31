@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -168,7 +168,7 @@ public abstract class Surveys {
         }
       }
 
-      canvas = new Canvas(90, 20);
+      canvas = new Canvas(90, 20, Color.DEFAULT);
       final float[] x = new float[divisions];
       final float[] y = new float[divisions];
       for (int s = 0, r = 0; s < surveys.length; ++s) {

@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 LibJ
+/* Copyright (c) 2020 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import org.libj.math.survey.AuditRunner;
 public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testByteValue(final AuditReport report) {
-    test("byeValue()", report,
+    test("byteValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.byteValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.byteValue(), o -> o),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.byteValue(a), o -> o)
@@ -127,6 +127,15 @@ public class BigIntPredicateTest extends BigIntTest {
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.abs(), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.abs(), String::valueOf),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.abs(a), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testNeg(final AuditReport report) {
+    test("neg()", report,
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.negate(), String::valueOf),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.neg(), String::valueOf),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.neg(a), BigInt::toString)
     );
   }
 
