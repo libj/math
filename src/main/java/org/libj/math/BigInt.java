@@ -35,9 +35,9 @@ package org.libj.math;
  * <ol>
  * <li><b>Mutable:</b> {@link BigInt} is mutable, to allow for reuse of
  * allocated arrays.</li>
- * <li><b>Generally faster arithmetic:</b> The arithmetic algorithms in
- * {@link BigInt} are implemented with optimized memory and runtime performance
- * in mind.</li>
+ * <li><b>Faster arithmetic:</b> The arithmetic algorithms in {@link BigInt} are
+ * implemented with the optimization of memory (heap allocation) and runtime
+ * performance in mind.</li>
  * <li><b>Faster multiplication of large numbers:</b> Support parallel
  * multiplication algorithm for very large numbers.</li>
  * <li><b>Support for {@code int} and {@code long} parameters and return

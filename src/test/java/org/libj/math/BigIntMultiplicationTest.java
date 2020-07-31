@@ -19,7 +19,6 @@ package org.libj.math;
 import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import org.libj.math.survey.AuditRunner;
 import gnu.java.math.MPN;
 
 @RunWith(AuditRunner.class)
-@AuditRunner.Execution(UNINSTRUMENTED)
+@AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument({BigInt.class, int[].class})
 @AuditRunner.Instrument({BigInteger.class, int[].class})
 public class BigIntMultiplicationTest extends BigIntTest {
@@ -86,26 +85,26 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   private static void printAlgoReport() {
-    if (BigIntMultiplication.X_Q[0] != Integer.MAX_VALUE)
-      System.out.println("                      quad: " + Arrays.toString(BigIntMultiplication.X_Q));
-    if (BigIntMultiplication.X_QI[0] != Integer.MAX_VALUE)
-      System.out.println("              quad inplace: " + Arrays.toString(BigIntMultiplication.X_QI));
-
-    if (BigIntMultiplication.X_QN[0] != Integer.MAX_VALUE)
-      System.out.println("               native quad: " + Arrays.toString(BigIntMultiplication.X_QN));
-    if (BigIntMultiplication.X_QIN[0] != Integer.MAX_VALUE)
-      System.out.println("       native quad inplace: " + Arrays.toString(BigIntMultiplication.X_QIN));
-
-    if (BigIntMultiplication.X_K[0] != Integer.MAX_VALUE)
-      System.out.println("                 karatsuba: " + Arrays.toString(BigIntMultiplication.X_K));
-    if (BigIntMultiplication.X_KI[0] != Integer.MAX_VALUE)
-      System.out.println("         karatsuba inplace: " + Arrays.toString(BigIntMultiplication.X_KI));
-    if (BigIntMultiplication.X_KP[0] != Integer.MAX_VALUE)
-      System.out.println("        parallel karatsuba: " + Arrays.toString(BigIntMultiplication.X_KP));
-    if (BigIntMultiplication.X_KPI[0] != Integer.MAX_VALUE)
-      System.out.println("karatsuba parallel inplace: " + Arrays.toString(BigIntMultiplication.X_KPI));
-
-    System.out.println();
+//    if (BigIntMultiplication.X_Q[0] != Integer.MAX_VALUE)
+//      System.out.println("                      quad: " + Arrays.toString(BigIntMultiplication.X_Q));
+//    if (BigIntMultiplication.X_QI[0] != Integer.MAX_VALUE)
+//      System.out.println("              quad inplace: " + Arrays.toString(BigIntMultiplication.X_QI));
+//
+//    if (BigIntMultiplication.X_QN[0] != Integer.MAX_VALUE)
+//      System.out.println("               native quad: " + Arrays.toString(BigIntMultiplication.X_QN));
+//    if (BigIntMultiplication.X_QIN[0] != Integer.MAX_VALUE)
+//      System.out.println("       native quad inplace: " + Arrays.toString(BigIntMultiplication.X_QIN));
+//
+//    if (BigIntMultiplication.X_K[0] != Integer.MAX_VALUE)
+//      System.out.println("                 karatsuba: " + Arrays.toString(BigIntMultiplication.X_K));
+//    if (BigIntMultiplication.X_KI[0] != Integer.MAX_VALUE)
+//      System.out.println("         karatsuba inplace: " + Arrays.toString(BigIntMultiplication.X_KI));
+//    if (BigIntMultiplication.X_KP[0] != Integer.MAX_VALUE)
+//      System.out.println("        parallel karatsuba: " + Arrays.toString(BigIntMultiplication.X_KP));
+//    if (BigIntMultiplication.X_KPI[0] != Integer.MAX_VALUE)
+//      System.out.println("karatsuba parallel inplace: " + Arrays.toString(BigIntMultiplication.X_KPI));
+//
+//    System.out.println();
   }
 
   public void testSquareBig(final AuditReport report, final int scale, final int skip) {
@@ -204,8 +203,8 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final ThresholdTest test = new ThresholdTest(2, 500000) {
       @Override
       void beforeTest(final int len1, final int len2) {
-        final int zlen = len1 + len2;
-        BigIntMultiplication.record = true;
+        // final int zlen = len1 + len2;
+        // BigIntMultiplication.record = true;
         // BigIntMultiplication.KARATSUBA_THRESHOLD_X = Math.min(len1, len2) - 5;
         // BigIntMultiplication.KARATSUBA_THRESHOLD_Z = zlen - 5;
       }
@@ -217,7 +216,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
       @Override
       void beforeControl() {
-        BigIntMultiplication.record = false;
+        // BigIntMultiplication.record = false;
         // BigIntMultiplication.KARATSUBA_THRESHOLD_X = Integer.MAX_VALUE;
         // BigIntMultiplication.KARATSUBA_THRESHOLD_Z = Integer.MAX_VALUE;
       }
@@ -247,7 +246,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final ThresholdTest test = new ThresholdTest(2, 10000) {
       @Override
       void beforeTest(final int len1, final int len2) {
-        BigIntMultiplication.record = true;
+        // BigIntMultiplication.record = true;
         // BigIntMultiplication.KARATSUBA_SQUARE_THRESHOLD = len1 - 5;
       }
 
@@ -258,7 +257,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
       @Override
       void beforeControl() {
-        BigIntMultiplication.record = false;
+        // BigIntMultiplication.record = false;
         // BigIntMultiplication.KARATSUBA_SQUARE_THRESHOLD = Integer.MAX_VALUE;
       }
     };
@@ -281,8 +280,8 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final ThresholdTest test = new ThresholdTest(5, 10000) {
       @Override
       void beforeTest(final int len1, final int len2) {
-        final int zlen = len1 + len2;
-        BigIntMultiplication.record = true;
+        // final int zlen = len1 + len2;
+        // BigIntMultiplication.record = true;
         // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Math.min(len1, len2) - 5;
         // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = zlen - 5;
       }
@@ -294,7 +293,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
       @Override
       void beforeControl() {
-        BigIntMultiplication.record = false;
+        // BigIntMultiplication.record = false;
         // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_X = Integer.MAX_VALUE;
         // BigIntMultiplication.PARALLEL_KARATSUBA_THRESHOLD_Z = Integer.MAX_VALUE;
       }

@@ -33,15 +33,15 @@ abstract class BigIntMultiplication extends BigIntBinary {
   private static final long serialVersionUID = -4907342078241892616L;
 
   // For debugging
-  public static boolean record = true;
-  public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_QN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_QI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_QIN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_K = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_KI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-  public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static boolean record = true;
+//  public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_QN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_QI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_QIN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_K = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_KI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+//  public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
 
   /**
    * Factor to be applied Karatsuba thresholds. This factor was determined
@@ -385,15 +385,15 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     final int[] z;
     final int inlineLen = zlen * 2 + 1;
-    final boolean PARALLEL = len > PARALLEL_KARATSUBA_THRESHOLD_X && zlen > PARALLEL_KARATSUBA_THRESHOLD_Z;
+//    final boolean PARALLEL = len > PARALLEL_KARATSUBA_THRESHOLD_X && zlen > PARALLEL_KARATSUBA_THRESHOLD_Z;
     if (!xNew && x.length > inlineLen) {
-      if (record) { final int X[] = PARALLEL ? X_KPI : X_KI; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+//      if (record) { final int X[] = PARALLEL ? X_KPI : X_KI; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = x;
       karatsuba(x, y, z, inlineLen, len);
     }
     else {
-      if (record) { final int X[] = PARALLEL ? X_KP : X_K; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+//      if (record) { final int X[] = PARALLEL ? X_KP : X_K; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = alloc(OFF + zlen * 2); // (OFF + zlen) is all that's needed, but increase to potentially reuse the original array
       // z = alloc((OFF + zlen) * ((int)(1 + 10 * Math.random()))); // FIXME: Remove this!
@@ -414,7 +414,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
   private static int[] mulQuad(final int[] x, int xlen, final int[] y, int ylen, int zlen, final boolean sig) {
     final int[] z;
     if (x.length >= zlen + xlen) {
-      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_QI : X_QIN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+//      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_QI : X_QIN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = x;
       if (xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD)
@@ -423,7 +423,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
         nativeMulQuadInPlace(y, ylen, z, xlen, zlen - 2);
     }
     else {
-      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_Q : X_QN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+//      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_Q : X_QN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = alloc(zlen);
       if (xlen < ylen) {

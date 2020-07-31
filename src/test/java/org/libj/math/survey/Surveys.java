@@ -144,13 +144,13 @@ public abstract class Surveys {
           final int array = survey.getAllocs(int[].class, d);
           if (variables == 1) {
             rows[r] = subject + " │ " + Strings.pad(String.valueOf(array), Align.RIGHT, 5);
-            color(rows, r, subject, min[0][d], max[0][d], s, surveys.length);
+            rows[r] = color(rows[r], subject, min[0][d], max[0][d], s, surveys.length);
           }
           else {
             rows[r] = String.valueOf(subject);
-            color(rows, r, subject, min[0][d], max[0][d], s, surveys.length);
+            rows[r] = color(rows[r], subject, min[0][d], max[0][d], s, surveys.length);
             rows[r + 1] = String.valueOf(array);
-            color(rows, r + 1, subject, min[1][d], max[1][d], s, surveys.length);
+            rows[r + 1] = color(rows[r + 1], subject, min[1][d], max[1][d], s, surveys.length);
           }
         }
       }
@@ -186,7 +186,7 @@ public abstract class Surveys {
             avgMax += max[v][d];
             r = 1 + v + d * variables;
             rows[r] = String.valueOf(time);
-            color(rows, r, time, min[v][d], max[v][d], s, surveys.length);
+            rows[r] = color(rows[r], time, min[v][d], max[v][d], s, surveys.length);
           }
 
           avgTime /= 2;
@@ -217,21 +217,23 @@ public abstract class Surveys {
 
         final int percent = (int)(100d * max[c][divisions] / sums[s][c] - 100);
 
+        String r0 = String.valueOf(sums[s][c]);
+        String r1 = String.valueOf(percent == Integer.MAX_VALUE ? "+∞" : percent >= 0 ? "+" + percent : percent);
+        r0 = color(r0, sums[s][c], min[c][divisions], max[c][divisions], s, surveys.length);
+        r1 = color(r1, sums[s][c], min[c][divisions], max[c][divisions], s, surveys.length);
+
         // Output the "sum" and "+%" rows
         if (categories == variables || c == 0) {
-          rows[r] = String.valueOf(sums[s][c]);
-          rows[r + variables] = String.valueOf(percent >= 0 ? "+" + percent : percent);
+          rows[r] = r0;
+          rows[r + variables] = r1;
         }
         else {
           r -= variables;
-          rows[r] += " │ " + Strings.pad(String.valueOf(sums[s][c]), Align.RIGHT, 5);
-          rows[r + variables] += " │ " + Strings.pad(String.valueOf(percent >= 0 ? "+" + percent : percent), Align.RIGHT, 5);
+          rows[r] += " │ " + Strings.pad(r0, Align.RIGHT, 5);
+          rows[r + variables] += " │ " + Strings.pad(r1, Align.RIGHT, 5);
         }
 
-        color(rows, r, sums[s][c], min[c][divisions], max[c][divisions], s, surveys.length);
-        color(rows, r + variables, sums[s][c], min[c][divisions], max[c][divisions], s, surveys.length);
-
-        summary[s * categories + c] = rows[r + variables];
+        summary[s * categories + c] = r1;
       }
     }
 
@@ -243,13 +245,14 @@ public abstract class Surveys {
     return builder.toString();
   }
 
-  private static void color(final String[] rows, final int c, final long val, final long min, final long max, final int s, final int len) {
+  private static String color(final String row, final long val, final long min, final long max, final int s, final int len) {
     if (val == min)
-      rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.GREEN);
-    else if (len > 2 ? s >= len - 2 : s >= len - 1)
-      rows[c] = Ansi.apply(rows[c], Intensity.BOLD, val == max ? Color.RED : Color.YELLOW);
-    else
-      rows[c] = Ansi.apply(rows[c], Intensity.BOLD, Color.WHITE);
+      return Ansi.apply(row, Intensity.BOLD, Color.GREEN);
+
+    if (len > 2 ? s >= len - 2 : s >= len - 1)
+      return Ansi.apply(row, Intensity.BOLD, val == max ? Color.RED : Color.YELLOW);
+
+    return Ansi.apply(row, Intensity.BOLD, Color.WHITE);
   }
 
   public abstract Ansi.Color getColor(Case<?,?,?,?,?> cse);

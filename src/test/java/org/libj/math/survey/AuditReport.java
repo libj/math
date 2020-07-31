@@ -130,7 +130,7 @@ public class AuditReport {
     this.method = method;
   }
 
-  private final LinkedHashMap<Method,Map<Integer,String>> methodToResults = new LinkedHashMap<>();
+  private final LinkedHashMap<String,Map<Integer,String>> methodLabelToResults = new LinkedHashMap<>();
   private final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = new HashMap<>();
   private final Map<Integer,HashMap<List<String>,Integer>> headersToCategories = new HashMap<>();
 
@@ -171,9 +171,10 @@ public class AuditReport {
         columns[c + 1].add(String.valueOf(summary[c * categories + i]));
     }
 
-    Map<Integer,String> map = methodToResults.get(method);
+    final String methodLabel = method.toString() + label;
+    Map<Integer,String> map = methodLabelToResults.get(methodLabel);
     if (map == null)
-      methodToResults.put(method, map = new HashMap<>());
+      methodLabelToResults.put(methodLabel, map = new HashMap<>());
 
     if (map.get(mode) != null)
       throw new IllegalStateException();
@@ -186,7 +187,7 @@ public class AuditReport {
       final int mode = entry.getKey();
       final LinkedHashMap<List<String>,List<Object>[]> headersToSummaries = entry.getValue();
       final HashMap<List<String>,Integer> headersToCategories = this.headersToCategories.get(mode);
-      for (final Map<Integer,String> result : methodToResults.values()) {
+      for (final Map<Integer,String> result : methodLabelToResults.values()) {
         System.out.println(getTitle(mode));
         System.out.println(result.get(mode));
       }
