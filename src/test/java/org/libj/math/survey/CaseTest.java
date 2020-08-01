@@ -673,7 +673,7 @@ public abstract class CaseTest {
             final Function test = (Function)cse.test;
             in1 = CaseTest.clone(a0);
 
-            overhead = 37;
+            overhead = 35;
             time = System.nanoTime();
             result = test.apply(a0);
           }

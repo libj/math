@@ -33,6 +33,8 @@ import org.libj.math.survey.AuditRunner;
 public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testByteValue(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as a `byte`.");
+
     test("byteValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.byteValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.byteValue(), o -> o),
@@ -42,6 +44,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testShortValue(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as a `short`.");
+
     test("shortValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.shortValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.shortValue(), o -> o),
@@ -51,6 +55,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testIntValue(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as an `int`.");
+
     test("intValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.intValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.intValue(), o -> o),
@@ -60,6 +66,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testLongValue(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as a `long`.");
+
     test("longValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.longValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.longValue(), o -> o),
@@ -69,6 +77,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testFloatValue(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as a `float`.");
+
     test("floatValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.floatValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.floatValue(), o -> o),
@@ -78,6 +88,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testDoubleValue(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as a `double`.");
+
     test("doubleValue()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.doubleValue(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.doubleValue(), o -> o),
@@ -87,6 +99,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testToString(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "String representation of number in radix 10.");
+
     test("toString()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toString(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toString(), o -> o),
@@ -96,6 +110,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testCompareTo(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Compare `T`.");
+
     test("compareTo(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.compareTo(b)),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.compareTo(b)),
@@ -105,6 +121,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testEquals(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Equate with `T`.");
+
     test("equals(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.equals(b)),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.equals(b)),
@@ -114,6 +132,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testHashCode(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Hash code of number.");
+
     test("hashCode()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.hashCode(), o -> Boolean.TRUE),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.hashCode(), o -> Boolean.TRUE),
@@ -123,6 +143,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testAbs(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Absolute value of number.");
+
     test("abs()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.abs(), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.abs(), String::valueOf),
@@ -132,6 +154,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testNeg(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Negated value of number.");
+
     test("neg()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.negate(), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.neg(), String::valueOf),
@@ -140,7 +164,21 @@ public class BigIntPredicateTest extends BigIntTest {
   }
 
   @Test
+  public void testSignum(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Signum of number.");
+
+    test("signum()", report,
+      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.signum(), o -> o),
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.signum(), o -> o),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.signum(a), o -> o)
+    );
+  }
+
+  @Test
   public void testPrecision(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Precision of number in radix 10.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a `precision()` method. Therefore, for this test, precision is determined with [`Numbers.precision(BigInteger)`][Numbers].");
+
     test("precision()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> Numbers.precision(a), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.precision(), o -> o),
@@ -150,6 +188,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testMax(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Max with `T`.");
+
     test("max(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.max(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.max(b), String::valueOf),
@@ -159,6 +199,8 @@ public class BigIntPredicateTest extends BigIntTest {
 
   @Test
   public void testMin(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Min with `T`.");
+
     test("min(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.min(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.min(b), String::valueOf),

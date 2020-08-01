@@ -31,7 +31,6 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,7 +219,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     final Result[] results = new Result[instruments.length + 1];
     final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
     results[results.length - 1] = new Result(cls, allTrackedClasses);
-    this.report = AuditReport.init(results, trim(allTrackedClasses, 0, 0));
+    this.report = AuditReport.init(cls, results, trim(allTrackedClasses, 0, 0));
   }
 
   private static Class<?>[] trim(final Class<?>[] classes, final int index, final int depth) {
@@ -354,17 +353,6 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
       report.print();
       AuditReport.destroy();
     }
-  }
-
-  private static List<Class<?>> getSuperClasses(Class<?> testClass) {
-    List<Class<?>> results = new ArrayList<>();
-    Class<?> current = testClass;
-    while (current != null) {
-      results.add(current);
-      current = current.getSuperclass();
-    }
-
-    return results;
   }
 
   @Override

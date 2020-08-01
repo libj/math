@@ -238,7 +238,7 @@ public abstract class Surveys {
     }
 
     final StringBuilder builder = new StringBuilder();
-    builder.append(label + "\n  " + count + " in " + runTime + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns) + "\n");
+    builder.append(label + "\n  " + count + " in " + runTime + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns));
     if (canvas != null)
       builder.append('\n').append(canvas.toString());
 

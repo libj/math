@@ -32,6 +32,8 @@ import org.libj.math.survey.AuditRunner;
 public class BigIntBinaryTest extends BigIntTest {
   @Test
   public void testAnd(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "`and` with `T`.");
+
     test("and(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf),
@@ -41,6 +43,8 @@ public class BigIntBinaryTest extends BigIntTest {
 
   @Test
   public void testOr(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "`or` with `T`.");
+
     test("or(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf),
@@ -50,6 +54,8 @@ public class BigIntBinaryTest extends BigIntTest {
 
   @Test
   public void testXor(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "`xor` with `T`.");
+
     test("xor(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf),
@@ -59,6 +65,8 @@ public class BigIntBinaryTest extends BigIntTest {
 
   @Test
   public void testNot(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "`not` with `T`.");
+
     test("not()", report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.not(), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.not(), String::valueOf),
@@ -68,6 +76,8 @@ public class BigIntBinaryTest extends BigIntTest {
 
   @Test
   public void testAndNot(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "`andNot` with `T`.");
+
     test("andNot(T)", report,
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf),

@@ -23,8 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,21 +56,23 @@ public class AuditReport {
     return path.toFile();
   }
 
+  private final Class<?> testClass;
   private final Result[] results;
   private final Class<?>[] trackedClasses;
 
-  public static AuditReport init(final Result[] results, final Class<?>[] trackedClasses) {
+  public static AuditReport init(final Class<?> testClass, final Result[] results, final Class<?>[] trackedClasses) {
     if (instance != null)
       throw new IllegalStateException();
 
-    return instance = new AuditReport(results, trackedClasses);
+    return instance = new AuditReport(testClass, results, trackedClasses);
   }
 
   public static void destroy() {
     instance = null;
   }
 
-  private AuditReport(final Result[] results, final Class<?>[] trackedClasses) {
+  private AuditReport(final Class<?> testClass, final Result[] results, final Class<?>[] trackedClasses) {
+    this.testClass = testClass;
     this.results = results;
     this.trackedClasses = trackedClasses;
   }
@@ -130,8 +134,9 @@ public class AuditReport {
     this.method = method;
   }
 
-  private final LinkedHashMap<String,Map<Integer,String>> methodLabelToResults = new LinkedHashMap<>();
+  private final LinkedHashMap<List<Object>,Map<Integer,String[]>> methodLabelToResults = new LinkedHashMap<>();
   private final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = new HashMap<>();
+  private final Map<Method,Map<Integer,String>> methodToModeToComment = new HashMap<>();
 
   private LinkedHashMap<List<String>,List<Object>[]> getHeadersToSummaries() {
     LinkedHashMap<List<String>,List<Object>[]> summaries = headersToSummaries.get(mode);
@@ -163,18 +168,30 @@ public class AuditReport {
         columns[c + 1].add(String.valueOf(summary[c * categories + i]));
     }
 
-    final String methodLabel = method.toString() + label;
-    Map<Integer,String> map = methodLabelToResults.get(methodLabel);
+    final List<Object> methodLabel = Arrays.asList(method, label);
+    Map<Integer,String[]> map = methodLabelToResults.get(methodLabel);
     if (map == null)
       methodLabelToResults.put(methodLabel, map = new HashMap<>());
 
     if (map.get(mode) != null)
       throw new IllegalStateException();
 
-    map.put(mode, result);
+    map.put(mode, new String[] {label, result});
   }
 
+  private static final boolean markdown = true;
+
   public void print() {
+    if (markdown) {
+      final String testClassSimpleName = testClass.getSimpleName();
+      System.out.println("#### " + testClassSimpleName.substring(6, testClassSimpleName.length() - 4) + " ([`" + testClassSimpleName + "`][" + testClassSimpleName + "])\n");
+      System.out.println("**Summary**\n");
+    }
+
+    if (markdown)
+      System.out.println("```");
+
+    final StringBuilder builder = new StringBuilder();
     // First print the summaries
     for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : this.headersToSummaries.entrySet()) {
       final int mode = entry.getKey();
@@ -185,17 +202,44 @@ public class AuditReport {
           columns[c] = entry2.getValue()[c].toArray();
         }
 
-        System.out.println(getTitle(mode));
-        System.out.println(Tables.printTable(true, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns));
+        builder.append(getTitle(mode)).append('\n');
+        builder.append(Tables.printTable(true, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
+        if (markdown)
+          builder.append('\n');
       }
     }
 
+    if (markdown)
+      builder.setLength(builder.length() - 2);
+
+    System.out.println(builder.toString());
+    if (markdown)
+      System.out.println("```\n");
+
     // Next print the detailed results
-    for (final Map<Integer,String> result : methodLabelToResults.values()) {
-      for (final Map.Entry<Integer,String> entry : result.entrySet()) {
+    for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) {
+      final Iterator<Map.Entry<Integer,String[]>> iterator = result.getValue().entrySet().iterator();
+      for (int i = 0; iterator.hasNext(); ++i) {
+        final Map.Entry<Integer,String[]> entry = iterator.next();
+        if (i == 0 && markdown) {
+          System.out.println("##### `" + entry.getValue()[0] + "`\n");
+
+          final Map<Integer,String> modeToComment = methodToModeToComment.get((Method)result.getKey().get(0));
+          if (modeToComment != null) {
+            final String comment = modeToComment.get(entry.getKey());
+            if (comment != null)
+              System.out.println(comment + "\n");
+          }
+
+          System.out.println("```");
+        }
+
         System.out.println(getTitle(entry.getKey()));
-        System.out.println(entry.getValue());
+        System.out.println(entry.getValue()[1]);
       }
+
+      if (markdown)
+        System.out.println("```\n");
     }
   }
 
@@ -211,5 +255,17 @@ public class AuditReport {
 
   public int getMode() {
     return mode;
+  }
+
+  public void addComment(final int mode, final String comment) {
+    if (this.mode != mode)
+      return;
+
+    Map<Integer,String> modeToComment = methodToModeToComment.get(method);
+    if (modeToComment == null)
+      methodToModeToComment.put(method, modeToComment = new LinkedHashMap<>());
+
+    final String existing = modeToComment.get(mode);
+    modeToComment.put(mode, existing != null ? existing + "\n\n" + comment : comment);
   }
 }

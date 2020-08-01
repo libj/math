@@ -33,6 +33,8 @@ import org.libj.util.ArrayUtil;
 public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the [`BigIntegers.valueOf(int)`][BigIntegers] utility method is used to provide this missing function.");
+
     test("<init>(int,int)", report,
       i(BigInteger.class, a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigIntegers.valueOf(a, b), String::valueOf),
       i(BigInt.class, a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> new BigInt(a, b), String::valueOf),
@@ -51,6 +53,8 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testUnsignedLong(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the [`BigIntegers.valueOf(long)`][BigIntegers] utility method is used to provide this missing function.");
+
     test("<init>(int,long)", report,
       l(BigInteger.class, a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf),
       l(BigInt.class, a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInt((int)a, b), String::valueOf),
@@ -88,6 +92,8 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testBytesLittleEndian(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not support little endian `byte[]` encoding. Therefore, for this test, the input array is reversed just for `BigInteger`. The time for the array reversal _is not_ included in the runtime measure.");
+
     final byte[][] bytes = new byte[2][];
     test("<init>(byte[])", report,
       s(BigInteger.class, a -> { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = ArrayUtil.reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),

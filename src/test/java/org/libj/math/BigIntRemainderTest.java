@@ -32,16 +32,10 @@ import org.libj.math.survey.AuditRunner;
 public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedRemInt(final AuditReport report) {
-    final int[] sig = {0};
-    test("rem(int,int):T", report,
-      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(sig[0], b), String::valueOf),
-      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.rem(a, sig[0], b); return a; }, BigInt::toString)
-    );
-  }
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by an unsigned `int`, setting to `this`, and returning the value as an absolute unsigned `int`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the returned `int` remainder result (not the `T` remainder result).");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
 
-  @Test
-  public void testUnsignedRemInt2(final AuditReport report) {
     final int[] sig = {0};
     test("rem(int,int)", report,
       i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -51,17 +45,25 @@ public class BigIntRemainderTest extends BigIntTest {
   }
 
   @Test
-  public void testUnsignedRemLong(final AuditReport report) {
+  public void testUnsignedRemIntT(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by an unsigned `int`, setting to `this`, and returning the value as an absolute unsigned `int`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the `T` remainder result (not the returned `int` remainder result).");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
+
     final int[] sig = {0};
-    test("rem(int,long):T", report,
-      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(sig[0], b), String::valueOf),
-      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.rem(a, sig[0], b); return a; }, BigInt::toString)
+    test("rem(int,int):T", report,
+      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(sig[0], b), String::valueOf),
+      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.rem(a, sig[0], b); return a; }, BigInt::toString)
     );
   }
 
   @Test
-  public void testUnsignedRemLong2(final AuditReport report) {
+  public void testUnsignedRemLong(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by an unsigned `long`, setting to `this`, and returning the value as an absolute unsigned `long`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the returned `long` remainder result (not the `T` remainder result).");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
+
     final int[] sig = {0};
     test("rem(int,long)", report,
       l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -71,16 +73,24 @@ public class BigIntRemainderTest extends BigIntTest {
   }
 
   @Test
-  public void testSignedRemInt(final AuditReport report) {
-    test("rem(int):T", report,
-      i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(b), String::valueOf),
-      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.rem(a, b); return a; }, BigInt::toString)
+  public void testUnsignedRemLongT(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by an unsigned `long`, setting to `this`, and returning the value as an absolute unsigned `long`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the `T` remainder result (not the returned `int` remainder result).");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
+
+    final int[] sig = {0};
+    test("rem(int,long):T", report,
+      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(sig[0], b), String::valueOf),
+      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.rem(a, sig[0], b); return a; }, BigInt::toString)
     );
   }
 
   @Test
-  public void testSignedRemInt2(final AuditReport report) {
+  public void testSignedRemInt(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by a signed `int`, setting to `this`, and returning the value as an `int`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the returned `int` remainder result (not the `T` remainder result).");
+
     test("rem(int)", report,
       i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(b), String::valueOf),
@@ -89,16 +99,22 @@ public class BigIntRemainderTest extends BigIntTest {
   }
 
   @Test
-  public void testSignedRemLong(final AuditReport report) {
-    test("rem(long):T", report,
-      l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(b), String::valueOf),
-      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.rem(a, b); return a; }, BigInt::toString)
+  public void testSignedRemIntT(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by a signed `int`, setting to `this`, and returning the value as an `int`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the `T` remainder result (not the returned `int` remainder result).");
+
+    test("rem(int):T", report,
+      i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.rem(b), String::valueOf),
+      i(int[].class, this::scaledVal, this::nz, (int[] a, int b) -> { BigInt.rem(a, b); return a; }, BigInt::toString)
     );
   }
 
   @Test
-  public void testSignedRemLong2(final AuditReport report) {
+  public void testSignedRemLong(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by a signed `long`, setting to `this`, and returning the value as an `long`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the returned `long` remainder result (not the `T` remainder result).");
+
     test("rem(long)", report,
       l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(b), String::valueOf),
@@ -107,7 +123,21 @@ public class BigIntRemainderTest extends BigIntTest {
   }
 
   @Test
+  public void testSignedRemLongT(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by a signed `long`, setting to `this`, and returning the value as an `long`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the `T` remainder result (not the returned `long` remainder result).");
+
+    test("rem(long):T", report,
+      l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.rem(b), String::valueOf),
+      l(int[].class, this::scaledVal, this::nz, (int[] a, long b) -> { BigInt.rem(a, b); return a; }, BigInt::toString)
+    );
+  }
+
+  @Test
   public void testRemBig(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by `T`.");
+
     test("rem(T)", report,
       s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> a.rem(b), String::valueOf),
@@ -117,6 +147,10 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testUnsignedDivRemInt(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Divide by an unsigned `int`, and return the remainder as an absolute unsigned `int`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the remainder result (not the division result).");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
+
     final int[] sig = {0};
     test("divRem(int,int)", report,
       i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -127,6 +161,10 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testUnsignedDivRemLong(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Divide by an unsigned `long`, and return the remainder as an absolute unsigned `long`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the remainder result (not the division result).");
+
     final int[] sig = {0};
     test("divRem(int,long)", report,
       l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return nz(b); }, (BigInteger a, long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -137,6 +175,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedDivRemInt(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Divide by a signed `int`, and return the remainder as an `int`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the remainder result (not the division result).");
+
     test("divRem(int)", report,
       i(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, int b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, int b) -> a.divRem(b), String::valueOf),
@@ -146,6 +187,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testSignedDivRemLong(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Divide by a signed `long`, and return the remainder as an `long`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the remainder result (not the division result).");
+
     test("divRem(long)", report,
       l(BigInteger.class, this::scaledBigInteger, this::nz, (BigInteger a, long b) -> a.remainder(BigInteger.valueOf(b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, this::nz, (BigInt a, long b) -> a.divRem(b), String::valueOf),
@@ -155,6 +199,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testDivRemBig(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Divide by `T`, and return the remainder as a new `T`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the value of the remainder result (not the division result).");
+
     test("divRem(T)", report,
       s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (BigInteger a, BigInteger b) -> a.remainder(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (BigInt a, BigInt b) -> a.divRem(b), String::valueOf),
@@ -164,6 +211,8 @@ public class BigIntRemainderTest extends BigIntTest {
 
   @Test
   public void testModBig(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Modulus by `T`.");
+
     test("mod(T)", report,
       s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(abs(nz(b))), (BigInteger a, BigInteger b) -> a.mod(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, b -> new BigInt(abs(nz(b))), (BigInt a, BigInt b) -> a.mod(b), String::valueOf),
