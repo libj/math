@@ -185,6 +185,7 @@ The table provides 2 additional rows at the bottom:<br>
 
 #### Benchmark Results
 
+* All tests were run with Java 1.8.0_231.
 * All tests were run with `-Xcomp` argument, in order to ensure JIT optimizations are enabled.
 * For `BigInt`, execution with `-Xcomp` causes it to load its <ins>critical native</ins> JNI bindings.
 
