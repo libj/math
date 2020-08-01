@@ -84,10 +84,10 @@ It is also important to note the following:
 | [`rem(long)`](#remintlong)<sup>unsigned</sup> | ~0~ | +159% | +253% |
 | [`rem(long)`](#remlong)<sup>signed</sup> | ~0~ | +143% | +150% |
 | [`rem(T)`](#remt) | ~0~ | +47% | +63% |
-| [`mod(T)`](#modt) | ~0~ | +55% | +73% |
+| [`mod(T)`](#modt-1) | ~0~ | +55% | +73% |
 | [`bitCount()`](#bitcount) | 0 | +68% | +63% |
 | [`bitLength()`](#bitlength) | 0 | +81% | +205% |
-| [`precision()`](#precision) | 0 | +2067% | +2477% |
+| [`precision()`](#precision) | ~0~ | +2067% | +2477% |
 | [`testBit(int)`](#testbitint) | 0 | +29% | +50% |
 | [`setBit(int)`](#setbitint) | 0 | +800% | +1100% |
 | [`clearBit(int)`](#clearbitint) | 0 | +440% | +590% |
@@ -98,14 +98,14 @@ It is also important to note the following:
 | [`or(T)`](#ort) | 0 | +458% | +711% |
 | [`xor(T)`](#xort) | 0 | +335% | +440% |
 | [`andNot(T)`](#andnott) | 0 | +325% | +505% |
-| [`not(T)`](#nott) | 0 | +589% | +2784% |
+| [`not()`](#not) | 0 | +589% | +2784% |
 | [`byteValue()`](#bytevalue) | 0 | +389% | +97% |
 | [`shortValue()`](#shortvalue) | +39% | 0 | +139% |
 | [`intValue()`](#intvalue) | +8% | 0 | +68% |
 | [`longValue()`](#longvalue) | 0 | +208% | +230% |
 | [`floatValue()`](#floatvalue) | 0 | +29% | +96% |
 | [`doubleValue()`](#doublevalue) | 0 | +19% | +123% |
-| [`toByteArray()`](#toBytearray) | 0 | +23% | +15% |
+| [`toByteArray()`](#tobytearray-be) | 0 | +23% | +15% |
 | [`compareTo(T)`](#comparetot) | +215% | +89% | 0 |
 | [`equals(T)`](#equalst) | 0 | +3% | +22% |
 | [`hashCode()`](#hashcode) | +39% | +5% | 0 |
@@ -142,14 +142,14 @@ Benchmark tests are organized in 5 distinct test classes, each responsible for i
 
 | Results link | Test code link |
 |-|-|
-| [Addition and subtraction](#addition-and-subtraction-bigintadditiontest) | [`BigIntAdditionTest`][BigIntAdditionTest] |
+| [Addition and subtraction](#addition-bigintadditiontest) | [`BigIntAdditionTest`][BigIntAdditionTest] |
 | [Multiplication](#multiplication-bigintmultiplicationtest) | [`BigIntMultiplicationTest`][BigIntMultiplicationTest] |
 | [Division](#division-bigintdivisiontest) | [`BigIntDivisionTest`][BigIntDivisionTest] |
-| [Remainder and modulus](#remainder-and-modulus-bigintremaindertest) | [`BigIntRemainderTest`][BigIntRemainderTest] |
-| [Binary operations](#binary-operations-bigintbinarytest) | [`BigIntBinaryTest`][BigIntBinaryTest] |
-| [Bitwise operations](#bitwise-operations-bigintbitwisetest) | [`BigIntBitwiseTest`][BigIntBitwiseTest] |
-| [Predicate functions](#predicate-functions-bigintpredicatetest) | [`BigIntPredicateTest`][BigIntPredicateTest] |
-| [Value constructors](#value-constructors-bigintconstructortest) | [`BigIntConstructorTest`][BigIntConstructorTest] |
+| [Remainder and modulus](#remainder-bigintremaindertest) | [`BigIntRemainderTest`][BigIntRemainderTest] |
+| [Binary operations](#binary-bigintbinarytest) | [`BigIntBinaryTest`][BigIntBinaryTest] |
+| [Bitwise operations](#bitwise-bigintbitwisetest) | [`BigIntBitwiseTest`][BigIntBitwiseTest] |
+| [Predicate functions](#predicate-bigintpredicatetest) | [`BigIntPredicateTest`][BigIntPredicateTest] |
+| [Value constructors](#constructors-bigintconstructortest) | [`BigIntConstructorTest`][BigIntConstructorTest] |
 
 The following section provides benchmarks that compare the performance of **`BigInteger`**, **`BigInt`**, and [bare **`int[]`** <ins>value-encoded number</ins> arrays](#bare-int-value-encoded-number-arrays).
 
