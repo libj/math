@@ -46,6 +46,7 @@ It is also important to note the following:
 
 * These numbers are derived from the detailed benchmark tests that are provided further in this document.
 * These numbers have relatively high error margin, and should be considered as estimates. It is possible to achieve much better precision in the results, but this would require significant time running these tests in order to increase the sample size. _This will probably be done later._
+* These numbers only show the <ins>runtime performance</ins> comparison. In addition to <ins>runtime performance</ins>, the test results further in this document provide <ins>heap memory allocation</ins> comparison as well.
 
 | | `BigInteger` | `BigInt` | `int[]` |
 |-|:-------------:|:------------:|:------------:|
