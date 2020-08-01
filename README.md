@@ -27,10 +27,11 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
 1. **Support for `int` and `long` parameters and return types:** `BigInt` does not require its parameters or return types to be `BigInt`, avoiding unnecessary instantiation of transient `BigInt` objects.
 1. **No preemptive exception checking:** The `BigInt` does not preemptively check for exceptions. If a programmer divides by zero he has only himself to blame. And, it is ok to have undefined behavior.
 1. **Support for "object-less" operation** All methods in `BigInt` are available in static form, allowing [_bare `int[]` <ins>value-encoded number</ins> arrays_](#bare-int-value-encoded-number-arrays) to be used without a `BigInt` instance, providing further reduction in heap memory allocation.
+1. **Significantly reduced heap allocation:** `BigInt` was meticulously designed to reduce the number of instances allocated purely for the purpose of transient calculation, and significantly outperforms `BigInteger` with regard to memory and GC load.
 
 ##### Bare `int[]` <ins>value-encoded number</ins> arrays
 
-The `BigInt` architecture exposes the underlying `int[]` array, and provides static function equivalents for all of its arithmetic instance methods. The bare `int[]` array can therefore be used as a feature-equivalent replacement for `BigInt`, with one notable difference: no `BigInt` instance is required.
+The `BigInt` architecture exposes the underlying `int[]` array, and provides static function equivalents for all of its instance methods. The bare `int[]` array can therefore be used as a feature-equivalent replacement for `BigInt`, with one notable difference: no `BigInt` instance is required.
 
 #### Function Matrix
 
