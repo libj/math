@@ -61,7 +61,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   static {
     try {
-      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport", "org.libj.console.Tables", "org.libj.lang.Strings");
+      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport", "org.libj.lang.Strings", "org.libj.console.Tables");
     }
     catch (final IOException e) {
       throw new ExceptionInInitializerError(e);
@@ -301,6 +301,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
       @Override
       public void fireTestStarted(final Description description) throws StoppedByUserException {
+        System.out.println(description.toString());
         if (report == null || report.getMode() == 0)
           notifier.fireTestStarted(description);
       }
