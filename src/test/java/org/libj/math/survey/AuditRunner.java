@@ -204,14 +204,27 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 //  System.err.println(Class.forName("org.libj.math.survey.Rule").getClassLoader());
     final Instruments instrs = cls.getAnnotation(Instruments.class);
     if (instrs == null) {
-      mode = AuditMode.UNINSTRUMENTED;
+      this.mode = AuditMode.UNINSTRUMENTED;
       this.instr = null;
       this.report = null;
       return;
     }
 
     final Execution execution = cls.getAnnotation(Execution.class);
-    this.mode = execution == null ? AuditMode.INSTRUMENTED : execution.value();
+    if (execution == null) {
+      this.mode = AuditMode.INSTRUMENTED;
+    }
+    else {
+      final String skipRTests = System.getProperty("skipRTests");
+      if (skipRTests != null && !skipRTests.equals("false")) {
+        this.mode = AuditMode.UNINSTRUMENTED;
+        this.instr = null;
+        this.report = null;
+        return;
+      }
+
+      this.mode = execution.value();
+    }
 
     this.instr = ByteBuddyAgent.install();
     loadJarsInBootstrap(instr, "lang");
