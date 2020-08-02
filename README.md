@@ -89,8 +89,8 @@ It is also important to note the following:
 | **[`rem(int)`](BigIntRemainderTest.md#remint)**<sub>signed</sub> | 𝚯 | +172% | +128% |
 | **[`rem(long)`](BigIntRemainderTest.md#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
 | **[`rem(long)`](BigIntRemainderTest.md#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
-| **[`rem(T)`](BigIntRemainderTest.md#remt)** | 𝚯 | +47% | +63% |
-| **[`mod(T)`](BigIntRemainderTest.md#modt-1)** | 𝚯 | +55% | +73% |
+| **[`rem(T)`](BigIntRemainderTest.md#remt)** | 0 | +47% | +63% |
+| **[`mod(T)`](BigIntRemainderTest.md#modt-1)** | 0 | +55% | +73% |
 | **[`bitCount()`](BigIntBitwiseTest.md#bitcount)** | 0 | +68% | +63% |
 | **[`bitLength()`](BigIntBitwiseTest.md#bitlength)** | 0 | +81% | +205% |
 | **[`testBit(int)`](BigIntBitwiseTest.md#testbitint)** | 0 | +29% | +50% |
@@ -198,7 +198,7 @@ The table provides 2 additional rows at the bottom:<br>
 * All tests were run with `-Xcomp` argument, in order to ensure JIT optimizations are enabled.
 * All tests were run with <ins>Critical Native</ins> bindings loaded, which automatically happens when `-Xcomp` is present on the JVM argument list.
 
-The benchmark results are too lengthy to include in this `README.md`, therefore they have been separated into their own `Test.md` files:
+The benchmark results are too lengthy to include in this `README.md`, therefore they have been separated into their own `.md` files:
 
 Benchmark tests are organized in 8 test classes, each responsible for its context of functions:
 
