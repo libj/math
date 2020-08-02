@@ -58,13 +58,24 @@ import net.bytebuddy.dynamic.loading.ClassInjector;
 
 public class AuditRunner extends BlockJUnit4ClassRunner {
   private static final String classpath = System.getProperty("java.class.path");
+  private static final boolean skipRTests;
+  private static final Instrumentation instr;
 
   static {
-    try {
-      loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport", "org.libj.lang.Strings", "org.libj.console.Tables");
+    final String skipRTestsProp = System.getProperty("skipRTests");
+    skipRTests = skipRTestsProp != null && !skipRTestsProp.equals("false");
+    if (skipRTests) {
+      instr = null;
     }
-    catch (final IOException e) {
-      throw new ExceptionInInitializerError(e);
+    else {
+      try {
+        instr = ByteBuddyAgent.install();
+        loadJarsInBootstrap(instr, "lang", "console");
+        loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport");
+      }
+      catch (final IOException e) {
+        throw new ExceptionInInitializerError(e);
+      }
     }
   }
 
@@ -193,7 +204,6 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     }
   }
 
-  private final Instrumentation instr;
   private final AuditMode mode;
   private final AuditReport report;
 
@@ -203,36 +213,19 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 //  System.err.println(Class.forName("org.libj.math.survey.AuditReport").getClassLoader());
 //  System.err.println(Class.forName("org.libj.math.survey.Rule").getClassLoader());
     final Instruments instrs = cls.getAnnotation(Instruments.class);
-    if (instrs == null) {
-      this.mode = AuditMode.UNINSTRUMENTED;
-      this.instr = null;
-      this.report = null;
-      return;
-    }
-
     final Execution execution = cls.getAnnotation(Execution.class);
-    if (execution == null) {
-      this.mode = AuditMode.INSTRUMENTED;
+    if (skipRTests || instrs == null || execution != null && execution.value() == AuditMode.UNINSTRUMENTED) {
+      this.mode = AuditMode.UNINSTRUMENTED;
+      this.report = AuditReport.init(cls, null, null);
     }
     else {
-      final String skipRTests = System.getProperty("skipRTests");
-      if (skipRTests != null && !skipRTests.equals("false")) {
-        this.mode = AuditMode.UNINSTRUMENTED;
-        this.instr = null;
-        this.report = null;
-        return;
-      }
-
-      this.mode = execution.value();
+      this.mode = execution == null ? AuditMode.INSTRUMENTED : execution.value();
+      final Instrument[] instruments = instrs.value();
+      final Result[] results = new Result[instruments.length + 1];
+      final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
+      results[results.length - 1] = new Result(cls, allTrackedClasses);
+      this.report = AuditReport.init(cls, results, trim(allTrackedClasses, 0, 0));
     }
-
-    this.instr = ByteBuddyAgent.install();
-    loadJarsInBootstrap(instr, "lang");
-    final Instrument[] instruments = instrs.value();
-    final Result[] results = new Result[instruments.length + 1];
-    final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
-    results[results.length - 1] = new Result(cls, allTrackedClasses);
-    this.report = AuditReport.init(cls, results, trim(allTrackedClasses, 0, 0));
   }
 
   private static Class<?>[] trim(final Class<?>[] classes, final int index, final int depth) {

@@ -103,8 +103,9 @@ public class AuditReport {
   }
 
   public void reset() {
-    for (int i = 0; i < results.length; ++i)
-      results[i].reset();
+    if (results != null)
+      for (int i = 0; i < results.length; ++i)
+        results[i].reset();
   }
 
   public int getAllocations(final Class<?> auditClass) {
@@ -209,7 +210,7 @@ public class AuditReport {
       }
     }
 
-    if (markdown)
+    if (markdown && builder.length() > 2)
       builder.setLength(builder.length() - 2);
 
     System.out.println(builder.toString());
