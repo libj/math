@@ -270,7 +270,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   @Override
   public void run(final RunNotifier notifier) {
-    final RunNotifier delegateNotifier = mode != AuditMode.PHASED ? notifier : new RunNotifier() {
+    final RunNotifier delegateNotifier = new RunNotifier() {
       @Override
       public void addListener(final RunListener listener) {
         notifier.addListener(listener);
@@ -283,32 +283,32 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
       @Override
       public void fireTestRunStarted(final Description description) {
-        if (report == null || report.getMode() == 0)
+        if (instr == null || report.getMode() == 0)
           notifier.fireTestRunStarted(description);
       }
 
       @Override
       public void fireTestRunFinished(final org.junit.runner.Result result) {
-        if (report == null || report.getMode() == 1)
+        if (instr == null || report.getMode() == 1)
           notifier.fireTestRunFinished(result);
       }
 
       @Override
       public void fireTestSuiteStarted(final Description description) {
-        if (report == null || report.getMode() == 0)
+        if (instr == null || report.getMode() == 0)
           notifier.fireTestSuiteStarted(description);
       }
 
       @Override
       public void fireTestSuiteFinished(final Description description) {
-        if (report == null || report.getMode() == 1)
+        if (instr == null || report.getMode() == 1)
           notifier.fireTestSuiteFinished(description);
       }
 
       @Override
       public void fireTestStarted(final Description description) throws StoppedByUserException {
         System.out.println(description.toString());
-        if (report == null || report.getMode() == 0)
+        if (instr == null || report.getMode() == 0)
           notifier.fireTestStarted(description);
       }
 
@@ -324,13 +324,13 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
       @Override
       public void fireTestIgnored(final Description description) {
-        if (report == null || report.getMode() == 0)
+        if (instr == null || report.getMode() == 0)
           notifier.fireTestIgnored(description);
       }
 
       @Override
       public void fireTestFinished(final Description description) {
-        if (report == null || report.getMode() == 1)
+        if (instr == null || report.getMode() == 1)
           notifier.fireTestFinished(description);
       }
 
