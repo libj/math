@@ -39,12 +39,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
+import org.libj.lang.OperatingSystem;
+
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
 
   static final int NATIVE_THRESHOLD;
 
   static {
+    final OperatingSystem operatingSystem = OperatingSystem.get();
     final String noNativeProp = System.getProperty("org.libj.math.BigInt.noNative");
     if (noNativeProp != null && !noNativeProp.equals("false")) {
       NATIVE_THRESHOLD = Integer.MAX_VALUE;
@@ -53,7 +56,15 @@ abstract class BigIntValue extends Number {
       final boolean useCritical = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-Xcomp") > 0;
 
       final String fileName = "libmath" + (useCritical ? "c" : "j");
-      final String extension = ".so"; // FIXME: Detect appropriate platform here
+      final String extension;
+      if (operatingSystem.isMac())
+        extension = ".dylib";
+      else if (operatingSystem.isUnix())
+        extension = ".so";
+      else if (operatingSystem.isWindows())
+        extension = ".dll";
+      else
+        throw new UnsupportedOperationException("Unsupported operating system: " + operatingSystem);
 
       final URL url = BigIntValue.class.getResource("/" + fileName + extension);
       if (url == null) {

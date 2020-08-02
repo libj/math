@@ -21,13 +21,22 @@
 
 An arbitrary-precision integer replacement for `java.math.BigInteger`, with the following differences:
 
-1. **Mutable:** `BigInt` is mutable, to allow for reuse of allocated arrays.
-1. **Faster arithmetic:** The arithmetic algorithms in `BigInt` are implemented with the optimization of memory (heap allocation) and runtime performance in mind.
-1. **Faster multiplication of large numbers:** Support parallel multiplication algorithm for large numbers.
-1. **Support for `int` and `long` parameters and return types:** `BigInt` does not require its parameters or return types to be `BigInt`, avoiding unnecessary instantiation of transient `BigInt` objects.
-1. **No preemptive exception checking:** The `BigInt` does not preemptively check for exceptions. If a programmer divides by zero he has only himself to blame. And, it is ok to have undefined behavior.
-1. **Support for "object-less" operation** All methods in `BigInt` are available in static form, allowing [_bare `int[]` <ins>value-encoded number</ins> arrays_](#bare-int-value-encoded-number-arrays) to be used without a `BigInt` instance, providing further reduction in heap memory allocation.
-1. **Significantly reduced heap allocation:** `BigInt` was meticulously designed to reduce the number of instances allocated purely for the purpose of transient calculation, and significantly outperforms `BigInteger` with regard to memory and GC load.
+1. **Mutable**: `BigInt` is mutable, allowing for reuse of allocated magnitude arrays.
+1. **Little-endian**: `BigInt`'s magnitude array is in little-endian order, allowing for faster operations concerning changes to a number's scale.
+1. **Faster arithmetic**: The arithmetic algorithms in `BigInt` are implemented with the optimization of memory (heap allocation) and runtime performance in mind.
+1. **Faster multiplication of large numbers**: Support parallel multiplication algorithm for large numbers.
+1. **In-place multiplication algorithms**: Employs optimized algorithms that perform calculations in-place, rather than instantiating transient magnitude arrays to be later freed by the GC.
+1. **Support for `int` and `long` parameters and return types**: `BigInt` does not require its parameters or return types to be `BigInt`, avoiding unnecessary instantiation of transient `BigInt` objects.
+1. **Support for "object-less" operation**: All methods in `BigInt` are available in static form, allowing [bare `int[]` <ins>value-encoded number</ins> arrays](#bare-int-value-encoded-number-arrays) to be used without a `BigInt` instance, leading to further reduction in heap memory allocation.
+1. **Significantly reduced heap allocation**: `BigInt` was meticulously designed to reduce the number of instances allocated purely for the purpose of transient calculation, and significantly outperforms `BigInteger` with regard to memory and GC load.
+1. **No preemptive exception checking**: The `BigInt` does not preemptively check for exceptions. If a programmer divides by zero he has only himself to blame. And, it is ok to have undefined behavior.
+1. **Native bindings**: `BigInt` provides select algorithms in 3 forms:
+   1. **JNI**: <ins>Critical Native</ins> JNI integration for fastest performance, with minimal function overhead.<sup>**[\*](#jni1)**</sup> <sup>**[\*\*](#jni2)**</sup>
+   1. **JNI**: <ins>Java Native</ins> JNI integration for faster performance, with regular function overhead.<sup>**[\*](#jni1)**</sup>
+   1. **JIT**: <ins>Java Bytecode</ins> implementation designed to be optimized by JIT compilation.
+
+<a id="jni1"></a>_<sup>\* Native Bindings are built only for MacOS, Linux, and Windows platforms (64-bit), and are automatically engaged on system startup.</sup>_<br>
+<a id="jni2"></a>_<sup>\*\* To use <ins>Critical Native</ins> JNI bindings, the JVM must be launched with `-Xcomp`.</sup>_
 
 ##### Bare `int[]` <ins>value-encoded number</ins> arrays
 
@@ -37,11 +46,11 @@ The `BigInt` architecture exposes the underlying `int[]` array, and provides sta
 
 The following matrix provides a comparison of functions offered by `BigInteger` vs `BigInt` and bare `int[]` array. The values in the matrix have the following rules:
 
-1. A `+###%` represents "percent faster compared to the baseline".
-1. A `0` represents the baseline.
-1. A ~`0`~ (zero with a line crossing it) represents the baseline, but also says that the function is not inherently available in the particular subject. In these situations, external utility functions were used to bridge the gap.
-1. A :x: means the function is missing in the particular subject, and therefore a test was not possible to be performed.
-1. A :white_check_mark: means the function is present, but a test was not performed.
+1. **+###%**: Prepresents "percent faster compared to the baseline".
+1. **0**: Represents the baseline.
+1. **𝚯**: (theta, i.e. zero with a horizontal line) Represents the baseline, but also says that the function is not inherently available in the particular subject. In these situations, external utility functions were used to bridge the gap.
+1. :heavy_multiplication_x:: Means the function is missing in the particular subject, and therefore a test was not possible to be performed.
+1. :heavy_check_mark:: Means the function is present, but a test was not performed.
 
 It is also important to note the following:
 
@@ -51,82 +60,82 @@ It is also important to note the following:
 
 | | `BigInteger` | `BigInt` | `int[]` |
 |-|:-------------:|:------------:|:------------:|
-| [`add(int)`](BigIntAddition.md#addintint)<sup>unsigned</sup> | ~0~ | 193% | 188% |
-| [`add(int)`](BigIntAddition.md#addint)<sup>signed</sup> | ~0~ | +337% | +359% |
-| [`add(long)`](BigIntAddition.md#addintlong)<sup>unsigned</sup> | ~0~ | +299% | +294% |
-| [`add(long)`](BigIntAddition.md#addlong)<sup>signed</sup> | ~0~ | +255% | +330% |
-| [`add(T)`](BigIntAddition.md#addt) | 0 | +21% | +58% |
-| [`sub(int)`](BigIntAddition.md#subintint)<sup>unsigned</sup> | ~0~ | +156% | +195% |
-| [`sub(int)`](BigIntAddition.md#subint)<sup>signed</sup> | ~0~ | +251% | +377% |
-| [`sub(long)`](BigIntAddition.md#subintlong)<sup>unsigned</sup> | ~0~ | +155% | +324% |
-| [`sub(long)`](BigIntAddition.md#sublong)<sup>signed</sup> | ~0~ | +215% | +300 |
-| [`sub(T)`](BigIntAddition.md#subt) | 0 | +37% | +97% |
-| [`mul(int)`](BigIntMultiplication.md#mulintint)<sup>unsigned</sup> | ~0~ | +79% | +95% |
-| [`mul(int)`](BigIntMultiplication.md#mulint)<sup>signed</sup> | ~0~ | +99% | +157% |
-| [`mul(long)`](BigIntMultiplication.md#mulintlong)<sup>unsigned</sup> | ~0~ | +193% | +128% |
-| [`mul(long)`](BigIntMultiplication.md#mullong)<sup>signed</sup> | ~0~ | +125% | +195% |
-| [`mul(T)`](BigIntMultiplication.md#mult) | +75% | 0 | +5% |
-| [`div(int)`](BigIntDivision.md#divintint)<sup>unsigned</sup> | ~0~ | +116% | +107% |
-| [`div(int)`](BigIntDivision.md#divint)<sup>signed</sup> | ~0~ | +172% | +100% |
-| [`div(long)`](BigIntDivision.md#divintlong)<sup>unsigned</sup> | ~0~ | +240% | +255% |
-| [`div(long)`](BigIntDivision.md#divlong)<sup>signed</sup> | ~0~ | +146% | +144% |
-| [`div(T)`](BigIntDivision.md#divt) | 0 | +29% | +44% |
-| [`divRem(int)`](BigIntDivision.md#divremintint)<sup>unsigned</sup> | ~0~ | +57% | +65% |
-| [`divRem(int)`](BigIntDivision.md#divremint)<sup>signed</sup> | ~0~ | +144% | +135% |
-| [`divRem(long)`](BigIntDivision.md#divremintlong)<sup>unsigned</sup> | ~0~ | +179% | +183% |
-| [`divRem(long)`](BigIntDivision.md#divremlong)<sup>signed</sup> | ~0~ | +141% | +142% |
-| [`divRem(T)`](BigIntDivision.md#divremt) | ~0~ | +2% | +8% |
-| [`rem(int)`](BigIntRemainder.md#remintint)<sup>unsigned</sup> | ~0~ | +140% | +120% |
-| [`rem(int)`](BigIntRemainder.md#remint)<sup>signed</sup> | ~0~ | +172% | +128% |
-| [`rem(long)`](BigIntRemainder.md#remintlong)<sup>unsigned</sup> | ~0~ | +159% | +253% |
-| [`rem(long)`](BigIntRemainder.md#remlong)<sup>signed</sup> | ~0~ | +143% | +150% |
-| [`rem(T)`](BigIntRemainder.md#remt) | ~0~ | +47% | +63% |
-| [`mod(T)`](BigIntRemainder.md#modt-1) | ~0~ | +55% | +73% |
-| [`bitCount()`](BigIntBitwise.md#bitcount) | 0 | +68% | +63% |
-| [`bitLength()`](BigIntBitwise.md#bitlength) | 0 | +81% | +205% |
-| [`testBit(int)`](BigIntBitwise.md#testbitint) | 0 | +29% | +50% |
-| [`setBit(int)`](BigIntBitwise.md#setbitint) | 0 | +800% | +1100% |
-| [`clearBit(int)`](BigIntBitwise.md#clearbitint) | 0 | +440% | +590% |
-| [`flipBit(int)`](BigIntBitwise.md#flipbitint) | 0 | +508% | +905% |
-| [`shiftLeft(int)`](BigIntBitwise.md#shiftleftint) | +23% | 0 | +25% |
-| [`shiftRight(int)`](BigIntBitwise.md#shiftrightint) | +4% | 0 | +59% |
-| [`and(T)`](BigIntBinary.md#andt) | 0 | +289% | +476% |
-| [`or(T)`](BigIntBinary.md#ort) | 0 | +458% | +711% |
-| [`xor(T)`](BigIntBinary.md#xort) | 0 | +335% | +440% |
-| [`andNot(T)`](BigIntBinary.md#andnott) | 0 | +325% | +505% |
-| [`not()`](BigIntBinary.md#not) | 0 | +589% | +2784% |
-| [`abs()`](BigIntPredicate.md#abs) | 0 | +100% | +87% |
-| [`neg()`](BigIntPredicate.md#neg) | 0 | +50% | +1500% |
-| [`max(T)`](BigIntPredicate.md#maxt) | +34% | 0 | +48% |
-| [`min(T)`](BigIntPredicate.md#mint) | +30% | 0 | +23% |
-| [`signum()`](BigIntPredicate.md#signum) | +293% | 0 | +8% |
-| [`precision()`](BigIntPredicate.md#precision) | ~0~ | +2067% | +2477% |
-| [`byteValue()`](BigIntPredicate.md#bytevalue) | 0 | +389% | +97% |
-| [`shortValue()`](BigIntPredicate.md#shortvalue) | +39% | 0 | +139% |
-| [`intValue()`](BigIntPredicate.md#intvalue) | +8% | 0 | +68% |
-| [`longValue()`](BigIntPredicate.md#longvalue) | 0 | +208% | +230% |
-| [`floatValue()`](BigIntPredicate.md#floatvalue) | 0 | +29% | +96% |
-| [`doubleValue()`](BigIntPredicate.md#doublevalue) | 0 | +19% | +123% |
-| [`toByteArray()`](BigIntPredicate.md#tobytearray-be) | 0 | +23% | +15% |
-| [`compareTo(T)`](BigIntPredicate.md#comparetot) | +215% | +89% | 0 |
-| [`equals(T)`](BigIntPredicate.md#equalst) | 0 | +3% | +22% |
-| [`hashCode()`](BigIntPredicate.md#hashcode) | +39% | +5% | 0 |
-| [`toString()`](BigIntPredicate.md#tostring) | 0 | +349% | +360% |
-| `longValueUnsigned()` | :x: | :white_check_mark: | :white_check_mark: |
-| `compareToAbs()` | :x: | :white_check_mark: | :white_check_mark: |
-| `clone()` | :x: | :white_check_mark: | :white_check_mark: |
-| `byteValueExact()` | :white_check_mark: | :x: | :x: |
-| `shortValueExact()` | :white_check_mark: | :x: | :x: |
-| `intValueExact()` | :white_check_mark: | :x: | :x: |
-| `longValueExact()` | :white_check_mark: | :x: | :x: |
-| `toString(int)` | :white_check_mark: | :x: | :x: |
-| `modInverse(T)` | :white_check_mark: | :x: | :x: |
-| `modPow(T)` | :white_check_mark: | :x: | :x: |
-| `gcd(T)` | :white_check_mark: | :x: | :x: |
-| `getLowestSetBit(T)` | :white_check_mark: | :x: | :x: |
-| `isProbablePrime(T)` | :white_check_mark: | :x: | :x: |
-| `nextProbablePrime()` | :white_check_mark: | :x: | :x: |
-| `pow(T)` | :white_check_mark: | :x: | :x: |
+| **[`add(int)`](BigIntAddition.md#addintint)**<sub>unsigned</sub> | 𝚯 | 193% | 188% |
+| **[`add(int)`](BigIntAddition.md#addint)**<sub>signed</sub> | 𝚯 | +337% | +359% |
+| **[`add(long)`](BigIntAddition.md#addintlong)**<sub>unsigned</sub> | 𝚯 | +299% | +294% |
+| **[`add(long)`](BigIntAddition.md#addlong)**<sub>signed</sub> | 𝚯 | +255% | +330% |
+| **[`add(T)`](BigIntAddition.md#addt)** | 0 | +21% | +58% |
+| **[`sub(int)`](BigIntAddition.md#subintint)**<sub>unsigned</sub> | 𝚯 | +156% | +195% |
+| **[`sub(int)`](BigIntAddition.md#subint)**<sub>signed</sub> | 𝚯 | +251% | +377% |
+| **[`sub(long)`](BigIntAddition.md#subintlong)**<sub>unsigned</sub> | 𝚯 | +155% | +324% |
+| **[`sub(long)`](BigIntAddition.md#sublong)**<sub>signed</sub> | 𝚯 | +215% | +300 |
+| **[`sub(T)`](BigIntAddition.md#subt)** | 0 | +37% | +97% |
+| **[`mul(int)`](BigIntMultiplication.md#mulintint)**<sub>unsigned</sub> | 𝚯 | +79% | +95% |
+| **[`mul(int)`](BigIntMultiplication.md#mulint)**<sub>signed</sub> | 𝚯 | +99% | +157% |
+| **[`mul(long)`](BigIntMultiplication.md#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
+| **[`mul(long)`](BigIntMultiplication.md#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
+| **[`mul(T)`](BigIntMultiplication.md#mult)** | +75% | 0 | +5% |
+| **[`div(int)`](BigIntDivision.md#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
+| **[`div(int)`](BigIntDivision.md#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
+| **[`div(long)`](BigIntDivision.md#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |
+| **[`div(long)`](BigIntDivision.md#divlong)**<sub>signed</sub> | 𝚯 | +146% | +144% |
+| **[`div(T)`](BigIntDivision.md#divt)** | 0 | +29% | +44% |
+| **[`divRem(int)`](BigIntDivision.md#divremintint)**<sub>unsigned</sub> | 𝚯 | +57% | +65% |
+| **[`divRem(int)`](BigIntDivision.md#divremint)**<sub>signed</sub> | 𝚯 | +144% | +135% |
+| **[`divRem(long)`](BigIntDivision.md#divremintlong)**<sub>unsigned</sub> | 𝚯 | +179% | +183% |
+| **[`divRem(long)`](BigIntDivision.md#divremlong)**<sub>signed</sub> | 𝚯 | +141% | +142% |
+| **[`divRem(T)`](BigIntDivision.md#divremt)** | 𝚯 | +2% | +8% |
+| **[`rem(int)`](BigIntRemainder.md#remintint)**<sub>unsigned</sub> | 𝚯 | +140% | +120% |
+| **[`rem(int)`](BigIntRemainder.md#remint)**<sub>signed</sub> | 𝚯 | +172% | +128% |
+| **[`rem(long)`](BigIntRemainder.md#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
+| **[`rem(long)`](BigIntRemainder.md#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
+| **[`rem(T)`](BigIntRemainder.md#remt)** | 𝚯 | +47% | +63% |
+| **[`mod(T)`](BigIntRemainder.md#modt-1)** | 𝚯 | +55% | +73% |
+| **[`bitCount()`](BigIntBitwise.md#bitcount)** | 0 | +68% | +63% |
+| **[`bitLength()`](BigIntBitwise.md#bitlength)** | 0 | +81% | +205% |
+| **[`testBit(int)`](BigIntBitwise.md#testbitint)** | 0 | +29% | +50% |
+| **[`setBit(int)`](BigIntBitwise.md#setbitint)** | 0 | +800% | +1100% |
+| **[`clearBit(int)`](BigIntBitwise.md#clearbitint)** | 0 | +440% | +590% |
+| **[`flipBit(int)`](BigIntBitwise.md#flipbitint)** | 0 | +508% | +905% |
+| **[`shiftLeft(int)`](BigIntBitwise.md#shiftleftint)** | +23% | 0 | +25% |
+| **[`shiftRight(int)`](BigIntBitwise.md#shiftrightint)** | +4% | 0 | +59% |
+| **[`and(T)`](BigIntBinary.md#andt)** | 0 | +289% | +476% |
+| **[`or(T)`](BigIntBinary.md#ort)** | 0 | +458% | +711% |
+| **[`xor(T)`](BigIntBinary.md#xort)** | 0 | +335% | +440% |
+| **[`andNot(T)`](BigIntBinary.md#andnott)** | 0 | +325% | +505% |
+| **[`not()`](BigIntBinary.md#not)** | 0 | +589% | +2784% |
+| **[`abs()`](BigIntPredicate.md#abs)** | 0 | +100% | +87% |
+| **[`neg()`](BigIntPredicate.md#neg)** | 0 | +50% | +1500% |
+| **[`max(T)`](BigIntPredicate.md#maxt)** | +34% | 0 | +48% |
+| **[`min(T)`](BigIntPredicate.md#mint)** | +30% | 0 | +23% |
+| **[`signum()`](BigIntPredicate.md#signum)** | +293% | 0 | +8% |
+| **[`precision()`](BigIntPredicate.md#precision)** | 𝚯 | +2067% | +2477% |
+| **[`byteValue()`](BigIntPredicate.md#bytevalue)** | 0 | +389% | +97% |
+| **[`shortValue()`](BigIntPredicate.md#shortvalue)** | +39% | 0 | +139% |
+| **[`intValue()`](BigIntPredicate.md#intvalue)** | +8% | 0 | +68% |
+| **[`longValue()`](BigIntPredicate.md#longvalue)** | 0 | +208% | +230% |
+| **[`floatValue()`](BigIntPredicate.md#floatvalue)** | 0 | +29% | +96% |
+| **[`doubleValue()`](BigIntPredicate.md#doublevalue)** | 0 | +19% | +123% |
+| **[`toByteArray()`](BigIntPredicate.md#tobytearray-be)** | 0 | +23% | +15% |
+| **[`compareTo(T)`](BigIntPredicate.md#comparetot)** | +215% | +89% | 0 |
+| **[`equals(T)`](BigIntPredicate.md#equalst)** | 0 | +3% | +22% |
+| **[`hashCode()`](BigIntPredicate.md#hashcode)** | +39% | +5% | 0 |
+| **[`toString()`](BigIntPredicate.md#tostring)** | 0 | +349% | +360% |
+| **`longValueUnsigned()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
+| **`compareToAbs()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
+| **`clone()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
+| **`byteValueExact()`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`shortValueExact()`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`intValueExact()`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`longValueExact()`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`toString(int)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`modInverse(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`modPow(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`gcd(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`getLowestSetBit(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`isProbablePrime(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`nextProbablePrime()`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| **`pow(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 #### Benchmarks
 
@@ -187,13 +196,13 @@ The table provides 2 additional rows at the bottom:<br>
 
 * All tests were run with Java 1.8.0_231.
 * All tests were run with `-Xcomp` argument, in order to ensure JIT optimizations are enabled.
-* For `BigInt`, execution with `-Xcomp` causes it to load its <ins>critical native</ins> JNI bindings.
+* All tests were run with <ins>Critical Native</ins> bindings loaded, which automatically happens when `-Xcomp` is present on the JVM argument list.
 
-The benchmark results are too lengthy to include in README.md, therefore they have been separated into their own `.md` files:
+The benchmark results are too lengthy to include in this `README.md`, therefore they have been separated into their own `.md` files:
 
-Benchmark tests are organized in 5 distinct test classes, each responsible for its context of functions:
+Benchmark tests are organized in 8 test classes, each responsible for its context of functions:
 
-| Results link | Test code link |
+| Link to results | Link to test code |
 |-|-|
 | [Addition and subtraction](BigIntAddition.md) | [`BigIntAdditionTest`][BigIntAdditionTest] |
 | [Multiplication](BigIntMultiplication.md) | [`BigIntMultiplicationTest`][BigIntMultiplicationTest] |
@@ -204,15 +213,35 @@ Benchmark tests are organized in 5 distinct test classes, each responsible for i
 | [Predicate functions](BigIntPredicate.md) | [`BigIntPredicateTest`][BigIntPredicateTest] |
 | [Value constructors](BigIntConstructor.md) | [`BigIntConstructorTest`][BigIntConstructorTest] |
 
+#### FAQ
+
+1. **Is `BigInt` error free?**
+
+   With respect to the correctness of its algorithms, `BigInt` has a custom test framework specifically designed to test the full breadth and adjustable depth of inputs into its algorithms. The test framework separates test inputs into "special" and "random". Special inputs are those that involve numbers representing special edges insofar as the number's `int` encoding, or the result of operations leading to propagating carrys. Random inputs are generated on a "breadth first" basis with respect to the input's decimal precision, allowing the depth (testing of more random values for a single precision) to be adjustable for the purposes of development vs comprehensive analysis.
+
+   With respect to exception checking, the `BigInt` does not preemptively check for exceptions. If a programmer divides by zero he has only himself to blame. And, it is ok to have undefined behavior.
+
+1. **What is `BigInt`'s biggest advantage?**
+
+   `BigInt` was created for one specific purpose: to lower the heap memory allocations for regular arithmetic operations. `BigInteger` liberally creates transient instances for the purpose of calculations, which results in a significant memory load and subsequent runtime performance load when the GC turns on. This situation is particularly relevant in applications that work with very many instances of arbitrary precision numbers. An example of such an application is an Asset Trading Systems (Level 3) that consumes live streams of order data. Arbitrary precision arithmetic is necessary for Asset Trading Systems in lieu of the need for <ins>fixed point arithmetic</ins>.
+
+   See [`Decimal`](#decimal).
+
+1. **What is `BigInt`'s biggest disadvantage?**
+
+   Though `BigInt` outperforms `BigInteger` in most operations, there are a few in which it is lacking. One particular operation that is important to note is **`mul(T)`** (i.e. multiplication of an arbitrary precision number by another arbitrary precision number). `BigInt`'s `mul(T)` cannot match the performance of `BigInteger`'s `multiply(T)` for "medium-sized numbers", because `BigInteger`'s `multiply(T)` is implemented as an intrinsic function. `BigInt` comes close to this performance with its <ins>Critical Native</ins> implementation of its multiplication algorithms, but it is still not as fast. Nonetheless, where `BigInt` loses in isolated runtime performance, it gains back with its superior ability in reducing unnecessary heap memory allocation for transient calculations.
+
+   Please refer to [Multiplication](BigIntMultiplication.md) for benchmark statistics.
+
 ## `Decimal`
 
-The `Decimal` is like `BigDecimal`, but <ins>without the overhead of heap allocation</ins>, and the following **pros** (:white_check_mark:) and **cons** (:x:):
+The `Decimal` is like `BigDecimal`, but <ins>without the overhead of heap allocation</ins>, and the following **pros** (:heavy_check_mark:) and **cons** (:heavy_multiplication_x:):
 
 | | `BigDecimal` | `Decimal` |
 |-|:-------------:|:------------:|
-| No heap allocation | :x: | :white_check_mark: |
-| Overflow detection | :x: | :white_check_mark: |
-| Arbitrary precision | :white_check_mark: |  :x: |
+| No heap allocation | :heavy_multiplication_x: | :heavy_check_mark: |
+| Overflow detection | :heavy_multiplication_x: | :heavy_check_mark: |
+| Arbitrary precision | :heavy_check_mark: |  :heavy_multiplication_x: |
 
 To avoid heap allocation, the `Decimal` represents fixed-point decimals inside a `long` primitive value, which thus limits the precision of a `Decimal`-encoded decimal to 64 bits. The representation of a decimal value in `Decimal` encoding is achieved with the following model:
 
@@ -271,40 +300,40 @@ The `Decimal` implements the following encoding functions:
 
 | | `BigDecimal` | `Decimal` |
 |:-|:-:|:-:|
-| doubleValue() | :white_check_mark: | :white_check_mark: |
-| fromLong() | :white_check_mark: | :white_check_mark: |
-| fromString() | :white_check_mark: | :white_check_mark: |
-| precision() | :white_check_mark: | :white_check_mark: |
-| scale() | :white_check_mark: | :white_check_mark: |
-| toString() | :white_check_mark: | :white_check_mark: |
+| doubleValue() | :heavy_check_mark: | :heavy_check_mark: |
+| fromLong() | :heavy_check_mark: | :heavy_check_mark: |
+| fromString() | :heavy_check_mark: | :heavy_check_mark: |
+| precision() | :heavy_check_mark: | :heavy_check_mark: |
+| scale() | :heavy_check_mark: | :heavy_check_mark: |
+| toString() | :heavy_check_mark: | :heavy_check_mark: |
 
 The `Decimal` implements the following arithmetic functions:
 
 | | `BigDecimal` | `Decimal` |
 |:-|:-:|:-:|
-| add()       | :white_check_mark: | :white_check_mark: |
-| divide() | :white_check_mark: | :white_check_mark: |
-| multiply() | :white_check_mark: | :white_check_mark: |
-| negate() | :white_check_mark: | :white_check_mark: |
-| [pow()](https://github.com/libj/math/issues/8) | :white_check_mark: | :x: |
-| [remainder()](https://github.com/libj/math/issues/9) | :white_check_mark: | :x: |
-| [round()](https://github.com/libj/math/issues/10) | :white_check_mark: | :x: |
-| setScale() | :white_check_mark: | :white_check_mark: |
-| subtract() | :white_check_mark: | :white_check_mark: |
+| add()       | :heavy_check_mark: | :heavy_check_mark: |
+| divide() | :heavy_check_mark: | :heavy_check_mark: |
+| multiply() | :heavy_check_mark: | :heavy_check_mark: |
+| negate() | :heavy_check_mark: | :heavy_check_mark: |
+| [pow()](https://github.com/libj/math/issues/8) | :heavy_check_mark: | :heavy_multiplication_x: |
+| [remainder()](https://github.com/libj/math/issues/9) | :heavy_check_mark: | :heavy_multiplication_x: |
+| [round()](https://github.com/libj/math/issues/10) | :heavy_check_mark: | :heavy_multiplication_x: |
+| setScale() | :heavy_check_mark: | :heavy_check_mark: |
+| subtract() | :heavy_check_mark: | :heavy_check_mark: |
 
 The `Decimal` implements the following predicate functions:
 
 | | `BigDecimal` | `Decimal` |
 |:-|:-:|:-:|
-| abs()       | :white_check_mark: | :white_check_mark: |
-| compareTo() | :white_check_mark: | :white_check_mark: |
-| equals() | :white_check_mark: | :white_check_mark: |
-| gt() | :x: | :white_check_mark: |
-| gte() | :x: | :white_check_mark: |
-| lt() | :x: | :white_check_mark: |
-| lte() | :x: | :white_check_mark: |
-| max() | :white_check_mark: | :white_check_mark: |
-| min() | :white_check_mark: | :white_check_mark: |
+| abs()       | :heavy_check_mark: | :heavy_check_mark: |
+| compareTo() | :heavy_check_mark: | :heavy_check_mark: |
+| equals() | :heavy_check_mark: | :heavy_check_mark: |
+| gt() | :heavy_multiplication_x: | :heavy_check_mark: |
+| gte() | :heavy_multiplication_x: | :heavy_check_mark: |
+| lt() | :heavy_multiplication_x: | :heavy_check_mark: |
+| lte() | :heavy_multiplication_x: | :heavy_check_mark: |
+| max() | :heavy_check_mark: | :heavy_check_mark: |
+| min() | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Contributing
 

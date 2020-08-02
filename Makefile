@@ -26,21 +26,27 @@ TARGET_LIB=$(TARGET_DIR)/lib$(TARGET_LIB_NAME)
 JAVA_INCLUDE=$(shell echo $$JAVA_HOME)/include
 
 # Java Platform Dependant Header Directories
+CC_ARGS=-fPIC
+LIB_EXT=.so
 JAVA_PLATFORM_INCLUDE=$(shell \
-	if test -d $(JAVA_INCLUDE)/linux;\
+	if test -d $(JAVA_INCLUDE)/linux; \
 		then echo $(JAVA_INCLUDE)/linux; \
 	fi;)
 
 ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
+	CC_ARGS=
+	LIB_EXT=.dylib
 	JAVA_PLATFORM_INCLUDE=$(shell \
-		if test -d $(JAVA_INCLUDE)/darwin;\
+		if test -d $(JAVA_INCLUDE)/darwin; \
 			then echo $(JAVA_INCLUDE)/darwin; \
 		fi;)
 endif
 
 ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
+	CC_ARGS=
+	LIB_EXT=.dll
 	JAVA_PLATFORM_INCLUDE=$(shell \
-		if test -d $(JAVA_INCLUDE)/win32;\
+		if test -d $(JAVA_INCLUDE)/win32; \
 			then echo $(JAVA_INCLUDE)/win32; \
 		fi;)
 endif
@@ -51,13 +57,13 @@ CC=icpc
 # gcc: -shared -Ofast -fPIC
 # -axCORE-AVX512,CORE-AVX2,AVX -xSSE4.2
 # -axCORE-AVX2,AVX,SSE4.2
-CC_ARGS=-I$(JAVA_PLATFORM_INCLUDE) \
-				-I$(JAVA_INCLUDE) \
-				-shared \
-				-fast -fp-model fast=2 \
-				$(shell find $(SRC_DIR) -name '*.c')
-
-BUILD=$(CC) -o $(TARGET_LIB)$(1).so $(2) $(CC_ARGS)
+BUILD=$(CC) -o $(TARGET_LIB)$(1)$(LIB_EXT) $(2) $(CC_ARGS) \
+	-I$(JAVA_PLATFORM_INCLUDE) \
+	-I$(JAVA_INCLUDE) \
+	-static-intel \
+	-shared \
+	-fast -fp-model fast=2 \
+	$(shell find $(SRC_DIR) -name '*.c')
 
 default: $(TARGET_DIR)
 	$(call BUILD,j)
