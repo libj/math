@@ -110,8 +110,9 @@ public class AuditReport {
 
   public int getAllocations(final Class<?> auditClass) {
     int count = 0;
-    for (int i = 0; i < results.length; ++i)
-      count += results[i].getAllocations(auditClass);
+    if (results != null)
+      for (int i = 0; i < results.length; ++i)
+        count += results[i].getAllocations(auditClass);
 
     return count;
   }
@@ -121,10 +122,12 @@ public class AuditReport {
   }
 
   public void dump() {
-    for (int i = 0; i < results.length; ++i) {
-      System.err.println(results[i].auditClass.getName());
-      for (int j = 0; j < results[i].resultClassNames.length; ++j) {
-        System.err.println("  " + results[i].resultClassNames[j] + ": " + results[i].getCounts()[j]);
+    if (results != null) {
+      for (int i = 0; i < results.length; ++i) {
+        System.err.println(results[i].auditClass.getName());
+        for (int j = 0; j < results[i].resultClassNames.length; ++j) {
+          System.err.println("  " + results[i].resultClassNames[j] + ": " + results[i].getCounts()[j]);
+        }
       }
     }
   }
