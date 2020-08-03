@@ -17,8 +17,8 @@ dist: trusty
 sudo: required
 language: java
 jdk:
-- openjdk8
-- openjdk11
+- oraclejdk8
+- oraclejdk11
 install: mvn -version
 script:
 - 'if [ "$TRAVIS_JDK_VERSION" = "openjdk8" ] &&
