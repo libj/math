@@ -35,30 +35,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-test</id>
-            <configuration>
-              <argLine>-Xcomp -Xmx2g</argLine>
-              <reuseForks>false</reuseForks>
-              <excludes>
-                <exclude>**/SafeMathTest*</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>separated</id>
-            <goals>
-              <goal>test</goal>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <includes>
-                <include>**/SafeMathTest*</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <argLine>-Xcomp -Xmx2g</argLine>
+          <reuseForks>false</reuseForks>
+        </configuration>
       </plugin>
     </plugins>
   </build>

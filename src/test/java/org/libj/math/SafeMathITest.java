@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
-public class SafeMathTest {
+public class SafeMathITest {
   private static final int numTests = 10000;
   private static final Random random = new Random();
   private static final MathContext mc = MathContext.DECIMAL64;
