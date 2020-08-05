@@ -176,6 +176,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
       final String bytemanJarPath = classpath.substring(start, end);
       final JarFile jarFile = createJarFileOfSource(new File(bytemanJarPath));
+      System.err.println("APPENDING: " + jarFile.getName());
       instr.appendToBootstrapClassLoaderSearch(jarFile);
     }
   }

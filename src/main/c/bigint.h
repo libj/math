@@ -29,7 +29,7 @@ extern "C" {
 
 void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThresholdX, jint parallelThresholdZ);
 
-#ifdef critical
+#ifdef CRITICAL_NATIVE
 
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad(jint _x, jint *x, jint xlen, jint _y, jint *y, jint ylen, jint _z, jint *z);
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace(jint _x, jint *x, jint xlen, jint _y, jint *y, jint ylen, jint zlen);

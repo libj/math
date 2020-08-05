@@ -38,7 +38,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.libj.test.TestAide;
 
-public class BasicTest {
+public class BigIntBasicTest {
   private static Random rnd = new Random();
 
   @Test

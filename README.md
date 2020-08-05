@@ -42,6 +42,16 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
 
 The `BigInt` architecture exposes the underlying `int[]` array, and provides static function equivalents for all of its instance methods. The bare `int[]` array can therefore be used as a feature-equivalent replacement for `BigInt`, with one notable difference: no `BigInt` instance is required.
 
+#### Getting Started
+
+`BigInt` is bundled with this module, which is available in the [Maven Central Repository](https://mvnrepository.com/artifact/org.libj/math). The `BigInt` implementation provides JNI bindings for MacOS, Linux and Windows platforms (64-bit), which can improve performance significantly. The JNI bindings are activated automatically, unless `-Dorg.libj.math.BigInt.noNative` is specified as a system property. The JNI bindings were built with Intel compilers, and are _as statically linked as can be_. The bindings also rely on the following shared libraries:
+
+##### Prerequisites
+
+1. **Linux**: libcilkrts5
+1. **MacOS**: None
+1. **Windows**: None
+
 #### Function Matrix
 
 The following matrix provides a comparison of functions offered by `BigInteger` vs `BigInt` and bare `int[]` array. The values in the matrix have the following rules:
