@@ -168,15 +168,15 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   private static void loadJarsInBootstrap(final Instrumentation instr, final String ... names) throws IOException {
     for (final String name : names) {
-      int start = classpath.indexOf("/" + name);
+      int start = classpath.indexOf(File.separator + name);
       start = classpath.lastIndexOf(File.pathSeparatorChar, start) + 1;
       int end = classpath.indexOf(File.pathSeparatorChar, start);
       if (end == -1)
         end = classpath.length();
 
-      final String bytemanJarPath = classpath.substring(start, end);
-      final JarFile jarFile = createJarFileOfSource(new File(bytemanJarPath));
-      System.err.println("APPENDING: " + jarFile.getName());
+      final String jarPath = classpath.substring(start, end);
+      System.err.println("APPENDING: " + name + " => " + jarPath);
+      final JarFile jarFile = createJarFileOfSource(new File(jarPath));
       instr.appendToBootstrapClassLoaderSearch(jarFile);
     }
   }
@@ -196,7 +196,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   private static void loadByteman(final Instrumentation instr, final AuditReport report) {
     try {
-      loadJarsInBootstrap(instr, "byteman", "lang");
+      loadJarsInBootstrap(instr, "byteman");
       final File rulesFile = report.getRulesFile();
       Main.premain("script:" + rulesFile.getAbsolutePath(), instr);
     }

@@ -93,7 +93,13 @@ abstract class BigIntValue extends Number {
           throw new ExceptionInInitializerError(e);
         }
 
-        System.load(file.getAbsolutePath());
+        try {
+          System.load(file.getAbsolutePath());
+        }
+        catch (final UnsatisfiedLinkError e) {
+          e.printStackTrace();
+          System.err.println("Starting with JNI bindings disabled");
+        }
       }
     }
   }
