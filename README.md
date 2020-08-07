@@ -70,67 +70,67 @@ It is also important to note the following:
 
 | | `BigInteger` | `BigInt` | `int[]` |
 |-|:-------------:|:------------:|:------------:|
-| **[`add(int)`](BigIntAdditionTest.md#addintint)**<sub>unsigned</sub> | 𝚯 | 193% | 188% |
-| **[`add(int)`](BigIntAdditionTest.md#addint)**<sub>signed</sub> | 𝚯 | +337% | +359% |
-| **[`add(long)`](BigIntAdditionTest.md#addintlong)**<sub>unsigned</sub> | 𝚯 | +299% | +294% |
-| **[`add(long)`](BigIntAdditionTest.md#addlong)**<sub>signed</sub> | 𝚯 | +255% | +330% |
-| **[`add(T)`](BigIntAdditionTest.md#addt)** | 0 | +21% | +58% |
-| **[`sub(int)`](BigIntAdditionTest.md#subintint)**<sub>unsigned</sub> | 𝚯 | +156% | +195% |
-| **[`sub(int)`](BigIntAdditionTest.md#subint)**<sub>signed</sub> | 𝚯 | +251% | +377% |
-| **[`sub(long)`](BigIntAdditionTest.md#subintlong)**<sub>unsigned</sub> | 𝚯 | +155% | +324% |
-| **[`sub(long)`](BigIntAdditionTest.md#sublong)**<sub>signed</sub> | 𝚯 | +215% | +300 |
-| **[`sub(T)`](BigIntAdditionTest.md#subt)** | 0 | +37% | +97% |
-| **[`mul(int)`](BigIntMultiplicationTest.md#mulintint)**<sub>unsigned</sub> | 𝚯 | +79% | +95% |
-| **[`mul(int)`](BigIntMultiplicationTest.md#mulint)**<sub>signed</sub> | 𝚯 | +99% | +157% |
-| **[`mul(long)`](BigIntMultiplicationTest.md#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
-| **[`mul(long)`](BigIntMultiplicationTest.md#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
-| **[`mul(T)`](BigIntMultiplicationTest.md#mult)** | +75% | 0 | +5% |
-| **[`div(int)`](BigIntDivisionTest.md#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
-| **[`div(int)`](BigIntDivisionTest.md#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
-| **[`div(long)`](BigIntDivisionTest.md#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |
-| **[`div(long)`](BigIntDivisionTest.md#divlong)**<sub>signed</sub> | 𝚯 | +146% | +144% |
-| **[`div(T)`](BigIntDivisionTest.md#divt)** | 0 | +29% | +44% |
-| **[`divRem(int)`](BigIntDivisionTest.md#divremintint)**<sub>unsigned</sub> | 𝚯 | +57% | +65% |
-| **[`divRem(int)`](BigIntDivisionTest.md#divremint)**<sub>signed</sub> | 𝚯 | +144% | +135% |
-| **[`divRem(long)`](BigIntDivisionTest.md#divremintlong)**<sub>unsigned</sub> | 𝚯 | +179% | +183% |
-| **[`divRem(long)`](BigIntDivisionTest.md#divremlong)**<sub>signed</sub> | 𝚯 | +141% | +142% |
-| **[`divRem(T)`](BigIntDivisionTest.md#divremt)** | 𝚯 | +2% | +8% |
-| **[`rem(int)`](BigIntRemainderTest.md#remintint)**<sub>unsigned</sub> | 𝚯 | +140% | +120% |
-| **[`rem(int)`](BigIntRemainderTest.md#remint)**<sub>signed</sub> | 𝚯 | +172% | +128% |
-| **[`rem(long)`](BigIntRemainderTest.md#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
-| **[`rem(long)`](BigIntRemainderTest.md#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
-| **[`rem(T)`](BigIntRemainderTest.md#remt)** | 0 | +47% | +63% |
-| **[`mod(T)`](BigIntRemainderTest.md#modt-1)** | 0 | +55% | +73% |
-| **[`bitCount()`](BigIntBitwiseTest.md#bitcount)** | 0 | +68% | +63% |
-| **[`bitLength()`](BigIntBitwiseTest.md#bitlength)** | 0 | +81% | +205% |
-| **[`testBit(int)`](BigIntBitwiseTest.md#testbitint)** | 0 | +29% | +50% |
-| **[`setBit(int)`](BigIntBitwiseTest.md#setbitint)** | 0 | +800% | +1100% |
-| **[`clearBit(int)`](BigIntBitwiseTest.md#clearbitint)** | 0 | +440% | +590% |
-| **[`flipBit(int)`](BigIntBitwiseTest.md#flipbitint)** | 0 | +508% | +905% |
-| **[`shiftLeft(int)`](BigIntBitwiseTest.md#shiftleftint)** | +23% | 0 | +25% |
-| **[`shiftRight(int)`](BigIntBitwiseTest.md#shiftrightint)** | +4% | 0 | +59% |
-| **[`and(T)`](BigIntBinaryTest.md#andt)** | 0 | +289% | +476% |
-| **[`or(T)`](BigIntBinaryTest.md#ort)** | 0 | +458% | +711% |
-| **[`xor(T)`](BigIntBinaryTest.md#xort)** | 0 | +335% | +440% |
-| **[`andNot(T)`](BigIntBinaryTest.md#andnott)** | 0 | +325% | +505% |
-| **[`not()`](BigIntBinaryTest.md#not)** | 0 | +589% | +2784% |
-| **[`abs()`](BigIntPredicateTest.md#abs)** | 0 | +100% | +87% |
-| **[`neg()`](BigIntPredicateTest.md#neg)** | 0 | +50% | +1500% |
-| **[`max(T)`](BigIntPredicateTest.md#maxt)** | +34% | 0 | +48% |
-| **[`min(T)`](BigIntPredicateTest.md#mint)** | +30% | 0 | +23% |
-| **[`signum()`](BigIntPredicateTest.md#signum)** | +293% | 0 | +8% |
-| **[`precision()`](BigIntPredicateTest.md#precision)** | 𝚯 | +2067% | +2477% |
-| **[`byteValue()`](BigIntPredicateTest.md#bytevalue)** | 0 | +389% | +97% |
-| **[`shortValue()`](BigIntPredicateTest.md#shortvalue)** | +39% | 0 | +139% |
-| **[`intValue()`](BigIntPredicateTest.md#intvalue)** | +8% | 0 | +68% |
-| **[`longValue()`](BigIntPredicateTest.md#longvalue)** | 0 | +208% | +230% |
-| **[`floatValue()`](BigIntPredicateTest.md#floatvalue)** | 0 | +29% | +96% |
-| **[`doubleValue()`](BigIntPredicateTest.md#doublevalue)** | 0 | +19% | +123% |
-| **[`toByteArray()`](BigIntPredicateTest.md#tobytearray-be)** | 0 | +23% | +15% |
-| **[`compareTo(T)`](BigIntPredicateTest.md#comparetot)** | +215% | +89% | 0 |
-| **[`equals(T)`](BigIntPredicateTest.md#equalst)** | 0 | +3% | +22% |
-| **[`hashCode()`](BigIntPredicateTest.md#hashcode)** | +39% | +5% | 0 |
-| **[`toString()`](BigIntPredicateTest.md#tostring)** | 0 | +349% | +360% |
+| **[`add(int)`](src/test/html/BigIntAdditionTest.html#addintint)**<sub>unsigned</sub> | 𝚯 | 193% | 188% |
+| **[`add(int)`](src/test/html/BigIntAdditionTest.html#addint)**<sub>signed</sub> | 𝚯 | +337% | +359% |
+| **[`add(long)`](src/test/html/BigIntAdditionTest.html#addintlong)**<sub>unsigned</sub> | 𝚯 | +299% | +294% |
+| **[`add(long)`](src/test/html/BigIntAdditionTest.html#addlong)**<sub>signed</sub> | 𝚯 | +255% | +330% |
+| **[`add(T)`](src/test/html/BigIntAdditionTest.html#addt)** | 0 | +21% | +58% |
+| **[`sub(int)`](src/test/html/BigIntAdditionTest.html#subintint)**<sub>unsigned</sub> | 𝚯 | +156% | +195% |
+| **[`sub(int)`](src/test/html/BigIntAdditionTest.html#subint)**<sub>signed</sub> | 𝚯 | +251% | +377% |
+| **[`sub(long)`](src/test/html/BigIntAdditionTest.html#subintlong)**<sub>unsigned</sub> | 𝚯 | +155% | +324% |
+| **[`sub(long)`](src/test/html/BigIntAdditionTest.html#sublong)**<sub>signed</sub> | 𝚯 | +215% | +300 |
+| **[`sub(T)`](src/test/html/BigIntAdditionTest.html#subt)** | 0 | +37% | +97% |
+| **[`mul(int)`](src/test/html/BigIntMultiplicationTest.html#mulintint)**<sub>unsigned</sub> | 𝚯 | +79% | +95% |
+| **[`mul(int)`](src/test/html/BigIntMultiplicationTest.html#mulint)**<sub>signed</sub> | 𝚯 | +99% | +157% |
+| **[`mul(long)`](src/test/html/BigIntMultiplicationTest.html#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
+| **[`mul(long)`](src/test/html/BigIntMultiplicationTest.html#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
+| **[`mul(T)`](src/test/html/BigIntMultiplicationTest.html#mult)** | +75% | 0 | +5% |
+| **[`div(int)`](src/test/html/BigIntDivisionTest.html#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
+| **[`div(int)`](src/test/html/BigIntDivisionTest.html#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
+| **[`div(long)`](src/test/html/BigIntDivisionTest.html#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |
+| **[`div(long)`](src/test/html/BigIntDivisionTest.html#divlong)**<sub>signed</sub> | 𝚯 | +146% | +144% |
+| **[`div(T)`](src/test/html/BigIntDivisionTest.html#divt)** | 0 | +29% | +44% |
+| **[`divRem(int)`](src/test/html/BigIntDivisionTest.html#divremintint)**<sub>unsigned</sub> | 𝚯 | +57% | +65% |
+| **[`divRem(int)`](src/test/html/BigIntDivisionTest.html#divremint)**<sub>signed</sub> | 𝚯 | +144% | +135% |
+| **[`divRem(long)`](src/test/html/BigIntDivisionTest.html#divremintlong)**<sub>unsigned</sub> | 𝚯 | +179% | +183% |
+| **[`divRem(long)`](src/test/html/BigIntDivisionTest.html#divremlong)**<sub>signed</sub> | 𝚯 | +141% | +142% |
+| **[`divRem(T)`](src/test/html/BigIntDivisionTest.html#divremt)** | 𝚯 | +2% | +8% |
+| **[`rem(int)`](src/test/html/BigIntRemainderTest.html#remintint)**<sub>unsigned</sub> | 𝚯 | +140% | +120% |
+| **[`rem(int)`](src/test/html/BigIntRemainderTest.html#remint)**<sub>signed</sub> | 𝚯 | +172% | +128% |
+| **[`rem(long)`](src/test/html/BigIntRemainderTest.html#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
+| **[`rem(long)`](src/test/html/BigIntRemainderTest.html#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
+| **[`rem(T)`](src/test/html/BigIntRemainderTest.html#remt)** | 0 | +47% | +63% |
+| **[`mod(T)`](src/test/html/BigIntRemainderTest.html#modt-1)** | 0 | +55% | +73% |
+| **[`bitCount()`](src/test/html/BigIntBitwiseTest.html#bitcount)** | 0 | +68% | +63% |
+| **[`bitLength()`](src/test/html/BigIntBitwiseTest.html#bitlength)** | 0 | +81% | +205% |
+| **[`testBit(int)`](src/test/html/BigIntBitwiseTest.html#testbitint)** | 0 | +29% | +50% |
+| **[`setBit(int)`](src/test/html/BigIntBitwiseTest.html#setbitint)** | 0 | +800% | +1100% |
+| **[`clearBit(int)`](src/test/html/BigIntBitwiseTest.html#clearbitint)** | 0 | +440% | +590% |
+| **[`flipBit(int)`](src/test/html/BigIntBitwiseTest.html#flipbitint)** | 0 | +508% | +905% |
+| **[`shiftLeft(int)`](src/test/html/BigIntBitwiseTest.html#shiftleftint)** | +23% | 0 | +25% |
+| **[`shiftRight(int)`](src/test/html/BigIntBitwiseTest.html#shiftrightint)** | +4% | 0 | +59% |
+| **[`and(T)`](src/test/html/BigIntBinaryTest.html#andt)** | 0 | +289% | +476% |
+| **[`or(T)`](src/test/html/BigIntBinaryTest.html#ort)** | 0 | +458% | +711% |
+| **[`xor(T)`](src/test/html/BigIntBinaryTest.html#xort)** | 0 | +335% | +440% |
+| **[`andNot(T)`](src/test/html/BigIntBinaryTest.html#andnott)** | 0 | +325% | +505% |
+| **[`not()`](src/test/html/BigIntBinaryTest.html#not)** | 0 | +589% | +2784% |
+| **[`abs()`](src/test/html/BigIntPredicateTest.html#abs)** | 0 | +100% | +87% |
+| **[`neg()`](src/test/html/BigIntPredicateTest.html#neg)** | 0 | +50% | +1500% |
+| **[`max(T)`](src/test/html/BigIntPredicateTest.html#maxt)** | +34% | 0 | +48% |
+| **[`min(T)`](src/test/html/BigIntPredicateTest.html#mint)** | +30% | 0 | +23% |
+| **[`signum()`](src/test/html/BigIntPredicateTest.html#signum)** | +293% | 0 | +8% |
+| **[`precision()`](src/test/html/BigIntPredicateTest.html#precision)** | 𝚯 | +2067% | +2477% |
+| **[`byteValue()`](src/test/html/BigIntPredicateTest.html#bytevalue)** | 0 | +389% | +97% |
+| **[`shortValue()`](src/test/html/BigIntPredicateTest.html#shortvalue)** | +39% | 0 | +139% |
+| **[`intValue()`](src/test/html/BigIntPredicateTest.html#intvalue)** | +8% | 0 | +68% |
+| **[`longValue()`](src/test/html/BigIntPredicateTest.html#longvalue)** | 0 | +208% | +230% |
+| **[`floatValue()`](src/test/html/BigIntPredicateTest.html#floatvalue)** | 0 | +29% | +96% |
+| **[`doubleValue()`](src/test/html/BigIntPredicateTest.html#doublevalue)** | 0 | +19% | +123% |
+| **[`toByteArray()`](src/test/html/BigIntPredicateTest.html#tobytearray-be)** | 0 | +23% | +15% |
+| **[`compareTo(T)`](src/test/html/BigIntPredicateTest.html#comparetot)** | +215% | +89% | 0 |
+| **[`equals(T)`](src/test/html/BigIntPredicateTest.html#equalst)** | 0 | +3% | +22% |
+| **[`hashCode()`](src/test/html/BigIntPredicateTest.html#hashcode)** | +39% | +5% | 0 |
+| **[`toString()`](src/test/html/BigIntPredicateTest.html#tostring)** | 0 | +349% | +360% |
 | **`longValueUnsigned()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
 | **`compareToAbs()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
 | **`clone()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
@@ -204,24 +204,22 @@ The table provides 2 additional rows at the bottom:<br>
 
 #### Benchmark Results
 
-* All tests were run with Java 1.8.0_231.
+* All tests were run with Java 1.8.0_231 on Mac OS 10.15.6.
 * All tests were run with `-Xcomp` argument, in order to ensure JIT optimizations are enabled.
 * All tests were run with <ins>Critical Native</ins> bindings loaded, which automatically happens when `-Xcomp` is present on the JVM argument list.
-
-The benchmark results are too lengthy to include in this `README.md`, therefore they have been separated into their own `.md` files:
 
 Benchmark tests are organized in 8 test classes, each responsible for its context of functions:
 
 | Link to results | Link to test code |
 |-|-|
-| [Addition and subtraction](BigIntAdditionTest.md) | [`BigIntAdditionTest`][BigIntAdditionTest] |
-| [Multiplication](BigIntMultiplicationTest.md) | [`BigIntMultiplicationTest`][BigIntMultiplicationTest] |
-| [Division](BigIntDivisionTest.md) | [`BigIntDivisionTest`][BigIntDivisionTest] |
-| [Remainder and modulus](BigIntRemainderTest.md) | [`BigIntRemainderTest`][BigIntRemainderTest] |
-| [Binary operations](BigIntBinaryTest.md) | [`BigIntBinaryTest`][BigIntBinaryTest] |
-| [Bitwise operations](BigIntBitwiseTest.md) | [`BigIntBitwiseTest`][BigIntBitwiseTest] |
-| [Predicate functions](BigIntPredicateTest.md) | [`BigIntPredicateTest`][BigIntPredicateTest] |
-| [Value constructors](BigIntConstructorTest.md) | [`BigIntConstructorTest`][BigIntConstructorTest] |
+| [Addition and subtraction](src/test/html/BigIntAdditionTest.html) | [`BigIntAdditionTest`][BigIntAdditionTest] |
+| [Multiplication](src/test/html/BigIntMultiplicationTest.html) | [`BigIntMultiplicationTest`][BigIntMultiplicationTest] |
+| [Division](src/test/html/BigIntDivisionTest.html) | [`BigIntDivisionTest`][BigIntDivisionTest] |
+| [Remainder and modulus](src/test/html/BigIntRemainderTest.html) | [`BigIntRemainderTest`][BigIntRemainderTest] |
+| [Binary operations](src/test/html/BigIntBinaryTest.html) | [`BigIntBinaryTest`][BigIntBinaryTest] |
+| [Bitwise operations](src/test/html/BigIntBitwiseTest.html) | [`BigIntBitwiseTest`][BigIntBitwiseTest] |
+| [Predicate functions](src/test/html/BigIntPredicateTest.html) | [`BigIntPredicateTest`][BigIntPredicateTest] |
+| [Constructors](src/test/html/BigIntConstructorTest.html) | [`BigIntConstructorTest`][BigIntConstructorTest] |
 
 #### FAQ
 
@@ -363,9 +361,6 @@ This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.t
 [BigIntMultiplicationTest]: src/test/java/org/libj/math/BigIntMultiplicationTest.java
 [BigIntPredicateTest]: src/test/java/org/libj/math/BigIntPredicateTest.java
 [BigIntRemainderTest]: src/test/java/org/libj/math/BigIntRemainderTest.java
-
-[BigIntegers]: src/main/java/org/libj/math/BigIntegers.java
-[Numbers]: /../../../lang/src/main/java/org/libj/lang/Numbers.java
 
 [bytebuddy]: https://bytebuddy.net/
 [byteman]: https://byteman.jboss.org/

@@ -64,7 +64,7 @@ public abstract class CaseTest {
 
   private static int skip(final int precision, final int skip) {
     final int maxSkip = precision / 25; // necessary to ensure enough tests are run to get past the warmup
-    return random.nextInt(Math.min(maxSkip, (int)((skip + 1) * Math.pow(precision, 1.6d) / 400000)) + 1) + 1;
+    return random.nextInt(Math.min(maxSkip, (int)((skip + 1) * Math.pow(precision, 1.6d) / 600000)) + 1) + 1;
   }
 
   public boolean initialized() {

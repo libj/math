@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -31,6 +33,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +54,7 @@ import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 import org.libj.lang.Classes;
+import org.libj.lang.PackageLoader;
 import org.libj.util.ArrayUtil;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
@@ -58,10 +62,14 @@ import net.bytebuddy.dynamic.loading.ClassInjector;
 
 public class AuditRunner extends BlockJUnit4ClassRunner {
   private static final String classpath = System.getProperty("java.class.path");
+  private static final File resultDir = new File("src/test/html");
   private static final boolean skipRTests;
   private static final Instrumentation instr;
+  private static final Map<String,String> links = new HashMap<>();
 
   static {
+    resultDir.mkdirs();
+
     final String skipRTestsProp = System.getProperty("skipRTests");
     skipRTests = skipRTestsProp != null && !skipRTestsProp.equals("false");
     if (skipRTests) {
@@ -70,12 +78,22 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     else {
       try {
         instr = ByteBuddyAgent.install();
-        loadJarsInBootstrap(instr, "lang", "console");
+        loadJarsInBootstrap(instr, "lang", "slf4j", "console");
         loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport");
       }
       catch (final IOException e) {
         throw new ExceptionInInitializerError(e);
       }
+    }
+
+    try {
+      PackageLoader.getSystemPackageLoader().loadPackage("org.libj.math", c -> {
+        links.put(c.getSimpleName(), "src/test/java/" + c.getName().replace('.', '/') + ".java");
+        return false;
+      });
+    }
+    catch (final Exception e) {
+      throw new ExceptionInInitializerError(e);
     }
   }
 
@@ -175,7 +193,6 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
         end = classpath.length();
 
       final String jarPath = classpath.substring(start, end);
-      System.err.println("APPENDING: " + name + " => " + jarPath);
       final JarFile jarFile = createJarFileOfSource(new File(jarPath));
       instr.appendToBootstrapClassLoaderSearch(jarFile);
     }
@@ -358,8 +375,27 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     }
 
     if (report != null) {
-      report.print();
-      AuditReport.destroy();
+      try {
+        final String testClassSimpleName = getTestClass().getJavaClass().getSimpleName();
+        final File file = new File(resultDir, testClassSimpleName + ".html");
+        final OutputStream out = Files.newOutputStream(file.toPath(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        final PrintStream ps = new PrintStream(out);
+        ps.println("<!DOCTYPE html>\n<html>\n<head>\n  <title>" + testClassSimpleName + "</title>");
+        ps.println("  <link rel=\"stylesheet\" type=\"test/css\" href=\"https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css\">");
+        ps.println("  <style>");
+        ps.println("    html { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji; }");
+        ps.println("    span, code, pre { font-family: Menlo, monospace; font-size: small; background-color: rgba(27,31,35,.05); mix-blend-mode: hard-light; }");
+        ps.println("    code { padding: .2em .4em; }");
+        ps.println("    pre { color: #EEE; background-color: #222; padding: 4px; }");
+        ps.println("  </style>");
+        ps.println("</head>\n<body>");
+        report.print(ps, links);
+        ps.print("</body>\n</html>");
+        AuditReport.destroy();
+      }
+      catch (final IOException e) {
+        throw new UncheckedIOException(e);
+      }
     }
   }
 

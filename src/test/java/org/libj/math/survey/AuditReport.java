@@ -18,6 +18,7 @@ package org.libj.math.survey;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,8 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.libj.console.Ansi;
 import org.libj.console.Tables;
 import org.libj.lang.Strings.Align;
+import org.openjax.xml.api.CharacterDatas;
 
 public class AuditReport {
   private static AuditReport instance;
@@ -183,17 +186,14 @@ public class AuditReport {
     map.put(mode, new String[] {label, result});
   }
 
-  private static final boolean markdown = true;
-
-  public void print() {
-    if (markdown) {
+  public void print(final PrintStream out, final Map<String,String> links) {
+    if (out != null) {
       final String testClassSimpleName = testClass.getSimpleName();
-      System.out.println("#### " + testClassSimpleName.substring(6, testClassSimpleName.length() - 4) + " ([`" + testClassSimpleName + "`][" + testClassSimpleName + "])\n");
-      System.out.println("**Summary**\n");
+      final String testClassPath = "src/test/java/" + testClass.getName().replace('.', '/') + ".java";
+      out.println("<h4>" + testClassSimpleName.substring(6, testClassSimpleName.length() - 4) + " (<a href=\"" + testClassPath + "\"><code>" + testClassSimpleName + "</code></a>)</h4>\n");
+      out.println("<p><strong>Summary</strong></p>\n");
+      out.println("<pre><code>");
     }
-
-    if (markdown)
-      System.out.println("```");
 
     final StringBuilder builder = new StringBuilder();
     // First print the summaries
@@ -208,42 +208,48 @@ public class AuditReport {
 
         builder.append(getTitle(mode)).append('\n');
         builder.append(Tables.printTable(true, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
-        if (markdown)
-          builder.append('\n');
       }
     }
 
-    if (markdown && builder.length() > 2)
-      builder.setLength(builder.length() - 2);
+    if (builder.length() > 1)
+      builder.setLength(builder.length() - 1);
 
     System.out.println(builder.toString());
-    if (markdown)
-      System.out.println("```\n");
+    if (out != null) {
+      out.println(Ansi.toHtml(CharacterDatas.escapeForElem(builder.toString())));
+      out.println("</code></pre>\n");
+    }
 
     // Next print the detailed results
     for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) {
       final Iterator<Map.Entry<Integer,String[]>> iterator = result.getValue().entrySet().iterator();
       for (int i = 0; iterator.hasNext(); ++i) {
         final Map.Entry<Integer,String[]> entry = iterator.next();
-        if (i == 0 && markdown) {
-          System.out.println("##### `" + entry.getValue()[0] + "`\n");
+        if (out != null) {
+          if (i == 0) {
+            final String methodName = entry.getValue()[0];
+            out.println("<h5><a name=\"" + methodName.replaceAll("[(),]", "").toLowerCase() + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
-          final Map<Integer,String> modeToComment = methodToModeToComment.get((Method)result.getKey().get(0));
-          if (modeToComment != null) {
-            final String comment = modeToComment.get(entry.getKey());
-            if (comment != null)
-              System.out.println(comment + "\n");
+            final Map<Integer,String> modeToComment = methodToModeToComment.get((Method)result.getKey().get(0));
+            if (modeToComment != null) {
+              final String comment = modeToComment.get(entry.getKey());
+              if (comment != null)
+                out.println(mdToHtml(comment, links) + "\n<br><br>");
+            }
+
+            out.println("<pre><code>");
           }
 
-          System.out.println("```");
+          out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(entry.getKey()))));
+          out.println(Ansi.toHtml(CharacterDatas.escapeForElem(entry.getValue()[1])));
         }
 
         System.out.println(getTitle(entry.getKey()));
         System.out.println(entry.getValue()[1]);
       }
 
-      if (markdown)
-        System.out.println("```\n");
+      if (out != null)
+        out.println("</code></pre>\n");
     }
   }
 
@@ -271,5 +277,43 @@ public class AuditReport {
 
     final String existing = modeToComment.get(mode);
     modeToComment.put(mode, existing != null ? existing + "\n\n" + comment : comment);
+  }
+
+  static String mdToHtml(final String str, final Map<String,String> links) {
+    final char[] chars = str.toCharArray();
+    char ch0, ch1 = Character.MAX_VALUE;
+    final StringBuilder builder = new StringBuilder();
+    boolean code = false;
+    int a = -1;
+    for (int i = 0; i < chars.length; ++i, ch1 = ch0) {
+      ch0 = chars[i];
+      if (ch0 == '`') {
+        builder.append(code ? "</code>" : "<code>");
+        code = !code;
+      }
+      else if (ch0 == '[') {
+        if (ch1 == ']') {
+          final int end = str.indexOf(']', i + 1);
+          final String link = str.substring(i + 1, end);
+          final String href = links.get(link);
+          builder.insert(a, href);
+          a = -1;
+          i = end;
+        }
+        else {
+          builder.append("<a href=\"");
+          a = builder.length();
+          builder.append("\">");
+        }
+      }
+      else if (ch0 == ']') {
+        builder.append("</a>");
+      }
+      else {
+        builder.append(ch0);
+      }
+    }
+
+    return builder.toString();
   }
 }

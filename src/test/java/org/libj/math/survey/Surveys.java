@@ -229,8 +229,8 @@ public abstract class Surveys {
         }
         else {
           r -= variables;
-          rows[r] += " │ " + Strings.pad(r0, Align.RIGHT, 5);
-          rows[r + variables] += " │ " + Strings.pad(r1, Align.RIGHT, 5);
+          rows[r] += " │" + Strings.pad(" " + r0, Align.RIGHT, 5, true);
+          rows[r + variables] += " │" + Strings.pad(" " + r1, Align.RIGHT, 6, true);
         }
 
         summary[s * categories + c] = r1;

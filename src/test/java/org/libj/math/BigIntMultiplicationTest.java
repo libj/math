@@ -137,14 +137,13 @@ public class BigIntMultiplicationTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"very large sized\" numbers, `BigInt` outperforms `BigInteger` due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.");
 
     for (int i = 1; i <= 128; i *= 2)
-      testBig(report, i, 60);
+      testBig(report, i, 80);
   }
 
   @Test
-  @Ignore
   public void testHuge(final AuditReport report) {
     for (int i = 256; i <= 1024; i *= 2)
-      testBig(report, i, 80);
+      testBig(report, i, 100);
   }
 
   @Test
@@ -152,14 +151,13 @@ public class BigIntMultiplicationTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "This test engages all multiplication algorithm for both `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
     report.addComment(UNINSTRUMENTED.ordinal(), "The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the \"square\" use-case, as the equality of `x` and `y` have a better change of allowing for in-place calculations.");
     for (int i = 1; i <= 128; i *= 2)
-      testSquareBig(report, i, 60);
+      testSquareBig(report, i, 80);
   }
 
   @Test
-  @Ignore
   public void testSquareHuge(final AuditReport report) {
     for (int i = 256; i <= 1024; i *= 2)
-      testSquareBig(report, i, 80);
+      testSquareBig(report, i, 100);
   }
 
   @Test
