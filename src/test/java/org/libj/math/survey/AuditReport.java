@@ -234,7 +234,7 @@ public class AuditReport {
             if (modeToComment != null) {
               final String comment = modeToComment.get(entry.getKey());
               if (comment != null)
-                out.println(mdToHtml(comment, links) + "\n<br><br>");
+                out.println("<p>" + mdToHtml(comment, links) + "</p>\n");
             }
 
             out.println("<pre><code>");
