@@ -212,14 +212,14 @@ Benchmark tests are organized in 8 test classes, each responsible for its contex
 
 | Link to results | Link to test code |
 |-|-|
-| [Addition and subtraction](src/test/html/BigIntAdditionTest.html) | [`BigIntAdditionTest`][BigIntAdditionTest] |
-| [Multiplication](src/test/html/BigIntMultiplicationTest.html) | [`BigIntMultiplicationTest`][BigIntMultiplicationTest] |
-| [Division](src/test/html/BigIntDivisionTest.html) | [`BigIntDivisionTest`][BigIntDivisionTest] |
-| [Remainder and modulus](src/test/html/BigIntRemainderTest.html) | [`BigIntRemainderTest`][BigIntRemainderTest] |
-| [Binary operations](src/test/html/BigIntBinaryTest.html) | [`BigIntBinaryTest`][BigIntBinaryTest] |
-| [Bitwise operations](src/test/html/BigIntBitwiseTest.html) | [`BigIntBitwiseTest`][BigIntBitwiseTest] |
-| [Predicate functions](src/test/html/BigIntPredicateTest.html) | [`BigIntPredicateTest`][BigIntPredicateTest] |
-| [Constructors](src/test/html/BigIntConstructorTest.html) | [`BigIntConstructorTest`][BigIntConstructorTest] |
+| [Addition and subtraction](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html) | [`BigIntAdditionTest`][BigIntAdditionTest] |
+| [Multiplication](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html) | [`BigIntMultiplicationTest`][BigIntMultiplicationTest] |
+| [Division](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html) | [`BigIntDivisionTest`][BigIntDivisionTest] |
+| [Remainder and modulus](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html) | [`BigIntRemainderTest`][BigIntRemainderTest] |
+| [Binary operations](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBinaryTest.html) | [`BigIntBinaryTest`][BigIntBinaryTest] |
+| [Bitwise operations](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html) | [`BigIntBitwiseTest`][BigIntBitwiseTest] |
+| [Predicate functions](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html) | [`BigIntPredicateTest`][BigIntPredicateTest] |
+| [Constructors](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntConstructorTest.html) | [`BigIntConstructorTest`][BigIntConstructorTest] |
 
 #### FAQ
 
