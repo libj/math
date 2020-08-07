@@ -70,67 +70,67 @@ It is also important to note the following:
 
 | | `BigInteger` | `BigInt` | `int[]` |
 |-|:-------------:|:------------:|:------------:|
-| **[`add(int)`](src/test/html/BigIntAdditionTest.html#addintint)**<sub>unsigned</sub> | 𝚯 | 193% | 188% |
-| **[`add(int)`](src/test/html/BigIntAdditionTest.html#addint)**<sub>signed</sub> | 𝚯 | +337% | +359% |
-| **[`add(long)`](src/test/html/BigIntAdditionTest.html#addintlong)**<sub>unsigned</sub> | 𝚯 | +299% | +294% |
-| **[`add(long)`](src/test/html/BigIntAdditionTest.html#addlong)**<sub>signed</sub> | 𝚯 | +255% | +330% |
-| **[`add(T)`](src/test/html/BigIntAdditionTest.html#addt)** | 0 | +21% | +58% |
-| **[`sub(int)`](src/test/html/BigIntAdditionTest.html#subintint)**<sub>unsigned</sub> | 𝚯 | +156% | +195% |
-| **[`sub(int)`](src/test/html/BigIntAdditionTest.html#subint)**<sub>signed</sub> | 𝚯 | +251% | +377% |
-| **[`sub(long)`](src/test/html/BigIntAdditionTest.html#subintlong)**<sub>unsigned</sub> | 𝚯 | +155% | +324% |
-| **[`sub(long)`](src/test/html/BigIntAdditionTest.html#sublong)**<sub>signed</sub> | 𝚯 | +215% | +300 |
-| **[`sub(T)`](src/test/html/BigIntAdditionTest.html#subt)** | 0 | +37% | +97% |
-| **[`mul(int)`](src/test/html/BigIntMultiplicationTest.html#mulintint)**<sub>unsigned</sub> | 𝚯 | +79% | +95% |
-| **[`mul(int)`](src/test/html/BigIntMultiplicationTest.html#mulint)**<sub>signed</sub> | 𝚯 | +99% | +157% |
-| **[`mul(long)`](src/test/html/BigIntMultiplicationTest.html#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
-| **[`mul(long)`](src/test/html/BigIntMultiplicationTest.html#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
-| **[`mul(T)`](src/test/html/BigIntMultiplicationTest.html#mult)** | +75% | 0 | +5% |
-| **[`div(int)`](src/test/html/BigIntDivisionTest.html#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
-| **[`div(int)`](src/test/html/BigIntDivisionTest.html#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
-| **[`div(long)`](src/test/html/BigIntDivisionTest.html#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |
-| **[`div(long)`](src/test/html/BigIntDivisionTest.html#divlong)**<sub>signed</sub> | 𝚯 | +146% | +144% |
-| **[`div(T)`](src/test/html/BigIntDivisionTest.html#divt)** | 0 | +29% | +44% |
-| **[`divRem(int)`](src/test/html/BigIntDivisionTest.html#divremintint)**<sub>unsigned</sub> | 𝚯 | +57% | +65% |
-| **[`divRem(int)`](src/test/html/BigIntDivisionTest.html#divremint)**<sub>signed</sub> | 𝚯 | +144% | +135% |
-| **[`divRem(long)`](src/test/html/BigIntDivisionTest.html#divremintlong)**<sub>unsigned</sub> | 𝚯 | +179% | +183% |
-| **[`divRem(long)`](src/test/html/BigIntDivisionTest.html#divremlong)**<sub>signed</sub> | 𝚯 | +141% | +142% |
-| **[`divRem(T)`](src/test/html/BigIntDivisionTest.html#divremt)** | 𝚯 | +2% | +8% |
-| **[`rem(int)`](src/test/html/BigIntRemainderTest.html#remintint)**<sub>unsigned</sub> | 𝚯 | +140% | +120% |
-| **[`rem(int)`](src/test/html/BigIntRemainderTest.html#remint)**<sub>signed</sub> | 𝚯 | +172% | +128% |
-| **[`rem(long)`](src/test/html/BigIntRemainderTest.html#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
-| **[`rem(long)`](src/test/html/BigIntRemainderTest.html#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
-| **[`rem(T)`](src/test/html/BigIntRemainderTest.html#remt)** | 0 | +47% | +63% |
-| **[`mod(T)`](src/test/html/BigIntRemainderTest.html#modt-1)** | 0 | +55% | +73% |
-| **[`bitCount()`](src/test/html/BigIntBitwiseTest.html#bitcount)** | 0 | +68% | +63% |
-| **[`bitLength()`](src/test/html/BigIntBitwiseTest.html#bitlength)** | 0 | +81% | +205% |
-| **[`testBit(int)`](src/test/html/BigIntBitwiseTest.html#testbitint)** | 0 | +29% | +50% |
-| **[`setBit(int)`](src/test/html/BigIntBitwiseTest.html#setbitint)** | 0 | +800% | +1100% |
-| **[`clearBit(int)`](src/test/html/BigIntBitwiseTest.html#clearbitint)** | 0 | +440% | +590% |
-| **[`flipBit(int)`](src/test/html/BigIntBitwiseTest.html#flipbitint)** | 0 | +508% | +905% |
-| **[`shiftLeft(int)`](src/test/html/BigIntBitwiseTest.html#shiftleftint)** | +23% | 0 | +25% |
-| **[`shiftRight(int)`](src/test/html/BigIntBitwiseTest.html#shiftrightint)** | +4% | 0 | +59% |
-| **[`and(T)`](src/test/html/BigIntBinaryTest.html#andt)** | 0 | +289% | +476% |
-| **[`or(T)`](src/test/html/BigIntBinaryTest.html#ort)** | 0 | +458% | +711% |
-| **[`xor(T)`](src/test/html/BigIntBinaryTest.html#xort)** | 0 | +335% | +440% |
-| **[`andNot(T)`](src/test/html/BigIntBinaryTest.html#andnott)** | 0 | +325% | +505% |
-| **[`not()`](src/test/html/BigIntBinaryTest.html#not)** | 0 | +589% | +2784% |
-| **[`abs()`](src/test/html/BigIntPredicateTest.html#abs)** | 0 | +100% | +87% |
-| **[`neg()`](src/test/html/BigIntPredicateTest.html#neg)** | 0 | +50% | +1500% |
-| **[`max(T)`](src/test/html/BigIntPredicateTest.html#maxt)** | +34% | 0 | +48% |
-| **[`min(T)`](src/test/html/BigIntPredicateTest.html#mint)** | +30% | 0 | +23% |
-| **[`signum()`](src/test/html/BigIntPredicateTest.html#signum)** | +293% | 0 | +8% |
-| **[`precision()`](src/test/html/BigIntPredicateTest.html#precision)** | 𝚯 | +2067% | +2477% |
-| **[`byteValue()`](src/test/html/BigIntPredicateTest.html#bytevalue)** | 0 | +389% | +97% |
-| **[`shortValue()`](src/test/html/BigIntPredicateTest.html#shortvalue)** | +39% | 0 | +139% |
-| **[`intValue()`](src/test/html/BigIntPredicateTest.html#intvalue)** | +8% | 0 | +68% |
-| **[`longValue()`](src/test/html/BigIntPredicateTest.html#longvalue)** | 0 | +208% | +230% |
-| **[`floatValue()`](src/test/html/BigIntPredicateTest.html#floatvalue)** | 0 | +29% | +96% |
-| **[`doubleValue()`](src/test/html/BigIntPredicateTest.html#doublevalue)** | 0 | +19% | +123% |
-| **[`toByteArray()`](src/test/html/BigIntPredicateTest.html#tobytearray-be)** | 0 | +23% | +15% |
-| **[`compareTo(T)`](src/test/html/BigIntPredicateTest.html#comparetot)** | +215% | +89% | 0 |
-| **[`equals(T)`](src/test/html/BigIntPredicateTest.html#equalst)** | 0 | +3% | +22% |
-| **[`hashCode()`](src/test/html/BigIntPredicateTest.html#hashcode)** | +39% | +5% | 0 |
-| **[`toString()`](src/test/html/BigIntPredicateTest.html#tostring)** | 0 | +349% | +360% |
+| **[`add(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#addintint)**<sub>unsigned</sub> | 𝚯 | 193% | 188% |
+| **[`add(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#addint)**<sub>signed</sub> | 𝚯 | +337% | +359% |
+| **[`add(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#addintlong)**<sub>unsigned</sub> | 𝚯 | +299% | +294% |
+| **[`add(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#addlong)**<sub>signed</sub> | 𝚯 | +255% | +330% |
+| **[`add(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#addt)** | 0 | +21% | +58% |
+| **[`sub(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#subintint)**<sub>unsigned</sub> | 𝚯 | +156% | +195% |
+| **[`sub(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#subint)**<sub>signed</sub> | 𝚯 | +251% | +377% |
+| **[`sub(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#subintlong)**<sub>unsigned</sub> | 𝚯 | +155% | +324% |
+| **[`sub(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#sublong)**<sub>signed</sub> | 𝚯 | +215% | +300 |
+| **[`sub(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntAdditionTest.html#subt)** | 0 | +37% | +97% |
+| **[`mul(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mulintint)**<sub>unsigned</sub> | 𝚯 | +79% | +95% |
+| **[`mul(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mulint)**<sub>signed</sub> | 𝚯 | +99% | +157% |
+| **[`mul(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
+| **[`mul(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
+| **[`mul(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mult)** | +75% | 0 | +5% |
+| **[`div(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
+| **[`div(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
+| **[`div(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |
+| **[`div(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divlong)**<sub>signed</sub> | 𝚯 | +146% | +144% |
+| **[`div(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divt)** | 0 | +29% | +44% |
+| **[`divRem(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divremintint)**<sub>unsigned</sub> | 𝚯 | +57% | +65% |
+| **[`divRem(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divremint)**<sub>signed</sub> | 𝚯 | +144% | +135% |
+| **[`divRem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divremintlong)**<sub>unsigned</sub> | 𝚯 | +179% | +183% |
+| **[`divRem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divremlong)**<sub>signed</sub> | 𝚯 | +141% | +142% |
+| **[`divRem(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divremt)** | 𝚯 | +2% | +8% |
+| **[`rem(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remintint)**<sub>unsigned</sub> | 𝚯 | +140% | +120% |
+| **[`rem(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remint)**<sub>signed</sub> | 𝚯 | +172% | +128% |
+| **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
+| **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
+| **[`rem(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remt)** | 0 | +47% | +63% |
+| **[`mod(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modt-1)** | 0 | +55% | +73% |
+| **[`bitCount()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitcount)** | 0 | +68% | +63% |
+| **[`bitLength()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitlength)** | 0 | +81% | +205% |
+| **[`testBit(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#testbitint)** | 0 | +29% | +50% |
+| **[`setBit(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#setbitint)** | 0 | +800% | +1100% |
+| **[`clearBit(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#clearbitint)** | 0 | +440% | +590% |
+| **[`flipBit(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#flipbitint)** | 0 | +508% | +905% |
+| **[`shiftLeft(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#shiftleftint)** | +23% | 0 | +25% |
+| **[`shiftRight(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#shiftrightint)** | +4% | 0 | +59% |
+| **[`and(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBinaryTest.html#andt)** | 0 | +289% | +476% |
+| **[`or(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBinaryTest.html#ort)** | 0 | +458% | +711% |
+| **[`xor(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBinaryTest.html#xort)** | 0 | +335% | +440% |
+| **[`andNot(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBinaryTest.html#andnott)** | 0 | +325% | +505% |
+| **[`not()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBinaryTest.html#not)** | 0 | +589% | +2784% |
+| **[`abs()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#abs)** | 0 | +100% | +87% |
+| **[`neg()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#neg)** | 0 | +50% | +1500% |
+| **[`max(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#maxt)** | +34% | 0 | +48% |
+| **[`min(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#mint)** | +30% | 0 | +23% |
+| **[`signum()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#signum)** | +293% | 0 | +8% |
+| **[`precision()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#precision)** | 𝚯 | +2067% | +2477% |
+| **[`byteValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#bytevalue)** | 0 | +389% | +97% |
+| **[`shortValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#shortvalue)** | +39% | 0 | +139% |
+| **[`intValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#intvalue)** | +8% | 0 | +68% |
+| **[`longValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#longvalue)** | 0 | +208% | +230% |
+| **[`floatValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#floatvalue)** | 0 | +29% | +96% |
+| **[`doubleValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#doublevalue)** | 0 | +19% | +123% |
+| **[`toByteArray()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#tobytearray-be)** | 0 | +23% | +15% |
+| **[`compareTo(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#comparetot)** | +215% | +89% | 0 |
+| **[`equals(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#equalst)** | 0 | +3% | +22% |
+| **[`hashCode()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#hashcode)** | +39% | +5% | 0 |
+| **[`toString()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#tostring)** | 0 | +349% | +360% |
 | **`longValueUnsigned()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
 | **`compareToAbs()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
 | **`clone()`** | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
@@ -233,7 +233,7 @@ Benchmark tests are organized in 8 test classes, each responsible for its contex
 
    `BigInt` was created for one specific purpose: to lower the heap memory allocations for regular arithmetic operations. `BigInteger` liberally creates transient instances for the purpose of calculations, which results in a significant memory load and subsequent runtime performance load when the GC turns on. This situation is particularly relevant in applications that work with very many instances of arbitrary precision numbers. An example of such an application is an Asset Trading Systems (Level 3) that consumes live streams of order data. Arbitrary precision arithmetic is necessary for Asset Trading Systems in lieu of the need for <ins>fixed point arithmetic</ins>.
 
-   See [`Decimal`](#decimal).
+   See [`Decimal`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/#decimal).
 
 1. **What is `BigInt`'s biggest disadvantage?**
 
