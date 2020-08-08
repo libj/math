@@ -25,7 +25,7 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
 1. **Little-endian**: `BigInt`'s magnitude array is in little-endian order, allowing for faster operations concerning changes to a number's scale.
 1. **Faster arithmetic**: The arithmetic algorithms in `BigInt` are implemented with the optimization of memory (heap allocation) and runtime performance in mind.
 1. **Faster multiplication of large numbers**: Support parallel multiplication algorithm for large numbers.
-1. **In-place multiplication algorithms**: Employs optimized algorithms that perform calculations in-place, rather than instantiating transient magnitude arrays to be later freed by the GC.
+1. **In-place multiplication algorithms**: Employs optimized algorithms that perform calculations in place, rather than instantiating transient magnitude arrays to defer to the GC to free later.
 1. **Support for `int` and `long` parameters and return types**: `BigInt` does not require its parameters or return types to be `BigInt`, avoiding unnecessary instantiation of transient `BigInt` objects.
 1. **Support for "object-less" operation**: All methods in `BigInt` are available in static form, allowing [bare `int[]` <ins>value-encoded number</ins> arrays](#bare-int-value-encoded-number-arrays) to be used without a `BigInt` instance, leading to further reduction in heap memory allocation.
 1. **Significantly reduced heap allocation**: `BigInt` was meticulously designed to reduce the number of instances allocated purely for the purpose of transient calculation, and significantly outperforms `BigInteger` with regard to memory and GC load.
