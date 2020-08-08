@@ -84,7 +84,7 @@ It is also important to note the following:
 | **[`mul(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mulint)**<sub>signed</sub> | 𝚯 | +99% | +157% |
 | **[`mul(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
 | **[`mul(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
-| **[`mul(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mult)** | +75% | 0 | +5% |
+| **[`mul(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mult-256)** | +75% | 0 | +5% |
 | **[`div(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
 | **[`div(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
 | **[`div(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |

@@ -101,7 +101,7 @@
 ╚════════════════╩═══════╧═══════╩══════════╧═════════╩═════════╧═════════╝
 </code></pre>
 
-<h5><a name="umulint[]long"><code>umul(int[],long)</code></a></h5>
+<h5><a name="umulintlong"><code>umul(int[],long)</code></a></h5>
 
 <p>This test validates the correctness of <code><a href="src/test/java/org/libj/math/BigIntMultiplication.java">BigIntMultiplication.umul(long)</a></code> against <code><a href="null">MPN.mul(...)</a></code>.</p>
 <pre><code>
@@ -169,7 +169,7 @@ umul(int[],long)
 ╚════╧════╩═════╧═════╩═════╧══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="umulint[]int"><code>umul(int[],int)</code></a></h5>
+<h5><a name="umulintint"><code>umul(int[],int)</code></a></h5>
 
 <p>This test validates the correctness of <code><a href="src/test/java/org/libj/math/BigIntMultiplication.java">BigIntMultiplication.umul(int)</a></code> against <code><a href="null">MPN.mul(...)</a></code>.</p>
 <pre><code>
@@ -237,7 +237,7 @@ umul(int[],int)
 ╚════╧════╩═════╧═════╩═════╧══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 256"><code>mul(T): 256</code></a></h5>
+<h5><a name="mult-256"><code>mul(T): 256</code></a></h5>
 
 <pre><code>
 [runtime performance]
@@ -304,7 +304,7 @@ mul(T): 256
 ╚══════╧══════╩════════╧════════╩══════╧══════╩═══════╧═══════╩═════════╧════════╩════════╧════════╝
 </code></pre>
 
-<h5><a name="mult: 512"><code>mul(T): 512</code></a></h5>
+<h5><a name="mult-512"><code>mul(T): 512</code></a></h5>
 
 <pre><code>
 [runtime performance]
@@ -371,7 +371,7 @@ mul(T): 512
 ╚══════╧══════╩════════╧════════╩══════╧══════╩════════╧═══════╩═════════╧═════════╩═════════╧═════════╝
 </code></pre>
 
-<h5><a name="mult: 1024"><code>mul(T): 1024</code></a></h5>
+<h5><a name="mult-1024"><code>mul(T): 1024</code></a></h5>
 
 <pre><code>
 [runtime performance]
@@ -438,7 +438,7 @@ mul(T): 1024
 ╚══════╧══════╩════════╧════════╩══════╧══════╩════════╧════════╩══════════╧═════════╩═════════╧═════════╝
 </code></pre>
 
-<h5><a name="mult: 1"><code>mul(T): 1</code></a></h5>
+<h5><a name="mult-1"><code>mul(T): 1</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -510,7 +510,7 @@ mul(T): 1
 ╚════╧════╩═════╧═════╩══════╧══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 2"><code>mul(T): 2</code></a></h5>
+<h5><a name="mult-2"><code>mul(T): 2</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -582,7 +582,7 @@ mul(T): 2
 ╚════╧════╩══════╧══════╩══════╧══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 4"><code>mul(T): 4</code></a></h5>
+<h5><a name="mult-4"><code>mul(T): 4</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -654,7 +654,7 @@ mul(T): 4
 ╚════╧════╩══════╧══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 8"><code>mul(T): 8</code></a></h5>
+<h5><a name="mult-8"><code>mul(T): 8</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -726,7 +726,7 @@ mul(T): 8
 ╚════╧════╩══════╧══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 16"><code>mul(T): 16</code></a></h5>
+<h5><a name="mult-16"><code>mul(T): 16</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -798,7 +798,7 @@ mul(T): 16
 ╚═════╧═════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 32"><code>mul(T): 32</code></a></h5>
+<h5><a name="mult-32"><code>mul(T): 32</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -870,7 +870,7 @@ mul(T): 32
 ╚═════╧═════╩═══════╧═══════╩══════╧══════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 64"><code>mul(T): 64</code></a></h5>
+<h5><a name="mult-64"><code>mul(T): 64</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
@@ -942,7 +942,7 @@ mul(T): 64
 ╚═════╧═════╩═══════╧═══════╩══════╧══════╩═══════╧═══════╩════════╧═══════╩═══════╧═══════╝
 </code></pre>
 
-<h5><a name="mult: 128"><code>mul(T): 128</code></a></h5>
+<h5><a name="mult-128"><code>mul(T): 128</code></a></h5>
 
 <p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
