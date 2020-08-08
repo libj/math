@@ -228,7 +228,7 @@ public class AuditReport {
         if (out != null) {
           if (i == 0) {
             final String methodName = entry.getValue()[0];
-            out.println("<h5><a name=\"" + methodName.replaceAll("[(),]", "").toLowerCase() + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
+            out.println("<h5><a name=\"" + methodName.replaceAll("[(),:\\[\\]]", "").replace(' ', '-').toLowerCase() + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
             final Map<Integer,String> modeToComment = methodToModeToComment.get((Method)result.getKey().get(0));
             if (modeToComment != null) {
