@@ -100,7 +100,7 @@ It is also important to note the following:
 | **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
 | **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
 | **[`rem(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remt)** | 0 | +47% | +63% |
-| **[`mod(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modt-1)** | 0 | +55% | +73% |
+| **[`mod(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modt)** | 0 | +55% | +73% |
 | **[`bitCount()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitcount)** | 0 | +68% | +63% |
 | **[`bitLength()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitlength)** | 0 | +81% | +205% |
 | **[`testBit(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#testbitint)** | 0 | +29% | +50% |
@@ -126,7 +126,7 @@ It is also important to note the following:
 | **[`longValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#longvalue)** | 0 | +208% | +230% |
 | **[`floatValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#floatvalue)** | 0 | +29% | +96% |
 | **[`doubleValue()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#doublevalue)** | 0 | +19% | +123% |
-| **[`toByteArray()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#tobytearray-be)** | 0 | +23% | +15% |
+| **[`toByteArray()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#tobytearray-be)** | 0 | +23% | +15% |
 | **[`compareTo(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#comparetot)** | +215% | +89% | 0 |
 | **[`equals(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#equalst)** | 0 | +3% | +22% |
 | **[`hashCode()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntPredicateTest.html#hashcode)** | +39% | +5% | 0 |
