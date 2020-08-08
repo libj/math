@@ -233,7 +233,7 @@ Benchmark tests are organized in 8 test classes, each responsible for its contex
 
    `BigInt` was created for one specific purpose: to lower the heap memory allocations for regular arithmetic operations. `BigInteger` liberally creates transient instances for the purpose of calculations, which results in a significant memory load and subsequent runtime performance load when the GC turns on. This situation is particularly relevant in applications that work with very many instances of arbitrary precision numbers. An example of such an application is an Asset Trading Systems (Level 3) that consumes live streams of order data. Arbitrary precision arithmetic is necessary for Asset Trading Systems in lieu of the need for <ins>fixed point arithmetic</ins>.
 
-   See [`Decimal`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/#decimal).
+   See [`Decimal`](#decimal).
 
 1. **What is `BigInt`'s biggest disadvantage?**
 
