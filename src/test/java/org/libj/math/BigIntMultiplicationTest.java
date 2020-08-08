@@ -141,6 +141,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
+  @Ignore
   public void testHuge(final AuditReport report) {
     for (int i = 256; i <= 1024; i *= 2)
       testBig(report, i, 100);
@@ -155,6 +156,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
+  @Ignore
   public void testSquareHuge(final AuditReport report) {
     for (int i = 256; i <= 1024; i *= 2)
       testSquareBig(report, i, 100);
