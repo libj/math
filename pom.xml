@@ -30,13 +30,26 @@
   <description>
     Supplementary extensions to the java.math package.
   </description>
+  <profiles>
+    <profile>
+      <id>!repoToken</id>
+      <activation>
+        <property>
+          <name>!repoToken</name>
+        </property>
+      </activation>
+      <properties>
+        <argLine></argLine>
+      </properties>
+    </profile>
+  </profiles>
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Xcomp -Xmx2g</argLine>
+          <argLine>${argLine} -Xcomp -Xmx2g</argLine>
           <reuseForks>false</reuseForks>
         </configuration>
       </plugin>
