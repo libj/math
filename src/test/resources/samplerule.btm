@@ -1,0 +1,7 @@
+RULE trace main entry
+CLASS ^org.libj.math.survey.BytemanTest
+METHOD foo
+AFTER NEW int [] 
+IF true
+DO traceln("Byteman detected you are entering main")
+ENDRULE

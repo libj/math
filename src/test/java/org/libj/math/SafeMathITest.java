@@ -1,4 +1,4 @@
-/* Copyright (c) 2008 LibJ
+/* Copyright (c) 2008 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
-public class SafeMathTest {
+public class SafeMathITest {
   private static final int numTests = 10000;
   private static final Random random = new Random();
   private static final MathContext mc = MathContext.DECIMAL64;

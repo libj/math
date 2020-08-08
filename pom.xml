@@ -1,5 +1,5 @@
 <!--
-  Copyright (c) 2008 LibJ
+  Copyright (c) 2008 Seva Safris, LibJ
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,18 @@
   <description>
     Supplementary extensions to the java.math package.
   </description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-Xcomp -Xmx2g</argLine>
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>org.libj</groupId>
@@ -42,9 +54,51 @@
       <version>2.3.0</version>
     </dependency>
     <dependency>
+      <groupId>org.openjax.xml</groupId>
+      <artifactId>api</artifactId>
+      <version>0.9.5-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.libj</groupId>
       <artifactId>test</artifactId>
       <version>0.7.2-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.libj</groupId>
+      <artifactId>console</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.libj</groupId>
+      <artifactId>util</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman</artifactId>
+      <version>4.0.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy-agent</artifactId>
+      <version>1.10.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apfloat</groupId>
+      <artifactId>apfloat</artifactId>
+      <version>1.9.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jscience</groupId>
+      <artifactId>jscience</artifactId>
+      <version>4.3.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012 LibJ
+/* Copyright (c) 2012 Seva Safris, LibJ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
