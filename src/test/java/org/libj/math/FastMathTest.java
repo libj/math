@@ -18,6 +18,8 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.libj.console.Tables;
 import org.libj.lang.Strings.Align;
@@ -49,7 +51,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testDivideUnsignedLong() {
-    test("divideUnsigned(long, long)",
+    test("divideUnsigned(long, long)", BigDecimal.ZERO,
       l("Long", a -> a, this::nz, (long a, long b) -> Long.divideUnsigned(a, b)),
       l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.divideUnsigned(a, b))
     );
@@ -57,7 +59,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testRemainderUnsignedLong() {
-    test("remainderUnsigned(long, long)",
+    test("remainderUnsigned(long, long)", BigDecimal.ZERO,
       l("Long", a -> a, this::nz, (long a, long b) -> Long.remainderUnsigned(a, b)),
       l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.remainderUnsigned(a, b))
     );
@@ -80,6 +82,6 @@ public class FastMathTest extends BigIntTest {
 
     time[0] /= numTests * 30;
     time[1] /= numTests * 30;
-    System.out.println(Tables.printTable(true, Align.RIGHT, time, "Long", "FastMath"));
+    System.out.println(Tables.printTable(true, Align.CENTER, Align.RIGHT, time, "Long", "FastMath"));
   }
 }

@@ -47,12 +47,12 @@ abstract class DecimalDivision extends FixedPoint {
     // If v1 is bigger than the signed limit, scale it down
     if (v1 < 0) {
       FastMath.divideUnsigned(v1, 10, buf);
-      v1 = FixedPoint.round((byte)buf[1], buf[0]);
+      v1 = FixedPoint.roundHalfUp((byte)buf[1], buf[0]);
     }
     else {
       remainder *= 10;
       final byte round = (byte)FastMath.divideUnsigned(remainder, v2);
-      v1 = FixedPoint.round(round, v1);
+      v1 = FixedPoint.roundHalfUp(round, v1);
     }
 
     return v1;
@@ -127,7 +127,7 @@ abstract class DecimalDivision extends FixedPoint {
 
     // v has not overflowed long, but it may have overflowed minValue/maxValue
     // By how many bits have we overflowed?
-    final byte bp = (byte)(binaryPrecisionRequiredForValue(v) - valueBits);
+    final byte bp = (byte)(bitLength(v) - valueBits);
     if (bp > 0) {
       byte dp = Numbers.precision((1L << bp) - 1);
       s -= dp;
@@ -135,7 +135,7 @@ abstract class DecimalDivision extends FixedPoint {
       if (dp > 0)
         v /= FastMath.e10[dp];
 
-      v = roundDown10(v);
+      v = roundHalfUp10(v);
     }
 
     // Make sure we don't overflow the scale bits
@@ -149,7 +149,7 @@ abstract class DecimalDivision extends FixedPoint {
       s -= adj;
       --adj; // Leave one factor for rounding
       v /= FastMath.e10[adj];
-      v = roundDown10(v);
+      v = roundHalfUp10(v);
       if (v == 0) {
         result.set(sig * v, (short)s);
         return false;

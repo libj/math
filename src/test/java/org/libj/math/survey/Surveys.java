@@ -16,6 +16,7 @@
 
 package org.libj.math.survey;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.libj.console.Ansi;
@@ -53,8 +54,8 @@ public abstract class Surveys {
 
   public abstract int getDivision(int variable, Object obj);
 
-  public void addSample(final int survey, final int variable, final Object obj, final long time) {
-    surveys[survey].addSample(variable, obj, time, report);
+  public void addSample(final int survey, final int variable, final Object obj, final long time, final BigDecimal error) {
+    surveys[survey].addSample(variable, obj, time, error, report);
   }
 
   public void onSuccess() {
@@ -238,11 +239,25 @@ public abstract class Surveys {
     }
 
     final StringBuilder builder = new StringBuilder();
-    builder.append(label + "\n  " + count + " in " + runTime + "ms\n" + Tables.printTable(true, Align.RIGHT, variables, false, columns));
-    if (canvas != null)
-      builder.append('\n').append(canvas.toString());
+    builder.append(label + "\n  " + count + " in " + runTime + "ms\n" + Tables.printTable(true, Align.CENTER, Align.RIGHT, variables, false, columns));
 
-    return builder.toString();
+    builder.append('\n');
+    final String[][] errors = new String[surveys.length][1 + variables * divisions];
+    for (int s = 0; s < surveys.length; ++s) {
+      final Survey survey = surveys[s];
+      errors[s][0] = getColor(survey.getCase()).apply(headings[s]);
+      final BigDecimal[][] error = survey.getError();
+      for (int d = 0; d < divisions; ++d)
+        for (int v = 0; v < variables; ++v)
+          errors[s][d * variables + v + 1] = error[v][d].toString();
+    }
+
+    final String[] tables = {builder.toString(), "\nerror profile\n" + Tables.printTable(true, Align.CENTER, Align.RIGHT, variables, false, errors)};
+    String out = Tables.printTable(false, Align.LEFT, Align.LEFT, 1, false, tables);
+    out = canvas != null ? out + "\n" + canvas.toString() : out;
+
+    // Remove redundant Color RESET->SET
+    return out.replace("\033[0;39m\033[", "\033[");
   }
 
   private static String color(final String row, final long val, final long min, final long max, final int s, final int len) {

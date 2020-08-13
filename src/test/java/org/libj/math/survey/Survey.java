@@ -16,6 +16,8 @@
 
 package org.libj.math.survey;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 import org.libj.math.survey.CaseTest.Case;
@@ -29,6 +31,7 @@ public abstract class Survey {
   private final long[][] times;
   private final long[][] max;
   private final long[][] min;
+  private final BigDecimal[][] error;
   private final Class<?>[] trackedClasses;
   private final int[][] allocations;
 
@@ -52,6 +55,10 @@ public abstract class Survey {
     this.min = new long[variables][divisions];
     for (int v = 0; v < variables; ++v)
       Arrays.fill(this.min[v], Long.MAX_VALUE);
+
+    this.error = new BigDecimal[variables][divisions];
+    for (int v = 0; v < variables; ++v)
+      Arrays.fill(this.error[v], BigDecimal.ZERO);
   }
 
   public Class<?> getSubject() {
@@ -64,12 +71,17 @@ public abstract class Survey {
 
   public abstract int getDivision(int variable, Object obj);
 
-  public void addSample(final int variable, final Object obj, final long time, final AuditReport report) {
+  public void addSample(final int variable, final Object obj, final long time, BigDecimal error, final AuditReport report) {
     final int division = getDivision(variable, obj);
     if (++this.counts[variable][division] >= 0) {
       this.max[variable][division] = Math.max(this.max[variable][division], time);
       this.min[variable][division] = Math.min(this.min[variable][division], time);
       this.times[variable][division] += time;
+      if (error != null && error.signum() != 0) {
+        error = error.setScale(1 + error.scale() - error.precision(), RoundingMode.CEILING);
+        if (error.compareTo(this.error[variable][division]) > 0)
+          this.error[variable][division] = error;
+      }
     }
 
     if (trackedClasses != null)
@@ -99,6 +111,10 @@ public abstract class Survey {
 
   public long[][] getTimes() {
     return times;
+  }
+
+  public BigDecimal[][] getError() {
+    return this.error;
   }
 
   public void normalize() {

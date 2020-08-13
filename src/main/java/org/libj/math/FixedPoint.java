@@ -38,8 +38,8 @@ abstract class FixedPoint extends Number {
   static final byte MAX_PRECISION_D = 19;
   static final byte MAX_PRECISION_B = 63;
 
-  public static final short MIN_SCALE = Short.MIN_VALUE;
-  public static final short MAX_SCALE = Short.MAX_VALUE;
+  static final short MIN_SCALE = Short.MIN_VALUE;
+  static final short MAX_SCALE = Short.MAX_VALUE;
 
   private static final byte noScaleBits = MAX_SCALE_BITS + 1;
   private static final long[] pow2 = new long[noScaleBits];
@@ -75,12 +75,36 @@ abstract class FixedPoint extends Number {
    * @param v The value.
    * @return The result of {@code v / 10} rounded half up.
    */
-  static long roundDown10(final long v) {
-    return round((byte)(v % 10), v / 10);
+  static long roundHalfUp10(final long v) {
+    return roundHalfUp((byte)(v % 10), v / 10);
   }
 
-  static long round(final byte r, final long v) {
+  static long roundCeil10(final long v) {
+    return roundCeil((byte)(v % 10), v / 10);
+  }
+
+  static long roundHalfDown10(final long v) {
+    return roundHalfDown((byte)(v % 10), v / 10);
+  }
+
+  static long roundCeil(final byte r, final long v) {
+    return r < 0 ? v - 1 : r > 0 ? v + 1 : v;
+  }
+
+  static long roundHalfUp(final byte r, final long v) {
     return r <= -5 ? v - 1 : r >= 5 ? v + 1 : v;
+  }
+
+  static long roundHalfDown(final byte r, final long v) {
+    return r < -5 ? v - 1 : r > 5 ? v + 1 : v;
+  }
+
+  static long unroundHalfUp(final byte r, final long v) {
+    return r <= -5 ? v + 1 : r >= 5 ? v - 1 : v;
+  }
+
+  static long unroundHalfDown(final byte r, final long v) {
+    return r < -5 ? v + 1 : r > 5 ? v - 1 : v;
   }
 
   /**
@@ -94,7 +118,7 @@ abstract class FixedPoint extends Number {
    * @return The number of bits of precision required for the representation of
    *         the specified value.
    */
-  static byte binaryPrecisionRequiredForValue(final long val) {
+  static byte bitLength(final long val) {
     return (byte)(Long.SIZE - Long.numberOfLeadingZeros(val));
   }
 

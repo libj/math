@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Fixed point representation of a decimal encoded in a {@code long}.
  */
-public final class Decimal extends FixedPoint implements Comparable<Decimal> {
+public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneable {
   private static final long serialVersionUID = 3129168059597869867L;
   private static final Logger logger = LoggerFactory.getLogger(Decimal.class);
 
@@ -120,6 +120,9 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    *         the provided {@code value} and {@code scale}.
    */
   public static String toString(long value, short scale) {
+    if (value == 0)
+      return "0";
+
     if (scale == 0)
       return String.valueOf(value);
 
@@ -134,9 +137,12 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
         scale = 0;
       }
     }
-    else {
+    else if (scale < 0) {
       dot = 2;
       scale -= (precision - 1);
+    }
+    else {
+      dot = -1;
     }
 
     final int scaleLen;
@@ -193,6 +199,86 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
       buf[--i] = (char)(value % 10 + '0');
 
     return new String(buf);
+  }
+
+  public static String toScientificString(long value, short scale) {
+    if (value == 0)
+      return "0";
+
+    final byte precision = Numbers.precision(value);
+    final boolean gteTen = precision > 1;
+    int dot;
+    if (gteTen) {
+      dot = value < 0 ? 3 : 2;
+      scale -= precision - 1;
+    }
+    else {
+      dot = 0;
+    }
+
+    final int scaleLen;
+    final int scalePart;
+    final boolean scaleNeg;
+    if (scale > 0) {
+      scaleLen = Numbers.precision(scale);
+      scalePart = scaleLen + 2;
+      scaleNeg = false;
+    }
+    else if (scale < 0) {
+      scaleLen = Numbers.precision(scale);
+      scalePart = scaleLen + 1;
+      scaleNeg = true;
+      scale = (short)-scale;
+    }
+    else {
+      scaleLen = 0;
+      scalePart = 0;
+      scaleNeg = false;
+    }
+
+    final char[] buf = new char[precision + (dot <= 0 ? 0 : 1) + (value < 0 ? 1 : 0) + scalePart];
+    final boolean isNeg = value < 0;
+    if (isNeg)
+      value = -value;
+
+    int i = buf.length;
+    if (scale != 0) {
+      for (int j = 0; j < scaleLen; ++j, scale /= 10)
+        buf[--i] = (char)(scale % 10 + '0');
+
+      if (!scaleNeg)
+        buf[--i] = '-';
+
+      buf[--i] = 'E';
+    }
+
+    if (dot > 0) {
+      boolean stripZeroes = false;
+      long v;
+      int j = i;
+      for (; i > dot; value /= 10) {
+        v = value % 10;
+        if (stripZeroes || (stripZeroes = (v != 0)))
+          buf[--i] = (char)(v + '0');
+        else
+          ++dot;
+      }
+
+      if (j != i)
+        buf[--i] = '.';
+    }
+
+    buf[--i] = (char)(value % 10 + '0');
+    if (isNeg)
+      buf[--i] = '-';
+
+    return new String(buf, i, buf.length - i);
+  }
+
+  public static String toScientificString(final long encoded, final byte bits) {
+    final long value = decodeValue(encoded, bits);
+    final short scale = decodeScale(encoded, bits);
+    return toScientificString(value, scale);
   }
 
   /**
@@ -387,7 +473,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
       if (adj > 0)
         v /= FastMath.e10[adj];
 
-      v = roundDown10(v);
+      v = roundHalfUp10(v);
     }
 
     return encode(v, scale, scaleBits, defaultValue);
@@ -418,17 +504,17 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * encoded} values. If the arguments have the same value, the result is that
    * same value.
    *
-   * @param ld1 The first value (encoded with
+   * @param d1 The first value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
-   * @param ld2 The second value (encoded with
+   * @param d2 The second value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
    * @param bits The number of bits reserved for the scale.
-   * @return The smaller of {@code ld1} and {@code ld2}.
+   * @return The smaller of {@code d1} and {@code d2}.
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    */
-  public static long min(final long ld1, final long ld2, final byte bits) {
-    return lte(ld1, ld2, bits) ? ld1 : ld2;
+  public static long min(final long d1, final long d2, final byte bits) {
+    return lte(d1, d2, bits) ? d1 : d2;
   }
 
   /**
@@ -436,17 +522,17 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * encoded} values. If the arguments have the same value, the result is that
    * same value.
    *
-   * @param ld1 The first value (encoded with
+   * @param d1 The first value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
-   * @param ld2 The second value (encoded with
+   * @param d2 The second value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
    * @param bits The number of bits reserved for the scale.
-   * @return The larger of {@code ld1} and {@code ld2}.
+   * @return The larger of {@code d1} and {@code d2}.
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    */
-  public static long max(final long ld1, final long ld2, final byte bits) {
-    return gte(ld1, ld2, bits) ? ld1 : ld2;
+  public static long max(final long d1, final long d2, final byte bits) {
+    return gte(d1, d2, bits) ? d1 : d2;
   }
 
   /**
@@ -455,12 +541,12 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * {@code false} otherwise.
    *
    * <pre>
-   * {@code result = ld1 == ld2}
+   * {@code result = d1 == d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
@@ -471,14 +557,14 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static boolean eq(final long ld1, final long ld2, final byte bits) {
-    if (ld1 == ld2)
+  public static boolean eq(final long d1, final long d2, final byte bits) {
+    if (d1 == d2)
       return true;
 
-    final long v1 = decodeValue(ld1, bits);
-    final long v2 = decodeValue(ld2, bits);
-    final short s1 = decodeScale(ld1, bits);
-    final short s2 = decodeScale(ld2, bits);
+    final long v1 = decodeValue(d1, bits);
+    final long v2 = decodeValue(d2, bits);
+    final short s1 = decodeScale(d1, bits);
+    final short s2 = decodeScale(d2, bits);
     return v1 == v2 && s1 == s2;
   }
 
@@ -488,12 +574,12 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * {@code false} otherwise.
    *
    * <pre>
-   * {@code result = ld1 == ld2}
+   * {@code result = d1 == d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
@@ -512,30 +598,30 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * Compares two value (encoded with
    * {@link Decimal#encode(long,short,byte,long)})s numerically.
    *
-   * @param ld1 The first value (encoded with
+   * @param d1 The first value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
-   * @param ld2 The second value (encoded with
+   * @param d2 The second value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
-   * @return The value {@code 0} if {@code ld1 == ld2}; a value less than
-   *         {@code 0} if {@code ld1 < ld2}; and a value greater than {@code 0}
-   *         if {@code ld1 > ld2}
+   * @return The value {@code 0} if {@code d1 == d2}; a value less than
+   *         {@code 0} if {@code d1 < d2}; and a value greater than {@code 0}
+   *         if {@code d1 > d2}
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static int compare(final long ld1, final long ld2, final byte bits) {
-    long v1 = decodeValue(ld1, bits);
-    long v2 = decodeValue(ld2, bits);
+  public static int compare(final long d1, final long d2, final byte bits) {
+    long v1 = decodeValue(d1, bits);
+    long v2 = decodeValue(d2, bits);
     if (v1 == 0)
       return v2 > 0 ? -1 : v2 == 0 ? 0 : 1;
 
     if (v2 == 0)
       return v1 < 0 ? -1 : v1 == 0 ? 0 : 1;
 
-    short s1 = decodeScale(ld1, bits);
-    short s2 = decodeScale(ld2, bits);
+    short s1 = decodeScale(d1, bits);
+    short s2 = decodeScale(d2, bits);
     if (s1 == s2 || v1 < 0 != v2 < 0)
       return v1 < v2 ? -1 : 1;
 
@@ -546,15 +632,15 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
    * Compares two value (encoded with
    * {@link Decimal#encode(long,short,byte,long)})s numerically.
    *
-   * @param ld1 The first value (encoded with
+   * @param d1 The first value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
-   * @param ld2 The second value (encoded with
+   * @param d2 The second value (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}) to compare.
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
-   * @return The value {@code 0} if {@code ld1 == ld2}; a value less than
-   *         {@code 0} if {@code ld1 < ld2}; and a value greater than {@code 0}
-   *         if {@code ld1 > ld2}
+   * @return The value {@code 0} if {@code d1 == d2}; a value less than
+   *         {@code 0} if {@code d1 < d2}; and a value greater than {@code 0}
+   *         if {@code d1 > d2}
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
@@ -588,99 +674,99 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
   }
 
   /**
-   * Returns {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
    * {@code false}.
    *
    * <pre>
-   * {@code result = ld1 < ld2}
+   * {@code result = d1 < d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
-   * @return {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
    *         {@code false}.
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static boolean lt(final long ld1, final long ld2, final byte bits) {
-    return compare(ld1, ld2, bits) < 0;
+  public static boolean lt(final long d1, final long d2, final byte bits) {
+    return compare(d1, d2, bits) < 0;
   }
 
   /**
-   * Returns {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
    * {@code false}.
    *
    * <pre>
-   * {@code result = ld1 < ld2}
+   * {@code result = d1 < d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
-   * @return {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
    *         {@code false}.
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static boolean lte(final long ld1, final long ld2, final byte bits) {
-    return compare(ld1, ld2, bits) <= 0;
+  public static boolean lte(final long d1, final long d2, final byte bits) {
+    return compare(d1, d2, bits) <= 0;
   }
 
   /**
-   * Returns {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
    * {@code false}.
    *
    * <pre>
-   * {@code result = ld1 < ld2}
+   * {@code result = d1 < d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
-   * @return {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
    *         {@code false}.
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static boolean gt(final long ld1, final long ld2, final byte bits) {
-    return compare(ld1, ld2, bits) > 0;
+  public static boolean gt(final long d1, final long d2, final byte bits) {
+    return compare(d1, d2, bits) > 0;
   }
 
   /**
-   * Returns {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
    * {@code false}.
    *
    * <pre>
-   * {@code result = ld1 < ld2}
+   * {@code result = d1 < d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
-   * @return {@code true} if {@code ld1} is less than {@code ld2}, otherwise
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
    *         {@code false}.
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static boolean gte(final long ld1, final long ld2, final byte bits) {
-    return compare(ld1, ld2, bits) >= 0;
+  public static boolean gte(final long d1, final long d2, final byte bits) {
+    return compare(d1, d2, bits) >= 0;
   }
 
   /**
@@ -750,42 +836,49 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
   }
 
   /**
-   * Returns the result of the subtraction of {@code ld2} from {@code ld1},
+   * Returns the result of the subtraction of {@code d2} from {@code d1},
    * i.e.:
    *
    * <pre>
    * {@code result = d1 - d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param scaleBits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
    *          {@code bits}.
-   * @return The result of the subtraction of {@code ld2} from {@code ld1},
+   * @return The result of the subtraction of {@code d2} from {@code d1},
    *         i.e.: {@code d1 - d2}
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static long sub(final long ld1, final long ld2, final byte scaleBits, final long defaultValue) {
-    if (ld2 == 0)
-      return ld1;
+  public static long sub(final long d1, final long d2, final byte scaleBits, final long defaultValue) {
+    if (d2 == 0)
+      return d1;
 
-    if (ld1 == ld2)
+    if (d1 == d2)
       return 0;
 
-    final long v2 = decodeValue(ld2, scaleBits);
+    final long v2 = decodeValue(d2, scaleBits);
     if (v2 == 0)
-      return ld1;
+      return d1;
 
-    final short s2 = decodeScale(ld2, scaleBits);
-    final long v1 = decodeValue(ld1, scaleBits);
-    final short s1 = decodeScale(ld1, scaleBits);
+    final short s2 = decodeScale(d2, scaleBits);
+    final long v1 = decodeValue(d1, scaleBits);
+    if (v1 == 0) {
+      if (s2 == 0 && v2 == Long.MAX_VALUE)
+        return defaultValue;
+
+      return encode(-v2, s2, scaleBits, defaultValue);
+    }
+
+    final short s1 = decodeScale(d1, scaleBits);
     if (v1 == v2 && s1 == s2)
       return 0;
 
@@ -794,13 +887,12 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
     final long maxValue = Decimal.maxValue(valueBits);
     final short minScale = minScale(scaleBits);
     final short maxScale = maxScale(scaleBits);
-    final byte maxPrecision = s1 == s2 ? -1 : valueBits;
     final Decimal result = threadLocal.get();
     if (v2 == minValue) {
-      if (!add0(-v1, s1, v2, s2, maxPrecision, minValue, maxValue, minScale, maxScale, true, result))
+      if (!add0(-v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, true, result))
         return defaultValue;
     }
-    else if (!add0(v1, s1, -v2, s2, maxPrecision, minValue, maxValue, minScale, maxScale, false, result)) {
+    else if (!add0(v1, s1, -v2, s2, minValue, maxValue, minScale, maxScale, false, result)) {
       return defaultValue;
     }
 
@@ -808,29 +900,29 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
   }
 
   /**
-   * Returns the result of the addition of {@code ld1} to {@code ld2}, i.e.:
+   * Returns the result of the addition of {@code d1} to {@code d2}, i.e.:
    *
    * <pre>
    * {@code result = d1 + d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param bits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
    *          {@code bits}.
-   * @return The result of the addition of {@code ld1} to {@code ld2}, i.e.:
+   * @return The result of the addition of {@code d1} to {@code d2}, i.e.:
    *         {@code d1 + d2}
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static long add(final long ld1, final long ld2, final byte bits, final long defaultValue) {
-    return ld1 == 0 ? ld2 : ld2 == 0 ? ld1 : add0(ld1, ld2, bits, defaultValue);
+  public static long add(final long d1, final long d2, final byte bits, final long defaultValue) {
+    return d1 == 0 ? d2 : d2 == 0 ? d1 : add0(d1, d2, bits, defaultValue);
   }
 
   public static Decimal add(final Decimal d1, final Decimal d2) {
@@ -842,34 +934,34 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
   }
 
   /**
-   * Returns the result of the multiplication of {@code ld1} and {@code ld2},
+   * Returns the result of the multiplication of {@code d1} and {@code d2},
    * i.e.:
    *
    * <pre>
    * {@code result = d1 * d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param scaleBits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
    *          {@code bits}.
-   * @return The result of the multiplication of {@code ld1} and {@code ld2},
+   * @return The result of the multiplication of {@code d1} and {@code d2},
    *         i.e.: {@code d1 * d2}
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static long mul(final long ld1, final long ld2, final byte scaleBits, final long defaultValue) {
-    if (ld1 == 0 || ld2 == 0)
+  public static long mul(final long d1, final long d2, final byte scaleBits, final long defaultValue) {
+    if (d1 == 0 || d2 == 0)
       return 0;
 
     if (scaleBits == 0) {
-      final long v = multiplyNonZero(ld1, ld2, Long.MIN_VALUE, Long.MAX_VALUE);
+      final long v = multiplyNonZero(d1, d2, Long.MIN_VALUE, Long.MAX_VALUE);
       if (v != 0)
         return v;
 
@@ -879,16 +971,16 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
       return defaultValue;
     }
 
-    long v1 = decodeValue(ld1, scaleBits);
+    long v1 = decodeValue(d1, scaleBits);
     if (v1 == 0)
       return 0;
 
-    long v2 = decodeValue(ld2, scaleBits);
+    long v2 = decodeValue(d2, scaleBits);
     if (v2 == 0)
       return 0;
 
-    short s1 = decodeScale(ld1, scaleBits);
-    short s2 = decodeScale(ld2, scaleBits);
+    short s1 = decodeScale(d1, scaleBits);
+    short s2 = decodeScale(d2, scaleBits);
 
     // if v1 has trailing zeroes, remove them first
     final byte z1 = Numbers.trailingZeroes(v1);
@@ -991,48 +1083,48 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
 
 
   /**
-   * Returns the result of the division of {@code ld1} by {@code ld2}, i.e.:
+   * Returns the result of the division of {@code d1} by {@code d2}, i.e.:
    *
    * <pre>
    * {@code result = d1 / d2}
    * </pre>
    *
-   * @param ld1 The first argument (encoded with
+   * @param d1 The first argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
-   * @param ld2 The second argument (encoded with
+   * @param d2 The second argument (encoded with
    *          {@link Decimal#encode(long,short,byte,long)}).
    * @param scaleBits The number of bits in the encoded {@code long} values reserved
    *          for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
    *          {@code bits}.
-   * @return The result of the multiplication of {@code ld1} and {@code ld2},
+   * @return The result of the multiplication of {@code d1} and {@code d2},
    *         i.e.: {@code d1 * d2}
    * @see #encode(long,short,byte,long)
    * @see #decodeValue(long,byte)
    * @see #decodeScale(long,byte)
    */
-  public static long div(final long ld1, final long ld2, final byte scaleBits, final long defaultValue) {
+  public static long div(final long d1, final long d2, final byte scaleBits, final long defaultValue) {
     // Division by zero
-    if (ld2 == 0)
+    if (d2 == 0)
       return defaultValue;
 
-    long v2 = decodeValue(ld2, scaleBits);
+    long v2 = decodeValue(d2, scaleBits);
     // Division by zero
     if (v2 == 0)
       return defaultValue;
 
     // Division of zero
-    if (ld1 == 0)
+    if (d1 == 0)
       return 0;
 
-    long v1 = decodeValue(ld1, scaleBits);
+    long v1 = decodeValue(d1, scaleBits);
     // Division of zero
     if (v1 == 0)
       return 0;
 
-    short s1 = decodeScale(ld1, scaleBits);
-    short s2 = decodeScale(ld2, scaleBits);
+    short s1 = decodeScale(d1, scaleBits);
+    short s2 = decodeScale(d2, scaleBits);
 
     final Decimal result = threadLocal.get();
     if (div0(v1, s1, v2, s2, valueBits(scaleBits), result))
@@ -1073,6 +1165,11 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
     this.scale = scale;
   }
 
+  public Decimal(final long decimal, final byte scaleBits) {
+    this.value = decodeValue(decimal, scaleBits);
+    this.scale = decodeScale(decimal, scaleBits);;
+  }
+
   // FIXME: Make this private
   Decimal(final Decimal copy) {
     this.value = copy.value;
@@ -1102,6 +1199,14 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
     this.value = value;
     this.scale = scale;
     return this;
+  }
+
+  public Decimal add(final Decimal a) {
+    return add(this, a);
+  }
+
+  public Decimal sub(final Decimal a) {
+    return sub(this, a);
   }
 
   public Decimal mul(final Decimal multiplicand) {
@@ -1154,8 +1259,35 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal> {
     return value == that.value && scale == that.scale;
   }
 
+  public byte precision() {
+    return Numbers.precision(value);
+  }
+
+  public byte signum() {
+    return (byte)(value < 0 ? -1 : value == 0 ? 0 : 1);
+  }
+
   @Override
   public String toString() {
     return toString(value, scale);
+  }
+
+  public String toScientificString() {
+    return toScientificString(value, scale);
+  }
+  /**
+   * Returns a copy of this {@link Decimal}.
+   *
+   * @return A copy of this {@link Decimal}.
+   * @complexity O(n)
+   */
+  @Override
+  public Decimal clone() {
+    try {
+      return (Decimal)super.clone();
+    }
+    catch (final CloneNotSupportedException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

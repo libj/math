@@ -22,9 +22,14 @@ abstract class DecimalAddition extends FixedPoint {
   private static final long serialVersionUID = 2903111300785124642L;
 
   static Decimal add0(final Decimal d1, final long v2, final short s2) {
-    final Decimal result = threadLocal.get();
-    if (add0(d1.value, d1.scale, v2, s2, MAX_PRECISION_D, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, result))
-      return new Decimal(result);
+    if (v2 == 0)
+      return d1;
+
+    if (d1.value == 0)
+      return d1.set(v2, s2);
+
+    if (add0(d1.value, d1.scale, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, d1))
+      return d1;
 
     // Special situation where negation may have caused an overflow, but the result is clearly zero
     if (Decimal.compare(d1.value, d1.scale, -v2, s2) == 0)
@@ -33,33 +38,34 @@ abstract class DecimalAddition extends FixedPoint {
     return null;
   };
 
-  static long add0(long ld1, long ld2, final byte scaleBits, final long defaultValue) {
-    long v1 = decodeValue(ld1, scaleBits);
+  static long add0(long d1, long d2, final byte scaleBits, final long defaultValue) {
+    long v1 = decodeValue(d1, scaleBits);
     if (v1 == 0)
-      return ld2;
+      return d2;
 
-    long v2 = decodeValue(ld2, scaleBits);
+    long v2 = decodeValue(d2, scaleBits);
     if (v2 == 0)
-      return ld1;
+      return d1;
 
     final byte valueBits = valueBits(scaleBits);
     final long minValue = Decimal.minValue(valueBits);
     final long maxValue = Decimal.maxValue(valueBits);
     final short minScale = minScale(scaleBits);
     final short maxScale = maxScale(scaleBits);
-    final short s1 = decodeScale(ld1, scaleBits);
-    final short s2 = decodeScale(ld2, scaleBits);
-    final byte maxPrecision = s1 == s2 ? -1 : valueBits;
+    final short s1 = decodeScale(d1, scaleBits);
+    final short s2 = decodeScale(d2, scaleBits);
     final Decimal result = threadLocal.get();
-    if (add0(v1, s1, v2, s2, maxPrecision, minValue, maxValue, minScale, maxScale, false, result))
+    if (add0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, false, result))
       return result.encode(scaleBits, defaultValue);
 
     return defaultValue;
   }
 
-  static boolean add0(long v1, short s1, long v2, short s2, final byte maxPrecision, final long minValue, final long maxValue, final short minScale, final short maxScale, final boolean negate, final Decimal result) {
+  static boolean add0(long v1, short s1, long v2, short s2, final long minValue, final long maxValue, final short minScale, final short maxScale, final boolean negate, final Decimal result) {
     long v;
     short s;
+    byte r = 0;
+    short ds2 = 0;
     if (s1 == s2) {
       v = v1 + v2;
       s = s1;
@@ -76,6 +82,13 @@ abstract class DecimalAddition extends FixedPoint {
         s1 ^= s2;
       }
 
+//      final int p1 = Numbers.precision(v1) - s1;
+//      final int p2 = Numbers.precision(v2) - s2;
+//      if (Math.abs(p1 - p2) > Numbers.precision(maxValue)) {
+//        result.set(v1, s1);
+//        return true;
+//      }
+
       v = v1;
       s = s1;
 
@@ -83,17 +96,13 @@ abstract class DecimalAddition extends FixedPoint {
       // then if the scales are not yet matched due to hitting a limit of v1's scale,
       // shift v2 (losing precision, but it's ok cause that precision is insignificant).
 
-      // Get the number of bits unused in v1 for expansion
-      byte bp1 = (byte)(maxPrecision - binaryPrecisionRequiredForValue(Math.abs(v1)));
+      // Calculate the "overflow factor" -- factor multiple past which there will be an overflow
+//      final long min = minValue == Long.MIN_VALUE ? Long.MIN_VALUE : minValue * 10;
+//      final long max = maxValue == Long.MAX_VALUE ? Long.MAX_VALUE : maxValue * 10;
+      long of = (v1 < 0 ? minValue : maxValue) / v1;
 
-      // This means that v1 was larger than what maxPrecision allows, which
-      // can happen via sub() where it changes sign of minValue to -minValue
-      if (bp1 < 0)
-        bp1 = 0;
-
-      // Change that to available decimal places (use floor, because we're calculating availability)
-      // FIXME: I think we can change this to Numbers.precision()
-      final byte dp1 = bp1 == 0 ? 0 : (byte)SafeMath.floor(SafeMath.log10((1L << bp1) - 1));
+      // How many multiples of 10 until overflow?
+      final byte dp1 = (byte)Math.max(Numbers.precision(of) - 1, 0);
 
       // ds is always positive, and greater than 0
       int ds = s2 - s1;
@@ -108,11 +117,7 @@ abstract class DecimalAddition extends FixedPoint {
       s1 += ds1;
 
       // What is the most we can shift v2 (lossy)?
-      short ds2;
-      if (ds == 0) {
-        ds2 = 0;
-      }
-      else {
+      if (ds != 0) {
         // How many decimal places can we reduce precision until it's
         // insignificant? Here we actually allow v2 to be reduced all the way
         // to 0, since ds2 accounts for all of the digits in v2. If it so
@@ -120,9 +125,9 @@ abstract class DecimalAddition extends FixedPoint {
         // have the opportunity to check the prior-to-last digit (right before
         // v2 becomes 0) if it would round up or down. If it rounds up, then we
         // add 1, otherwise the result is truly insignificant.
-        ds2 = Numbers.precision(Math.abs(v2));
+        ds2 = Numbers.precision(v2);
 
-        // Take the lesser of shift2 and ds
+        // Take the lesser of ds2 and ds
         ds2 = SafeMath.min(ds2, ds);
 
         // Don't go past minScale when adjusting v2 and s2
@@ -133,34 +138,63 @@ abstract class DecimalAddition extends FixedPoint {
       }
 
       // If ds accounts for the gap in scales, then let's perform the adjustments
-      do {
-        if (ds == 0) {
-          if (s1 != s2)
-            throw new IllegalStateException();
-
+      if (ds == 0) {
+        do {
           if (ds1 > 0) {
             // Make the lossless adjustment to v1
             v1 *= FastMath.e10[ds1];
-            if (v1 > maxValue)
-              throw new IllegalStateException();
           }
 
+//          if (Numbers.precision(v2) < ds2)
+//            break;
+
+          long rf = 0;
+          long r0 = 0;
+          final boolean signsEqual = v1 < 0 == v2 < 0;
           if (ds2 > 0) {
             // Make the lossy adjustment to v2
-            final int adj = ds2 - 1; // Leave one factor for rounding
-            if (adj > 0)
-              v2 /= FastMath.e10[adj];
+            final short adj = --ds2; // Leave one factor for rounding
+            if (adj > 0) {
+              // Check if there is a rounding carry
+              rf = FastMath.e10[adj];
+              if ((r0 = v2 % rf) == 0)
+                ds2 = 0;
 
-            v2 = roundDown10(v2);
+              v2 /= rf;
+            }
+
+            r = (byte)(v2 % 10);
+            v2 /= 10;
+            v2 = signsEqual || ds2 > 0 ? roundHalfUp(r, v2) : roundHalfDown(r, v2);
             if (v2 == 0)
               break;
           }
 
           v = v1 + v2;
           s = s1;
+
+          byte ur = r;
+          if (r0 != 0) {
+            rf /= 10;
+            ur = (byte)(r0 / rf);
+            ur = (byte)(signsEqual ? roundHalfUp(ur, r) : roundHalfDown(ur, r));
+          }
+
+          // If we set a remainder value, then v has been scaled down.
+          // See if there's room for it to be scaled back up.
+          if (ur != 0) {
+            of = (v < 0 ? minValue : maxValue) / v;
+            if (of >= 10) {
+              // Undo the rounding adjustment
+              v = signsEqual || ds2 > 0 ? unroundHalfUp(r, v) : unroundHalfDown(r, v);
+              v *= 10;
+              v += ur;
+              ++s;
+            }
+          }
         }
+        while (false);
       }
-      while (false);
     }
 
     if (s1 == s2) {
@@ -191,23 +225,12 @@ abstract class DecimalAddition extends FixedPoint {
           return false;
         }
 
-        final long r1 = v1 % 10;
-        v1 /= 10;
-        if (r1 >= 5)
-          v1 += 1;
-        else if (r1 <= -5)
-          v1 -= 1;
-
-        final long r2 = v2 % 10;
-        v2 /= 10;
-        if (r2 >= 5)
-          v2 += 1;
-        else if (r2 <= -5)
-          v2 -= 1;
+        v1 = roundHalfUp10(v1);
+        v2 = roundHalfUp10(v2);
 
         v = v1 + v2;
-        if (v < 0 ? sig != -1 : v == 0 ? sig != 0 : sig != 1)
-          throw new IllegalStateException("Should not happen");
+//        if (v < 0 ? sig != -1 : v == 0 ? sig != 0 : sig != 1)
+//          throw new IllegalStateException("Should not happen");
 
         result.set(v, s);
         return true;
@@ -221,7 +244,9 @@ abstract class DecimalAddition extends FixedPoint {
           return false;
         }
 
-        v /= 10;
+        final boolean signsEqual = v1 < 0 == v2 < 0;
+        v = signsEqual || ds2 > 0 ? unroundHalfUp(r, v) : unroundHalfDown(r, v);
+        v = roundHalfUp10(v);
       }
 
       v = -v;
@@ -235,9 +260,11 @@ abstract class DecimalAddition extends FixedPoint {
         return false;
       }
 
-      v /= 10;
-      if (v < minValue || maxValue < v)
-        throw new IllegalStateException("Should not happen");
+      final boolean signsEqual = v1 < 0 == v2 < 0;
+      v = signsEqual || ds2 > 0 ? unroundHalfUp(r, v) : unroundHalfDown(r, v);
+      v = roundHalfUp10(v);
+//      if (v < minValue || maxValue < v)
+//        throw new IllegalStateException("Should not happen");
     }
 
     result.set(v, s);

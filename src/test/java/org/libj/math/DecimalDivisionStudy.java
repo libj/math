@@ -53,7 +53,7 @@ public class DecimalDivisionStudy {
       a = v * 10 + r;
       // Check for overflow
       if (a < 0 || i == dp) {
-        v = round((byte)r, v);
+        v = roundHalfUp((byte)r, v);
         break;
       }
     }

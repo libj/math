@@ -266,8 +266,8 @@ public class DecimalMultiplicationStudy {
    * </pre>
    */
   private static long mulMod(final long v1, long s1, final long v2, long s2, final byte valueBits) {
-    byte bp1 = FixedPoint.binaryPrecisionRequiredForValue(v1);
-    byte bp2 = FixedPoint.binaryPrecisionRequiredForValue(v2);
+    byte bp1 = FixedPoint.bitLength(v1);
+    byte bp2 = FixedPoint.bitLength(v2);
 
     // How many bits are available until we hit the max (valueBits)?
     byte bp = (byte)(bp1 + bp2 - valueBits);

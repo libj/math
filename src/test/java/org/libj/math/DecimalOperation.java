@@ -17,7 +17,7 @@
 package org.libj.math;
 
 import static org.libj.lang.Strings.Align.*;
-import static org.libj.math.DecimalTest.*;
+import static org.libj.math.DecimalOperationTest.*;
 import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
@@ -41,8 +41,8 @@ abstract class DecimalOperation<T,C> {
   }
 
   abstract C control(BigDecimal bd1, BigDecimal bd2, long[] time);
-  abstract T test(long ld1, long ld2, BigDecimal bd1, BigDecimal bd2, byte bits, long defaultValue, long[] time);
-  abstract BigDecimal run(BigDecimal bd1, BigDecimal bd2, C expected, T actual, byte bits, long defaultValue, BigDecimal[] errors, boolean[] failures);
+  abstract T test(long d1, long d2, BigDecimal bd1, BigDecimal bd2, byte scaleBits, long defaultValue, long[] time);
+  abstract BigDecimal run(BigDecimal bd1, BigDecimal bd2, C expected, T actual, byte scaleBits, long defaultValue, BigDecimal[] errors, boolean[] failures);
 
   boolean lockScale() {
     return false;

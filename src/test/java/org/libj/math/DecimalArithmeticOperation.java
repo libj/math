@@ -17,7 +17,7 @@
 package org.libj.math;
 
 import static org.libj.math.Decimal.*;
-import static org.libj.math.DecimalTest.*;
+import static org.libj.math.DecimalOperationTest.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

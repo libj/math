@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
-public class DecimalDivisionTest extends DecimalTest {
+public class DecimalDivisionTest extends DecimalOperationTest {
   private static final BigDecimal[] epsilon = {
     D("3E-16"),
     D("3E-16"),
@@ -33,7 +33,7 @@ public class DecimalDivisionTest extends DecimalTest {
     D("2E-13"),
     D("4E-14"),
     D("8E-15"),
-    D("9E-16"),
+    D("1E-14"),
     D("3E-15"),
     D("5E-15"),
     D("9E-15"),
@@ -49,9 +49,9 @@ public class DecimalDivisionTest extends DecimalTest {
     }
 
     @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = div(ld1, ld2, bits, defaultValue);
+      final long result = div(d1, d2, scaleBits, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

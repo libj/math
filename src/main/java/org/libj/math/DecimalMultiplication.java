@@ -194,10 +194,10 @@ abstract class DecimalMultiplication extends FixedPoint {
       // Scale down v1 and v2 so the product will fit within (valueBits).
       if (v == 0) {
         // Get the number of bits required to represent v1.
-        byte bp1 = binaryPrecisionRequiredForValue(v1);
+        byte bp1 = bitLength(v1);
 
         // Get the number of bits required to represent v2.
-        byte bp2 = binaryPrecisionRequiredForValue(v2);
+        byte bp2 = bitLength(v2);
 
         // How many bits are available until overflow (valueBits)?
         // It is possible for (bp1 + bp2 - valueBits) to be 65,
@@ -322,7 +322,7 @@ abstract class DecimalMultiplication extends FixedPoint {
       s -= adj;
       --adj; // Leave one factor for rounding
       v /= FastMath.e10[adj];
-      v = roundDown10(v);
+      v = roundHalfUp10(v);
       if (v == 0) {
         result.set(v, (short)s);
         return false;
@@ -332,7 +332,7 @@ abstract class DecimalMultiplication extends FixedPoint {
       int ds = minScale - s;
       // Get the number of bits unused in v1 for expansion
       // Need the abs() cause of multiplyNonZero(v1, v2, minValue, maxValue) path above
-      byte bp = (byte)(valueBits - binaryPrecisionRequiredForValue(Math.abs(v)));
+      byte bp = (byte)(valueBits - bitLength(Math.abs(v)));
       // This can happen if multiplyNonZero(v1, v2, minValue, maxValue) returns
       // a non-zero value, leading to it having to be reduced later (here).
       if (bp < 0)

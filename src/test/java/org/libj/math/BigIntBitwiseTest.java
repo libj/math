@@ -18,6 +18,7 @@ package org.libj.math;
 
 import static org.libj.math.survey.AuditMode.*;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testBitCount(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The number of bits in the two's complement representation that differ from the sign bit.");
 
-    test("bitCount()", report,
+    test("bitCount()", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.bitCount(), Integer::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.bitCount(), Integer::valueOf),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.bitCount(a), Integer::valueOf)
@@ -50,7 +51,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testBitLength(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The number of bits in the minimal two's-complement representation excluding the sign bit.");
 
-    test("bitLength()", report,
+    test("bitLength()", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.bitLength(), Integer::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.bitLength(), Integer::valueOf),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.bitLength(a), Integer::valueOf)
@@ -61,7 +62,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testToByteArrayBigEndian(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Convert the number to a `byte` array in big-endian order.");
 
-    test("toByteArray() BE", report,
+    test("toByteArray() BE", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toByteArray(), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(false), o -> o),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, false), o -> o)
@@ -73,7 +74,7 @@ public class BigIntBitwiseTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Convert the number to a `byte` array in little-endian order.");
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not support little endian `byte[]` encoding. Therefore, for this test, the output array is reversed just for `BigInteger`. The time for the array reversal _is_ included in the runtime measure.");
 
-    test("toByteArray() LE", report,
+    test("toByteArray() LE", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> ArrayUtil.reverse(a.toByteArray()), o -> o),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(true), o -> o),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true), o -> o)
@@ -84,7 +85,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testTestBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Tests whether the provided bit is set.");
 
-    test("testBit(int)", report,
+    test("testBit(int)", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.testBit(b), Boolean::valueOf),
       s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.testBit(b), Boolean::valueOf),
       s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.testBit(a, b), Boolean::valueOf)
@@ -95,7 +96,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testSetBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Sets the provided bit.");
 
-    test("setBit(int)", report,
+    test("setBit(int)", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.setBit(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.setBit(b), String::valueOf),
       s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.setBit(a, b), BigInt::toString)
@@ -106,7 +107,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testFlipBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Flips the provided bit.");
 
-    test("flipBit(int)", report,
+    test("flipBit(int)", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.flipBit(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.flipBit(b), String::valueOf),
       s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.flipBit(a, b), BigInt::toString)
@@ -117,7 +118,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testClearBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Clears the provided bit.");
 
-    test("clearBit(int)", report,
+    test("clearBit(int)", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.clearBit(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.clearBit(b), String::valueOf),
       s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.clearBit(a, b), BigInt::toString)
@@ -128,7 +129,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testShiftLeft(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Shifts the bits in the number left by the given amount.");
 
-    test("shiftLeft(int)", report,
+    test("shiftLeft(int)", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.shiftLeft(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.shiftLeft(b), String::valueOf),
       s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.shiftLeft(a, b), BigInt::toString)
@@ -139,7 +140,7 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testShiftRight(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Shifts the bits in the number right by the given amount.");
 
-    test("shiftRight(int)", report,
+    test("shiftRight(int)", BigDecimal.ZERO, report,
       s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.shiftRight(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.shiftRight(b), String::valueOf),
       s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.shiftRight(a, b), BigInt::toString)

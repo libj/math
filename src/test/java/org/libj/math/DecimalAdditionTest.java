@@ -16,92 +16,34 @@
 
 package org.libj.math;
 
-import static org.libj.math.Decimal.*;
-
 import java.math.BigDecimal;
 
 import org.junit.Test;
 
 public class DecimalAdditionTest extends DecimalTest {
-  private static final BigDecimal[] epsilon = {
-    D("5E-16"),
-    D("5E-16"),
-    D("3E-14"),
-    D("4E-15"),
-    D("3E-15"),
-    D("5E-15"),
-    D("2E-12"),
-    D("2E-12"),
-    D("7E-13"),
-    D("1E-11"),
-    D("2E-11"),
-    D("1E-12"),
-    D("2E-11"),
-    D("6E-12"),
-    D("7E-12"),
-    D("4E-12")
-  };
-
-  static abstract class AdditiveOperation extends DecimalArithmeticOperation {
-    AdditiveOperation(final String label, final Class<?> arg, final String operator) {
-      super(label, arg, operator);
-    }
-
-    @Override
-    final BigDecimal epsilon(final byte bits) {
-      return epsilon[bits];
-    }
+  private void testAdd(final byte scaleBits) {
+    test("add(" + scaleBits + ")", scaleBits, BigDecimal.ZERO, null,
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.add(b), o -> o),
+      d(long.class, (long a, long b) -> Decimal.add(a, b, scaleBits, random.nextLong()))
+    );
   }
 
-  private static final DecimalArithmeticOperation add = new AdditiveOperation("add", long.class, "%s + %s") {
-    @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      long ts = System.nanoTime();
-      final long result = add(ld1, ld2, bits, defaultValue);
-      ts = System.nanoTime() - ts;
-      if (result != defaultValue)
-        time[0] += ts;
-
-      return result;
-    }
-
-    @Override
-    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final BigDecimal result = bd1.add(bd2, precision16);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final DecimalArithmeticOperation sub = new AdditiveOperation("sub", long.class, "%s - %s") {
-    @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      long ts = System.nanoTime();
-      final long result = sub(ld1, ld2, bits, defaultValue);
-      ts = System.nanoTime() - ts;
-      if (result != defaultValue)
-        time[0] += ts;
-
-      return result;
-    }
-
-    @Override
-    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final BigDecimal result = bd1.subtract(bd2, precision16);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
+  public void testSub(final byte scaleBits) {
+    test("sub(" + scaleBits + ")", scaleBits, new BigDecimal("1E-18"), null,
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.subtract(b), o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.sub(b), o -> o),
+      d(long.class, (long a, long b) -> Decimal.sub(a, b, scaleBits, random.nextLong()))
+    );
+  }
 
   @Test
   public void testAdd() {
-    test(add);
+    for (byte b = 3; b <= 3; ++b)
+      testAdd(b);
   }
 
   @Test
   public void testSub() {
-    test(sub);
   }
 }

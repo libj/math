@@ -18,6 +18,7 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.function.Function;
 
@@ -42,7 +43,7 @@ public class BigIntStudy extends BigIntTest {
   @Test
   public void testLengthSignum() {
     final int[] v = new int[10];
-    test("length signum: regular vs compound",
+    test("length signum: regular vs compound", BigDecimal.ZERO,
       i("Regular", a -> { v[0] = Math.abs(a / 2); v[1] = Integer.compare(a, 0); return v; }, (int[] a) -> {
         int len = a[0];
         int sig = a[1];
@@ -66,7 +67,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testNewVsClone() {
-    test("new vs clone",
+    test("new vs clone", BigDecimal.ZERO,
       i("new", a -> new int[Math.abs(a / 100000)], (int[] a) -> new int[a.length], a -> a.length),
       i("clone", a -> new int[Math.abs(a / 100000)], (int[] a) -> a.clone(), a -> a.length)
     );
@@ -74,7 +75,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testIpp() {
-    test("++i vs i++",
+    test("++i vs i++", BigDecimal.ZERO,
       i("++i", (int a) -> ++a, a -> 0),
       i("i++", (int a) -> a++, a -> 0)
     );
@@ -82,7 +83,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testPlus() {
-    test("++i vs i++",
+    test("++i vs i++", BigDecimal.ZERO,
       i("++a", (int a, int b) -> ++a, a -> 0),
       i("a += b", (int a, int b) -> a += b, a -> 0)
     );
@@ -95,7 +96,7 @@ public class BigIntStudy extends BigIntTest {
     final Object object = new Object();
     final int[] array = new int[10];
 
-    test("int function overhead",
+    test("int function overhead", BigDecimal.ZERO,
       i("BiIntFunction", (int a, int b) -> a, a -> 0),
       i("ObjIntFunction", (int a) -> Integer.valueOf(a), (Object a, int b) -> a, a -> 0),
       i("BiFunction(Object)", (int a) -> object, (int b) -> Integer.valueOf(b), (Object a, Object b) -> a, a -> 0),
@@ -106,7 +107,7 @@ public class BigIntStudy extends BigIntTest {
       i("Function(int[])", (int a) -> array, (Object a) -> a, a -> 0)
     );
 
-    test("long function overhead",
+    test("long function overhead", BigDecimal.ZERO,
       l("BiLongFunction", (long a, long b) -> a, a -> 0L),
       l("BiLongToLongFunction", (long a, long b) -> 0L),
       l("ObjLongFunction", (long a) -> Long.valueOf(a), (Object a, long b) -> a, a -> 0L),
@@ -118,7 +119,7 @@ public class BigIntStudy extends BigIntTest {
       l("Function(int[])", (long a) -> array, (Object a) -> a, a -> 0L)
     );
 
-    test("string function overhead",
+    test("string function overhead", BigDecimal.ZERO,
       s("ObjIntFunction", (String a) -> a, (String a, String b) -> 0, (String a, int b) -> a, a -> 0),
       s("ObjLongFunction", (String a) -> a, (String a, String b) -> 0L, (String a, long b) -> a, a -> 0),
       s("BiFunction(Object)", (String a) -> object, (String b) -> object, (Object a, Object b) -> a, a -> 0),
@@ -133,7 +134,7 @@ public class BigIntStudy extends BigIntTest {
     final Object object = new Object();
     final int[] array = new int[10];
 
-    test("object vs array",
+    test("object vs array", BigDecimal.ZERO,
       i("object", (int a) -> function.apply(object), a -> 0),
       i("array", (int a) -> function.apply(array), a -> 0)
     );
@@ -161,7 +162,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testMulVsCond() {
-    test("sig * value: '*' vs '? :'",
+    test("sig * value: '*' vs '? :'", BigDecimal.ZERO,
       l("s * v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a * b),
       l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> a < 0 ? -b : b)
     );
@@ -169,7 +170,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testMulVsPlus() {
-    test("sig * value: '*' vs '? :'",
+    test("sig * value: '*' vs '? :'", BigDecimal.ZERO,
       l("s * 2", (long a, long b) -> a * 2),
       l("s << 1", (long a, long b) -> a << 1),
       l("s + s", (long a, long b) -> a + a)
@@ -186,7 +187,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testArrayVsBuffer() {
-    test("sig * value: '*' vs '? :'",
+    test("sig * value: '*' vs '? :'", BigDecimal.ZERO,
       l("s * 2", (long a, long b) -> { final int[] x = new int[100]; return x.length; }),
       l("s << 1", (long a, long b) -> { final ByteBuffer x = ByteBuffer.allocateDirect(100); return x.capacity(); })
     );

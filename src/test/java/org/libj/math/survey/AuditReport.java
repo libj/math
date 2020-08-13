@@ -207,7 +207,7 @@ public class AuditReport {
         }
 
         builder.append(getTitle(mode)).append('\n');
-        builder.append(Tables.printTable(true, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
+        builder.append(Tables.printTable(true, Align.CENTER, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
       }
     }
 
