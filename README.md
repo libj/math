@@ -26,7 +26,7 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
 1. **Faster arithmetic**: The arithmetic algorithms in `BigInt` are implemented with the optimization of memory (heap allocation) and runtime performance in mind.
 1. **Faster multiplication of large numbers**: Support parallel multiplication algorithm for large numbers.
 1. **In-place multiplication algorithms**: Employs optimized algorithms that perform calculations in place, rather than instantiating transient magnitude arrays to defer to the GC to free later.
-1. **Support for `int` and `long` parameters and return types**: `BigInt` does not require its parameters or return types to be `BigInt`, avoiding unnecessary instantiation of transient `BigInt` objects.
+1. **Support for `int` and `long` parameters and return types**: `BigInt` does not require its parameters or return types to be `BigInt`, avoiding unnecessary instantiation of transient `BigInt` objects and `int[]` arrays.
 1. **Support for "object-less" operation**: All methods in `BigInt` are available in static form, allowing [bare `int[]` <ins>value-encoded number</ins> arrays](#bare-int-value-encoded-number-arrays) to be used without a `BigInt` instance, leading to further reduction in heap memory allocation.
 1. **Significantly reduced heap allocation**: `BigInt` was meticulously designed to reduce the number of instances allocated purely for the purpose of transient calculation, and significantly outperforms `BigInteger` with regard to memory and GC load.
 1. **No preemptive exception checking**: The `BigInt` does not preemptively check for exceptions. If a programmer divides by zero he has only himself to blame. And, it is ok to have undefined behavior.
@@ -240,6 +240,17 @@ Benchmark tests are organized in 8 test classes, each responsible for its contex
    Though `BigInt` outperforms `BigInteger` in most operations, there are a few in which it is lacking. One particular operation that is important to note is **`mul(T)`** (i.e. multiplication of an arbitrary precision number by another arbitrary precision number). `BigInt`'s `mul(T)` cannot match the performance of `BigInteger`'s `multiply(T)` for "medium-sized numbers", because `BigInteger`'s `multiply(T)` is implemented as an intrinsic function. `BigInt` comes close to this performance with its <ins>Critical Native</ins> implementation of its multiplication algorithms, but it is still not as fast. Nonetheless, where `BigInt` loses in isolated runtime performance, it gains back with its superior ability in reducing unnecessary heap memory allocation for transient calculations.
 
    Please refer to [Multiplication](BigIntMultiplicationTest.md) for benchmark statistics.
+
+1. **What is <ins>Critical Native</ins> JNI?**
+
+   Calling a JNI method from Java [is rather expensive](https://stackoverflow.com/questions/24746776/what-does-a-jvm-have-to-do-when-calling-a-native-method/24747484#24747484) compared to a simple C function call. Specifically when dealing with arrays, the JNI architecture necessitates expensive operations to convert Java arrays into "critical" native arrays and back. By converting a Java array to a "critical" native array, the JVM is notified to disallow the GC from freeing the respective memory. This overhead is significant, and all but disqualifies JNI as an optimization for algorithms that work with arrays.
+
+   The JDK has a _private API_ called <ins>Critical Native</ins> to reduce the overhead function calls that do not require much JNI functionality. This feature was designed for internal use in the JDK. There is no public specification, and the only documentation you may find is in the comments to [JDK-7013347](https://bugs.openjdk.java.net/browse/JDK-7013347).
+
+   For `BigInt`, the use of <ins>Critical Native</ins> JNI results in 25% faster performance invoking JNI functions.
+
+   For further information about <ins>Critical Native</ins> JNI, please refer to [this StackOverflow post](https://stackoverflow.com/a/36309652/7223707).
+
 
 ## `Decimal`
 
