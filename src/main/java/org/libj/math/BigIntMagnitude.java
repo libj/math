@@ -43,7 +43,6 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
    * @param add The amount by which to increase (unsigned).
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The provided number increased by the specified amount.
    * @complexity O(n)
    * @amortized O(1)
@@ -107,7 +106,6 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param sig The sign of the number.
    * @param addl The lower limb of the amount by which to increase (unsigned).
    * @param addh The higher limb of the amount by which to increase (unsigned).
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The provided number increased by the specified amount.
    * @complexity O(n)
    * @amortized O(1)
@@ -192,7 +190,6 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param add The {@linkplain BigInt#val() value-encoded amount} by which to
    *          increase (or decrease).
    * @param alen The count of limbs in the number by which to increase.
-   * @param allocAllowed Whether {@code new int[]} is allowed to occur.
    * @return The provided number increased (or decreased) by the specified
    *         amount.
    * @complexity O(n)

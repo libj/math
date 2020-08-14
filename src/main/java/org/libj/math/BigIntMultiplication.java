@@ -501,7 +501,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       nativeKaratsuba(x, OFF, y, OFF, z, OFF, zlen, z.length, 0, len, PARALLEL_KARATSUBA_THRESHOLD_X, PARALLEL_KARATSUBA_THRESHOLD_Z);
   }
 
-  private static native void nativeKaratsuba(int[] x, int xoff, int[] y, int yoff, int[] z, int zoff, int zlen, int zlength, int off, int len, int parallelThresholdX, int parallelThresholdZ);
+  private static native void nativeKaratsuba(int[] x, int xoff, int[] y, int yoff, int[] z, int zoff, int zlen, int zlength, int off, int len, int parallelThreshold, int parallelThresholdZ);
 
   /**
    * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
@@ -516,10 +516,11 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @param zlen Length of {@code z}.
    * @param off Offset for {@code x}, {@code y} and {@code z}.
    * @param len The length of each of the two partial arrays.
-   * @param parallel Count of parallel execution depths.
+   * @param parallelThreshold Threshold of {@code len} for parallel execution.
+   * @param parallelThresholdZ Threshold of {@code zlen} for parallel execution.
    * @complexity O(n^1.585)
    */
-  private static void javaKaratsuba(final int[] x, final int xoff, final int[] y, final int yoff, final int[] z, final int zoff, final int zlen, final int off, final int len, final int parallelThresholdX, final int parallelThresholdZ) {
+  private static void javaKaratsuba(final int[] x, final int xoff, final int[] y, final int yoff, final int[] z, final int zoff, final int zlen, final int off, final int len, final int parallelThreshold, final int parallelThresholdZ) {
     int i, j, k, l, m;
 
     final int xoffoff = xoff + off, yoffoff = yoff + off;
@@ -547,7 +548,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
     else {
-      final boolean parallel = len > parallelThresholdX && zlen > parallelThresholdZ;
+      final boolean parallel = len > parallelThreshold && zlen > parallelThresholdZ;
       final int b = len >> 1, b2 = b * 2, ll = len * 2, l_b = len - b, l_b2 = l_b * 2;
       final int tmpoff, x2offl_b2, y2offl_b2;
       final int[] tmp;
@@ -606,21 +607,21 @@ abstract class BigIntMultiplication extends BigIntBinary {
           @Override
           public void run() {
             // System.err.print(".");
-            javaKaratsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, 0, r, parallelThresholdX * 2, parallelThresholdZ * 2);
+            javaKaratsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, 0, r, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };
 
         final Thread t2 = new Thread() {
           @Override
           public void run() {
-            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrr, tmplen, off, b, parallelThresholdX * 2, parallelThresholdZ * 2);
+            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrr, tmplen, off, b, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };
 
         final Thread t3 = new Thread() {
           @Override
           public void run() {
-            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, off + b, l_b, parallelThresholdX * 2, parallelThresholdZ * 2);
+            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, off + b, l_b, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };
 
@@ -711,9 +712,9 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return z;
   }
 
-  private static native void nativeSquareKaratsuba(int[] x, int len, int[] z, int zlen, int zlength, boolean yCopy, int parallelThresholdX, int parallelThresholdZ);
+  private static native void nativeSquareKaratsuba(int[] x, int len, int[] z, int zlen, int zlength, boolean yCopy, int parallelThreshold, int parallelThresholdZ);
 
-  private static void javaSquareKaratsuba(final int[] x, final int len, final int[] z, final int zlen, final boolean yCopy, final int parallelThresholdX, final int parallelThresholdZ) {
+  private static void javaSquareKaratsuba(final int[] x, final int len, final int[] z, final int zlen, final boolean yCopy, final int parallelThreshold, final int parallelThresholdZ) {
     final int[] y;
     if (yCopy) {
       // "In place" computation for (mag) requires a copy for (y), otherwise
@@ -725,7 +726,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       y = x;
     }
 
-    javaKaratsuba(x, OFF, y, OFF, z, OFF, zlen, 0, len, parallelThresholdX, parallelThresholdZ);
+    javaKaratsuba(x, OFF, y, OFF, z, OFF, zlen, 0, len, parallelThreshold, parallelThresholdZ);
   }
 
   private static native void nativeSquareQuad(int[] x, int xoff, int xlen, int[] z, int zoff, int zlen);
