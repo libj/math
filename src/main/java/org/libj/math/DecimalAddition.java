@@ -92,9 +92,10 @@ abstract class DecimalAddition extends FixedPoint {
       v = v1;
       s = s1;
 
-      // Let's try to match the scales by adjusting v1 so we don't lose precision,
-      // then if the scales are not yet matched due to hitting a limit of v1's scale,
-      // shift v2 (losing precision, but it's ok cause that precision is insignificant).
+      // Let's try to match the scales by up-scaling v1 so we don't lose
+      // precision, then if the scales still don't match due to the limit of
+      // v1's scale, down-scale v2 and do rounding (losing precision, but it's
+      // ok cause that precision is insignificant).
 
       // Calculate the "overflow factor" -- factor multiple past which there will be an overflow
 //      final long min = minValue == Long.MIN_VALUE ? Long.MIN_VALUE : minValue * 10;
@@ -107,7 +108,7 @@ abstract class DecimalAddition extends FixedPoint {
       // ds is always positive, and greater than 0
       int ds = s2 - s1;
 
-      // What is the most we can shift v1 (lossless)?
+      // What is the most we can up-scale v1 (lossless)?
       short ds1 = SafeMath.min(dp1, ds);
 
       // Don't go past maxScale when adjusting v1 and s1
@@ -116,7 +117,7 @@ abstract class DecimalAddition extends FixedPoint {
       ds -= ds1;
       s1 += ds1;
 
-      // What is the most we can shift v2 (lossy)?
+      // What is the most we can down-scale v2 (lossy)?
       if (ds != 0) {
         // How many decimal places can we reduce precision until it's
         // insignificant? Here we actually allow v2 to be reduced all the way
@@ -124,7 +125,7 @@ abstract class DecimalAddition extends FixedPoint {
         // happens that v2 is reduced to the full size of ds2, then we still
         // have the opportunity to check the prior-to-last digit (right before
         // v2 becomes 0) if it would round up or down. If it rounds up, then we
-        // add 1, otherwise the result is truly insignificant.
+        // add 1, otherwise the result is insignificant.
         ds2 = Numbers.precision(v2);
 
         // Take the lesser of ds2 and ds

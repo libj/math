@@ -114,19 +114,20 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
    * Returns the string representation of the fixed point decimal specified by
    * the provided {@code value} and {@code scale}.
    *
-   * @param value The unscaled value.
-   * @param scale The scale.
+   * @param v The unscaled value.
+   * @param s The scale.
    * @return The string representation of the fixed point decimal specified by
    *         the provided {@code value} and {@code scale}.
    */
-  public static String toString(long value, short scale) {
-    if (value == 0)
+  public static String toString(long v, final short s) {
+    if (v == 0)
       return "0";
 
+    int scale = s;
     if (scale == 0)
-      return String.valueOf(value);
+      return String.valueOf(v);
 
-    final byte precision = Numbers.precision(value);
+    final byte precision = Numbers.precision(v);
     int dot;
     if (scale > 0) {
       if (scale >= precision) {
@@ -157,7 +158,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
       scaleLen = Numbers.precision(scale);
       scalePart = scaleLen + 1;
       scaleNeg = true;
-      scale = (short)-scale;
+      scale = -scale;
     }
     else {
       scaleLen = 0;
@@ -165,13 +166,13 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
       scaleNeg = false;
     }
 
-    final char[] buf = new char[precision + (dot <= 0 ? 0 : 1) + (value < 0 ? 1 : 0) + scalePart];
+    final char[] buf = new char[precision + (dot <= 0 ? 0 : 1) + (v < 0 ? 1 : 0) + scalePart];
     final int lim;
-    if (value < 0) {
+    if (v < 0) {
       lim = 1;
       ++dot;
       buf[0] = '-';
-      value = -value;
+      v = -v;
     }
     else {
       lim = 0;
@@ -189,27 +190,28 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     }
 
     if (dot > 0) {
-      for (; i > dot; value /= 10)
-        buf[--i] = (char)(value % 10 + '0');
+      for (; i > dot; v /= 10)
+        buf[--i] = (char)(v % 10 + '0');
 
       buf[--i] = '.';
     }
 
-    for (; i > lim; value /= 10)
-      buf[--i] = (char)(value % 10 + '0');
+    for (; i > lim; v /= 10)
+      buf[--i] = (char)(v % 10 + '0');
 
     return new String(buf);
   }
 
-  public static String toScientificString(long value, short scale) {
-    if (value == 0)
+  public static String toScientificString(long v, final short s) {
+    if (v == 0)
       return "0";
 
-    final byte precision = Numbers.precision(value);
+    int scale = s;
+    final byte precision = Numbers.precision(v);
     final boolean gteTen = precision > 1;
     int dot;
     if (gteTen) {
-      dot = value < 0 ? 3 : 2;
+      dot = v < 0 ? 3 : 2;
       scale -= precision - 1;
     }
     else {
@@ -228,7 +230,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
       scaleLen = Numbers.precision(scale);
       scalePart = scaleLen + 1;
       scaleNeg = true;
-      scale = (short)-scale;
+      scale = -scale;
     }
     else {
       scaleLen = 0;
@@ -236,10 +238,10 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
       scaleNeg = false;
     }
 
-    final char[] buf = new char[precision + (dot <= 0 ? 0 : 1) + (value < 0 ? 1 : 0) + scalePart];
-    final boolean isNeg = value < 0;
+    final char[] buf = new char[precision + (dot <= 0 ? 0 : 1) + (v < 0 ? 1 : 0) + scalePart];
+    final boolean isNeg = v < 0;
     if (isNeg)
-      value = -value;
+      v = -v;
 
     int i = buf.length;
     if (scale != 0) {
@@ -253,13 +255,13 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     }
 
     if (dot > 0) {
-      boolean stripZeroes = false;
-      long v;
+      boolean zeroesStripped = false;
+      long val;
       int j = i;
-      for (; i > dot; value /= 10) {
-        v = value % 10;
-        if (stripZeroes || (stripZeroes = (v != 0)))
-          buf[--i] = (char)(v + '0');
+      for (; i > dot; v /= 10) {
+        val = v % 10;
+        if (zeroesStripped || (zeroesStripped = (val != 0)))
+          buf[--i] = (char)(val + '0');
         else
           ++dot;
       }
@@ -268,7 +270,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
         buf[--i] = '.';
     }
 
-    buf[--i] = (char)(value % 10 + '0');
+    buf[--i] = (char)(v % 10 + '0');
     if (isNeg)
       buf[--i] = '-';
 

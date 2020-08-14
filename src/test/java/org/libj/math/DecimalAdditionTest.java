@@ -19,10 +19,15 @@ package org.libj.math;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.libj.math.survey.CaseTest;
 
 public class DecimalAdditionTest extends DecimalTest {
+  private static int skip(final byte scaleBits) {
+    return (int)Math.pow(scaleBits, scaleBits / 9d);
+  }
+
   private void testAdd(final byte scaleBits) {
-    test("add(" + scaleBits + ")", scaleBits, BigDecimal.ZERO, null,
+    test("add(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
       d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
       d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.add(b), o -> o),
       d(long.class, (long a, long b) -> Decimal.add(a, b, scaleBits, random.nextLong()))
@@ -30,7 +35,7 @@ public class DecimalAdditionTest extends DecimalTest {
   }
 
   public void testSub(final byte scaleBits) {
-    test("sub(" + scaleBits + ")", scaleBits, new BigDecimal("1E-18"), null,
+    test("sub(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
       d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.subtract(b), o -> o),
       d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.sub(b), o -> o),
       d(long.class, (long a, long b) -> Decimal.sub(a, b, scaleBits, random.nextLong()))
@@ -39,11 +44,15 @@ public class DecimalAdditionTest extends DecimalTest {
 
   @Test
   public void testAdd() {
-    for (byte b = 3; b <= 3; ++b)
+    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
       testAdd(b);
+
+    System.out.println(CaseTest.foo);
   }
 
   @Test
   public void testSub() {
+    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
+      testSub(b);
   }
 }

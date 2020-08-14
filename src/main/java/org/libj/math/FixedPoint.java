@@ -31,7 +31,7 @@ abstract class FixedPoint extends Number {
   static final long LONG_INT_MASK = 0xFFFFFFFFL;
 
   /** The minimum allowed number of scale bits (inclusive). */
-  public static final byte MIN_SCALE_BITS = 0;
+  public static final byte MIN_SCALE_BITS = 3;
   /** The maximum allowed number of scale bits (inclusive). */
   public static final byte MAX_SCALE_BITS = 16;
 

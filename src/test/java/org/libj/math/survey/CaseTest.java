@@ -64,7 +64,7 @@ import org.libj.util.function.ObjLongToLongFunction;
 @SuppressWarnings("hiding")
 public abstract class CaseTest {
   protected static final Random random = new Random();
-  private static final BigDecimal[] e10 = new BigDecimal[63];
+  private static final BigDecimal[] e10 = new BigDecimal[8];
 
   private static final File errorDir = new File("target/generated-test-resources/casetest");
   private static final int warmup = 100; // Short warmup, therefore it's important to use -Xcomp to engage JIT compilation
@@ -730,7 +730,7 @@ public abstract class CaseTest {
       format.setPositivePrefix("");
     }
 
-    private String format(final BigDecimal o1, final Object o2) {
+    private String format(BigDecimal o1, final Object o2) {
       final BigInteger min;
       final BigInteger max;
       if (o2 instanceof Decimal) {
@@ -752,10 +752,23 @@ public abstract class CaseTest {
         return o1.toString();
 
       int scale = o1.scale();
+      int precision = o1.precision();
+      if (precision > 22) {
+        int diff = o1.precision() - 22;
+        o1 = o1.setScale(scale -= diff, RoundingMode.HALF_UP);
+        precision = o1.precision();
+        if (o1.precision() - o1.scale() > 22) {
+          final String str = o1.toPlainString();
+          o1 = new BigDecimal(str.substring(0, 22));
+          scale -= precision - o1.precision();
+        }
+      }
+
       BigDecimal y = o1.scaleByPowerOfTen(o1.scale());
       BigInteger bi;
-      for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(min) < 0 : bi.compareTo(max) > 0; ++i, --scale)
+      for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(min) < 0 : bi.compareTo(max) > 0; ++i, --scale) {
         y = o1.scaleByPowerOfTen(o1.scale()).divide(e10[i], RoundingMode.HALF_UP);
+      }
 
       y = y.setScale(0, RoundingMode.HALF_UP);
       y = y.scaleByPowerOfTen(-scale);
