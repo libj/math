@@ -19,7 +19,6 @@ package org.libj.math;
 import java.math.BigDecimal;
 
 import org.junit.Test;
-import org.libj.math.survey.CaseTest;
 
 public class DecimalAdditionTest extends DecimalTest {
   private static int skip(final byte scaleBits) {
@@ -46,8 +45,6 @@ public class DecimalAdditionTest extends DecimalTest {
   public void testAdd() {
     for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
       testAdd(b);
-
-    System.out.println(CaseTest.foo);
   }
 
   @Test

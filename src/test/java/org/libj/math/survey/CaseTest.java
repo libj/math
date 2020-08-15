@@ -245,8 +245,8 @@ public abstract class CaseTest {
           if (error != null && error.compareTo(epsilon) > 0) {
             final StringBuilder message = new StringBuilder("\n");
             message.append(label).append('\n');
-            message.append("in1: ").append(toString(in1, in2)).append('\n');
-            message.append("in2: ").append(toString(in2, in1)).append('\n');
+            message.append("in1: ").append(toExactString(in1, in2)).append('\n');
+            message.append("in2: ").append(toExactString(in2, in1)).append('\n');
             message.append(toDetailString(previous, o)).append('\n').append(toDetailString(o, previous)).append("\nerror: ").append(error);
             assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), toDetailString(previous, o), toDetailString(o, previous));
           }
@@ -263,7 +263,7 @@ public abstract class CaseTest {
       return precision;
     }
 
-    protected String toString(final Object o1, final Object o2) {
+    protected String toExactString(final Object o1, final Object o2) {
       return o1 == null ? "null" : o1 instanceof int[] ? BigInt.toString((int[])o1) : o1.toString();
     }
 
@@ -693,22 +693,22 @@ public abstract class CaseTest {
     }
 
     @Override
-    protected String toString(final Object o1, final Object o2) {
+    protected String toExactString(final Object o1, final Object o2) {
       if (o1 instanceof BigDecimal)
-        return format((BigDecimal)o1, o2);
+        return conform((BigDecimal)o1, o2);
 
       if (o1 instanceof Decimal) {
         if (!(o2 instanceof Long))
           return ((Decimal)o1).toScientificString();
 
         final BigDecimal a = new BigDecimal(((Decimal)o1).toString());
-        return format(a, o2);
+        return conform(a, o2);
       }
 
       if (o1 instanceof Long)
         return Decimal.toScientificString((Long)o1, scaleBits);
 
-      return super.toString(o1, o2);
+      return super.toExactString(o1, o2);
     }
 
     @Override
@@ -717,7 +717,7 @@ public abstract class CaseTest {
         return Decimal.toScientificString((Long)o1, scaleBits);
 
       if (o1 instanceof BigDecimal || o1 instanceof Decimal)
-        return toString(o1, o2);
+        return toExactString(o1, o2);
 
       return super.toDetailString(o1, o2);
     }
@@ -730,7 +730,7 @@ public abstract class CaseTest {
       format.setPositivePrefix("");
     }
 
-    private String format(BigDecimal o1, final Object o2) {
+    private String conform(BigDecimal o1, final Object o2) {
       final BigInteger min;
       final BigInteger max;
       if (o2 instanceof Decimal) {
@@ -776,13 +776,13 @@ public abstract class CaseTest {
       return format.format(y).replaceAll("\\.?0+(E[-+0-9]*)$", "$1");
     }
 
-    private BigDecimal format(final Object o1, final Object o2) {
+    private BigDecimal conform(final Object o1, final Object o2) {
       if (o1 instanceof BigDecimal)
-        return new BigDecimal(format((BigDecimal)o1, o2));
+        return new BigDecimal(conform((BigDecimal)o1, o2));
 
       if (o1 instanceof Decimal) {
         final BigDecimal a = new BigDecimal(((Decimal)o1).toString());
-        return o2 instanceof Long ? new BigDecimal(format(a, o2)) : a;
+        return o2 instanceof Long ? new BigDecimal(conform(a, o2)) : a;
       }
 
       if (o1 instanceof Long)
@@ -793,8 +793,8 @@ public abstract class CaseTest {
 
     @Override
     BigDecimal checkError(final Object a, final Object b) {
-      BigDecimal o1 = format(a, b);
-      BigDecimal o2 = format(b, a);
+      BigDecimal o1 = conform(a, b);
+      BigDecimal o2 = conform(b, a);
       final int scale = Math.min(o1.scale(), o2.scale());
       if (scale < 0) {
         o1 = o1.scaleByPowerOfTen(scale);

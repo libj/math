@@ -32,6 +32,7 @@ public abstract class Survey {
   private final long[][] max;
   private final long[][] min;
   private final BigDecimal[][] error;
+  private boolean hasError;
   private final Class<?>[] trackedClasses;
   private final int[][] allocations;
 
@@ -78,6 +79,7 @@ public abstract class Survey {
       this.min[variable][division] = Math.min(this.min[variable][division], time);
       this.times[variable][division] += time;
       if (error != null && error.signum() != 0) {
+        hasError = true;
         error = error.setScale(1 + error.scale() - error.precision(), RoundingMode.CEILING);
         if (error.compareTo(this.error[variable][division]) > 0)
           this.error[variable][division] = error;
@@ -115,6 +117,10 @@ public abstract class Survey {
 
   public BigDecimal[][] getError() {
     return this.error;
+  }
+
+  public boolean hasError() {
+    return this.hasError;
   }
 
   public void normalize() {

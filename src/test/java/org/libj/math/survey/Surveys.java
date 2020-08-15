@@ -67,6 +67,14 @@ public abstract class Surveys {
       surveys[s].reset();
   }
 
+  public boolean hasError() {
+    for (int s = 0; s < surveys.length; ++s)
+      if (surveys[s].hasError())
+        return true;
+
+    return false;
+  }
+
   public abstract String getLabel(int index, int variable, int division);
 
   public String print(final String label, final long runTime, final String[] summary, final String ... headings) {
@@ -252,9 +260,17 @@ public abstract class Surveys {
           errors[s][d * variables + v + 1] = error[v][d].toString();
     }
 
-    final String[] tables = {builder.toString(), "\nerror profile\n" + Tables.printTable(true, Align.CENTER, Align.RIGHT, variables, false, errors)};
-    String out = Tables.printTable(false, Align.LEFT, Align.LEFT, 1, false, tables);
-    out = canvas != null ? out + "\n" + canvas.toString() : out;
+    String out;
+    if (hasError()) {
+      final String[] tables = {builder.toString(), "\nerror profile\n" + Tables.printTable(true, Align.CENTER, Align.RIGHT, variables, false, errors)};
+      out = Tables.printTable(false, Align.LEFT, Align.LEFT, 1, false, tables);
+    }
+    else {
+      out = builder.toString();
+    }
+
+    if (canvas != null)
+      out += "\n" + canvas.toString();
 
     // Remove redundant Color RESET->SET
     return out.replace("\033[0;39m\033[", "\033[");
