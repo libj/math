@@ -74,7 +74,7 @@ typedef struct KaratsubaArgs {
 } KaratsubaArgs;
 
 void* karatsubaThread(void *args) {
-  KaratsubaArgs *ka = (KaratsubaArgs *)args;
+  KaratsubaArgs *ka = (KaratsubaArgs*)args;
   jint *x = ka->x, xoff = ka->xoff, *y = ka->y, yoff = ka->yoff, *z = ka->z, zoff = ka->zoff, zlen = ka->zlen, zlength = ka->zlength, off = ka->off, len = ka->len, parallelThreshold = ka->parallelThreshold, parallelThresholdZ = ka->parallelThresholdZ;
   free(args);
   karatsuba(x, xoff, y, yoff, z, zoff, zlen, zlength, off, len, parallelThreshold, parallelThresholdZ);
@@ -325,11 +325,11 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
 #ifdef CRITICAL_NATIVE
 
 static JNINativeMethod criticalMethods[] = {
-  { "nativeKaratsuba", "([II[II[IIIIIIII)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba },
-  { "nativeMulQuad", "([II[II[I)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad },
-  { "nativeMulQuadInPlace", "([II[III)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace },
-  { "nativeSquareKaratsuba", "([II[IIIZII)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba },
-  { "nativeSquareQuad", "([III[III)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareQuad }
+  { "nativeKaratsuba", "([II[II[IIIIIIII)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba },
+  { "nativeMulQuad", "([II[II[I)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad },
+  { "nativeMulQuadInPlace", "([II[III)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace },
+  { "nativeSquareKaratsuba", "([II[IIIZII)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba },
+  { "nativeSquareQuad", "([III[III)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareQuad }
 };
 
 jint JNI_OnLoad(JavaVM* vm, void* reserved) {
