@@ -22,6 +22,10 @@ import org.libj.console.Ansi;
 import org.libj.console.Ansi.Color;
 
 public class DecimalTest extends NumericCaseTest {
+  protected static int skip(final byte scaleBits) {
+    return (int)Math.pow(scaleBits, scaleBits / 9d);
+  }
+
   BigDecimal toBigDecimal(final long decimal) {
     return Decimal.toBigDecimal(decimal, DecimalCase.scaleBitsLocal.get());
   }

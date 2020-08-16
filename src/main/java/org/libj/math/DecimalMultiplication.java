@@ -138,226 +138,75 @@ abstract class DecimalMultiplication extends FixedPoint {
     while (true);
   }
 
-  static boolean mul0(long v1, short s1, long v2, short s2, final byte valueBits, final Decimal result) {
-    if (v1 == 0 || v2 == 0) {
-      result.set(ZERO);
-      return true;
-    }
-
-    final byte scaleBits = valueBits(valueBits);
-    final short minScale = FixedPoint.minScale[scaleBits];
-    final short maxScale = FixedPoint.maxScale[scaleBits];
-    final long minValue = FixedPoint.minValue(valueBits);
-    final long maxValue = FixedPoint.maxValue(valueBits);
-
-    // First check that we can do the simplest possible multiplication, without any adjustments
-    long v = multiplyNonZero(v1, v2, minValue, maxValue);
-    final byte sig;
-    if (v != 0) {
-      sig = 1;
-    }
-    else {
-      sig = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
-      // Have to make adjustments, so let's try to reduce the error as much as possible
-      v1 = Math.abs(v1);
-      v2 = Math.abs(v2);
-
-      // If v1 has trailing zeroes, remove them first.
-      short z1 = Numbers.trailingZeroes(v1);
-      if (z1 > 0) {
-        // Make sure we don't go below (minScale)
-        if (s1 < 0) {
-          // FIXME: Create SafeMath method for min(short,short)
-          z1 = SafeMath.min(z1, (short)(s1 - minScale));
-        }
-
-        v1 /= FastMath.e10[z1];
-        s1 -= z1;
-      }
-
-      // If v2 has trailing zeroes, remove them first.
-      short z2 = Numbers.trailingZeroes(v2);
-      if (z2 > 0) {
-        // Make sure we don't go below minScale
-        if (s2 < 0) {
-          // FIXME: Create SafeMath method for min(short,short)
-          z2 = SafeMath.min(z2, (short)(s2 - minScale));
-        }
-
-        v2 /= FastMath.e10[z2];
-        s2 -= z2;
-      }
-
-      // Try again if trailing spaces have been removed
-      v = z1 == 0 && z2 == 0 ? 0 : multiplyNonZero(v1, v2, minValue, maxValue);
-
-      // Scale down v1 and v2 so the product will fit within (valueBits).
-      if (v == 0) {
-        // Get the number of bits required to represent v1.
-        byte bp1 = bitLength(v1);
-
-        // Get the number of bits required to represent v2.
-        byte bp2 = bitLength(v2);
-
-        // How many bits are available until overflow (valueBits)?
-        // It is possible for (bp1 + bp2 - valueBits) to be 65,
-        // if v1 and v2 are both Long.MIN_VALUE.
-        byte bp = SafeMath.min(bp1 + bp2 - valueBits, MAX_PRECISION_B);
-        if (bp <= 0)
-          throw new IllegalStateException();
-
-        // How many decimal places are available until overflow (maxValue)?
-        final byte dp = Numbers.precision((1L << bp) - 1);
-
-        // The scale of the result will have to be reduced by the number of
-        // decimals just before we overflow. It doesn't matter whether s1 or s2
-        // is reduced here, as it's added to s = s1 + s2 later.
-        s1 -= dp;
-
-        // The following is a "128-bit long division" approach to multiply v1 *
-        // v2 and de-scale the result to fit within valueBits. Though it
-        // produces the lowest error, it is also expensive. The alternative
-        // "64-bit mod split" approach fits within in the same error profile,
-        // but is much less expensive.
-
-        if (highPrecision) {
-          // Approach 1: "128-bit long division"
-          // v (128-bit) = v1 * v2 => v (128-bit) / 10e(dp) => v (64-bit)
-          final long h = multiplyHigh(v1, v2);
-          final long l = v1 * v2;
-          v = div128e10(h, l, dp, result.buf);
-        }
-        else {
-          // Approach 2: "64-bit mod split"
-          // v = v1 * v2 = (v1h + v1l) * (v2h + v2l)
-
-          // We need to reduce the sizes of v1 and v2 by bp so that the product
-          // doesn't overflow. First allocate as much of bp as we can to bring bp1
-          // and bp2 closer to each other. This ensures that the least significant
-          // digits are de-scaled first.
-          final boolean bias = bp1 > bp2;
-          if (bias) {
-            bp1 = SafeMath.min(bp1 - bp2, bp);
-            bp2 = 0;
-            bp -= bp1;
-          }
-          else if (bp1 < bp2) {
-            bp2 = SafeMath.min(bp2 - bp1, bp);
-            bp1 = 0;
-            bp -= bp2;
-          }
-          else {
-            bp1 = 0;
-            bp2 = 0;
-          }
-
-          // If bp is not zero, split the difference of bp between v1 and v2,
-          // reducing the larger of v1 and v2 if bp is odd.
-          if (bp > 0) {
-            final byte half = (byte)(bp / 2);
-            if (bias) {
-              bp1 += (byte)(bp - half);
-              bp2 += half;
-            }
-            else {
-              bp1 += half;
-              bp2 += (byte)(bp - half);
-            }
-          }
-
-          // Switch from binary to decimal to calculate the de-scaling factors.
-          final int dp1, dp2;
-          if (bias) {
-            dp2 = Numbers.precision((1L << bp2) - 1);
-            dp1 = dp - dp2;
-          }
-          else {
-            dp1 = Numbers.precision((1L << bp1) - 1);
-            dp2 = dp - dp1;
-          }
-
-          long hv1 = 0;
-          long lv1 = 0;
-          long f1 = 0;
-          long hv2 = 0;
-          long lv2 = 0;
-          long f2 = 0;
-          if (dp1 > 0) {
-            f1 = FastMath.e10[dp1];
-            lv1 = v1 % 1000000000;
-            hv1 = (v1 - lv1) / f1;
-            // FIXME: How do we do rounding here?
-            if (dp2 == 0)
-              v = (hv1 * v2) + (lv1 * v2) / f1;
-          }
-
-          if (dp2 > 0) {
-            f2 = FastMath.e10[dp2];
-            lv2 = v2 % 1000000000;
-            hv2 = (v2 - lv2) / f2;
-            // FIXME: How do we do rounding here?
-            if (dp1 == 0)
-              v = (hv2 * v1) + (lv2 * v1) / f2;
-          }
-
-          // FIXME: How do we do rounding here?
-          if (dp1 > 0 && dp2 > 0) {
-            v = (hv1 * hv2) + ((hv1 * lv2) / f2) + ((hv2 * lv1) / f1) + ((lv1 * lv2) / (f1 * f2));
-          }
-        }
-      }
-    }
-
+  static boolean mul0(long v1, short s1, long v2, short s2, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
+    final byte sig = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
     int s = s1 + s2;
 
-    // Make sure we don't overflow the scale bits.
+    // Check if we can do simple multiplication
+    long v = multiplyNonZero(v1, v2, minValue, maxValue);
+    if (v == 0) {
+      int[] val = BigInt.valueOf(v1);
+      val = BigInt.mul(val, v2);
+      final int[] factor = val.clone();
+      BigInt.div(factor, sig < 0 ? minValue : maxValue);
+      final long f = BigInt.longValue(factor);
+      if (f == 0) {
+        v = BigInt.longValue(val);
+      }
+      else {
+        final byte p = Numbers.precision(f);
+        if (p >= FastMath.e10.length) {
+          result.set(v, (short)s);
+          result.error = "Overflow";
+          return false;
+        }
+
+        final long e10 = FastMath.e10[p];
+        final long rem = BigInt.divRem(val, e10);
+        v = BigInt.longValue(val);
+        if (rem != 0) {
+          final byte rp = Numbers.precision(rem);
+          final byte r = (byte)(rp < p ? 0 : rp == 1 ? rem : rem / FastMath.e10[rp - 1]);
+          v = roundHalfUp(r, v);
+        }
+
+        s -= p;
+      }
+    }
+
     if (s > maxScale) {
-      int adj = s - maxScale;
-      if (adj >= Numbers.precision(v)) {
-        // FIXME: Should create a pattern to set a value and error message together
+      final int diff = s - maxScale;
+      final int p = Numbers.precision(v);
+      if (p <= diff) {
         result.set(v, (short)s);
+        result.error = "Underflow";
         return false;
       }
 
-      s -= adj;
-      --adj; // Leave one factor for rounding
-      v /= FastMath.e10[adj];
-      v = roundHalfUp10(v);
-      if (v == 0) {
-        result.set(v, (short)s);
-        return false;
+      final long e10 = FastMath.e10[diff];
+      long rem = v % e10;
+      v /= e10;
+      s -= diff;
+      if (rem != 0) {
+        final byte rp = Numbers.precision(rem);
+        final byte r = (byte)(rp < diff ? 0 : rp == 1 ? rem : rem / FastMath.e10[rp - 1]);
+        v = roundHalfUp(r, v);
       }
     }
     else if (s < minScale) {
-      int ds = minScale - s;
-      // Get the number of bits unused in v1 for expansion
-      // Need the abs() cause of multiplyNonZero(v1, v2, minValue, maxValue) path above
-      byte bp = (byte)(valueBits - bitLength(Math.abs(v)));
-      // This can happen if multiplyNonZero(v1, v2, minValue, maxValue) returns
-      // a non-zero value, leading to it having to be reduced later (here).
-      if (bp < 0)
-        bp = 0;
-
-      // Change that to available decimal places (use floor, because we're calculating availability)
-      // FIXME: Floor or ceil?!?!
-      final byte dp = bp == 0 ? 0 : (byte)SafeMath.ceil(SafeMath.log10((1L << bp) - 1));
-      if (ds > dp) {
-        // FIXME: Should create a pattern to set a value and error message together
+      final int ds = minScale - s;
+      final int f = Numbers.precision((sig < 0 ? minValue : maxValue) / v);
+      if (f <= ds) {
         result.set(v, (short)s);
+        result.error = "Overflow";
         return false;
       }
 
       v *= FastMath.e10[ds];
       s += ds;
-
-      if (v < 0 ? v < minValue : maxValue < v) {
-        // FIXME: Should create a pattern to set a value and error message together
-        result.set(v, (short)s);
-        return false;
-      }
     }
 
-    result.set(sig * v, (short)s);
+    result.set(v, (short)s);
     return true;
   }
 }

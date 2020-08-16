@@ -64,7 +64,7 @@ import org.libj.util.function.ObjLongToLongFunction;
 @SuppressWarnings("hiding")
 public abstract class CaseTest {
   protected static final Random random = new Random();
-  private static final BigDecimal[] e10 = new BigDecimal[8];
+  private static final BigDecimal[] e10 = new BigDecimal[33];
 
   private static final File errorDir = new File("target/generated-test-resources/casetest");
   private static final int warmup = 100; // Short warmup, therefore it's important to use -Xcomp to engage JIT compilation
@@ -144,6 +144,7 @@ public abstract class CaseTest {
     final Object test;
     final Function<R,O> out;
     Object previous;
+    Class<?> previousType;
 
     int scaleFactorFactorA;
     int scaleFactorFactorB;
@@ -161,12 +162,12 @@ public abstract class CaseTest {
       errorFile.delete();
     }
 
-    BigDecimal checkError(final Object a, final Object b) {
-      if (a.equals(b))
+    BigDecimal checkError(final Object o1, final Class<?> t1, final Object o2, final Class<?> t2) {
+      if (o1.equals(o2))
         return null;
 
-      final BigDecimal bd1 = toBigDecimal(a);
-      final BigDecimal bd2 = toBigDecimal(b);
+      final BigDecimal bd1 = toBigDecimal(o1);
+      final BigDecimal bd2 = toBigDecimal(o2);
       return bd1.subtract(bd2).abs().divide(e10[bd1.precision()]);
     }
 
@@ -202,9 +203,11 @@ public abstract class CaseTest {
 
     <I,O>int verify(final String label, final Case<?,?,I,Object,O> cse, final BigDecimal epsilon, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
       final Object o = cse.out != null ? cse.out.apply(result) : result;
+      final Class<?> resultType = result == null ? null : result.getClass();
       final BigDecimal error;
       if (previous == null || c == 0) {
         previous = o;
+        previousType = resultType;
         error = null;
       }
       else if (o instanceof Float) {
@@ -241,14 +244,14 @@ public abstract class CaseTest {
           }
         }
         else {
-          error = (epsilon == null || epsilon.scale() == 0) && previous.equals(o) ? null : checkError(previous, o);
+          error = (epsilon == null || epsilon.scale() == 0) && previous.equals(o) ? null : checkError(previous, previousType, o, resultType);
           if (error != null && error.compareTo(epsilon) > 0) {
             final StringBuilder message = new StringBuilder("\n");
             message.append(label).append('\n');
-            message.append("in1: ").append(toExactString(in1, in2)).append('\n');
-            message.append("in2: ").append(toExactString(in2, in1)).append('\n');
-            message.append(toDetailString(previous, o)).append('\n').append(toDetailString(o, previous)).append("\nerror: ").append(error);
-            assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), toDetailString(previous, o), toDetailString(o, previous));
+            message.append("in1: ").append(toExactString(in1, resultType)).append('\n');
+            message.append("in2: ").append(toExactString(in2, previousType)).append('\n');
+            message.append(toDetailString(previous, resultType)).append('\n').append(toDetailString(o, previousType)).append("\nerror: ").append(error);
+            assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), toDetailString(previous, resultType), toDetailString(o, previousType));
           }
         }
       }
@@ -263,11 +266,14 @@ public abstract class CaseTest {
       return precision;
     }
 
-    protected String toExactString(final Object o1, final Object o2) {
+    protected String toExactString(final Object o1, final Class<?> resultType) {
       return o1 == null ? "null" : o1 instanceof int[] ? BigInt.toString((int[])o1) : o1.toString();
     }
 
-    protected String toDetailString(final Object o1, final Object o2) {
+    protected String toDetailString(final Object o1, final Class<?> resultType) {
+      if (o1 == null)
+        return "null";
+
       if (o1 instanceof Byte || o1 instanceof Short || o1 instanceof Integer)
         return Arrays.toString(BigInt.valueOf(((Number)o1).intValue()));
 
@@ -678,6 +684,8 @@ public abstract class CaseTest {
     private byte valueBits;
     private long minValue;
     private long maxValue;
+    private short minScale;
+    private short maxScale;
     private int MAX_PRECISION;
 
     DecimalCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
@@ -689,37 +697,39 @@ public abstract class CaseTest {
       this.valueBits = Decimal.valueBits(scaleBits);
       this.minValue = Decimal.minValue(valueBits);
       this.maxValue = Decimal.maxValue(valueBits);
+      this.minScale = Decimal.minScale(scaleBits);
+      this.maxScale = Decimal.maxScale(scaleBits);
       this.MAX_PRECISION = Numbers.precision(this.minValue);
     }
 
     @Override
-    protected String toExactString(final Object o1, final Object o2) {
+    protected String toExactString(final Object o1, final Class<?> resultType) {
       if (o1 instanceof BigDecimal)
-        return conform((BigDecimal)o1, o2);
+        return conform((BigDecimal)o1, resultType);
 
       if (o1 instanceof Decimal) {
-        if (!(o2 instanceof Long))
+        if (resultType != Long.class)
           return ((Decimal)o1).toScientificString();
 
         final BigDecimal a = new BigDecimal(((Decimal)o1).toString());
-        return conform(a, o2);
+        return conform(a, resultType);
       }
 
       if (o1 instanceof Long)
         return Decimal.toScientificString((Long)o1, scaleBits);
 
-      return super.toExactString(o1, o2);
+      return super.toExactString(o1, resultType);
     }
 
     @Override
-    protected String toDetailString(final Object o1, final Object o2) {
+    protected String toDetailString(final Object o1, final Class<?> resultType) {
       if (o1 instanceof Long)
         return Decimal.toScientificString((Long)o1, scaleBits);
 
       if (o1 instanceof BigDecimal || o1 instanceof Decimal)
-        return toExactString(o1, o2);
+        return toExactString(o1, resultType);
 
-      return super.toDetailString(o1, o2);
+      return super.toDetailString(o1, resultType);
     }
 
     private static final DecimalFormat format = new DecimalFormat("0E0");
@@ -730,19 +740,28 @@ public abstract class CaseTest {
       format.setPositivePrefix("");
     }
 
-    private String conform(BigDecimal o1, final Object o2) {
-      final BigInteger min;
-      final BigInteger max;
-      if (o2 instanceof Decimal) {
-        min = BigInteger.valueOf(Long.MIN_VALUE);
-        max = BigInteger.valueOf(Long.MAX_VALUE);
+    private String conform(BigDecimal o1, final Class<?> resultType) {
+      final byte px;
+      final short minScale;
+      final short maxScale;
+      final BigInteger minValue;
+      final BigInteger maxValue;
+      if (resultType == Decimal.class || resultType == null) {
+        px = Numbers.precision(Long.MIN_VALUE);
+        minValue = BigInteger.valueOf(Long.MIN_VALUE);
+        maxValue = BigInteger.valueOf(Long.MAX_VALUE);
+        minScale = Short.MIN_VALUE;
+        maxScale = Short.MAX_VALUE;
       }
-      else if (o2 instanceof Long) {
-        min = BigInteger.valueOf(minValue);
-        max = BigInteger.valueOf(maxValue);
+      else if (resultType == Long.class) {
+        px = Numbers.precision(this.minValue);
+        minValue = BigInteger.valueOf(this.minValue);
+        maxValue = BigInteger.valueOf(this.maxValue);
+        minScale = this.minScale;
+        maxScale = this.maxScale;
       }
       else {
-        throw new UnsupportedOperationException(o2.getClass().getName());
+        throw new UnsupportedOperationException(resultType.getName());
       }
 
       if (o1.signum() == 0)
@@ -753,36 +772,67 @@ public abstract class CaseTest {
 
       int scale = o1.scale();
       int precision = o1.precision();
-      if (precision > 22) {
-        int diff = o1.precision() - 22;
-        o1 = o1.setScale(scale -= diff, RoundingMode.HALF_UP);
+      if (precision > 24) {
+        int diff = o1.precision() - 24;
+        o1 = o1.setScale(scale -= diff, RoundingMode.DOWN);
         precision = o1.precision();
-        if (o1.precision() - o1.scale() > 22) {
+        if (o1.precision() - o1.scale() > 24) {
           final String str = o1.toPlainString();
-          o1 = new BigDecimal(str.substring(0, 22));
+          o1 = new BigDecimal(str.substring(0, 24));
           scale -= precision - o1.precision();
         }
       }
 
       BigDecimal y = o1.scaleByPowerOfTen(o1.scale());
       BigInteger bi;
-      for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(min) < 0 : bi.compareTo(max) > 0; ++i, --scale) {
+      for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(minValue) < 0 : bi.compareTo(maxValue) > 0; ++i, --scale) {
         y = o1.scaleByPowerOfTen(o1.scale()).divide(e10[i], RoundingMode.HALF_UP);
       }
 
       y = y.setScale(0, RoundingMode.HALF_UP);
       y = y.scaleByPowerOfTen(-scale);
 
+      int totalScale = y.scale() < 0 ? y.scale() - y.precision() + px : y.scale();
+      y = y.setScale(totalScale);
+      if (y.precision() == Numbers.precision(minValue)) {
+        final int com = y.compareTo(new BigDecimal(y.signum() < 0 ? minValue : maxValue).scaleByPowerOfTen(-totalScale));
+        if (y.signum() < 0 ? com < 0 : com > 0)
+          y.setScale(--totalScale, RoundingMode.HALF_UP);
+      }
+
+      if (totalScale > maxScale) {
+        final int diff = totalScale - maxScale;
+        final int p = Numbers.precision(y);
+        if (p <= diff)
+          return null;
+
+        y = y.setScale(y.scale() - diff, RoundingMode.HALF_UP);
+      }
+      else if (totalScale < minScale) {
+        final int diff = minScale - totalScale;
+        y = y.setScale(y.scale() + diff, RoundingMode.HALF_UP);
+        if (y.precision() > Numbers.precision(maxValue)) {
+          final int com = y.compareTo(new BigDecimal(y.signum() < 0 ? minValue : maxValue).scaleByPowerOfTen(-y.scale()));
+          if (y.signum() < 0 ? com < 0 : com > 0)
+            return null;
+        }
+      }
+
       return format.format(y).replaceAll("\\.?0+(E[-+0-9]*)$", "$1");
     }
 
-    private BigDecimal conform(final Object o1, final Object o2) {
-      if (o1 instanceof BigDecimal)
-        return new BigDecimal(conform((BigDecimal)o1, o2));
+    private BigDecimal conform(final Object o1, final Class<?> resultType) {
+      if (o1 == null)
+        return null;
+
+      if (o1 instanceof BigDecimal) {
+        final String srt = conform((BigDecimal)o1, resultType);
+        return srt == null ? null : new BigDecimal(srt);
+      }
 
       if (o1 instanceof Decimal) {
         final BigDecimal a = new BigDecimal(((Decimal)o1).toString());
-        return o2 instanceof Long ? new BigDecimal(conform(a, o2)) : a;
+        return resultType == Long.class ? new BigDecimal(conform(a, resultType)) : a;
       }
 
       if (o1 instanceof Long)
@@ -792,16 +842,19 @@ public abstract class CaseTest {
     }
 
     @Override
-    BigDecimal checkError(final Object a, final Object b) {
-      BigDecimal o1 = conform(a, b);
-      BigDecimal o2 = conform(b, a);
-      final int scale = Math.min(o1.scale(), o2.scale());
+    BigDecimal checkError(final Object o1, final Class<?> t1, final Object o2, final Class<?> t2) {
+      BigDecimal bd1 = conform(o1, t2);
+      if (bd1 == null)
+        return o2 == null ? null : BigDecimal.ONE;
+
+      BigDecimal bd2 = o2 == null ? BigDecimal.ZERO : conform(o2, t1);
+      final int scale = Math.min(bd1.scale(), bd2.scale());
       if (scale < 0) {
-        o1 = o1.scaleByPowerOfTen(scale);
-        o2 = o2.scaleByPowerOfTen(scale);
+        bd1 = bd1.scaleByPowerOfTen(scale);
+        bd2 = bd2.scaleByPowerOfTen(scale);
       }
 
-      return o1.subtract(o2).abs().divide(e10[o1.precision()]);
+      return bd1.subtract(bd2).abs().divide(e10[bd1.precision()]);
     }
 
     @Override

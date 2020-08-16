@@ -984,52 +984,36 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     short s1 = decodeScale(d1, scaleBits);
     short s2 = decodeScale(d2, scaleBits);
 
-    // if v1 has trailing zeroes, remove them first
-    final byte z1 = Numbers.trailingZeroes(v1);
+    final short minScale = FixedPoint.minScale[scaleBits];
+    final short maxScale = FixedPoint.maxScale[scaleBits];
+
+    // If v1 has trailing zeroes, remove them first.
+    short z1 = Numbers.trailingZeroes(v1);
     if (z1 > 0) {
+      // Make sure we don't go below (minScale)
+      if (s1 < 0)
+        z1 = SafeMath.min(z1, (short)(s1 - minScale));
+
       v1 /= FastMath.e10[z1];
       s1 -= z1;
     }
 
-    // if v2 has trailing zeroes, remove them first
-    final byte z2 = Numbers.trailingZeroes(v2);
+    // If v2 has trailing zeroes, remove them first.
+    short z2 = Numbers.trailingZeroes(v2);
     if (z2 > 0) {
+      // Make sure we don't go below (minScale)
+      if (s2 < 0)
+        z2 = SafeMath.min(z2, (short)(s2 - minScale));
+
       v2 /= FastMath.e10[z2];
       s2 -= z2;
     }
 
-    // FIXME: Check this logic here... is this necessary considering the beefed up mul0?!
-    final long av1 = Math.abs(v1);
-    final long av2 = Math.abs(v2);
-
-    // Preliminary check to make sure the product of the values
-    // can be represented with the given number of bits
-    final byte p1 = FastMath.log2(av1);
-    final byte p2 = FastMath.log2(av2);
-    final int pow = p1 + p2;
-    final byte bitsRequired;
-    if (pow > 110) // 55 + 55
-      bitsRequired = 6;
-    else if (pow > 86) // 43 + 43
-      bitsRequired = 5;
-    else if (pow > 73) // 37 + 36
-      bitsRequired = 4;
-    else if (pow > 66) // 33 + 33
-      bitsRequired = 3;
-    else if (pow > 63) // 32 + 31
-      bitsRequired = 2;
-    else
-      bitsRequired = 0;
-
-    if (scaleBits < bitsRequired) {
-      if (logger.isDebugEnabled())
-        logger.debug("result cannot be represented with less than " + bitsRequired + " scale bits");
-
-      return defaultValue;
-    }
-
+    final byte valueBits = valueBits(scaleBits);
+    final long minValue = FixedPoint.minValue(valueBits);
+    final long maxValue = FixedPoint.maxValue(valueBits);
     final Decimal result = threadLocal.get();
-    if (mul0(v1, s1, v2, s2, valueBits(scaleBits), result))
+    if (mul0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, result))
       return encode(result.value, result.scale, scaleBits, defaultValue);
 
     if (logger.isDebugEnabled())
@@ -1040,45 +1024,40 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
 
   public static Decimal mul(final Decimal d1, final Decimal d2) {
     long v1 = d1.value;
-    short s1 = d1.scale;
+    if (v1 == 0)
+      return d1;
+
     long v2 = d2.value;
+    if (v2 == 0)
+      return d1.set(0, (short)0);
+
+    short s1 = d1.scale;
     short s2 = d2.scale;
 
-    // if v1 has trailing zeroes, remove them first
-    final byte z1 = Numbers.trailingZeroes(v1);
+    // If v1 has trailing zeroes, remove them first.
+    short z1 = Numbers.trailingZeroes(v1);
     if (z1 > 0) {
+      // Make sure we don't go below (minScale)
+      if (s1 < 0)
+        z1 = SafeMath.min(z1, (short)(s1 - MIN_SCALE));
+
       v1 /= FastMath.e10[z1];
       s1 -= z1;
     }
 
-    // if v2 has trailing zeroes, remove them first
-    final byte z2 = Numbers.trailingZeroes(v2);
+    // If v2 has trailing zeroes, remove them first.
+    short z2 = Numbers.trailingZeroes(v2);
     if (z2 > 0) {
+      // Make sure we don't go below (minScale)
+      if (s2 < 0)
+        z2 = SafeMath.min(z2, (short)(s2 - MIN_SCALE));
+
       v2 /= FastMath.e10[z2];
       s2 -= z2;
     }
 
-    return mul(v1, s1, v2, s2);
-  }
-
-  public static Decimal mul(long v1, short s1, long v2, short s2) {
-    // if v1 has trailing zeroes, remove them first
-    final byte z1 = Numbers.trailingZeroes(v1);
-    if (z1 > 0) {
-      v1 /= FastMath.e10[z1];
-      s1 -= z1;
-    }
-
-    // if v2 has trailing zeroes, remove them first
-    final byte z2 = Numbers.trailingZeroes(v2);
-    if (z2 > 0) {
-      v2 /= FastMath.e10[z2];
-      s2 -= z2;
-    }
-
-    final Decimal result = threadLocal.get();
-    if (mul0(v1, s1, v2, s2, MAX_PRECISION_B, result))
-      return new Decimal(result);
+    if (mul0(v1, s1, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, d1))
+      return d1;
 
     return null;
   }

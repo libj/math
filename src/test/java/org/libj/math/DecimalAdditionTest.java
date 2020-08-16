@@ -21,10 +21,6 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 public class DecimalAdditionTest extends DecimalTest {
-  private static int skip(final byte scaleBits) {
-    return (int)Math.pow(scaleBits, scaleBits / 9d);
-  }
-
   private void testAdd(final byte scaleBits) {
     test("add(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
       d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
