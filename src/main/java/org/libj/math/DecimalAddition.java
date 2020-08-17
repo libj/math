@@ -26,7 +26,7 @@ abstract class DecimalAddition extends FixedPoint {
       return d1;
 
     if (d1.value == 0)
-      return d1.set(v2, s2);
+      return d1.assign(v2, s2);
 
     if (add0(d1.value, d1.scale, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, d1))
       return d1;
@@ -103,7 +103,7 @@ abstract class DecimalAddition extends FixedPoint {
       long of = (v1 < 0 ? minValue : maxValue) / v1;
 
       // How many multiples of 10 until overflow?
-      final byte dp1 = (byte)Math.max(Numbers.precision(of) - 1, 0);
+      final byte dp1 = (byte)(Numbers.precision(of) - 1);
 
       // ds is always positive, and greater than 0
       int ds = s2 - s1;
@@ -222,7 +222,7 @@ abstract class DecimalAddition extends FixedPoint {
         // overflow can only be off by a factor of 10,
         // since this is addition/subtraction
         if (--s < minScale) {
-          result.error("Overflow");
+          result.error("Overflow", v, s);
           return false;
         }
 
@@ -233,7 +233,7 @@ abstract class DecimalAddition extends FixedPoint {
 //        if (v < 0 ? sig != -1 : v == 0 ? sig != 0 : sig != 1)
 //          throw new IllegalStateException("Should not happen");
 
-        result.set(v, s);
+        result.assign(v, s);
         return true;
       }
     }
@@ -241,7 +241,7 @@ abstract class DecimalAddition extends FixedPoint {
     if (negate) {
       if (v == Long.MIN_VALUE) {
         if (--s < minScale) {
-          result.error("Overflow");
+          result.error("Overflow", v, s);
           return false;
         }
 
@@ -257,7 +257,7 @@ abstract class DecimalAddition extends FixedPoint {
       // overflow can only be off by a factor of 10, since this is
       // addition/subtraction
       if (--s < minScale) {
-        result.error("Overflow");
+        result.error("Overflow", v, s);
         return false;
       }
 
@@ -268,7 +268,7 @@ abstract class DecimalAddition extends FixedPoint {
 //        throw new IllegalStateException("Should not happen");
     }
 
-    result.set(v, s);
+    result.assign(v, s);
     return true;
   }
 }

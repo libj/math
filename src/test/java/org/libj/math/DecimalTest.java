@@ -34,6 +34,10 @@ public class DecimalTest extends NumericCaseTest {
     return new Decimal(decimal, DecimalCase.scaleBitsLocal.get());
   }
 
+  public long nz(final long d) {
+    return d != 0 ? d : 1;
+  }
+
   @Override
   public Color getColor(final Case<?,?,?,?,?> cse) {
     if (cse.getSubject() == BigDecimal.class)

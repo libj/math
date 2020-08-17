@@ -139,6 +139,28 @@ abstract class DecimalMultiplication extends FixedPoint {
   }
 
   static boolean mul0(long v1, short s1, long v2, short s2, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
+    // If v1 has trailing zeroes, remove them first.
+    short z1 = Numbers.trailingZeroes(v1);
+    if (z1 > 0) {
+      // Make sure we don't go below (minScale) // FIXME: Do we need this?
+      if (s1 < 0)
+        z1 = SafeMath.min(z1, (short)(s1 - minScale));
+
+      v1 /= FastMath.e10[z1];
+      s1 -= z1;
+    }
+
+    // If v2 has trailing zeroes, remove them first.
+    short z2 = Numbers.trailingZeroes(v2);
+    if (z2 > 0) {
+      // Make sure we don't go below (minScale) // FIXME: Do we need this?
+      if (s2 < 0)
+        z2 = SafeMath.min(z2, (short)(s2 - minScale));
+
+      v2 /= FastMath.e10[z2];
+      s2 -= z2;
+    }
+
     final byte sig = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
     int s = s1 + s2;
 
@@ -156,8 +178,7 @@ abstract class DecimalMultiplication extends FixedPoint {
       else {
         final byte p = Numbers.precision(f);
         if (p >= FastMath.e10.length) {
-          result.set(v, (short)s);
-          result.error = "Overflow";
+          result.error("Overflow", v, (short)s);
           return false;
         }
 
@@ -174,39 +195,6 @@ abstract class DecimalMultiplication extends FixedPoint {
       }
     }
 
-    if (s > maxScale) {
-      final int diff = s - maxScale;
-      final int p = Numbers.precision(v);
-      if (p <= diff) {
-        result.set(v, (short)s);
-        result.error = "Underflow";
-        return false;
-      }
-
-      final long e10 = FastMath.e10[diff];
-      long rem = v % e10;
-      v /= e10;
-      s -= diff;
-      if (rem != 0) {
-        final byte rp = Numbers.precision(rem);
-        final byte r = (byte)(rp < diff ? 0 : rp == 1 ? rem : rem / FastMath.e10[rp - 1]);
-        v = roundHalfUp(r, v);
-      }
-    }
-    else if (s < minScale) {
-      final int ds = minScale - s;
-      final int f = Numbers.precision((sig < 0 ? minValue : maxValue) / v);
-      if (f <= ds) {
-        result.set(v, (short)s);
-        result.error = "Overflow";
-        return false;
-      }
-
-      v *= FastMath.e10[ds];
-      s += ds;
-    }
-
-    result.set(v, (short)s);
-    return true;
+    return checkScale(v, s, minValue, maxValue, minScale, maxScale, result);
   }
 }

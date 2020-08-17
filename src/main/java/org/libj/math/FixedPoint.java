@@ -107,6 +107,10 @@ abstract class FixedPoint extends Number {
     return r < -5 ? v + 1 : r > 5 ? v - 1 : v;
   }
 
+  static int roundHalfUp(final byte r) {
+    return r <= -5 ? -1 : r >= 5 ? 1 : 0;
+  }
+
   /**
    * Returns the number of bits of precision required for the representation of
    * the specified value.
@@ -430,5 +434,40 @@ abstract class FixedPoint extends Number {
     // System.out.println("SMask: " + Buffers.toString(scaleMask) + " " + scale);
     final int sign = scale & ((byte)1 << bits - 1);
     return sign == 0 ? scale : (short)(-((~scale + 1) & ((1 << bits) - 1)));
+  }
+
+  static boolean checkScale(long v, int s, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
+    if (s > maxScale) {
+      final int ds = s - maxScale;
+      final int p = Numbers.precision(v);
+      if (p <= ds) {
+        result.error("Underflow", v, (short)s);
+        return false;
+      }
+
+      final long e10 = FastMath.e10[ds];
+      long r1 = v % e10;
+      v /= e10;
+      s -= ds;
+      if (r1 != 0) {
+        final byte rp = Numbers.precision(r1);
+        final byte r = (byte)(rp < ds ? 0 : rp == 1 ? r1 : r1 / FastMath.e10[rp - 1]);
+        v = roundHalfUp(r, v);
+      }
+    }
+    else if (s < minScale) {
+      final int ds = minScale - s;
+      final int fac = Numbers.precision((v < 0 ? minValue : maxValue) / v);
+      if (fac <= ds) {
+        result.error("Overflow", v, (short)s);
+        return false;
+      }
+
+      v *= FastMath.e10[ds];
+      s += ds;
+    }
+
+    result.assign(v, (short)s);
+    return true;
   }
 }

@@ -142,14 +142,14 @@ public abstract class CaseTest {
     final Object aToA;
     final Object bToB;
     final Object test;
-    final Function<R,O> out;
+    final Object out;
     Object previous;
     Class<?> previousType;
 
     int scaleFactorFactorA;
     int scaleFactorFactorB;
 
-    Case(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
+    Case(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Object out) {
       this.variables = variables;
       this.subject = subject;
       this.aToA = aToA;
@@ -202,7 +202,16 @@ public abstract class CaseTest {
     abstract <I,O>int test(CaseTest caseTest, String label, BigDecimal epsilon, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys, T inputs);
 
     <I,O>int verify(final String label, final Case<?,?,I,Object,O> cse, final BigDecimal epsilon, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
-      final Object o = cse.out != null ? cse.out.apply(result) : result;
+      final Object o;
+      if (cse.out == null)
+        o = result;
+      else if (cse.out instanceof Function)
+        o = ((Function)cse.out).apply(result);
+      else if (cse.out instanceof LongFunction)
+        o = ((LongFunction)cse.out).apply((Long)result);
+      else
+        throw new UnsupportedOperationException("Unsupported type: " + cse.out.getClass().getName());
+
       final Class<?> resultType = result == null ? null : result.getClass();
       final BigDecimal error;
       if (previous == null || c == 0) {
@@ -688,7 +697,7 @@ public abstract class CaseTest {
     private short maxScale;
     private int MAX_PRECISION;
 
-    DecimalCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
+    DecimalCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Object out) {
       super(subject, variables, aToA, bToB, test, out);
     }
 
@@ -1349,10 +1358,6 @@ public abstract class CaseTest {
     return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiLongFunction<R> test, final Function<R,O> out) {
-    return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
-  }
-
   public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<A> aToA, final Function<A,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
@@ -1361,8 +1366,8 @@ public abstract class CaseTest {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongFunction<R> test) {
-    return new DecimalCase<>(subject, 2, aToA, bToB, test, null);
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongToLongFunction test, final LongFunction<O> out) {
+    return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
   }
 
   public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final BiLongFunction<R> test) {

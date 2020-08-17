@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneable {
   private static final long serialVersionUID = 3129168059597869867L;
-  private static final Logger logger = LoggerFactory.getLogger(Decimal.class);
 
   /**
    * Returns the minimum scale that can be represented in a {@code long} encoded
@@ -434,12 +433,8 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
 
     final int minScale = Decimal.minScale[scaleBits];
     final int maxScale = Decimal.maxScale[scaleBits];
-    if (scale < minScale || maxScale < scale) {
-      if (logger.isDebugEnabled())
-        logger.debug("The scale of " + toString(encoded, scaleBits) + " cannot be set to " + scale + " with " + scaleBits + " scale bits");
-
+    if (scale < minScale || maxScale < scale)
       return defaultValue;
-    }
 
     long v = decodeValue(encoded, scaleBits);
     if (v == 0)
@@ -450,12 +445,8 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
       return encode(0, scale, scaleBits, defaultValue);
 
     final int ds = s - scale;
-    if (ds > precision || ds < -18 || precision - ds > 19) {
-      if (logger.isDebugEnabled())
-        logger.debug("The scale of " + toString(encoded, scaleBits) + " cannot be set to " + scale + " with " + scaleBits + " scale bits");
-
+    if (ds > precision || ds < -18 || precision - ds > 19)
       return defaultValue;
-    }
 
     final byte valueBits = valueBits(scaleBits);
     final boolean isPositive = v >= 0;
@@ -463,12 +454,8 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     final long maxValue = Decimal.maxValue(valueBits);
     if (ds < 0) {
       v *= FastMath.e10[-ds];
-      if (isPositive ? v > maxValue : v < minValue) {
-        if (logger.isDebugEnabled())
-          logger.debug("The scale of " + toString(encoded, scaleBits) + " cannot be set to " + scale + " with " + scaleBits + " scale bits");
-
+      if (isPositive ? v > maxValue : v < minValue)
         return defaultValue;
-      }
     }
     else {
       final int adj = ds - 1; // Leave one factor for rounding
@@ -967,9 +954,6 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
       if (v != 0)
         return v;
 
-      if (logger.isDebugEnabled())
-        logger.debug("result cannot be represented with " + scaleBits + " scale bits");
-
       return defaultValue;
     }
 
@@ -986,38 +970,12 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
 
     final short minScale = FixedPoint.minScale[scaleBits];
     final short maxScale = FixedPoint.maxScale[scaleBits];
-
-    // If v1 has trailing zeroes, remove them first.
-    short z1 = Numbers.trailingZeroes(v1);
-    if (z1 > 0) {
-      // Make sure we don't go below (minScale)
-      if (s1 < 0)
-        z1 = SafeMath.min(z1, (short)(s1 - minScale));
-
-      v1 /= FastMath.e10[z1];
-      s1 -= z1;
-    }
-
-    // If v2 has trailing zeroes, remove them first.
-    short z2 = Numbers.trailingZeroes(v2);
-    if (z2 > 0) {
-      // Make sure we don't go below (minScale)
-      if (s2 < 0)
-        z2 = SafeMath.min(z2, (short)(s2 - minScale));
-
-      v2 /= FastMath.e10[z2];
-      s2 -= z2;
-    }
-
     final byte valueBits = valueBits(scaleBits);
     final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
     final Decimal result = threadLocal.get();
     if (mul0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, result))
       return encode(result.value, result.scale, scaleBits, defaultValue);
-
-    if (logger.isDebugEnabled())
-      logger.debug("value=" + result.value + " scale=" + result.scale + " cannot be represented with " + scaleBits + " scale bits");
 
     return defaultValue;
   }
@@ -1029,39 +987,15 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
 
     long v2 = d2.value;
     if (v2 == 0)
-      return d1.set(0, (short)0);
+      return d1.assign(0, (short)0);
 
     short s1 = d1.scale;
     short s2 = d2.scale;
-
-    // If v1 has trailing zeroes, remove them first.
-    short z1 = Numbers.trailingZeroes(v1);
-    if (z1 > 0) {
-      // Make sure we don't go below (minScale)
-      if (s1 < 0)
-        z1 = SafeMath.min(z1, (short)(s1 - MIN_SCALE));
-
-      v1 /= FastMath.e10[z1];
-      s1 -= z1;
-    }
-
-    // If v2 has trailing zeroes, remove them first.
-    short z2 = Numbers.trailingZeroes(v2);
-    if (z2 > 0) {
-      // Make sure we don't go below (minScale)
-      if (s2 < 0)
-        z2 = SafeMath.min(z2, (short)(s2 - MIN_SCALE));
-
-      v2 /= FastMath.e10[z2];
-      s2 -= z2;
-    }
-
     if (mul0(v1, s1, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, d1))
       return d1;
 
     return null;
   }
-
 
   /**
    * Returns the result of the division of {@code d1} by {@code d2}, i.e.:
@@ -1086,18 +1020,10 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
    * @see #decodeScale(long,byte)
    */
   public static long div(final long d1, final long d2, final byte scaleBits, final long defaultValue) {
-    // Division by zero
-    if (d2 == 0)
-      return defaultValue;
-
     long v2 = decodeValue(d2, scaleBits);
     // Division by zero
     if (v2 == 0)
       return defaultValue;
-
-    // Division of zero
-    if (d1 == 0)
-      return 0;
 
     long v1 = decodeValue(d1, scaleBits);
     // Division of zero
@@ -1107,20 +1033,29 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     short s1 = decodeScale(d1, scaleBits);
     short s2 = decodeScale(d2, scaleBits);
 
+    final short minScale = FixedPoint.minScale[scaleBits];
+    final short maxScale = FixedPoint.maxScale[scaleBits];
+    final byte valueBits = valueBits(scaleBits);
+    final long minValue = FixedPoint.minValue(valueBits);
+    final long maxValue = FixedPoint.maxValue(valueBits);
     final Decimal result = threadLocal.get();
-    if (div0(v1, s1, v2, s2, valueBits(scaleBits), result))
+    if (div0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, result))
       return encode(result.value, result.scale, scaleBits, defaultValue);
-
-    if (logger.isDebugEnabled())
-      logger.debug("value=" + result.value + " scale=" + result.scale + " cannot be represented with " + scaleBits + " scale bits");
 
     return defaultValue;
   }
 
   public static Decimal div(final Decimal d1, final Decimal d2) {
-    final Decimal result = threadLocal.get();
-    if (div0(d1.value, d1.scale, d2.value, d2.scale, MAX_PRECISION_B, result))
-      return new Decimal(result);
+    long v1 = d1.value;
+    if (v1 == 0)
+      return d1;
+
+    long v2 = d2.value;
+    if (v2 == 0)
+      return d1.assign(0, (short)0);
+
+    if (div0(v1, d1.scale, v2, d2.scale, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, d1))
+      return d1;
 
     return null;
   }
@@ -1161,24 +1096,22 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
   Decimal() {
   }
 
-  // FIXME: Make this private
-  Decimal error(final String error) {
-    this.error = error;
-    return this;
-  }
-
-  // FIXME: Make this private
-  Decimal set(final Decimal copy) {
+  public Decimal assign(final Decimal copy) {
     this.value = copy.value;
     this.scale = copy.scale;
     return this;
   }
 
-  // FIXME: Make this private
-  Decimal set(final long value, final short scale) {
+  public Decimal assign(final long value, final short scale) {
     this.error = null;
     this.value = value;
     this.scale = scale;
+    return this;
+  }
+
+  Decimal error(final String error, final long value, final short scale) {
+    this.error = error;
+    assign(value, scale);
     return this;
   }
 
@@ -1186,12 +1119,16 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     return add(this, a);
   }
 
-  public Decimal sub(final Decimal a) {
-    return sub(this, a);
+  public Decimal sub(final Decimal s) {
+    return sub(this, s);
   }
 
-  public Decimal mul(final Decimal multiplicand) {
-    return mul(this, multiplicand);
+  public Decimal mul(final Decimal m) {
+    return mul(this, m);
+  }
+
+  public Decimal div(final Decimal m) {
+    return div(this, m);
   }
 
   @Override

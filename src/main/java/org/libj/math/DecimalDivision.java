@@ -21,6 +21,7 @@ import org.libj.lang.Numbers;
 abstract class DecimalDivision extends FixedPoint {
   private static final long serialVersionUID = 2875665225793357664L;
   static final long DIVISOR_MAX = Long.MAX_VALUE / 10;
+  private static final byte maxE10 = (byte)(FastMath.e10.length - 1);
 
   /**
    * Returns the result of <code>v1 * 10<sup>dp</sup> / v2</code>.
@@ -58,125 +59,116 @@ abstract class DecimalDivision extends FixedPoint {
     return v1;
   }
 
-  static boolean div0(long v1, short s1, long v2, short s2, final byte valueBits, final Decimal result) {
-    final byte scaleBits = valueBits(valueBits);
-    final short minScale = FixedPoint.minScale[scaleBits];
-    final short maxScale = FixedPoint.maxScale[scaleBits];
-    final long minValue = FixedPoint.minValue(valueBits);
-    final long maxValue = FixedPoint.maxValue(valueBits);
-
+  static boolean div0(long v1, int s1, long v2, int s2, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
     final byte sig = (byte)(v1 < 0 == v2 < 0 ? 1 : -1);
-    v1 = Math.abs(v1);
-    v2 = Math.abs(v2);
 
-    // How many bits are available until overflow long?
-    final byte bp1 = (byte)(Long.numberOfLeadingZeros(v1));
+    final byte p1 = Numbers.precision(v1);
+    final long f1 = (v1 < 0 ? minValue : maxValue) / v1;
+    byte ds1 = (byte)(Numbers.precision(f1) - 1);
 
-    // How many decimal places are available until overflow long?
-    byte dp1 = (byte)SafeMath.floor(SafeMath.log10((1L << bp1) - 1));
-
-    // Expand the value to max precision available,
-    // allowing it to use the sign bit
-    if (dp1 > 0) {
-      v1 = v1 * FastMath.e10[dp1];
-      s1 += dp1;
-    }
-
-    // If v2 has trailing zeroes, remove them first
-    final byte z2 = Numbers.trailingZeroes(v2);
+    // If v2 has trailing zeroes, remove them first.
+    short z2 = Numbers.trailingZeroes(v2);
     if (z2 > 0) {
+      // Make sure we don't go below (minScale) // FIXME: Do we need this?
+      if (s2 < 0)
+        z2 = SafeMath.min(z2, (short)(s2 - minScale));
+
       v2 /= FastMath.e10[z2];
       s2 -= z2;
     }
+    final byte p2 = Numbers.precision(v2);
 
-    int s = s1 - s2;
+    int s;
+    long v, r1, r2;
+    if (p2 <= 1) {
+      v1 *= FastMath.e10[ds1];
+      s1 += ds1;
+      s = s1 - s2;
 
-    long v;
-    if (v2 == 1) {
-      // v1 is an unscaled long, so dividing it by 1 will result in a negative
-      // number. Therefore, add 9 and divide by 10, which brings v1 back to the
-      // signed space, and also rounds.
-      v = FastMath.divideUnsigned(v1 + 9, 10);
-      --s;
-    }
-    else {
-      // Don't allow v2 to be greater than Long.MAX_VALUE / 10, because the
-      // unsigned division and remainder algorithms break down in that range.
-      if (v2 > DIVISOR_MAX) {
-        v2 /= 10;
-        ++s;
-      }
-
-      // Get the LHS from the decimal
-      v = FastMath.divideUnsigned(v1, v2);
-
-      // Record its precision
-      final byte d = Numbers.precision(v);
-
-      // How many bits are available to expand v?
-      final byte bp = (byte)(Long.numberOfLeadingZeros(v));
-      // How many decimals are available to expand v?
-      final byte dp = (byte)(bp == 64 ? 18 : SafeMath.floor(SafeMath.log10((1L << bp) - 1)));
-
-      // Scale v1 by dp and divide by v2.
-      v = scaleDiv(v1, v2, dp, result.zds, result.buf);
-
-      // Adjust the scale by the number of decimal points we got from div(...).
-      s += (byte)(Numbers.precision(v) - d);
-    }
-
-    // v has not overflowed long, but it may have overflowed minValue/maxValue
-    // By how many bits have we overflowed?
-    final byte bp = (byte)(bitLength(v) - valueBits);
-    if (bp > 0) {
-      byte dp = Numbers.precision((1L << bp) - 1);
-      s -= dp;
-      --dp; // Leave one factor for rounding
-      if (dp > 0)
-        v /= FastMath.e10[dp];
-
-      v = roundHalfUp10(v);
-    }
-
-    // Make sure we don't overflow the scale bits
-    if (s > maxScale) {
-      int adj = s - maxScale;
-      if (adj >= Numbers.precision(v)) {
-        result.set(sig * v, (short)s);
-        return false;
-      }
-
-      s -= adj;
-      --adj; // Leave one factor for rounding
-      v /= FastMath.e10[adj];
-      v = roundHalfUp10(v);
-      if (v == 0) {
-        result.set(sig * v, (short)s);
-        return false;
+      v = v1 / v2;
+      r1 = v1 % v2;
+      if (r1 != 0) {
+        r2 = (r1 * 10) / v2;
+        if (r2 != 0) {
+          final int pmax = Numbers.precision((v < 0 ? minValue : maxValue) / v) - 1;
+          if (pmax > 0) {
+            v *= 10;
+            v += r2;
+            s += 1;
+            v = roundHalfUp((byte)((((r1 * 10) % v2) * 10) / v2), v);
+          }
+          else {
+            v = roundHalfUp((byte)r2, v);
+          }
+        }
       }
     }
     else {
-      if (s < minScale) {
-        int adj = minScale - s;
-        if (adj >= 20 - Numbers.precision(v)) {
-          result.set(sig * v, (short)s);
+      byte precision = (byte)(Numbers.precision(maxValue) + p1 + p2 -1);
+      if (ds1 > precision) {
+        ds1 = precision;
+        precision = 0;
+      }
+      else {
+        precision -= ds1;
+      }
+
+      v1 *= FastMath.e10[ds1];
+      s1 += ds1;
+
+      int[] val = BigInt.valueOf(v1);
+      if (precision > 0) {
+        if (precision > maxE10)
+          precision = maxE10;
+
+        val = BigInt.mul(val, FastMath.e10[precision]);
+        s1 += precision;
+      }
+
+      s = s1 - s2;
+
+      r1 = BigInt.divRem(val, v2);
+
+      final long smax = BigInt.longValue(BigInt.div(val.clone(), sig < 0 ? minValue : maxValue));
+      if (smax == 0) {
+        v = BigInt.longValue(val);
+        if (r1 != 0) {
+          r2 = r1 / (v2 / 100);
+          if (r2 != 0) {
+            final int pmax = Numbers.precision((v < 0 ? minValue : maxValue) / v) - 1;
+            if (pmax > 0) {
+              v *= 10;
+              v += (r2 / 10);
+              s += 1;
+              v = roundHalfUp((byte)(r2 % 10), v);
+            }
+            else {
+              r2 /= 10;
+              v = roundHalfUp((byte)r2, v);
+            }
+          }
+        }
+      }
+      else {
+        final byte pmax = Numbers.precision(smax);
+        if (pmax >= FastMath.e10.length) {
+          result.error("Overflow", v1, (short)s);
           return false;
         }
 
-        s += adj;
-        for (int i; adj > 0; adj -= i) {
-          i = Math.min(adj, FastMath.e10.length - 1);
-          v *= FastMath.e10[i];
+        final long e10 = FastMath.e10[pmax];
+        r1 = BigInt.divRem(val, e10);
+        v = BigInt.longValue(val);
+        if (r1 != 0) {
+          final byte rp = Numbers.precision(r1);
+          final byte r = (byte)(rp < pmax ? 0 : rp == 1 ? r1 : r1 / FastMath.e10[rp - 1]);
+          v = roundHalfUp(r, v);
         }
 
-        if (v < 0 ? v < minValue : maxValue < v) {
-          result.set(sig * v, (short)s);
-          return false;
-        }
+        s -= pmax;
       }
     }
 
-    result.set(sig * v, (short)s);
-    return true;
+    return checkScale(v, s, minValue, maxValue, minScale, maxScale, result);
   }
 }
