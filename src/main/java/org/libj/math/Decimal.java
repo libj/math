@@ -24,8 +24,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.libj.lang.Numbers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Fixed point representation of a decimal encoded in a {@code long}.
@@ -949,14 +947,6 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     if (d1 == 0 || d2 == 0)
       return 0;
 
-    if (scaleBits == 0) {
-      final long v = multiplyNonZero(d1, d2, Long.MIN_VALUE, Long.MAX_VALUE);
-      if (v != 0)
-        return v;
-
-      return defaultValue;
-    }
-
     long v1 = decodeValue(d1, scaleBits);
     if (v1 == 0)
       return 0;
@@ -1036,10 +1026,9 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     final short minScale = FixedPoint.minScale[scaleBits];
     final short maxScale = FixedPoint.maxScale[scaleBits];
     final byte valueBits = valueBits(scaleBits);
-    final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
     final Decimal result = threadLocal.get();
-    if (div0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, result))
+    if (div0(v1, s1, v2, s2, maxValue, minScale, maxScale, result))
       return encode(result.value, result.scale, scaleBits, defaultValue);
 
     return defaultValue;
@@ -1054,7 +1043,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     if (v2 == 0)
       return d1.assign(0, (short)0);
 
-    if (div0(v1, d1.scale, v2, d2.scale, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, d1))
+    if (div0(v1, d1.scale, v2, d2.scale, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, d1))
       return d1;
 
     return null;

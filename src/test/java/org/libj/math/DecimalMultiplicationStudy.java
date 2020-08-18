@@ -17,7 +17,6 @@
 package org.libj.math;
 
 import static org.junit.Assert.*;
-import static org.libj.math.DecimalMultiplication.*;
 
 import org.junit.Test;
 import org.libj.lang.Buffers;
@@ -348,6 +347,39 @@ public class DecimalMultiplicationStudy {
       v = (hv1 * hv2) + ((hv1 * lv2) / f2) + ((hv2 * lv1) / f1) + ((lv1 * lv2) / (f1 * f2));
 
     return v;
+  }
+
+  /**
+   * Returns as a {@code long} the most significant 64 bits of the 128-bit
+   * product of two 64-bit factors.
+   *
+   * @param x The first value.
+   * @param y The second value.
+   * @return the result.
+   */
+  static long multiplyHigh(final long x, final long y) {
+    final long x2 = x & 0xFFFFFFFFL;
+    final long y2 = y & 0xFFFFFFFFL;
+    if (x < 0 || y < 0) {
+      // Use technique from section 8-2 of Henry S. Warren, Jr.,
+      // Hacker's Delight (2nd ed.) (Addison Wesley, 2013), 173-174.
+      final long x1 = x >> 32;
+      final long y1 = y >> 32;
+      final long z2 = x2 * y2;
+      final long t = x1 * y2 + (z2 >>> 32);
+      final long z0 = t >> 32;
+      final long z1 = (t & 0xFFFFFFFFL) + x2 * y1;
+      return x1 * y1 + z0 + (z1 >> 32);
+    }
+
+    // Use Karatsuba technique with two base 2^32 digits.
+    final long x1 = x >>> 32;
+    final long y1 = y >>> 32;
+    final long a = x1 * y1;
+    final long b = x2 * y2;
+    final long c = (x1 + x2) * (y1 + y2);
+    final long k = c - a - b;
+    return (((b >>> 32) + k) >>> 32) + a;
   }
 
   /**

@@ -436,7 +436,7 @@ abstract class FixedPoint extends Number {
     return sign == 0 ? scale : (short)(-((~scale + 1) & ((1 << bits) - 1)));
   }
 
-  static boolean checkScale(long v, int s, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
+  static boolean checkScale(long v, int s, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
     if (s > maxScale) {
       final int ds = s - maxScale;
       final int p = Numbers.precision(v);
@@ -457,7 +457,7 @@ abstract class FixedPoint extends Number {
     }
     else if (s < minScale) {
       final int ds = minScale - s;
-      final int fac = Numbers.precision((v < 0 ? minValue : maxValue) / v);
+      final int fac = Numbers.precision(maxValue / v);
       if (fac <= ds) {
         result.error("Overflow", v, (short)s);
         return false;

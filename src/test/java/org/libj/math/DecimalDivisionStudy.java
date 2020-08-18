@@ -28,6 +28,7 @@ import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 
 public class DecimalDivisionStudy {
+  private static final long DIVISOR_MAX = Long.MAX_VALUE / 10;
   private static final Random random = new Random();
 
   /**
@@ -73,7 +74,7 @@ public class DecimalDivisionStudy {
 
       long v2 = random.nextLong();
       v2 = Math.abs(v2 == Long.MIN_VALUE ? ++v2 : v2);
-      if (v2 > DecimalDivision.DIVISOR_MAX)
+      if (v2 > DIVISOR_MAX)
         v2 /= 10;
 
 //      System.err.println("[" + i + "] " + v1 + " / " + v2  + " = " + (double)v1 / v2);
@@ -122,6 +123,42 @@ public class DecimalDivisionStudy {
       time[i] = new long[2];
   }
 
+  /**
+   * Returns the result of <code>v1 * 10<sup>dp</sup> / v2</code>.
+   *
+   * @param v1 The dividend (unsigned).
+   * @param v2 The divisor (unsigned).
+   * @param dp The decimal precision "factor" by which to scale {@code v1}.
+   * @param q An array for the quotient ({@code int[4]}).
+   * @param buf An array for the rounding buffer ({@code long[2]}).
+   * @return The result of <code>v1 * 10<sup>dp</sup> / v2</code>.
+   */
+  static long scaleDiv(long v1, final long v2, byte dp, int[] q, final long[] buf) {
+    final long f = FastMath.e10[dp];
+
+    BigInt.assign(q, 1, v1);
+    if (BigInt.mul(q, f) != q)
+      throw new IllegalStateException("q is not big enough");
+
+    long remainder = BigInt.divRem(q, v2);
+
+    // Put the result in v1
+    v1 = BigInt.longValue(q, 1, 3);
+
+    // If v1 is bigger than the signed limit, scale it down
+    if (v1 < 0) {
+      FastMath.divideUnsigned(v1, 10, buf);
+      v1 = FixedPoint.roundHalfUp((byte)buf[1], buf[0]);
+    }
+    else {
+      remainder *= 10;
+      final byte round = (byte)FastMath.divideUnsigned(remainder, v2);
+      v1 = FixedPoint.roundHalfUp(round, v1);
+    }
+
+    return v1;
+  }
+
   private void test3(final long v1, final long v2, final int[] zds, final int[] x, final int[] y, final long[] buf) {
     // Regular division
     long ts = System.nanoTime();
@@ -139,7 +176,7 @@ public class DecimalDivisionStudy {
     // MPN
     ts = System.nanoTime();
 
-    final long r2 = DecimalDivision.scaleDiv(v1, v2, dp, zds, buf);
+    final long r2 = scaleDiv(v1, v2, dp, zds, buf);
 
     time[dp][1] += System.nanoTime() - ts;
 
