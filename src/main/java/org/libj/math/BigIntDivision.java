@@ -706,7 +706,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
 
     long modh = div >>> 32;
     if (modh == 0)
-      return rem(val, sig, (int)div);
+      return Integer.toUnsignedLong(rem(val, sig, (int)div));
 
     int vsig = 1; if (len < 0) { len = -len; vsig = -1; }
     div = divRem0(val, len, vsig, sig, div, modh);
@@ -789,6 +789,60 @@ abstract class BigIntDivision extends BigIntMultiplication {
         setToZero0(val);
       }
     }
+
+    // _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
+   * the specified {@code int}, sets the dividend's value to the modulus, and
+   * returns the dividend array with its value replaced by the modulus.
+   * <p>
+   * <i><b>Note:</b> This method differs from {@link #rem(int[],int)} in that it
+   * always returns a <i>non-negative</i> result.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded dividend}.
+   * @param div The {@code int} divisor.
+   * @return The modulus resulting from the division of the provided
+   *         {@linkplain BigInt#val() value-encoded dividend} by the specified
+   *         {@code int} divisor.
+   * @complexity O(n^2)
+   */
+  public static int[] mod(final int[] val, final int div) {
+    if (val[0] == 0)
+      return val;
+
+    final int rem = rem(val, div);
+    if (val[0] < 0)
+      BigInt.assign(val, rem + div);
+
+    // _debugLenSig(val);
+    return val;
+  }
+
+  /**
+   * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
+   * the specified {@code long}, sets the dividend's value to the modulus, and
+   * returns the dividend array with its value replaced by the modulus.
+   * <p>
+   * <i><b>Note:</b> This method differs from {@link #rem(int[],long)} in that
+   * it always returns a <i>non-negative</i> result.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded dividend}.
+   * @param div The {@code long} divisor.
+   * @return The modulus resulting from the division of the provided
+   *         {@linkplain BigInt#val() value-encoded dividend} by the specified
+   *         {@code long} divisor.
+   * @complexity O(n^2)
+   */
+  public static int[] mod(final int[] val, final long div) {
+    if (val[0] == 0)
+      return val;
+
+    final long rem = rem(val, div);
+    if (val[0] < 0)
+      BigInt.assign(val, rem + div);
 
     // _debugLenSig(val);
     return val;

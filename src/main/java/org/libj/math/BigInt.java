@@ -888,12 +888,43 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   }
 
   /**
+   * Divides this {@link BigInt} by the specified {@code int} divisor and sets
+   * the modulus as the value of this {@link BigInt}.
+   * <p>
+   * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
+   * always returns a <i>non-negative</i> result.</i>
+   *
+   * @param div The {@link BigInt} divisor.
+   * @return {@code this}
+   * @complexity O(n^2)
+   */
+  public BigInt mod(final int div) {
+    val = mod(val, div);
+    return this;
+  }
+
+  /**
+   * Divides this {@link BigInt} by the specified {@code long} divisor and sets
+   * the modulus as the value of this {@link BigInt}.
+   * <p>
+   * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
+   * always returns a <i>non-negative</i> result.</i>
+   *
+   * @param div The {@link BigInt} divisor.
+   * @return {@code this}
+   * @complexity O(n^2)
+   */
+  public BigInt mod(final long div) {
+    val = mod(val, div);
+    return this;
+  }
+
+  /**
    * Divides this {@link BigInt} by the specified {@link BigInt} divisor and sets
    * the modulus as the value of this {@link BigInt}.
    * <p>
    * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
    * always returns a <i>non-negative</i> result.</i>
-   * <p>
    *
    * @param div The {@link BigInt} divisor.
    * @return {@code this}

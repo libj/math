@@ -211,6 +211,28 @@ public class BigIntRemainderTest extends BigIntTest {
   }
 
   @Test
+  public void testModInt(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Modulus by `int`.");
+
+    test("mod(int)", BigDecimal.ZERO, report,
+      i(BigInteger.class, this::scaledBigInteger, b -> abs(nz(b)), (BigInteger a, int b) -> a.mod(BigInteger.valueOf(b)), String::valueOf),
+      i(BigInt.class, this::scaledBigInt, b -> abs(nz(b)), (BigInt a, int b) -> a.mod(b), String::valueOf),
+      i(int[].class, this::scaledVal, b -> abs(nz(b)), (int[] a, int b) -> BigInt.mod(a, b), BigInt::toString)
+    );
+  }
+
+  @Test
+  public void testModLong(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Modulus by `long`.");
+
+    test("mod(long)", BigDecimal.ZERO, report,
+      l(BigInteger.class, this::scaledBigInteger, b -> abs(nz(b)), (BigInteger a, long b) -> a.mod(BigInteger.valueOf(b)), String::valueOf),
+      l(BigInt.class, this::scaledBigInt, b -> abs(nz(b)), (BigInt a, long b) -> a.mod(b), String::valueOf),
+      l(int[].class, this::scaledVal, b -> abs(nz(b)), (int[] a, long b) -> BigInt.mod(a, b), BigInt::toString)
+    );
+  }
+
+  @Test
   public void testModBig(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Modulus by `T`.");
 

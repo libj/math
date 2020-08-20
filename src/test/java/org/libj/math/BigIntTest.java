@@ -44,11 +44,11 @@ public abstract class BigIntTest extends NumericCaseTest {
   }
 
   public int abs(final int a) {
-    return Math.abs(a);
+    return a == Integer.MIN_VALUE ? Integer.MAX_VALUE : Math.abs(a);
   }
 
   public long abs(final long a) {
-    return Math.abs(a);
+    return a == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(a);
   }
 
   public String abs(final String num) {
