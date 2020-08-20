@@ -1049,14 +1049,49 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     return null;
   }
 
+  public static long rem(final long d1, final long d2, final byte scaleBits, final long defaultValue) {
+    final long v2 = decodeValue(d2, scaleBits);
+    // Division by zero
+    if (v2 == 0)
+      return defaultValue;
+
+    final long v1 = decodeValue(d1, scaleBits);
+    // Division of zero
+    if (v1 == 0)
+      return 0;
+
+    final short s1 = decodeScale(d1, scaleBits);
+    final short s2 = decodeScale(d2, scaleBits);
+    final Decimal result = threadLocal.get();
+    if (rem0(v1, s1, v2, s2, result))
+      return encode(result.value, result.scale, scaleBits, defaultValue);
+
+    return defaultValue;
+  }
+
+  public static Decimal rem(final Decimal d1, final Decimal d2) {
+    final long v1 = d1.value;
+    // Division by zero
+    if (v1 == 0)
+      return d1;
+
+    // Division of zero
+    final long v2 = d2.value;
+    if (v2 == 0)
+      return d1.assign(0, (short)0);
+
+    if (rem0(v1, d1.scale, v2, d2.scale, d1))
+      return d1;
+
+    return null;
+  }
+
   final long[] buf = new long[2];
   final int[] zds = new int[6];
   // FIXME: Make these private
   long value;
   short scale;
   String error;
-  private float floatValue = Float.NaN;
-  private double doubleValue = Double.NaN;
 
   /**
    * Creates a new {@link Decimal} with the specified unscaled {@code value} and
@@ -1120,6 +1155,10 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
     return div(this, m);
   }
 
+  public Decimal rem(final Decimal m) {
+    return rem(this, m);
+  }
+
   @Override
   public int intValue() {
     return (int)value;
@@ -1132,12 +1171,12 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
 
   @Override
   public float floatValue() {
-    return Float.isNaN(floatValue) ? floatValue = floatValue(value, scale) : floatValue;
+    return floatValue(value, scale);
   }
 
   @Override
   public double doubleValue() {
-    return Double.isNaN(doubleValue) ? doubleValue = doubleValue(value, scale) : doubleValue;
+    return doubleValue(value, scale);
   }
 
   public long encode(final byte bits, final long defaultValue) {
@@ -1151,7 +1190,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
 
   @Override
   public int hashCode() {
-    return 31 * Long.hashCode(value) + Short.hashCode(scale);
+    return 31 * Long.hashCode(value) ^ Short.hashCode(scale);
   }
 
   @Override
@@ -1182,6 +1221,7 @@ public final class Decimal extends FixedPoint implements Comparable<Decimal>, Cl
   public String toScientificString() {
     return toScientificString(value, scale);
   }
+
   /**
    * Returns a copy of this {@link Decimal}.
    *

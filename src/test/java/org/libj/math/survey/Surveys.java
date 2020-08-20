@@ -194,7 +194,7 @@ public abstract class Surveys {
             avgMin += min[v][d];
             avgMax += max[v][d];
             r = 1 + v + d * variables;
-            rows[r] = String.valueOf(time);
+            rows[r] = time == 0 ? "" : String.valueOf(time);
             rows[r] = color(rows[r], time, min[v][d], max[v][d], s, surveys.length);
           }
 

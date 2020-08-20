@@ -941,7 +941,7 @@ public abstract class CaseTest {
       for (int c = 0; c < cases.length; ++c) {
         final DecimalCase cse = (DecimalCase)cases[c];
         try {
-          Object in1, in2 = null;
+          Object in1 = null, in2 = null;
           long a = inputs[0];
           Object a0 = a;
 
@@ -976,71 +976,77 @@ public abstract class CaseTest {
           if (!caseTest.initialized())
             scaleFactorFactorB = caseTest.getScaleFactor(DecimalCase.class);
 
-          final Object result;
-          final long overhead;
-          long time;
-          if (cse.test instanceof BiLongFunction) {
-            final BiLongFunction test = (BiLongFunction)cse.test;
-            in1 = a;
-            in2 = b;
+          long overhead = 0;
+          long time = System.nanoTime(); // Redundant, but necessary for try block
+          Object result = null;
+          try {
+            if (cse.test instanceof BiLongFunction) {
+              final BiLongFunction test = (BiLongFunction)cse.test;
+              in1 = a;
+              in2 = b;
 
-            overhead = 32;
-            time = System.nanoTime();
-            result = test.apply(a, b);
+              overhead = 32;
+              time = System.nanoTime();
+              result = test.apply(a, b);
+            }
+            else if (cse.test instanceof BiLongToLongFunction) {
+              final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
+              in1 = a;
+              in2 = b;
+
+              overhead = 31;
+              time = System.nanoTime();
+              result = test.applyAsLong(a, b);
+            }
+            else if (cse.test instanceof ObjLongFunction) {
+              final ObjLongFunction test = (ObjLongFunction)cse.test;
+              in1 = CaseTest.clone(a0);
+              in2 = b;
+
+              overhead = 31;
+              time = System.nanoTime();
+              result = test.apply(a0, b);
+            }
+            else if (cse.test instanceof LongFunction) {
+              final LongFunction test = (LongFunction)cse.test;
+              in1 = a;
+
+              overhead = 32;
+              time = System.nanoTime();
+              result = test.apply(a);
+            }
+            else if (cse.test instanceof LongToLongFunction) {
+              final LongToLongFunction test = (LongToLongFunction)cse.test;
+              in1 = a;
+
+              overhead = 32;
+              time = System.nanoTime();
+              result = test.applyAsLong(a);
+            }
+            else if (cse.test instanceof BiFunction) {
+              final BiFunction test = (BiFunction)cse.test;
+              in1 = CaseTest.clone(a0);
+              in2 = CaseTest.clone(b0);
+
+              overhead = 33;
+              time = System.nanoTime();
+              result = test.apply(a0, b0);
+            }
+            else {
+              final Function test = (Function)cse.test;
+              in1 = CaseTest.clone(a0);
+
+              overhead = 33;
+              time = System.nanoTime();
+              result = test.apply(a0);
+            }
+
+            time = System.nanoTime() - time - overhead;
           }
-          else if (cse.test instanceof BiLongToLongFunction) {
-            final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
-            in1 = a;
-            in2 = b;
-
-            overhead = 31;
-            time = System.nanoTime();
-            result = test.applyAsLong(a, b);
-          }
-          else if (cse.test instanceof ObjLongFunction) {
-            final ObjLongFunction test = (ObjLongFunction)cse.test;
-            in1 = CaseTest.clone(a0);
-            in2 = b;
-
-            overhead = 31;
-            time = System.nanoTime();
-            result = test.apply(a0, b);
-          }
-          else if (cse.test instanceof LongFunction) {
-            final LongFunction test = (LongFunction)cse.test;
-            in1 = a;
-
-            overhead = 32;
-            time = System.nanoTime();
-            result = test.apply(a);
-          }
-          else if (cse.test instanceof LongToLongFunction) {
-            final LongToLongFunction test = (LongToLongFunction)cse.test;
-            in1 = a;
-
-            overhead = 32;
-            time = System.nanoTime();
-            result = test.applyAsLong(a);
-          }
-          else if (cse.test instanceof BiFunction) {
-            final BiFunction test = (BiFunction)cse.test;
-            in1 = CaseTest.clone(a0);
-            in2 = CaseTest.clone(b0);
-
-            overhead = 33;
-            time = System.nanoTime();
-            result = test.apply(a0, b0);
-          }
-          else {
-            final Function test = (Function)cse.test;
-            in1 = CaseTest.clone(a0);
-
-            overhead = 33;
-            time = System.nanoTime();
-            result = test.apply(a0);
+          catch (final ArithmeticException e) {
+            time = System.nanoTime() - time - overhead;
           }
 
-          time = System.nanoTime() - time - overhead;
           precision = Math.max(precision, verify(label, cse, epsilon, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {

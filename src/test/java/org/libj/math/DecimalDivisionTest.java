@@ -31,9 +31,24 @@ public class DecimalDivisionTest extends DecimalTest {
     );
   }
 
+  public void testRem(final byte scaleBits) {
+    final long defaultValue = random.nextLong();
+    test("rem(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
+      d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.remainder(b, MathContext.DECIMAL128), o -> o),
+      d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.rem(b), o -> o),
+      d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, scaleBits, defaultValue), o -> o == defaultValue ? null : o)
+    );
+  }
+
   @Test
   public void testDiv() {
     for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
       testDiv(b);
+  }
+
+  @Test
+  public void testRem() {
+    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
+      testRem(b);
   }
 }
