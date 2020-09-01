@@ -265,10 +265,7 @@ abstract class BigIntMagnitude extends BigIntValue {
         len = slen;
     }
 
-    while (val[len] == 0)
-      if (--len == 0)
-        break;
-
+    while (val[len] == 0 && --len > 0);
     val[0] = sig ? len : -len;
     // _debugLenSig(val);
   }

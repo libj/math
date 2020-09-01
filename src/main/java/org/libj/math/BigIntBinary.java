@@ -67,7 +67,7 @@ abstract class BigIntBinary extends BigIntAddition {
    * negative, in which case this method performs a left shift.
    *
    * <pre>
-   * val >> num
+   * val = val >> num
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -165,7 +165,7 @@ abstract class BigIntBinary extends BigIntAddition {
    * negative, in which case this method performs a right shift.
    *
    * <pre>
-   * val << num
+   * val = val << num
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -226,8 +226,6 @@ abstract class BigIntBinary extends BigIntAddition {
     }
     else {
       System.arraycopy(val, 1, val, num, len);
-//      num -= OFF;
-//      System.arraycopy(threadLocal2.get(num), 0, val, OFF, num);
       for (int i = 1; i < num; ++i)
         val[i] = 0;
     }
@@ -257,14 +255,12 @@ abstract class BigIntBinary extends BigIntAddition {
    */
   private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num) {
     int[] res = val;
-    int next;
+    int next = 0;
     if ((val[len] << num >>> num) != val[len]) { // Overflow?
       if (++len >= val.length) {
-        next = 0;
         res = realloc(val, len, len + 1);
       }
       else {
-        next = val[len];
         val[len] = 0;
       }
 
@@ -327,7 +323,11 @@ abstract class BigIntBinary extends BigIntAddition {
   /**
    * Sets the specified bit in the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = val | (1 << n)
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
@@ -398,7 +398,11 @@ abstract class BigIntBinary extends BigIntAddition {
   /**
    * Clears the specified bit in the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = val & ~(1 << n)
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
@@ -488,7 +492,11 @@ abstract class BigIntBinary extends BigIntAddition {
   /**
    * Flips the specified bit in the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = val ^ (1 << n)
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
@@ -1338,7 +1346,7 @@ abstract class BigIntBinary extends BigIntAddition {
     if (len == 0)
       return new byte[] {0};
 
-    final int byteLen = bitLength0(val, len) / 8 + 1;
+    final int byteLen = bitLength(val, len) / 8 + 1;
     int sig = 0; if (len < 0) { len = -len; sig = -1; }
     final int nzIndex = firstNonzeroIntNum(val, 1, len);
     final byte[] bytes = new byte[byteLen];

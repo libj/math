@@ -105,12 +105,13 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @complexity O(1)
    */
   public BigInt(final int[] val) {
-    assign(val);
+    this.val = val;
   }
 
   /**
    * Creates a {@link BigInt} from the provided byte array containing the
-   * two's-complement binary representation of a {@linkplain #val() value-encoded <code>int[]</code>}.
+   * two's-complement binary representation of a {@linkplain #val()
+   * value-encoded <code>int[]</code>}.
    *
    * @param mag The two's-complement binary representation of a
    *          {@linkplain #val() value-encoded <code>int[]</code>}.
@@ -127,7 +128,8 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Creates a {@link BigInt} from the provided byte array containing the
-   * two's-complement binary representation of a {@linkplain #val() value-encoded <code>int[]</code>}.
+   * two's-complement binary representation of a {@linkplain #val()
+   * value-encoded <code>int[]</code>}.
    *
    * @param mag The two's-complement binary representation of a
    *          {@linkplain #val() value-encoded <code>int[]</code>}.
@@ -149,7 +151,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @complexity O(1)
    */
   public BigInt(final int sig, final int mag) {
-    val = mag == 0 ? setToZero0(alloc(1)) : assign0(alloc(2), sig, mag);
+    val = mag == 0 ? alloc(1) : assign0(alloc(2), sig, mag);
   }
 
   /**
@@ -162,7 +164,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    */
   public BigInt(final int sig, final long mag) {
     if (mag == 0) {
-      val = setToZero0(alloc(1));
+      val = alloc(1);
     }
     else {
       final int magh = (int)(mag >>> 32);
@@ -177,7 +179,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @complexity O(1)
    */
   public BigInt(final int mag) {
-    val = mag == 0 ? setToZero0(alloc(1)) : mag < 0 ? assign0(alloc(2), -1, -mag) : assign0(alloc(2), 1, mag);
+    val = mag == 0 ? alloc(1) : mag < 0 ? assign0(alloc(2), -1, -mag) : assign0(alloc(2), 1, mag);
   }
 
   /**
@@ -188,7 +190,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    */
   public BigInt(long mag) {
     if (mag == 0) {
-      val = setToZero0(alloc(1));
+      val = alloc(1);
     }
     else {
       int sig = 1; if (mag < 0) { mag = -mag; sig = -1; }
@@ -237,29 +239,35 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Assigns (copies) the value of the provided {@link BigInt} to this
    * {@link BigInt}.
    *
+   * <pre>
+   * this = b
+   * </pre>
+   *
    * @param b The {@link BigInt}.
    * @return {@code this}
    */
   public BigInt assign(final BigInt b) {
     final int len = Math.abs(val[0]) + 1;
     copy(b.val, len, val, len);
-    return assign(b.val);
+    return this;
   }
 
   /**
    * Assigns the specified {@linkplain #val() value-encoded number} to this
    * {@link BigInt}.
    * <p>
-   * <i><b>Note:</b> The provided array will be used used as-is and not
-   * copied.</i>
+   * <i><b>Note:</b> The provided array will be copied.</i>
+   *
+   * <pre>
+   * this = val
+   * </pre>
    *
    * @param val The {@linkplain #val() value-encoded number}.
    * @return {@code this}
    * @complexity O(1)
    */
   public BigInt assign(final int[] val) {
-    // FIXME: Should this assert that val.length != 0?
-    this.val = val;
+    this.val = assign(this.val, val);
     // _debugLenSig(val);
     return this;
   }
@@ -269,6 +277,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * of a {@linkplain #val() value-encoded <code>int[]</code>} to this
    * {@link BigInt}.
    *
+   * <pre>
+   * this = mag
+   * </pre>
+   *
    * @param mag The two's-complement binary representation of a
    *          {@linkplain #val() value-encoded <code>int[]</code>}.
    * @param off The start offset of the binary representation.
@@ -277,7 +289,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
    * @return {@code this}
-   * @complexity O(1)
+   * @complexity O(n^2)
    */
   public BigInt assign(final byte[] mag, final int off, final int len, final boolean littleEndian) {
     val = assign(val, mag, off, len, littleEndian);
@@ -289,13 +301,17 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * of a {@linkplain #val() value-encoded <code>int[]</code>} to this
    * {@link BigInt}.
    *
+   * <pre>
+   * this = mag
+   * </pre>
+   *
    * @param mag The two's-complement binary representation of a
    *          {@linkplain #val() value-encoded <code>int[]</code>}.
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
    * @return {@code this}
-   * @complexity O(1)
+   * @complexity O(n^2)
    */
   public BigInt assign(final byte[] mag, final boolean littleEndian) {
     val = assign(val, mag, 0, mag.length, littleEndian);
@@ -304,6 +320,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Assigns the specified number as a string to this {@link BigInt}.
+   *
+   * <pre>
+   * this = s
+   * </pre>
    *
    * @param s The number as a {@code char[]}.
    * @return {@code this}
@@ -317,6 +337,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Assigns the specified number as a {@code char[]} to this {@link BigInt}.
    *
+   * <pre>
+   * this = s
+   * </pre>
+   *
    * @param s The number as a {@code char[]}.
    * @return {@code this}
    * @complexity O(n^2)
@@ -328,6 +352,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Assigns an <i>unsigned</i> {@code int} magnitude to this {@link BigInt}.
+   *
+   * <pre>
+   * this = mag
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code int}.
    * @param mag The magnitude (unsigned).
@@ -342,6 +370,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Assigns an <i>unsigned</i> {@code long} magnitude to this {@link BigInt}.
    *
+   * <pre>
+   * this = mag
+   * </pre>
+   *
    * @param sig The sign of the unsigned {@code int}.
    * @param mag The magnitude (unsigned).
    * @return {@code this}
@@ -355,6 +387,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Assigns an {@code int} magnitude to this {@link BigInt}.
    *
+   * <pre>
+   * this = mag
+   * </pre>
+   *
    * @param mag The magnitude.
    * @return {@code this}
    * @complexity O(1)
@@ -366,6 +402,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Assigns an {@code long} magnitude to this {@link BigInt}.
+   *
+   * <pre>
+   * this = mag
+   * </pre>
    *
    * @param mag The magnitude.
    * @return {@code this}
@@ -380,10 +420,11 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Sets the magnitude of this {@link BigInt} to its absolute value.
    *
    * <pre>
-   * {@code this = | this |}
+   * this = | this |
    * </pre>
    *
    * @return {@code this}
+   * @complexity O(1)
    */
   public BigInt abs() {
     abs(val);
@@ -394,7 +435,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Sets the magnitude of this {@link BigInt} to its negated value.
    *
    * <pre>
-   * {@code this = -this }
+   * this = -this
    * </pre>
    *
    * @return {@code this}
@@ -429,7 +470,8 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Returns the signum of this {@link BigInt}.
    *
-   * @return -1, 0 or 1 as the value of the provided {@linkplain #val() value-encoded number} is negative, zero or positive.
+   * @return -1, 0 or 1 as the value of the provided {@linkplain #val()
+   *         value-encoded number} is negative, zero or positive.
    * @complexity O(1)
    */
   public int signum() {
@@ -626,6 +668,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Multiplies this {@link BigInt} by an <i>unsigned</i> {@code int}
    * multiplicand.
    *
+   * <pre>
+   * this = this * mul
+   * </pre>
+   *
    * @param sig The sign of the unsigned {@code int} multiplier.
    * @param mul The multiplier (unsigned).
    * @return {@code this}
@@ -638,6 +684,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Multiplies this {@link BigInt} by an {@code int} multiplicand.
+   *
+   * <pre>
+   * this = this * mul
+   * </pre>
    *
    * @param mul The multiplier.
    * @return {@code this}
@@ -652,6 +702,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Multiplies this {@link BigInt} by an <i>unsigned</i> {@code long}
    * multiplicand.
    *
+   * <pre>
+   * this = this * mul
+   * </pre>
+   *
    * @param sig The sign of the unsigned {@code int} multiplier.
    * @param mul The multiplier (unsigned).
    * @return {@code this}
@@ -665,6 +719,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Multiplies this {@link BigInt} by a {@code long} multiplicand.
    *
+   * <pre>
+   * this = this * mul
+   * </pre>
+   *
    * @param mul The multiplier.
    * @return {@code this}
    * @complexity O(n)
@@ -677,6 +735,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Multiplies this {@link BigInt} by a {@link BigInt} multiplicand.
    *
+   * <pre>
+   * this = this * mul
+   * </pre>
+   *
    * @param mul The multiplier.
    * @return {@code this}
    * @complexity O(n^2) - O(n log n)
@@ -687,8 +749,30 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   }
 
   /**
+   * Raises this {@link BigInt} to the power of the given exponent.
+   *
+   * <pre>
+   * this = this<sup>exp</sup>
+   * </pre>
+   *
+   * If {@code exp < 0}, {@code this} is set to {@code 0}.
+   *
+   * @param exp The exponent to which this {@link BigInt} is to be raised.
+   * @return <code>this<sup>exp</sup></code>
+   * @complexity O(n^2 log exp) - O(n log n log exp)
+   */
+  public BigInt pow(final int exp) {
+    val = pow(val, exp);
+    return this;
+  }
+
+  /**
    * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code int}
    * divisor.
+   *
+   * <pre>
+   * this = this / div
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code int} divisor.
    * @param div The divisor (unsigned).
@@ -703,6 +787,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the provided {@code int} divisor.
    *
+   * <pre>
+   * this = this / div
+   * </pre>
+   *
    * @param div The divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -715,6 +803,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code long}
    * divisor.
+   *
+   * <pre>
+   * this = this / div
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code long} divisor.
    * @param div The divisor (unsigned).
@@ -729,6 +821,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the provided {@code long} divisor.
    *
+   * <pre>
+   * this = this / div
+   * </pre>
+   *
    * @param div The divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -740,6 +836,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Divides this {@link BigInt} by the provided {@link BigInt} divisor.
+   *
+   * <pre>
+   * this = this / div
+   * </pre>
    *
    * @param div The divisor.
    * @return {@code this}
@@ -753,6 +853,12 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the specified <i>unsigned</i> {@code int}
    * divisor, and returns the <i>absolute unsigned int</i> remainder.
+   *
+   * <pre>
+   * rem = this % div
+   * this = this / div
+   * return rem
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code int} divisor.
    * @param div The divisor (unsigned).
@@ -769,6 +875,12 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Divides this {@link BigInt} by the specified {@code int} divisor, and
    * returns the remainder.
    *
+   * <pre>
+   * rem = this % div
+   * this = this / div
+   * return rem
+   * </pre>
+   *
    * @param div The divisor.
    * @return The remainder resulting from the division of this {@link BigInt} by
    *         the specified {@code int} divisor.
@@ -781,6 +893,12 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the specified <i>unsigned</i> {@code long}
    * divisor, and returns the <i>absolute unsigned long</i> remainder.
+   *
+   * <pre>
+   * rem = this % div
+   * this = this / div
+   * return rem
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code long} divisor.
    * @param div The divisor (unsigned).
@@ -797,6 +915,12 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Divides this {@link BigInt} by the specified {@code long} divisor, and
    * returns the remainder.
    *
+   * <pre>
+   * rem = this % div
+   * this = this / div
+   * return rem
+   * </pre>
+   *
    * @param div The divisor.
    * @return The remainder resulting from the division of this {@link BigInt} by
    *         the specified {@code long} divisor.
@@ -810,6 +934,12 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Divides this {@link BigInt} by the specified {@link BigInt} divisor, and
    * returns the remainder as a new {@link BigInt}.
    *
+   * <pre>
+   * rem = this % div
+   * this = this / div
+   * return rem
+   * </pre>
+   *
    * @param div The {@link BigInt} divisor.
    * @return A new {@link BigInt} with the remainder.
    * @complexity O(n^2)
@@ -821,6 +951,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code int}
    * divisor and sets the remainder as the value of this {@link BigInt}.
+   *
+   * <pre>
+   * this = this % div
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code int} divisor.
    * @param div The divisor (unsigned).
@@ -836,6 +970,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Divides this {@link BigInt} by the provided {@code int} divisor and sets
    * the remainder as the value of this {@link BigInt}.
    *
+   * <pre>
+   * this = this % div
+   * </pre>
+   *
    * @param div The divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -848,6 +986,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code long}
    * divisor and sets the remainder as the value of this {@link BigInt}.
+   *
+   * <pre>
+   * this = this % div
+   * </pre>
    *
    * @param sig The sign of the unsigned {@code long} divisor.
    * @param div The divisor (unsigned).
@@ -863,6 +1005,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Divides this {@link BigInt} by the provided {@code long} divisor and sets
    * the remainder as the value of this {@link BigInt}.
    *
+   * <pre>
+   * this = this % div
+   * </pre>
+   *
    * @param div The divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -875,8 +1021,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Divides this {@link BigInt} by the provided {@code long} divisor and sets
    * the remainder as the value of this {@link BigInt}.
-   * <p>
-   * Satisfies: {@code q * div + r = this}, where {@code q = floor(this / div)}
+   *
+   * <pre>
+   * this = this % div
+   * </pre>
    *
    * @param div The divisor.
    * @return {@code this}
@@ -894,6 +1042,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
    * always returns a <i>non-negative</i> result.</i>
    *
+   * <pre>
+   * this = this % div
+   * </pre>
+   *
    * @param div The {@link BigInt} divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -910,6 +1062,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
    * always returns a <i>non-negative</i> result.</i>
    *
+   * <pre>
+   * this = this % div
+   * </pre>
+   *
    * @param div The {@link BigInt} divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -920,11 +1076,15 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   }
 
   /**
-   * Divides this {@link BigInt} by the specified {@link BigInt} divisor and sets
-   * the modulus as the value of this {@link BigInt}.
+   * Divides this {@link BigInt} by the specified {@link BigInt} divisor and
+   * sets the modulus as the value of this {@link BigInt}.
    * <p>
    * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
    * always returns a <i>non-negative</i> result.</i>
+   *
+   * <pre>
+   * this = this % div
+   * </pre>
    *
    * @param div The {@link BigInt} divisor.
    * @return {@code this}
@@ -949,18 +1109,16 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Returns the number of bits in the minimal two's-complement representation
-   * of this {@link BigInt}, <em>excluding</em> a sign bit. For positive
-   * numbers, this is equivalent to the number of bits in the ordinary binary
+   * of this {@link BigInt}, <i>excluding</i> a sign bit. For positive numbers,
+   * this is equivalent to the number of bits in the ordinary binary
    * representation. For zero this method returns {@code 0}.
-   * <p>
-   * Computes:
    *
    * <pre>
    * ceil(log2(this < 0 ? -this : this + 1))
    * </pre>
    *
    * @return Number of bits in the minimal two's-complement representation of
-   *         this {@link BigInt}, <em>excluding</em> a sign bit.
+   *         this {@link BigInt}, <i>excluding</i> a sign bit.
    * @complexity O(n)
    */
   public int bitLength() {
@@ -968,10 +1126,26 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   }
 
   /**
+   * Returns the index of the rightmost (lowest-order) one bit in this
+   * {@link BigInt} (the number of zero bits to the right of the rightmost one
+   * bit). Returns {@code -1} if number contains no one bits.
+   *
+   * <pre>
+   * this == 0 ? -1 : log2(this & -this)
+   * </pre>
+   *
+   * @return The index of the rightmost (lowest-order) one bit in this
+   *         {@link BigInt}.
+   */
+  public int getLowestSetBit() {
+    return getLowestSetBit(val);
+  }
+
+  /**
    * Returns the number of digits in this {@link BigInt} (radix 10).
    *
    * @return The number of digits in this {@link BigInt} (radix 10).
-   * @complexity O(n^2) // FIXME: There must be a more efficient way to do this!
+   * @complexity O(n)
    */
   public int precision() {
     return precision(val);
@@ -983,7 +1157,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * a right shift.
    *
    * <pre>
-   * this << num
+   * this = this << num
    * </pre>
    *
    * @param num The amount by which to shift.
@@ -1001,7 +1175,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * a left shift.
    *
    * <pre>
-   * this >> num
+   * this = this >> num
    * </pre>
    *
    * @param num The amount by which to shift.
@@ -1015,8 +1189,6 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Tests if the specified bit is set in this {@link BigInt}.
-   * <p>
-   * Computes:
    *
    * <pre>
    * this | (1 << n)
@@ -1034,6 +1206,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Sets the specified bit in this {@link BigInt}.
    *
+   * <pre>
+   * this = this | (1 << n)
+   * </pre>
+   *
    * @param bit The bit to set.
    * @return {@code this}
    * @complexity O(n)
@@ -1046,6 +1222,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   /**
    * Clears the specified bit in this {@link BigInt}.
    *
+   * <pre>
+   * this = this & ~(1 << n)
+   * </pre>
+   *
    * @param bit The bit to clear.
    * @return {@code this}
    * @complexity O(n)
@@ -1057,6 +1237,10 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
 
   /**
    * Flips the specified bit in this {@link BigInt}.
+   *
+   * <pre>
+   * this = this ^ (1 << n)
+   * </pre>
    *
    * @param bit The bit to flip.
    * @return {@code this}
@@ -1200,9 +1384,11 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   }
 
   /**
-   * Returns the value of this {@link BigInt} as an <i>unsigned</i> {@code long}.
+   * Returns the value of this {@link BigInt} as an <i>unsigned</i>
+   * {@code long}.
    *
-   * @return The value of this {@link BigInt} as an <i>unsigned</i> {@code long}.
+   * @return The value of this {@link BigInt} as an <i>unsigned</i>
+   *         {@code long}.
    * @complexity O(1)
    */
   public long longValueUnsigned() {

@@ -449,8 +449,9 @@ abstract class BigIntAddition extends BigIntMagnitude {
         if (--val[i] == 0 && i == len)
           while (val[--len] == 0);
       }
-      else if (val[len] == 0) {
-        --len;
+      else {
+        while (val[len] == 0)
+          --len;
       }
 
       val[0] = sig ? len : -len;

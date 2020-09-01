@@ -53,6 +53,12 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * the specified <i>unsigned</i> {@code int} divisor, and returns the
    * <i>absolute unsigned int</i> remainder.
    *
+   * <pre>
+   * rem = val % div
+   * val = val / div
+   * return rem
+   * </pre>
+   *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param sig The sign of the unsigned {@code int} divisor.
    * @param div The divisor (unsigned).
@@ -129,6 +135,12 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@code int} divisor, and returns the remainder.
    *
+   * <pre>
+   * rem = val % div
+   * val = val / div
+   * return rem
+   * </pre>
+   *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The divisor.
    * @return The remainder resulting from the division of the provided
@@ -171,6 +183,12 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified <i>unsigned</i> {@code long} divisor, and returns the
    * <i>absolute unsigned {@code long}</i> remainder.
+   *
+   * <pre>
+   * rem = val % div
+   * val = val / div
+   * return rem
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param sig The sign of the unsigned {@code long} divisor.
@@ -297,6 +315,12 @@ abstract class BigIntDivision extends BigIntMultiplication {
   /**
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@code long} divisor, and returns the {@code long} remainder.
+   *
+   * <pre>
+   * rem = val % div
+   * val = val / div
+   * return rem
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The divisor.
@@ -452,7 +476,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
   /**
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@linkplain BigInt#val() value-encoded divisor}.
-   * <p>
+   *
+   * <pre>
+   * val = val / div
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the operation requires a larger array for the computation.</i>
    *
@@ -504,7 +532,13 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@linkplain BigInt#val() value-encoded divisor}, and returns
    * the remainder.
-   * <p>
+   *
+   * <pre>
+   * rem = val % div
+   * val = val / div
+   * return rem
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the operation requires a larger array for the computation.</i>
    *
@@ -578,6 +612,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * value to the remainder, and returns the remainder as an <i>absolute
    * unsigned {@code int}</i>.
    *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param sig The sign of the unsigned {@code int} divisor.
    * @param div The divisor (unsigned).
@@ -601,6 +639,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@code int} divisor, sets the dividend's value to the
    * remainder, and returns the remainder as an {@code int}.
+   *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
    *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The divisor.
@@ -691,6 +734,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * value to the remainder, and returns the remainder as an <i>absolute
    * unsigned {@code long}</i>.
    *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
+   *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param sig The sign of the unsigned {@code long} divisor.
    * @param div The divisor (unsigned).
@@ -729,6 +777,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * the specified {@code long} divisor, sets the dividend's value to the
    * remainder, and returns the remainder as a {@code long}.
    *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
+   *
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The divisor.
    * @return The {@code long} remainder resulting from the division of the
@@ -746,9 +799,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@linkplain BigInt#val() value-encoded divisor}, and returns
    * the dividend array with its value replaced by the remainder.
-   * <p>
-   * Satisfies: {@code q * div + r = val}, where {@code q = floor(val / div)}
-   * <p>
+   *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the operation requires a larger array for the computation.</i>
    *
@@ -756,8 +811,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * @param div The {@linkplain BigInt#val() value-encoded divisor}.
    * @return The dividend array with its value replaced by the remainder
    *         resulting from the division of the provided
-   *         {@linkplain BigInt#val() value-encoded dividend} by the
-   *         specified {@linkplain BigInt#val() value-encoded divisor}.
+   *         {@linkplain BigInt#val() value-encoded dividend} by the specified
+   *         {@linkplain BigInt#val() value-encoded divisor}.
    * @complexity O(n^2)
    */
   public static int[] rem(int[] val, final int[] div) {
@@ -798,7 +853,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@code int}, sets the dividend's value to the modulus, and
    * returns the dividend array with its value replaced by the modulus.
-   * <p>
+   *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
    * <i><b>Note:</b> This method differs from {@link #rem(int[],int)} in that it
    * always returns a <i>non-negative</i> result.</i>
    *
@@ -825,7 +884,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@code long}, sets the dividend's value to the modulus, and
    * returns the dividend array with its value replaced by the modulus.
-   * <p>
+   *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
    * <i><b>Note:</b> This method differs from {@link #rem(int[],long)} in that
    * it always returns a <i>non-negative</i> result.</i>
    *
@@ -852,7 +915,11 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified {@linkplain BigInt#val() value-encoded divisor}, and returns
    * the dividend array with its value replaced by the modulus.
-   * <p>
+   *
+   * <pre>
+   * val = val % div
+   * </pre>
+   *
    * <i><b>Note:</b> This method differs from {@link #rem(int[],int[])} in that
    * it always returns a <i>non-negative</i> result.</i>
    * <p>
