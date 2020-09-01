@@ -16,9 +16,7 @@
 
 package org.libj.math;
 
-/**
- * Common numerical constants.
- */
+/** Common numerical constants. */
 public final class Constants {
   /** The {@code double} constant {@code log(2)}. */
   public static final double LOG_2 = 0.6931471805599453;
