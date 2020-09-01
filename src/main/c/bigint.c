@@ -135,17 +135,20 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     }
 
     const jint x2offl_b2b = x2offl_b2 + b, y2offl_b = x2offl_b2 + l_b, y2offl_b1 = y2offl_b + 1, y2offl_b1b = y2offl_b1 + b;
+    tmp[x2offl_b2b] = tmp[y2offl_b1b] = tmp[y2offl_b] = tmp[y2offl_b2] = 0;
 
     for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) {
       tmp[i] = (jint)(carry += (x[j] & LONG_MASK) + (x[k] & LONG_MASK));
       carry >>= 32;
     }
 
-    if ((len & 1) != 0)
+    if ((len & 1) != 0) {
       tmp[x2offl_b2b] = x[xoffoff + b2];
+    }
 
-    if (carry != 0 && ++tmp[x2offl_b2b] == 0)
+    if (carry != 0 && ++tmp[x2offl_b2b] == 0) {
       ++tmp[x2offl_b2b + 1];
+    }
 
     carry = 0;
     for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) {
@@ -153,11 +156,13 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
       carry >>= 32;
     }
 
-    if ((len & 1) != 0)
+    if ((len & 1) != 0) {
       tmp[y2offl_b1b] = y[yoffoff + b2];
+    }
 
-    if (carry != 0 && ++tmp[y2offl_b1b] == 0)
+    if (carry != 0 && ++tmp[y2offl_b1b] == 0) {
       ++tmp[y2offl_b1b + 1];
+    }
 
     const jint tmpoffl_b2 = tmpoff + l_b2;
     const jint tmplen = tmpoffl_b2 + l_b2 + 3;
@@ -213,8 +218,9 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     if (allocated)
       free(tmp);
 
-    if (x0 != 0)
+    if (x0 != 0) {
       while (++z[j++] == 0);
+    }
   }
 }
 
