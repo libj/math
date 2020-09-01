@@ -78,7 +78,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     else {
       try {
         instr = ByteBuddyAgent.install();
-        loadJarsInBootstrap(instr, "lang", "slf4j", "console", "api");
+        loadJarsInBootstrap(instr, "lang", "slf4j", "logback-core", "logback", "console", "api");
         loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport");
       }
       catch (final IOException e) {

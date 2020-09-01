@@ -30,13 +30,10 @@
 package org.libj.math;
 
 import java.util.Arrays;
-//import java.math.BigInteger;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-
 
 /**
 * <p>A class for arbitrary-precision integer arithmetic purely written in Java.</p>
@@ -51,6 +48,7 @@ import java.util.concurrent.Future;
 * @author Simon Klein
 * @version 0.7
 */
+@SuppressWarnings("all")
 public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cloneable
 {
 	/**

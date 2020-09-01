@@ -34,8 +34,8 @@ public abstract class NumericCaseTest extends CaseTest {
     if (precision > 10)
       throw new IllegalArgumentException(String.valueOf(precision));
 
-    final long min = FastMath.e10[precision - 1];
-    final long max = FastMath.e10[precision];
+    final long min = FastMath.E10[precision - 1];
+    final long max = FastMath.E10[precision];
     return (int)(random.nextInt((int)(max - min)) + min);
   }
 
@@ -46,7 +46,10 @@ public abstract class NumericCaseTest extends CaseTest {
     if (precision > 19)
       throw new IllegalArgumentException(String.valueOf(precision));
 
-    long v = randomInt(precision - 10) * randomInt(10);
+    long v;
+    do
+      v = randomInt(precision - 10) * randomInt(10);
+    while (v == 0);
     while (Numbers.precision(v) < precision)
       v *= 9;
 
