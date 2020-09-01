@@ -36,7 +36,7 @@ public class BigIntConstructorTest extends BigIntTest {
   public void testUnsignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the [`BigIntegers.valueOf(int)`][BigIntegers] utility method is used to provide this missing function.");
 
-    test("<init>(int,int)", BigDecimal.ZERO, report,
+    test("<init>(int,int)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       i(BigInteger.class, a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigIntegers.valueOf(a, b), String::valueOf),
       i(BigInt.class, a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> new BigInt(a, b), String::valueOf),
       i(int[].class, a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigInt.valueOf(a, b), BigInt::toString)
@@ -45,7 +45,7 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testSignedInt(final AuditReport report) {
-    test("<init>(int)", BigDecimal.ZERO, report,
+    test("<init>(int)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       i(BigInteger.class, (int a, int b) -> BigInteger.valueOf(a), String::valueOf),
       i(BigInt.class, (int a, int b) -> new BigInt(a), String::valueOf),
       i(int[].class, (int a, int b) -> BigInt.valueOf(a), BigInt::toString)
@@ -56,7 +56,7 @@ public class BigIntConstructorTest extends BigIntTest {
   public void testUnsignedLong(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the [`BigIntegers.valueOf(long)`][BigIntegers] utility method is used to provide this missing function.");
 
-    test("<init>(int,long)", BigDecimal.ZERO, report,
+    test("<init>(int,long)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       l(BigInteger.class, a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf),
       l(BigInt.class, a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInt((int)a, b), String::valueOf),
       l(int[].class, a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigInt.valueOf((int)a, b), BigInt::toString)
@@ -65,7 +65,7 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testSignedLong(final AuditReport report) {
-    test("<init>(long)", BigDecimal.ZERO, report,
+    test("<init>(long)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       l(BigInteger.class, (long a) -> BigInteger.valueOf(a), String::valueOf),
       l(BigInt.class, (long a) -> new BigInt(a), String::valueOf),
       l(int[].class, (long a) -> BigInt.valueOf(a), BigInt::toString)
@@ -74,9 +74,9 @@ public class BigIntConstructorTest extends BigIntTest {
 
   @Test
   public void testString(final AuditReport report) {
-    test("<init>(String)", BigDecimal.ZERO, report,
-      s(BigInteger.class, (String a) -> new BigInteger(a), o -> String.valueOf(o)),
-      s(BigInt.class, (String a) -> new BigInt(a), o -> String.valueOf(o)),
+    test("<init>(String)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
+      s(BigInteger.class, (String a) -> new BigInteger(a), String::valueOf),
+      s(BigInt.class, (String a) -> new BigInt(a), String::valueOf),
       s(int[].class, (String a) -> BigInt.valueOf(a), BigInt::toString)
     );
   }
@@ -84,7 +84,7 @@ public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testBytesBigEndian(final AuditReport report) {
     final byte[][] bytes = new byte[1][];
-    test("<init>(byte[])", BigDecimal.ZERO, report,
+    test("<init>(byte[])").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       s(BigInteger.class, a -> bytes[0] = new BigInteger(a).toByteArray(), (byte[] a) -> new BigInteger(a), String::valueOf),
       s(BigInt.class, a -> bytes[0], (byte[] a) -> new BigInt(a, false), String::valueOf),
       s(int[].class, a -> bytes[0], (byte[] a) -> BigInt.valueOf(a, false), BigInt::toString)
@@ -96,7 +96,7 @@ public class BigIntConstructorTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not support little endian `byte[]` encoding. Therefore, for this test, the input array is reversed just for `BigInteger`. The time for the array reversal _is not_ included in the runtime measure.");
 
     final byte[][] bytes = new byte[2][];
-    test("<init>(byte[])", BigDecimal.ZERO, report,
+    test("<init>(byte[])").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       s(BigInteger.class, a -> { bytes[0] = new BigInteger(a).toByteArray(); bytes[1] = ArrayUtil.reverse(bytes[0].clone()); return bytes[0]; }, (byte[] a) -> new BigInteger(a), String::valueOf),
       s(BigInt.class, a -> bytes[1], (byte[] a) -> new BigInt(a, true), String::valueOf),
       s(int[].class, a -> bytes[1], (byte[] a) -> BigInt.valueOf(a, true), BigInt::toString)
