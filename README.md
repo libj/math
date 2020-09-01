@@ -35,7 +35,7 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
    1. **JNI**: <ins>Java Native</ins> JNI integration for faster performance, with regular function overhead.<sup>**[\*](#jni1)**</sup>
    1. **JIT**: <ins>Java Bytecode</ins> implementation designed to be optimized by JIT compilation.
 
-<a id="jni1"></a>_<sup>\* Native Bindings are built only for MacOS, Linux, and Windows platforms (64-bit), and are automatically engaged on system startup.</sup>_<br>
+<a id="jni1"></a>_<sup>\* Native Bindings are built only for MacOS, Linux, and Windows platforms (64-bit), and are loaded by default on system startup.</sup>_<br>
 <a id="jni2"></a>_<sup>\*\* To use <ins>Critical Native</ins> JNI bindings, the JVM must be launched with `-Xcomp`.</sup>_
 
 ##### Bare `int[]` <ins>value-encoded number</ins> arrays
@@ -85,6 +85,7 @@ It is also important to note the following:
 | **[`mul(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mulintlong)**<sub>unsigned</sub> | 𝚯 | +193% | +128% |
 | **[`mul(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mullong)**<sub>signed</sub> | 𝚯 | +125% | +195% |
 | **[`mul(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html#mult-256)** | +75% | 0 | +5% |
+| **`pow(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 | **[`div(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divintint)**<sub>unsigned</sub> | 𝚯 | +116% | +107% |
 | **[`div(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divint)**<sub>signed</sub> | 𝚯 | +172% | +100% |
 | **[`div(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntDivisionTest.html#divintlong)**<sub>unsigned</sub> | 𝚯 | +240% | +255% |
@@ -100,6 +101,8 @@ It is also important to note the following:
 | **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
 | **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
 | **[`rem(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remt)** | 0 | +47% | +63% |
+| **[`mod(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modint)** | 0 | +??% | +73% |
+| **[`mod(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modlong)** | 0 | +??% | +73% |
 | **[`mod(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modt)** | 0 | +55% | +73% |
 | **[`bitCount()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitcount)** | 0 | +68% | +63% |
 | **[`bitLength()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitlength)** | 0 | +81% | +205% |
@@ -145,7 +148,6 @@ It is also important to note the following:
 | **`getLowestSetBit(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 | **`isProbablePrime(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 | **`nextProbablePrime()`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
-| **`pow(T)`** | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 #### Benchmarks
 
