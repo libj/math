@@ -51,7 +51,7 @@ public class DecimalMultiplicationOperationTest extends DecimalOperationTest {
     @Override
     Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = mul(d1, d2, scaleBits, defaultValue);
+      final long result = mul(d1, d2, defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

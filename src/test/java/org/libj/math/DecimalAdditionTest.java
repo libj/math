@@ -19,33 +19,32 @@ package org.libj.math;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.libj.math.Decimals.Decimal;
 
 public class DecimalAdditionTest extends DecimalTest {
-  private void testAdd(final byte scaleBits) {
-    test("add(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
-      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
-      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.add(b), o -> o),
-      d(long.class, (long a, long b) -> Decimal.add(a, b, scaleBits, random.nextLong()))
-    );
-  }
-
-  public void testSub(final byte scaleBits) {
-    test("sub(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
-      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.subtract(b), o -> o),
-      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.sub(b), o -> o),
-      d(long.class, (long a, long b) -> Decimal.sub(a, b, scaleBits, random.nextLong()))
-    );
-  }
-
   @Test
   public void testAdd() {
-    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
-      testAdd(b);
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("add(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.add(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.add(a, b, defaultValue, scaleBits), (long o) -> o)
+      );
+    }
   }
 
   @Test
   public void testSub() {
-    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
-      testSub(b);
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("sub(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.subtract(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.sub(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.sub(a, b, defaultValue, scaleBits), (long o) -> o)
+      );
+    }
   }
 }

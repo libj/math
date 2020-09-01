@@ -52,7 +52,7 @@ abstract class DecimalOperation<T,C> {
     return valueBits(scaleBits);
   }
 
-  final long randomBounded(final long min, final long max, final short scale, final byte scaleBits) {
+  long randomBounded(final long min, final long max, final short scale, final byte scaleBits) {
     if (min > max)
       throw new IllegalArgumentException();
 
@@ -64,23 +64,23 @@ abstract class DecimalOperation<T,C> {
       value = Decimal.maxValue(valueBits);
 
     final long defaultValue = random.nextLong();
-    final long result = encode(value, scale, scaleBits, defaultValue);
+    final long result = encode(value, scale, defaultValue, scaleBits);
     if (result == defaultValue) {
-      encode(value, scale, scaleBits, defaultValue);
+      encode(value, scale, defaultValue, scaleBits);
       throw new IllegalStateException();
     }
 
     return result;
   }
 
-  final long randomEncoded(final byte bits) {
+  final long randomEncoded(final byte scaleBits) {
     final long defaultValue = random.nextLong();
-    final long value = randomValue(maxValuePower(bits));
-    final short scale = randomScale(bits);
-    final long result = encode(value, scale, bits, defaultValue);
+    final long value = randomValue(maxValuePower(scaleBits));
+    final short scale = randomScale(scaleBits);
+    final long result = encode(value, scale, defaultValue, scaleBits);
     if (result == defaultValue) {
-      randomScale(bits);
-      encode(value, scale, bits, defaultValue);
+      randomScale(scaleBits);
+      encode(value, scale, defaultValue, scaleBits);
       throw new IllegalStateException();
     }
 

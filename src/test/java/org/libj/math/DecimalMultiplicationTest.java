@@ -19,20 +19,19 @@ package org.libj.math;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.libj.math.Decimals.Decimal;
 
 public class DecimalMultiplicationTest extends DecimalTest {
-  public void testMul(final byte scaleBits) {
-    final long defaultValue = random.nextLong();
-    test("mul(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
-      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.multiply(b), o -> o),
-      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.mul(b), o -> o),
-      d(long.class, (long a, long b) -> Decimal.mul(a, b, scaleBits, defaultValue), o -> o == defaultValue ? null : o)
-    );
-  }
-
   @Test
   public void testMul() {
-    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
-      testMul(b);
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("mul(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.multiply(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.mul(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.mul(a, b, defaultValue, scaleBits), (long o) -> o == defaultValue ? null : o)
+      );
+    }
   }
 }

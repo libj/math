@@ -18,7 +18,7 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 import static org.libj.lang.Strings.Align.*;
-import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 
@@ -44,7 +44,7 @@ public class FixedPointTest extends DecimalOperationTest {
 
     final long defaultValue = random.nextLong();
     long ts = System.nanoTime();
-    final long encoded = encode(value, scale, scaleBits, defaultValue);
+    final long encoded = encode(value, scale, defaultValue, scaleBits);
     time[0] += System.nanoTime() - ts;
     if (expectOverflow) {
       if (encoded != defaultValue)
@@ -57,8 +57,8 @@ public class FixedPointTest extends DecimalOperationTest {
       logger.info("Encod: " + Buffers.toString(encoded));
 
     ts = System.nanoTime();
-    final long decodedValue = decodeValue(encoded, scaleBits);
-    final short decodedScale = decodeScale(encoded, scaleBits);
+    final long decodedValue = value(encoded, scaleBits);
+    final short decodedScale = scale(encoded, scaleBits);
     time[1] += System.nanoTime() - ts;
 
     if (debug) {
@@ -234,31 +234,6 @@ public class FixedPointTest extends DecimalOperationTest {
     logger.info("array: " + time1);
     logger.info("funct: " + time2);
 //    assertTrue(time1 < time2);
-  }
-
-  @Test
-  public void testMinScaleBits1() {
-    for (int i = 0; i < count; ++i) {
-      for (byte b = 2; b <= MAX_SCALE_BITS; ++b) {
-        final short maxScale = (short)(maxScale(b) + 1);
-        final short minScale = SafeMath.min(maxScale((byte)(b - 1)) + 2, maxScale);
-        final short randomScale = (short)(((maxScale - minScale) * random.nextDouble()) + minScale);
-        if (randomScale != 0)
-          assertEquals(randomScale + " [" + minScale + "," + maxScale + "]", b, minScaleBits(randomScale));
-      }
-    }
-  }
-
-  @Test
-  public void testMinScaleBits2() {
-    for (int i = 0; i < count; ++i) {
-      final short randomScale = (short)((random.nextBoolean() ? -1 : 0) * random.nextDouble() * 32768);
-      final byte bits = minScaleBits(randomScale);
-      final short minScale = minScale(bits);
-      final short maxScale = maxScale(bits);
-      assertTrue("scale=" + randomScale + " bits=" + bits + " [" + minScale + "," + maxScale + "]", minScale <= randomScale);
-      assertTrue("scale=" + randomScale + " bits=" + bits + " [" + minScale + "," + maxScale + "]", randomScale <= maxScale);
-    }
   }
 
   @Test

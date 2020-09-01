@@ -27,6 +27,7 @@ import org.libj.console.Ansi.Color;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 
+@SuppressWarnings("unused")
 public class DecimalDivisionStudy {
   private static final long DIVISOR_MAX = Long.MAX_VALUE / 10;
   private static final Random random = new Random();
@@ -88,14 +89,14 @@ public class DecimalDivisionStudy {
       // Expand the value to max precision available,
       // allowing it to use the sign bit
       if (dp1 > 0) {
-        v1 = v1 * FastMath.e10[dp1];
+        v1 = v1 * FastMath.E10[dp1];
 //        s1 += dp1;
       }
 
       // If v2 has trailing zeroes, remove them first
       final byte z2 = Numbers.trailingZeroes(v2);
       if (z2 > 0) {
-        v2 /= FastMath.e10[z2];
+        v2 /= FastMath.E10[z2];
 //        s2 -= z2;
       }
 
@@ -134,7 +135,7 @@ public class DecimalDivisionStudy {
    * @return The result of <code>v1 * 10<sup>dp</sup> / v2</code>.
    */
   static long scaleDiv(long v1, final long v2, byte dp, int[] q, final long[] buf) {
-    final long f = FastMath.e10[dp];
+    final long f = FastMath.E10[dp];
 
     BigInt.assign(q, 1, v1);
     if (BigInt.mul(q, f) != q)

@@ -50,14 +50,14 @@ abstract class DecimalMultiplication extends FixedPoint {
     // If v1 has trailing zeroes, remove them first.
     final byte z1 = Numbers.trailingZeroes(v1);
     if (z1 > 0) {
-      v1 /= FastMath.e10[z1];
+      v1 /= FastMath.E10[z1];
       s1 -= z1;
     }
 
     // If v2 has trailing zeroes, remove them first.
     final byte z2 = Numbers.trailingZeroes(v2);
     if (z2 > 0) {
-      v2 /= FastMath.e10[z2];
+      v2 /= FastMath.E10[z2];
       s2 -= z2;
     }
 
@@ -74,17 +74,17 @@ abstract class DecimalMultiplication extends FixedPoint {
       }
       else {
         final byte ds = Numbers.precision(dp);
-        if (ds >= FastMath.e10.length) {
-          result.error("Overflow", v, (short)s);
+        if (ds >= FastMath.E10.length) {
+          result.error("Overflow");
           return false;
         }
 
-        final long e10 = FastMath.e10[ds];
+        final long e10 = FastMath.E10[ds];
         final long rem = BigInt.divRem(val, e10);
         v = BigInt.longValue(val);
         if (rem != 0) {
           final byte rp = Numbers.precision(rem);
-          final byte r = (byte)(rp < ds ? 0 : rp == 1 ? rem : rem / FastMath.e10[rp - 1]);
+          final byte r = (byte)(rp < ds ? 0 : rp == 1 ? rem : rem / FastMath.E10[rp - 1]);
           v = roundHalfUp(r, v);
         }
 

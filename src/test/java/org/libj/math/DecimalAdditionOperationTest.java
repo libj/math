@@ -55,9 +55,9 @@ public class DecimalAdditionOperationTest extends DecimalOperationTest {
 
   private static final DecimalArithmeticOperation add = new AdditiveOperation("add", long.class, "%s + %s") {
     @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = add(ld1, ld2, bits, defaultValue);
+      final long result = add(ld1, ld2, defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -76,9 +76,9 @@ public class DecimalAdditionOperationTest extends DecimalOperationTest {
 
   private static final DecimalArithmeticOperation sub = new AdditiveOperation("sub", long.class, "%s - %s") {
     @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
+    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = sub(ld1, ld2, bits, defaultValue);
+      final long result = sub(ld1, ld2, defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

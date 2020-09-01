@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 
-public class DecimalPredicateTest extends DecimalOperationTest {
+public class DecimalPredicateOperationTest extends DecimalOperationTest {
   private static final DecimalOperation<Short,Short> precision = new DecimalOperation<Short,Short>("precision", long.class, "precision(%s)") {
     @Override
     BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Short expected, final Short actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {

@@ -31,29 +31,30 @@ abstract class DecimalAddition extends FixedPoint {
     if (add0(d1.value, d1.scale, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, d1))
       return d1;
 
-    // Special situation where negation may have caused an overflow, but the result is clearly zero
+    // Special situation where negation may have caused an overflow,
+    // but the result is clearly zero
     if (Decimal.compare(d1.value, d1.scale, -v2, s2) == 0)
-      return ZERO;
+      return d1.assign(0, (short)0);
 
     return null;
   };
 
-  static long add0(long d1, long d2, final byte scaleBits, final long defaultValue) {
-    long v1 = decodeValue(d1, scaleBits);
+  static long add0(long dec1, long dec2, final long defaultValue, final byte scaleBits) {
+    long v1 = value(dec1, scaleBits);
     if (v1 == 0)
-      return d2;
+      return dec2;
 
-    long v2 = decodeValue(d2, scaleBits);
+    long v2 = value(dec2, scaleBits);
     if (v2 == 0)
-      return d1;
+      return dec1;
 
     final byte valueBits = valueBits(scaleBits);
     final long minValue = Decimal.minValue(valueBits);
     final long maxValue = Decimal.maxValue(valueBits);
     final short minScale = minScale(scaleBits);
     final short maxScale = maxScale(scaleBits);
-    final short s1 = decodeScale(d1, scaleBits);
-    final short s2 = decodeScale(d2, scaleBits);
+    final short s1 = scale(dec1, scaleBits);
+    final short s2 = scale(dec2, scaleBits);
     final Decimal result = threadLocal.get();
     if (add0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, false, result))
       return result.encode(scaleBits, defaultValue);
@@ -97,13 +98,8 @@ abstract class DecimalAddition extends FixedPoint {
       // v1's scale, down-scale v2 and do rounding (losing precision, but it's
       // ok cause that precision is insignificant).
 
-      // Calculate the "overflow factor" -- factor multiple past which there will be an overflow
-//      final long min = minValue == Long.MIN_VALUE ? Long.MIN_VALUE : minValue * 10;
-//      final long max = maxValue == Long.MAX_VALUE ? Long.MAX_VALUE : maxValue * 10;
-      long of = (v1 < 0 ? minValue : maxValue) / v1;
-
       // How many multiples of 10 until overflow?
-      final byte dp1 = (byte)(Numbers.precision(of) - 1);
+      final byte dp1 = (byte)(Numbers.precision(minValue / v1) - 1);
 
       // ds is always positive, and greater than 0
       int ds = s2 - s1;
@@ -143,11 +139,8 @@ abstract class DecimalAddition extends FixedPoint {
         do {
           if (ds1 > 0) {
             // Make the lossless adjustment to v1
-            v1 *= FastMath.e10[ds1];
+            v1 *= FastMath.E10[ds1];
           }
-
-//          if (Numbers.precision(v2) < ds2)
-//            break;
 
           long rf = 0;
           long r0 = 0;
@@ -157,7 +150,7 @@ abstract class DecimalAddition extends FixedPoint {
             final short adj = --ds2; // Leave one factor for rounding
             if (adj > 0) {
               // Check if there is a rounding carry
-              rf = FastMath.e10[adj];
+              rf = FastMath.E10[adj];
               if ((r0 = v2 % rf) == 0)
                 ds2 = 0;
 
@@ -176,15 +169,14 @@ abstract class DecimalAddition extends FixedPoint {
 
           byte ur = r;
           if (r0 != 0) {
-            rf /= 10;
-            ur = (byte)(r0 / rf);
+            ur = rf >= 100 ? (byte)roundHalfUp10(r0 / (rf / 100)) : (byte)(r0 / (rf / 10));
             ur = (byte)(signsEqual ? roundHalfUp(ur, r) : roundHalfDown(ur, r));
           }
 
           // If we set a remainder value, then v has been scaled down.
           // See if there's room for it to be scaled back up.
           if (ur != 0) {
-            of = (v < 0 ? minValue : maxValue) / v;
+            long of = (v < 0 ? minValue : maxValue) / v;
             if (of >= 10) {
               // Undo the rounding adjustment
               v = signsEqual || ds2 > 0 ? unroundHalfUp(r, v) : unroundHalfDown(r, v);
@@ -222,16 +214,13 @@ abstract class DecimalAddition extends FixedPoint {
         // overflow can only be off by a factor of 10,
         // since this is addition/subtraction
         if (--s < minScale) {
-          result.error("Overflow", v, s);
+          result.error("Overflow");
           return false;
         }
 
         v1 = roundHalfUp10(v1);
         v2 = roundHalfUp10(v2);
-
         v = v1 + v2;
-//        if (v < 0 ? sig != -1 : v == 0 ? sig != 0 : sig != 1)
-//          throw new IllegalStateException("Should not happen");
 
         result.assign(v, s);
         return true;
@@ -241,7 +230,7 @@ abstract class DecimalAddition extends FixedPoint {
     if (negate) {
       if (v == Long.MIN_VALUE) {
         if (--s < minScale) {
-          result.error("Overflow", v, s);
+          result.error("Overflow");
           return false;
         }
 
@@ -257,15 +246,13 @@ abstract class DecimalAddition extends FixedPoint {
       // overflow can only be off by a factor of 10, since this is
       // addition/subtraction
       if (--s < minScale) {
-        result.error("Overflow", v, s);
+        result.error("Overflow");
         return false;
       }
 
       final boolean signsEqual = v1 < 0 == v2 < 0;
       v = signsEqual || ds2 > 0 ? unroundHalfUp(r, v) : unroundHalfDown(r, v);
       v = roundHalfUp10(v);
-//      if (v < minValue || maxValue < v)
-//        throw new IllegalStateException("Should not happen");
     }
 
     result.assign(v, s);

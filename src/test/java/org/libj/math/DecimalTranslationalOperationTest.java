@@ -17,13 +17,14 @@
 package org.libj.math;
 
 import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.junit.Test;
 
-public class DecimalTranslationTest extends DecimalOperationTest {
+public class DecimalTranslationalOperationTest extends DecimalOperationTest {
   private static final DecimalArithmeticOperation abs = new DecimalTranslationalOperation("abs", long.class, "| %s |") {
     @Override
     boolean lockScale() {
@@ -33,7 +34,7 @@ public class DecimalTranslationTest extends DecimalOperationTest {
     @Override
     Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = abs(d1, scaleBits, defaultValue);
+      final long result = abs(d1, defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -59,7 +60,7 @@ public class DecimalTranslationTest extends DecimalOperationTest {
     @Override
     Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = neg(d1, scaleBits, defaultValue);
+      final long result = neg(d1, defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -80,7 +81,7 @@ public class DecimalTranslationTest extends DecimalOperationTest {
     @Override
     Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = encode(bd1, scaleBits, defaultValue);
+      final long result = encode(bd1, defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -102,7 +103,7 @@ public class DecimalTranslationTest extends DecimalOperationTest {
     @Override
     Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = encode(bd1.toString(), scaleBits, defaultValue);
+      final long result = encode(bd1.toString(), defaultValue, scaleBits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -134,7 +135,7 @@ public class DecimalTranslationTest extends DecimalOperationTest {
     @Override
     Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = setScale(d1, decodeScale(d2, bits), bits, defaultValue);
+      final long result = setScale(d1, scale(d2, bits), defaultValue, bits);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

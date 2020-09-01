@@ -20,35 +20,32 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import org.junit.Test;
+import org.libj.math.Decimals.Decimal;
 
 public class DecimalDivisionTest extends DecimalTest {
-  public void testDiv(final byte scaleBits) {
-    final long defaultValue = random.nextLong();
-    test("div(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
-      d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.divide(b, MathContext.DECIMAL128), o -> o),
-      d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.div(b), o -> o),
-      d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.div(a, b, scaleBits, defaultValue), o -> o == defaultValue ? null : o)
-    );
-  }
-
-  public void testRem(final byte scaleBits) {
-    final long defaultValue = random.nextLong();
-    test("rem(" + scaleBits + ")", scaleBits, skip(scaleBits), BigDecimal.ZERO, null,
-      d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.remainder(b, MathContext.DECIMAL128), o -> o),
-      d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.rem(b), o -> o),
-      d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, scaleBits, defaultValue), o -> o == defaultValue ? null : o)
-    );
-  }
-
   @Test
   public void testDiv() {
-    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
-      testDiv(b);
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("div(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.divide(b, MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.div(b), o -> o),
+        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.div(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
+      );
+    }
   }
 
   @Test
   public void testRem() {
-    for (byte b = Decimal.MIN_SCALE_BITS; b <= Decimal.MAX_SCALE_BITS; ++b)
-      testRem(b);
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("rem(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.remainder(b, MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.rem(b), o -> o),
+        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
+      );
+    }
   }
 }

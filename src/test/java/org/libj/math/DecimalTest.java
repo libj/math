@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import org.libj.console.Ansi;
 import org.libj.console.Ansi.Color;
 
-public class DecimalTest extends NumericCaseTest {
-  protected static int skip(final byte scaleBits) {
+abstract class DecimalTest extends NumericCaseTest {
+  static int skip(final byte scaleBits) {
     return (int)Math.pow(scaleBits, scaleBits / 9d);
   }
 
@@ -31,7 +31,7 @@ public class DecimalTest extends NumericCaseTest {
   }
 
   Decimal toDecimal(final long decimal) {
-    return new Decimal(decimal, DecimalCase.scaleBitsLocal.get());
+    return new Decimals.Decimal(decimal, DecimalCase.scaleBitsLocal.get());
   }
 
   public long nz(final long d) {

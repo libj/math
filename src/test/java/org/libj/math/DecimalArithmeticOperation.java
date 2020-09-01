@@ -18,6 +18,7 @@ package org.libj.math;
 
 import static org.libj.math.Decimal.*;
 import static org.libj.math.DecimalOperationTest.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -41,8 +42,8 @@ abstract class DecimalArithmeticOperation extends DecimalOperation<Long,BigDecim
       return compare(0, actual, scaleBits) == 0 ? DEFAULT : BigDecimals.TWO;
 
     final byte valueBits = valueBits(scaleBits);
-    final BigInteger minValue = DecimalTranslationTest.minValue[valueBits];
-    final BigInteger maxValue = DecimalTranslationTest.maxValue[valueBits];
+    final BigInteger minValue = DecimalTranslationalOperationTest.minValue[valueBits];
+    final BigInteger maxValue = DecimalTranslationalOperationTest.maxValue[valueBits];
     final int minScale = Decimal.minScale[scaleBits];
     final int maxScale = Decimal.maxScale[scaleBits];
     BigInteger unscaled = expected.unscaledValue();
@@ -89,7 +90,7 @@ abstract class DecimalArithmeticOperation extends DecimalOperation<Long,BigDecim
     if (actual == defaultValue)
       return UNEXPECTED_DEFAULT;
 
-    final short s = decodeScale(actual, scaleBits);
+    final short s = scale(actual, scaleBits);
     final BigDecimal expectedScaled = expected.setScale(s, RoundingMode.HALF_UP);
 
     final BigDecimal result = toBigDecimal(actual, scaleBits);

@@ -18,6 +18,7 @@ package org.libj.math;
 
 import static org.libj.lang.Strings.Align.*;
 import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -119,7 +120,7 @@ public abstract class DecimalOperationTest {
   }
 
   private static void logVariables(final long d1, final long d2, final byte scaleBits) {
-    logger.info(c(Color.RED, "----------------------------------------\nd1: (value = " + d1 + "L, scale = " + decodeScale(d1, scaleBits) + ") d2: (value = " + d2 + "L, scale = " + decodeScale(d2, scaleBits) + ") scaleBits = " + scaleBits));
+    logger.info(c(Color.RED, "----------------------------------------\nd1: (value = " + d1 + "L, scale = " + scale(d1, scaleBits) + ") d2: (value = " + d2 + "L, scale = " + scale(d2, scaleBits) + ") scaleBits = " + scaleBits));
   }
 
   private static void writeErrorFile(final long d1, final long d2, final byte scaleBits) {
@@ -198,9 +199,9 @@ public abstract class DecimalOperationTest {
             }
             else {
               s1 = (short)(Math.random() * Decimal.maxScale(scaleBits));
-              v1 *= FastMath.e10[(int)Math.min(random.nextDouble() * s1, FastMath.e10.length - 1)];
+              v1 *= FastMath.E10[(int)Math.min(random.nextDouble() * s1, FastMath.E10.length - 1)];
               s2 = (short)(Math.random() * Decimal.maxScale(scaleBits));
-              v2 *= FastMath.e10[(int)Math.min(random.nextDouble() * s2, FastMath.e10.length - 1)];
+              v2 *= FastMath.E10[(int)Math.min(random.nextDouble() * s2, FastMath.E10.length - 1)];
             }
 
             d1 = operation.randomBounded(v1, v1, s1, scaleBits);
@@ -214,10 +215,10 @@ public abstract class DecimalOperationTest {
 
         final BigDecimal bd1 = toBigDecimal(d1, scaleBits);
         final BigDecimal bd2 = toBigDecimal(d2, scaleBits);
-        final long v1 = decodeValue(d1, scaleBits);
-        final short s1 = decodeScale(d1, scaleBits);
-        final long v2 = decodeValue(d2, scaleBits);
-        final short s2 = decodeScale(d2, scaleBits);
+        final long v1 = value(d1, scaleBits);
+        final short s1 = scale(d1, scaleBits);
+        final long v2 = value(d2, scaleBits);
+        final short s2 = scale(d2, scaleBits);
         Object actual = defaultValue;
         Object expected = defaultValue;
         BigDecimal error;

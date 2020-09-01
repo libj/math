@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.libj.lang.Buffers;
 import org.libj.lang.Numbers;
 
+@SuppressWarnings("unused")
 public class DecimalMultiplicationStudy {
   private static final long v1 = 72057594037927935L;
   private static final short s1 = 22;
@@ -82,11 +83,11 @@ public class DecimalMultiplicationStudy {
 
   private static long divf(long[] y, int factor) {
     if (factor <= 9) {
-      div(y, (int)FastMath.e10[factor]);
+      div(y, (int)FastMath.E10[factor]);
     }
     else {
-      final int high = (int)FastMath.e10[factor -= 9];
-      final int low = (int)FastMath.e10[9];
+      final int high = (int)FastMath.E10[factor -= 9];
+      final int low = (int)FastMath.E10[9];
       div(y, low);
       div(y, high);
     }
@@ -96,11 +97,11 @@ public class DecimalMultiplicationStudy {
 
   private static long divf2(long[] two, int factor) {
     if (factor <= 9) {
-      div2(two, (int)FastMath.e10[factor]);
+      div2(two, (int)FastMath.E10[factor]);
     }
     else {
-      final int high = (int)FastMath.e10[factor -= 9];
-      final int low = (int)FastMath.e10[9];
+      final int high = (int)FastMath.E10[factor -= 9];
+      final int low = (int)FastMath.E10[9];
       div2(two, high);
       div2(two, low);
     }
@@ -192,7 +193,7 @@ public class DecimalMultiplicationStudy {
     int d, f;
     do {
       f = Math.min(factor, 9);
-      d = (int)FastMath.e10[f];
+      d = (int)FastMath.E10[f];
       factor -= f;
 
       System.err.println("d: " + Buffers.toString(d));
@@ -328,7 +329,7 @@ public class DecimalMultiplicationStudy {
     long lv2 = 0;
     long f2 = 0;
     if (dp1 > 0) {
-      f1 = FastMath.e10[dp1];
+      f1 = FastMath.E10[dp1];
       lv1 = v1 % 1000000000;
       hv1 = (v1 - lv1) / f1;
       if (dp2 == 0)
@@ -336,7 +337,7 @@ public class DecimalMultiplicationStudy {
     }
 
     if (dp2 > 0) {
-      f2 = FastMath.e10[dp2];
+      f2 = FastMath.E10[dp2];
       lv2 = v2 % 1000000000;
       hv2 = (v2 - lv2) / f2;
       if (dp1 == 0)
@@ -384,15 +385,15 @@ public class DecimalMultiplicationStudy {
 
   /**
    * A <b>medium error</b> approach for {@code v1 * v2} via
-   * {@link DecimalMultiplication#multiplyHigh(long,long)} that tries to shift {@code high}
-   * and {@code low} into a single 64-bit {@code long}, perform the division by
-   * the specified {@code factor}, and then shift back to the original position.
+   * {@link #multiplyHigh(long,long)} that tries to shift {@code high} and
+   * {@code low} into a single 64-bit {@code long}, perform the division by the
+   * specified {@code factor}, and then shift back to the original position.
    */
   private static long mulHigh(final long v1, final long v2, int factor) {
     long h = multiplyHigh(v1, v2);
     long l = v1 * v2;
 
-    final long f = FastMath.e10[factor];
+    final long f = FastMath.E10[factor];
 
     final int shift = Long.numberOfLeadingZeros(h);
     long shiftHigh = h << shift;
@@ -417,14 +418,14 @@ public class DecimalMultiplicationStudy {
     // Need to scale down if we have high order bits
     if (bp1 > 0) {
       final int dp1 = Numbers.precision((1 << bp1) - 1);
-      v1 /= FastMath.e10[dp1];
+      v1 /= FastMath.E10[dp1];
       s1 -= dp1; // NOTE: s1 is reduced, and this info needs to be used
     }
 
     // Need to scale down if we have high order bits
     if (bp2 > 0) {
       final int dp2 = Numbers.precision((1 << bp2) - 1);
-      v2 /= FastMath.e10[dp2];
+      v2 /= FastMath.E10[dp2];
       s2 -= dp2; // NOTE: s2 is reduced, and this info needs to be used
     }
 
