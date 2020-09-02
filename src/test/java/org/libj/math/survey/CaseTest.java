@@ -380,6 +380,7 @@ public abstract class CaseTest {
     final void test(final CaseTest caseTest, final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
       int progress = 0;
       if (!specialDone) {
+        System.out.println("Special_____________________________________________________________________________________________");
         if (inputs[0] != 0 || inputs[1] != 0)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
@@ -561,6 +562,7 @@ public abstract class CaseTest {
     final void test(final CaseTest caseTest, final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
       int progress = 0;
       if (!specialDone) {
+        System.out.println("Special_____________________________________________________________________________________________");
         if (inputs[0] != 0 || inputs[1] != 0)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
