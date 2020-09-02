@@ -37,7 +37,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
     final int[] sig = {0};
     test("mul(int,int)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
@@ -49,7 +49,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSignedInt(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
     test("mul(int)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
@@ -62,7 +62,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedLong(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
     final int[] sig = {0};
     test("mul(int,long)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
@@ -74,7 +74,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSignedLong(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
     test("mul(long)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
@@ -131,11 +131,11 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testBig(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages all multiplication algorithm for both `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys all multiplication algorithms in `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"small sized\" numbers, `BigInt` outperforms `BigInteger` due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"medium sized\" numbers, `BigInteger` outperforms `BigInt` due to the fact that `BigInteger.multiplyToLen(...)` is implemented as an intrinsic, which proves to beat `BigInt`'s critical native implementation of the same algorithm.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"large sized\" numbers, `BigInt` outperforms `BigInteger` due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, `BigInt` utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient `int[]` arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the `BigInt`'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "For \"very large sized\" numbers, `BigInt` outperforms `BigInteger` due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "For \"very large sized\" numbers, `BigInt` outperforms `BigInteger` in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.");
 
     for (int i = 1; i <= 128; i *= 2)
       testBig(report, i, 80);
@@ -150,7 +150,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSquareBig(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages all multiplication algorithm for both `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys all multiplication algorithms in `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
     report.addComment(UNINSTRUMENTED.ordinal(), "The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the \"square\" use-case, as the equality of `x` and `y` have a better change of allowing for in-place calculations.");
     for (int i = 1; i <= 128; i *= 2)
       testSquareBig(report, i, 80);
@@ -165,8 +165,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testPow(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the power algorithm for both `BigInt` and `BigInteger`.");
 
     test("pow(int)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
       i(BigInteger.class, this::scaledBigInteger, b -> abs((byte)b), (BigInteger a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),

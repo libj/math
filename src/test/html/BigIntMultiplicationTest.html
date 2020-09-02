@@ -440,11 +440,11 @@ mul(T): 1024
 
 <h5><a name="mult-1"><code>mul(T): 1</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 1
@@ -512,11 +512,11 @@ mul(T): 1
 
 <h5><a name="mult-2"><code>mul(T): 2</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 2
@@ -584,11 +584,11 @@ mul(T): 2
 
 <h5><a name="mult-4"><code>mul(T): 4</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 4
@@ -656,11 +656,11 @@ mul(T): 4
 
 <h5><a name="mult-8"><code>mul(T): 8</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 8
@@ -728,11 +728,11 @@ mul(T): 8
 
 <h5><a name="mult-16"><code>mul(T): 16</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 16
@@ -800,11 +800,11 @@ mul(T): 16
 
 <h5><a name="mult-32"><code>mul(T): 32</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 32
@@ -872,11 +872,11 @@ mul(T): 32
 
 <h5><a name="mult-64"><code>mul(T): 64</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 64
@@ -944,11 +944,11 @@ mul(T): 64
 
 <h5><a name="mult-128"><code>mul(T): 128</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>For "small sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.</p>
 <p>For "medium sized" numbers, <code>BigInteger</code> outperforms <code>BigInt</code> due to the fact that <code>BigInteger.multiplyToLen(...)</code> is implemented as an intrinsic, which proves to beat <code>BigInt</code>'s critical native implementation of the same algorithm.</p>
 <p>For "large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, <code>BigInt</code> utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient <code>int<a href=""></a></code> arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the <code>BigInt</code>'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.</p>
-<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
+<p>For "very large sized" numbers, <code>BigInt</code> outperforms <code>BigInteger</code> in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.</p>
 <pre><code>
 [runtime performance]
 mul(T): 128
@@ -1016,7 +1016,7 @@ mul(T): 128
 
 <h5><a name="multt: 1"><code>mul(T,T): 1</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1085,7 +1085,7 @@ mul(T,T): 1
 
 <h5><a name="multt: 2"><code>mul(T,T): 2</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1154,7 +1154,7 @@ mul(T,T): 2
 
 <h5><a name="multt: 4"><code>mul(T,T): 4</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1223,7 +1223,7 @@ mul(T,T): 4
 
 <h5><a name="multt: 8"><code>mul(T,T): 8</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1292,7 +1292,7 @@ mul(T,T): 8
 
 <h5><a name="multt: 16"><code>mul(T,T): 16</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1361,7 +1361,7 @@ mul(T,T): 16
 
 <h5><a name="multt: 32"><code>mul(T,T): 32</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1430,7 +1430,7 @@ mul(T,T): 32
 
 <h5><a name="multt: 64"><code>mul(T,T): 64</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1499,7 +1499,7 @@ mul(T,T): 64
 
 <h5><a name="multt: 128"><code>mul(T,T): 128</code></a></h5>
 
-<p>This test engages all multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
+<p>This test surveys all multiplication algorithms in <code>BigInt</code> and <code>BigInteger</code>, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.</p>
 <p>The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the "square" use-case, as the equality of <code>x</code> and <code>y</code> have a better change of allowing for in-place calculations.</p>
 <pre><code>
 [runtime performance]
@@ -1568,7 +1568,7 @@ mul(T,T): 128
 
 <h5><a name="mullong"><code>mul(long)</code></a></h5>
 
-<p>This test engages the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
+<p>This test surveys the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
 <pre><code>
 [runtime performance]
 mul(long)
@@ -1838,7 +1838,7 @@ mul(T,T): 1024
 <h5><a name="mulintlong"><code>mul(int,long)</code></a></h5>
 
 <p>The <code>BigInteger</code> class does not have a constructor for unsigned <code>long</code>. Therefore, for this test, the creation of a <code>BigInteger</code> from an unsigned <code>long</code> is accomplished with the <a href="src/test/java/org/libj/math/BigIntegers.java"><code>BigIntegers.valueOf(long)</code></a> utility method.</p>
-<p>This test engages the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
+<p>This test surveys the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
 <pre><code>
 [runtime performance]
 mul(int,long)
@@ -1906,7 +1906,7 @@ mul(int,long)
 
 <h5><a name="mulint"><code>mul(int)</code></a></h5>
 
-<p>This test engages the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
+<p>This test surveys the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
 <pre><code>
 [runtime performance]
 mul(int)
@@ -1975,7 +1975,7 @@ mul(int)
 <h5><a name="mulintint"><code>mul(int,int)</code></a></h5>
 
 <p>The <code>BigInteger</code> class does not have a constructor for unsigned <code>int</code>. Therefore, for this test, the creation of a <code>BigInteger</code> from an unsigned <code>int</code> is accomplished with the <a href="src/test/java/org/libj/math/BigIntegers.java"><code>BigIntegers.valueOf(int)</code></a> utility method.</p>
-<p>This test engages the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
+<p>This test surveys the long multiplication algorithm for both <code>BigInt</code> and <code>BigInteger</code>.</p>
 <pre><code>
 [runtime performance]
 mul(int,int)
