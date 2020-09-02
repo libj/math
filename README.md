@@ -101,8 +101,8 @@ It is also important to note the following:
 | **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remintlong)**<sub>unsigned</sub> | 𝚯 | +159% | +253% |
 | **[`rem(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remlong)**<sub>signed</sub> | 𝚯 | +143% | +150% |
 | **[`rem(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#remt)** | 0 | +47% | +63% |
-| **[`mod(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modint)** | 0 | +??% | +73% |
-| **[`mod(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modlong)** | 0 | +??% | +73% |
+| **[`mod(int)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modint)** | 𝚯 | +250% | +260% |
+| **[`mod(long)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modlong)** | 𝚯 | +118% | +174% |
 | **[`mod(T)`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntRemainderTest.html#modt)** | 0 | +55% | +73% |
 | **[`bitCount()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitcount)** | 0 | +68% | +63% |
 | **[`bitLength()`](https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntBitwiseTest.html#bitlength)** | 0 | +81% | +205% |
