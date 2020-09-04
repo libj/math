@@ -25,7 +25,7 @@ public class DecimalAdditionTest extends DecimalTest {
   @Test
   public void testAdd() {
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("add(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
@@ -38,7 +38,7 @@ public class DecimalAdditionTest extends DecimalTest {
   @Test
   public void testSub() {
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("sub(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.subtract(b), o -> o),

@@ -26,7 +26,7 @@ public class DecimalDivisionTest extends DecimalTest {
   @Test
   public void testDiv() {
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("div(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.divide(b, MathContext.DECIMAL128), o -> o),
@@ -39,7 +39,7 @@ public class DecimalDivisionTest extends DecimalTest {
   @Test
   public void testRem() {
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("rem(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.remainder(b, MathContext.DECIMAL128), o -> o),

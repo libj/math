@@ -28,7 +28,7 @@ import org.libj.math.survey.CaseTest;
 public class DecimalPredicateTest extends DecimalTest {
   @Test
   public void testEquals() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("eq(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.equals(b), o -> o),
@@ -76,7 +76,7 @@ public class DecimalPredicateTest extends DecimalTest {
     System.out.println();
 
     final long defaultValue = random.nextLong();
-    for (byte i = 0; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = 0; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("setScale(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, b -> (byte)b, (BigDecimal a, long b) -> a.setScale((byte)b, RoundingMode.HALF_UP), o -> o),
@@ -88,7 +88,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testCompareTo() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("compare(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b), o -> o),
@@ -100,7 +100,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testLt() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("lt(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, o -> o),
@@ -112,7 +112,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testGt() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("gt(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, o -> o),
@@ -124,7 +124,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testLte() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("lte(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) <= 0, o -> o),
@@ -136,7 +136,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testGte() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("gte(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) >= 0, o -> o),
@@ -148,7 +148,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testMin() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("min(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.min(b), o -> o),
@@ -160,7 +160,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testMax() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("max(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.max(b), o -> o),
@@ -172,7 +172,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testPrecision() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("precision(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.precision(), String::valueOf),
@@ -184,7 +184,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testHashCode() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("hashCode(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.hashCode(), String::valueOf),
@@ -196,7 +196,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testScale() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("scale(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.scale(), String::valueOf),
@@ -208,7 +208,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testSignum() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("signum(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.signum(), String::valueOf),
@@ -220,7 +220,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testByteValue() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("byteValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.byteValue(), String::valueOf),
@@ -232,7 +232,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testShortValue() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("shortValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.shortValue(), String::valueOf),
@@ -244,7 +244,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testIntValue() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("intValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.intValue(), String::valueOf),
@@ -256,7 +256,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testLongValue() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("longValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, (long a) -> toBigDecimal(a).longValue(), String::valueOf),
@@ -279,7 +279,7 @@ public class DecimalPredicateTest extends DecimalTest {
       progress = progress(progress, i, i, iterations);
     }
 
-    for (byte i = 0; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = 0; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("floatValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.floatValue(), String::valueOf),
@@ -302,7 +302,7 @@ public class DecimalPredicateTest extends DecimalTest {
       progress = progress(progress, i, i, iterations);
     }
 
-    for (byte i = 0; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = 0; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("doubleValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.doubleValue(), String::valueOf),
@@ -314,7 +314,7 @@ public class DecimalPredicateTest extends DecimalTest {
 
   @Test
   public void testToBigInt() {
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("toBigInt(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.toBigInteger(), String::valueOf),

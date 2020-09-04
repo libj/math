@@ -25,7 +25,7 @@ public class DecimalMultiplicationTest extends DecimalTest {
   @Test
   public void testMul() {
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= Decimal.MAX_SCALE_BITS; ++i) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("mul(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
         d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.multiply(b), o -> o),
