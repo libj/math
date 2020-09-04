@@ -40,7 +40,16 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
 
 ##### Bare `int[]` <ins>value-encoded number</ins> arrays
 
-The `BigInt` architecture exposes the underlying `int[]` array, and provides static function equivalents for all of its instance methods. The bare `int[]` array can therefore be used as a feature-equivalent replacement for `BigInt`, with one notable difference: no `BigInt` instance is required.
+The `BigInt` architecture exposes the underlying `int[]` array, and provides static function equivalents for all of its instance methods. This is possible because the standalone `int[]` array contains all information regarding the magnitude of an arbitrary precision integer. The `int[]` has the following encoding:
+
+* **Signed length**: The sign and number of base-2<sup>32</sup> digits (limbs) in the magnitude.<br>`val[0]` ∈ `[-1 << 26, .., -1, 0, 1, .., 1 << 26]`
+* **Absolute length**: The absolute number of base-2<sup>32</sup> digits (limbs) in the magnitude.<br>`Math.abs(val[0])`
+* **Sign**: The sign of the magnitude (`-1` for negative, and `1` for positive).<br>`Math.signum(val[0])`
+* **Zero**: Magnitude is zero.<br>`val[0] == 0`
+* **Magnitude digits**: The base-2<sup>32</sup> digits (limbs).<br>`val[2,val[0]-1]` ∈ `[Integer.MIN_VALUE, Integer.MAX_VALUE]`
+* The base 2<sup>32</sup> digits (limbs) of the number are in little-endian order.
+
+The bare `int[]` array can therefore be used as a feature-equivalent replacement for `BigInt`, with one notable difference: no `BigInt` instance is required.
 
 #### Getting Started
 
