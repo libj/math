@@ -1375,6 +1375,9 @@ public abstract class CaseTest {
     if (obj instanceof byte[])
       return 25 * ((byte[])obj).length;
 
+    if (obj instanceof String)
+      return precision((String)obj);
+
     throw new UnsupportedOperationException("Unsupported type: " + obj.getClass().getName());
   }
 
@@ -1551,7 +1554,7 @@ public abstract class CaseTest {
   }
 
   public static <S,R,O>StringCase<S,String,String,R,O> s(final S subject, final Function<String,R> test, final Function<R,O> out) {
-    return new StringCase<>(subject, 2, null, null, test, out);
+    return new StringCase<>(subject, 1, null, null, test, out);
   }
 
   public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToLongFunction<A,String> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {

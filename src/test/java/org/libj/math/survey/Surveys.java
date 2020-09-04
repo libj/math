@@ -142,6 +142,7 @@ public abstract class Surveys {
         }
       }
 
+      // Heading
       canvas = null;
       for (int s = 0, r = 0; s < surveys.length; ++s) {
         final Survey survey = surveys[s];
@@ -238,7 +239,7 @@ public abstract class Surveys {
         }
         else {
           r -= variables;
-          rows[r] += " │" + Strings.pad(" " + r0, Align.RIGHT, 5, true);
+          rows[r] += " │" + Strings.pad(" " + r0, Align.RIGHT, 6, true);
           rows[r + variables] += " │" + Strings.pad(" " + r1, Align.RIGHT, 6, true);
         }
 
