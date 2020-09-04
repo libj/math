@@ -71,19 +71,20 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * {@code int[]} with the following encoding:
    * <ol>
    * <li><b>{@code val[0]}</b>: <ins>signed length</ins>:
-   * <code>{Integer.MIN_VALUE - 2, .., -1, 0, 1, .., Integer.MAX_VALUE - 1}</code><br>
+   * {@code [-1 << 26, .., -1, 0, 1, .., 1 << 26]}<br>
    * <ul>
-   * <li>{@code Math.abs(val[0])}: The number of base 2^32 digits (limbs) in the
-   * magnitude.</li>
-   * <li>{@code Math.signum(val[0])}: The sign of the magnitude (-1 for
-   * negative, and 1 for positive).</li>
+   * <li>{@code Math.abs(val[0])}: The number of base-2<sup>32</sup> digits
+   * (limbs) in the magnitude.</li>
+   * <li>{@code Math.signum(val[0])}: The sign of the magnitude ({@code -1} for
+   * negative, and {@code 1} for positive).</li>
    * <li>{@code val[0] == 0}: Magnitude is zero.</li>
    * </ul>
    * </li>
    * <li><b>{@code val[2,val[0]-1]}</b>: <ins>digits</ins>:
    * {@code [Integer.MIN_VALUE, Integer.MAX_VALUE]}
    * <ul>
-   * <li>The base 2^32 digits of the number in <i>little-endian</i> order.</li>
+   * <li>The base-2<sup>32</sup> digits of the number in <i>little-endian</i>
+   * order.</li>
    * </ul>
    * </li></li>
    * </ol>
