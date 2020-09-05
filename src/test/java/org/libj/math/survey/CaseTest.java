@@ -259,7 +259,7 @@ public abstract class CaseTest {
         final float o1 = (Float)previous;
         final float o2 = (Float)o;
         assertEquals(o1, o2, delta);
-        error = BigDecimal.valueOf(Math.abs(o1 - o2));
+        error = o1 == o2 ? BigDecimal.ZERO : BigDecimal.valueOf(Math.abs(o1 - o2));
       }
       else if (o instanceof Double) {
         final double delta = epsilon != null && epsilon.signum() != 0 ? epsilon.doubleValue() : Math.ulp((Double)previous);
