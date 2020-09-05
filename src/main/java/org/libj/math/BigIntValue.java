@@ -1094,26 +1094,57 @@ abstract class BigIntValue extends Number {
     if (len == 1 && s >= 8)
       return sig < 0 ? -mag[off] : mag[off];
 
-    final int exponent = ((len - 1) << 5) + (32 - s) - 1;
+    final int exponent = ((end - 1) << 5) + bitLengthForInt(mag[end]) - 1;
     if (exponent < Long.SIZE - 1)
       return longValue(mag, off, len, sig);
 
     if (exponent > Float.MAX_EXPONENT)
-      return sig < 0 ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
+      return sig > 0 ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
 
-    int bits = mag[end]; // Mask out the 24 MSBits
-    if (s <= 8)
-      bits >>>= 8 - s;
-    else
-      bits = bits << s - 8 | mag[end - 1] >>> 32 - (s - 8); // s-8==additional bits we need
+    /*
+     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit.
+     * To make rounding easier, we pick out the top SIGNIFICAND_WIDTH + 1 bits,
+     * so we have one to help us round up or down. twiceSignifFloor will contain
+     * the top SIGNIFICAND_WIDTH + 1 bits, and signifFloor the top
+     * SIGNIFICAND_WIDTH. It helps to consider the real number signif =
+     * abs(this) * 2^(SIGNIFICAND_WIDTH - 1 - exponent).
+     */
+    final int shift = exponent - FloatingDecimal.SIGNIFICAND_WIDTH_FLOAT;
 
-    bits ^= 1L << 23; // The leading bit is implicit, so cancel it out
+    int twiceSignifFloor;
+    // twiceSignifFloor will be == abs().shiftRight(shift).intValue()
+    // We do the shift into an int directly to improve performance.
 
-    final int exp = (int)(((32 - s + 32L * (len - 1)) - 1 + 127) & 0xFF);
-    bits |= exp << 23; // Add exponent
-    bits |= sig & (1 << 31); // Add sign-bit
+    final int nBits = shift & 0x1f;
+    if (nBits == 0) {
+      twiceSignifFloor = mag[end];
+    }
+    else {
+      twiceSignifFloor = mag[end] >>> nBits;
+      if (twiceSignifFloor == 0)
+        twiceSignifFloor = (mag[end] << (32 - nBits)) | (mag[end - 1] >>> nBits);
+    }
 
-    return Float.intBitsToFloat(bits);
+    final int signifFloor = twiceSignifFloor >> 1 & FloatingDecimal.SIGNIF_BIT_MASK_FLOAT; // remove the implied bit
+
+    /*
+     * We round up if either the fractional part of signif is strictly greater
+     * than 0.5 (which is true if the 0.5 bit is set and any lower bit is set),
+     * or if the fractional part of signif is >= 0.5 and signifFloor is odd
+     * (which is true if both the 0.5 bit and the 1 bit are set). This is
+     * equivalent to the desired HALF_EVEN rounding.
+     */
+    final boolean increment = (twiceSignifFloor & 1) != 0 && ((signifFloor & 1) != 0 || getLowestSetBit(mag) < shift);
+    final int signifRounded = increment ? signifFloor + 1 : signifFloor;
+    final int bits = ((exponent + FloatingDecimal.EXP_BIAS_FLOAT) << (FloatingDecimal.SIGNIFICAND_WIDTH_FLOAT - 1)) + signifRounded;
+
+    /*
+     * If signifRounded == 2^24, we'd need to set all of the significand bits to
+     * zero and add 1 to the exponent. This is exactly the behavior we get from
+     * just adding signifRounded to bits directly. If the exponent is
+     * Float.MAX_EXPONENT, we round up (correctly) to Float.POSITIVE_INFINITY.
+     */
+    return Float.intBitsToFloat(bits | sig & FloatingDecimal.SIGN_BIT_MASK_FLOAT);
   }
 
   /**
@@ -1151,32 +1182,65 @@ abstract class BigIntValue extends Number {
     }
 
     final int end = off + len - 1;
-    final int z = Integer.numberOfLeadingZeros(mag[end]);
-    final int exponent = ((len - 1) << 5) + (32 - z) - 1;
+    int exponent = ((end - 1) << 5) + bitLengthForInt(mag[end]) - 1;
     if (exponent < Long.SIZE - 1)
       return longValue(mag, off, len, sig < 0 ? -1 : 1);
 
     if (exponent > Double.MAX_EXPONENT)
-      return sig < 0 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+      return sig > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
 
-    if (len == 2 && 32 - z + 32 <= 53) {
-      final double v = (long)mag[off + 1] << 32 | (mag[off] & LONG_MASK);
-      return sig < 0 ? -v : v;
+    /*
+     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit.
+     * To make rounding easier, we pick out the top SIGNIFICAND_WIDTH + 1 bits,
+     * so we have one to help us round up or down. twiceSignifFloor will contain
+     * the top SIGNIFICAND_WIDTH + 1 bits, and signifFloor the top
+     * SIGNIFICAND_WIDTH. It helps to consider the real number signif =
+     * abs(this) * 2^(SIGNIFICAND_WIDTH - 1 - exponent).
+     */
+    final int shift = exponent - FloatingDecimal.SIGNIFICAND_WIDTH_DOUBLE;
+
+    // twiceSignifFloor will be == abs().shiftRight(shift).longValue()
+    // We do the shift into a long directly to improve performance.
+
+    final int nBits = shift & 0x1f;
+
+    int highBits;
+    int lowBits;
+    if (nBits == 0) {
+      highBits = mag[end];
+      lowBits = mag[end - 1];
+    }
+    else {
+      final int nBits2 = 32 - nBits;
+      highBits = mag[end] >>> nBits;
+      lowBits = (mag[end] << nBits2) | (mag[end - 1] >>> nBits);
+      if (highBits == 0) {
+        highBits = lowBits;
+        lowBits = (mag[end - 1] << nBits2) | (mag[end - 2] >>> nBits);
+      }
     }
 
-    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_MASK); // Mask out the 53 MSBits
-    if (z <= 11)
-      bits >>>= 11 - z;
-    else
-      bits = bits << z - 11 | mag[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need
+    final long twiceSignifFloor = ((highBits & LONG_MASK) << 32) | (lowBits & LONG_MASK);
+    final long signifFloor = twiceSignifFloor >> 1 & FloatingDecimal.SIGNIF_BIT_MASK_DOUBLE; // remove the implied bit
 
-    bits ^= 1L << 52; // The leading bit is implicit, cancel it out
+    /*
+     * We round up if either the fractional part of signif is strictly greater
+     * than 0.5 (which is true if the 0.5 bit is set and any lower bit is set),
+     * or if the fractional part of signif is >= 0.5 and signifFloor is odd
+     * (which is true if both the 0.5 bit and the 1 bit are set). This is
+     * equivalent to the desired HALF_EVEN rounding.
+     */
+    final boolean increment = (twiceSignifFloor & 1) != 0 && ((signifFloor & 1) != 0 || getLowestSetBit(mag) < shift);
+    final long signifRounded = increment ? signifFloor + 1 : signifFloor;
+    final long bits = ((long)(exponent + FloatingDecimal.EXP_BIAS_DOUBLE) << (FloatingDecimal.SIGNIFICAND_WIDTH_DOUBLE - 1)) + signifRounded;
 
-    final long exp = ((32 - z + 32L * (len - 1)) - 1 + 1023) & 0x7FF;
-    bits |= exp << 52; // Add exponent
-    bits |= sig & (1L << 63); // Add sign-bit
-
-    return Double.longBitsToDouble(bits);
+    /*
+     * If signifRounded == 2^53, we'd need to set all of the significand bits to
+     * zero and add 1 to the exponent. This is exactly the behavior we get from
+     * just adding signifRounded to bits directly. If the exponent is
+     * Double.MAX_EXPONENT, we round up (correctly) to Double.POSITIVE_INFINITY.
+     */
+    return Double.longBitsToDouble(bits | sig & FloatingDecimal.SIGN_BIT_MASK_DOUBLE);
   }
 
   /**

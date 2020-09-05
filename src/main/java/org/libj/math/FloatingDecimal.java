@@ -19,34 +19,51 @@ package org.libj.math;
 import org.libj.lang.Numbers;
 
 /**
- * Encodes {@link Decimal} to a double precision floating point number. Redacted
- * from {@code sun.misc.FloatingDecimal}.
+ * Provides constants for encoding of floating primitives, and encodes
+ * {@link Decimal} to a double precision floating point number. Redacted from
+ * {@code sun.misc.FloatConsts}, {@code sun.misc.DoubleConsts}, and
+ * {@code sun.misc.FloatingDecimal}.
  */
-class FloatingDouble {
+class FloatingDecimal {
+  /**
+   * The number of logical bits in the significand of a {@code float} number,
+   * including the implicit bit.
+   */
+  static final int SIGNIFICAND_WIDTH_FLOAT = 24;
+
   /**
    * The number of logical bits in the significand of a {@code double} number,
    * including the implicit bit.
    */
-  private static final int SIGNIFICAND_WIDTH = 53;
+  static final int SIGNIFICAND_WIDTH_DOUBLE = 53;
+
+  /** Bit mask to isolate the sign bit of a {@code float}. */
+  static final int SIGN_BIT_MASK_FLOAT = 0x80000000;
+
+  /** Bit mask to isolate the sign bit of a {@code double}. */
+  static final long SIGN_BIT_MASK_DOUBLE = 0x8000000000000000L;
+
+  /** Bit mask to isolate the significand field of a {@code float}. */
+  static final int SIGNIF_BIT_MASK_FLOAT = 0x007FFFFF;
+
+  /** Bit mask to isolate the significand field of a {@code double}. */
+  static final long SIGNIF_BIT_MASK_DOUBLE = 0x000FFFFFFFFFFFFFL;
+
+  /** Bias used in representing a {@code float} exponent. */
+  static final short EXP_BIAS_FLOAT = 127;
+
+  /** Bias used in representing a {@code double} exponent. */
+  static final short EXP_BIAS_DOUBLE = 1023;
 
   // Constants of the implementation; most are IEEE-754 related.
-  private static final int EXP_SHIFT = SIGNIFICAND_WIDTH - 1;
+  private static final int EXP_SHIFT = SIGNIFICAND_WIDTH_DOUBLE - 1;
   private static final long FRACT_HOB = 1L << EXP_SHIFT; // assumed High-Order bit
   private static final byte MAX_DECIMAL_DIGITS = 15;
   private static final short MAX_DECIMAL_EXPONENT = 308;
   private static final short MIN_DECIMAL_EXPONENT = -324;
 
-  /** Bit mask to isolate the sign bit of a {@code double}. */
-  private static final long SIGN_BIT_MASK = 0x8000000000000000L;
-
   /** Bit mask to isolate the exponent field of a {@code double}. */
   private static final long EXP_BIT_MASK = 0x7FF0000000000000L;
-
-  /** Bit mask to isolate the significand field of a {@code double}. */
-  private static final long SIGNIF_BIT_MASK = 0x000FFFFFFFFFFFFFL;
-
-  /** Bias used in representing a {@code double} exponent. */
-  private static final short EXP_BIAS = 1023;
 
   /**
    * All the positive powers of 10 that can be represented exactly in
@@ -233,7 +250,7 @@ class FloatingDouble {
     while (true) {
       // here ieeeBits can't be NaN, Infinity or zero
       int binexp = (int)(ieeeBits >>> EXP_SHIFT);
-      long bigBbits = ieeeBits & SIGNIF_BIT_MASK;
+      long bigBbits = ieeeBits & SIGNIF_BIT_MASK_DOUBLE;
       if (binexp > 0) {
         bigBbits |= FRACT_HOB;
       }
@@ -245,7 +262,7 @@ class FloatingDouble {
         binexp = 1 - shift;
       }
 
-      binexp -= EXP_BIAS;
+      binexp -= EXP_BIAS_DOUBLE;
       final int lowOrderZeros = Long.numberOfTrailingZeros(bigBbits);
       bigBbits >>>= lowOrderZeros;
       final int bigIntExp = binexp - EXP_SHIFT + lowOrderZeros;
@@ -266,10 +283,10 @@ class FloatingDouble {
       dlp2 = b2;
       // shift bigB and bigD left by a number s. t. halfUlp is still an integer.
       final int hulpbias;
-      if (binexp <= -EXP_BIAS) {
+      if (binexp <= -EXP_BIAS_DOUBLE) {
         // This is going to be a denormalized number (if not actually zero).
         // half an ULP is at 2^-(EXP_BIAS+EXP_SHIFT+1)
-        hulpbias = binexp + lowOrderZeros + EXP_BIAS;
+        hulpbias = binexp + lowOrderZeros + EXP_BIAS_DOUBLE;
       }
       else {
         hulpbias = 1 + lowOrderZeros;
@@ -305,7 +322,7 @@ class FloatingDouble {
       if (cmpResult > 0) {
         overvalue = -1; // our candidate is too big.
         BigInt.sub(bigB, bigD);
-        if (bigIntNBits == 1 && bigIntExp > 1 - EXP_BIAS) {
+        if (bigIntNBits == 1 && bigIntExp > 1 - EXP_BIAS_DOUBLE) {
           // candidate is a normalized exact power of 2 and is too big (larger
           // than Double.MIN_NORMAL). We will be subtracting. For our purposes,
           // ulp is the ulp of the next smaller range.
@@ -348,7 +365,7 @@ class FloatingDouble {
     }
 
     if (isNeg)
-      ieeeBits |= SIGN_BIT_MASK;
+      ieeeBits |= SIGN_BIT_MASK_DOUBLE;
 
     return Double.longBitsToDouble(ieeeBits);
   }

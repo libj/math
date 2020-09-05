@@ -1155,7 +1155,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
    *         {@code long} and scale {@code short}.
    */
   public static double doubleValue(final long value, final short scale) {
-    return FloatingDouble.doubleValue(value, scale);
+    return FloatingDecimal.doubleValue(value, scale);
   }
 
   /**
