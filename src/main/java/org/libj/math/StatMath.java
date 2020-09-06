@@ -18,11 +18,32 @@ package org.libj.math;
 
 import java.math.BigInteger;
 
+import org.libj.lang.Assertions;
+
 /**
  * Utility that supplements functions in {@link Math}, providing implementations
  * of functions that pertain to statistics.
  */
 public final class StatMath {
+  /**
+   * Calculate the root mean square of an array of values.
+   *
+   * @param values The values.
+   * @return The rms.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero.
+   */
+  public static double rms(final byte ... values) {
+    if (values.length == 0)
+      throw new IllegalArgumentException("values.length == 0");
+
+    double rms = 0d;
+    for (int i = 0; i < values.length; ++i)
+      rms += values[i] * values[i];
+
+    return Math.sqrt(rms / values.length);
+  }
+
   /**
    * Calculate the root mean square of an array of values.
    *
@@ -126,6 +147,26 @@ public final class StatMath {
    * @throws NullPointerException If {@code values} is null.
    * @throws IllegalArgumentException If length of {@code values} is zero.
    */
+  public static byte min(final byte ... values) {
+    if (values.length == 0)
+      throw new IllegalArgumentException("values.length == 0");
+
+    byte min = values[0];
+    for (int i = 1; i < values.length; ++i)
+      if (values[i] < min)
+        min = values[i];
+
+    return min;
+  }
+
+  /**
+   * Calculate the minimum value of an array of values.
+   *
+   * @param values The values.
+   * @return The minimum value.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero.
+   */
   public static short min(final short ... values) {
     if (values.length == 0)
       throw new IllegalArgumentException("values.length == 0");
@@ -216,6 +257,26 @@ public final class StatMath {
         min = values[i];
 
     return min;
+  }
+
+  /**
+   * Calculate the maximum value of an array of values.
+   *
+   * @param values The values.
+   * @return The maximum value.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero.
+   */
+  public static byte max(final byte ... values) {
+    if (values.length == 0)
+      throw new IllegalArgumentException("values.length == 0");
+
+    byte max = values[0];
+    for (int i = 1; i < values.length; ++i)
+      if (values[i] > max)
+        max = values[i];
+
+    return max;
   }
 
   /**
@@ -328,6 +389,20 @@ public final class StatMath {
    * @param max The maximum accepted value.
    * @return The value complying to the threshold.
    */
+  public static byte threshold(final byte value, final byte min, final byte max) {
+    return value < min ? min : max < value ? max : value;
+  }
+
+  /**
+   * Test if a value is within the threshold of a min and a max. If the value is
+   * less than min, this method will return min. If the value is greater than
+   * max, this method will return max.
+   *
+   * @param value The value to test.
+   * @param min The minimum accepted value.
+   * @param max The maximum accepted value.
+   * @return The value complying to the threshold.
+   */
   public static short threshold(final short value, final short min, final short max) {
     return value < min ? min : max < value ? max : value;
   }
@@ -343,7 +418,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static int threshold(final int value, final int min, final int max) {
-    return value < min ? min : Math.min(max, value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -357,7 +432,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static long threshold(final long value, final long min, final long max) {
-    return value < min ? min : Math.min(max, value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -371,7 +446,7 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static float threshold(final float value, final float min, final float max) {
-    return value < min ? min : Math.min(max, value);
+    return value < min ? min : max < value ? max : value;
   }
 
   /**
@@ -385,7 +460,22 @@ public final class StatMath {
    * @return The value complying to the threshold.
    */
   public static double threshold(final double value, final double min, final double max) {
-    return value < min ? min : Math.min(max, value);
+    return value < min ? min : max < value ? max : value;
+  }
+
+  /**
+   * Compute the average of the members of the argument array.
+   *
+   * @param values The vararg array of values.
+   * @return The average value, or {@code Double.NaN} if length of
+   *         {@code values} is zero.
+   * @throws NullPointerException If {@code values} is null.
+   */
+  public static double avg(final byte ... values) {
+    if (values.length == 0)
+      return Double.NaN;
+
+    return sum(values) / (double)values.length;
   }
 
   /**
@@ -477,19 +567,33 @@ public final class StatMath {
    *           are out of range
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
-  public static double avg(final short[] values, final int fromIndex, final int toIndex) {
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex < fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-
+  public static double avg(final byte[] values, final int fromIndex, final int toIndex) {
     if (values.length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
+  }
+
+  /**
+   * Compute the average of the members of the argument array.
+   *
+   * @param values The array of values.
+   * @param fromIndex Start index from which to aggregate.
+   * @param toIndex End index to which to aggregate.
+   * @return The average value, or {@code Double.NaN} if the selected length of
+   *         {@code values} is zero.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero.
+   * @throws IndexOutOfBoundsException If {@code fromIndex} or {@code toIndex}
+   *           are out of range
+   *           ({@code fromIndex < 0 || values.length < toIndex}).
+   */
+  public static double avg(final short[] values, final int fromIndex, final int toIndex) {
+    if (values.length == 0 || fromIndex == toIndex)
+      return Double.NaN;
+
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -508,18 +612,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final int[] values, final int fromIndex, final int toIndex) {
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex < fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-
     if (values.length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -538,18 +634,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final long[] values, final int fromIndex, final int toIndex) {
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex < fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-
     if (values.length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -568,18 +656,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final float[] values, final int fromIndex, final int toIndex) {
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex < fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-
     if (values.length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -598,19 +678,30 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final double[] values, final int fromIndex, final int toIndex) {
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex < fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
-
     if (values.length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (toIndex - fromIndex);
+  }
+
+  /**
+   * Compute the sum of values in the argument array.
+   *
+   * @param values The vararg array of values.
+   * @return The sum of values in the argument array.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero.
+   */
+  public static int sum(final byte ... values) {
+    if (values.length == 0)
+      throw new IllegalArgumentException("value.length == 0");
+
+    int sum = 0;
+    for (int i = 0; i < values.length; ++i)
+      sum += values[i];
+
+    return sum;
   }
 
   /**
@@ -722,18 +813,38 @@ public final class StatMath {
    *           are out of range
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
+  public static int sum(final byte[] values, final int fromIndex, final int toIndex) {
+    if (values.length == 0)
+      throw new IllegalArgumentException("value.length == 0");
+
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+
+    int sum = 0;
+    for (int i = fromIndex; i < toIndex; ++i)
+      sum += values[i];
+
+    return sum;
+  }
+
+  /**
+   * Compute the sum of the members of the argument array.
+   *
+   * @param values The array of values.
+   * @param fromIndex Start index from which to aggregate.
+   * @param toIndex End index to which to aggregate.
+   * @return The sum.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero, or if
+   *           {@code fromIndex >= toIndex}.
+   * @throws IndexOutOfBoundsException If {@code fromIndex} or {@code toIndex}
+   *           are out of range
+   *           ({@code fromIndex < 0 || values.length < toIndex}).
+   */
   public static int sum(final short[] values, final int fromIndex, final int toIndex) {
     if (values.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex <= fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") >= toIndex(" + toIndex + ")");
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -760,14 +871,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex <= fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") >= toIndex(" + toIndex + ")");
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -794,14 +898,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex <= fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") >= toIndex(" + toIndex + ")");
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
 
     long sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -828,14 +925,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex <= fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") >= toIndex(" + toIndex + ")");
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
 
     float sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -862,14 +952,7 @@ public final class StatMath {
     if (values.length == 0)
       throw new IllegalArgumentException("value.length == 0");
 
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-
-    if (values.length < toIndex)
-      throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-
-    if (toIndex <= fromIndex)
-      throw new IllegalArgumentException("fromIndex(" + fromIndex + ") >= toIndex(" + toIndex + ")");
+    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -986,6 +1069,26 @@ public final class StatMath {
       sum += values[i][dimension];
 
     return sum;
+  }
+
+  /**
+   * Calculate the standard deviation of the values in the argument array.
+   *
+   * @param values The array of values.
+   * @return The standard deviation of the values.
+   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If length of {@code values} is zero.
+   */
+  public static double stdDev(final byte[] values) {
+    if (values.length == 0)
+      throw new IllegalArgumentException("value.length == 0");
+
+    final double u = sum(values) / values.length;
+    double sum = 0;
+    for (int i = 0; i < values.length; ++i)
+      sum += (values[i] - u) * (values[i] - u);
+
+    return Math.sqrt(sum / values.length);
   }
 
   /**
@@ -1201,6 +1304,32 @@ public final class StatMath {
       sum += (values[i][dimension] - u) * (values[i][dimension] - u);
 
     return Math.sqrt(sum / values.length);
+  }
+
+  /**
+   * In-place normalization of argument values.
+   *
+   * @param values The values to normalize.
+   */
+  public static void normalize(final byte[] values) {
+    if (values.length <= 1)
+      return;
+
+    double sumLinear = 0d;
+    double sumSquares = 0d;
+    for (int i = 0; i < values.length; ++i) {
+      sumLinear += values[i];
+      sumSquares += values[i] * values[i];
+    }
+
+    final double length = values.length;
+    final double mean = sumLinear / length;
+    double scale = Math.sqrt((sumSquares - sumLinear * mean) / length);
+    if (scale == 0d)
+      scale = 1d;
+
+    for (int i = 0; i < values.length; ++i)
+      values[i] = (byte)((values[i] - mean) / scale);
   }
 
   /**
