@@ -83,7 +83,7 @@ class FloatingDecimal {
     if (scale < 0) {
       final int s = -scale;
       if (s < Numbers.precision(Long.MAX_VALUE / value))
-        return value * FastMath.E10[s];
+        return value * FastMath.longE10[s];
     }
 
     long absVal = Math.abs(value);
@@ -108,14 +108,14 @@ class FloatingDecimal {
 
     int ds = Numbers.trailingZeroes(absVal);
     if (ds > 0)
-      absVal /= FastMath.E10[ds];
+      absVal /= FastMath.longE10[ds];
 
     final long absValNz = absVal;
     final int nDigits = Numbers.precision(absVal);
 
     ds = Numbers.precision(absVal) - 16;
     if (ds > 0)
-      absVal /= FastMath.E10[ds];
+      absVal /= FastMath.longE10[ds];
 
     final int kDigits = Math.min(nDigits, MAX_DECIMAL_DIGITS + 1);
 

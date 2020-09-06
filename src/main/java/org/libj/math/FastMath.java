@@ -24,10 +24,17 @@ import java.util.Arrays;
  */
 public final class FastMath {
   /**
-   * The values of <code>10<sup>n</sup></code> for {@code n} between {@code 0}
-   * and {@code 18}.
+   * The values of <code>10<sup>n</sup></code> as a {@code long} for {@code n}
+   * between {@code 0} and {@code 9}.
    */
-  public static final long[] E10 = {1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L, 10000000000L, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L};
+  public static final int[] intE10 = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
+
+  /**
+   * The values of <code>10<sup>n</sup></code> as a {@code long} for {@code n}
+   * between {@code 0} and {@code 18}.
+   */
+  public static final long[] longE10 = {1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L, 10000000000L, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L};
+
   private static volatile double[] doubleE10 = {1};
 
   /** This value was tuned with {@link FastMathTest#testDoubleE10} */
@@ -150,7 +157,7 @@ public final class FastMath {
    *         for negative values.
    */
   public static byte log2(final int n) {
-    return (byte)(n <= 0 ? 0 : 31 - Integer.numberOfLeadingZeros(n - 1));
+    return n <= 0 ? 0 : (byte)(31 - Integer.numberOfLeadingZeros(n - 1));
   }
 
   /**
@@ -165,7 +172,7 @@ public final class FastMath {
    *         for negative values.
    */
   public static byte log2(final long n) {
-    return (byte)(n <= 0 ? 0 : 63 - Long.numberOfLeadingZeros(n - 1));
+    return n <= 0 ? 0 : (byte)(63 - Long.numberOfLeadingZeros(n - 1));
   }
 
   /**

@@ -41,7 +41,7 @@ abstract class DecimalArithmeticOperation extends DecimalOperation<Long,BigDecim
     if (expected.signum() == 0)
       return compare(0, actual, scaleBits) == 0 ? DEFAULT : BigDecimals.TWO;
 
-    final byte valueBits = valueBits(scaleBits);
+    final int valueBits = valueBits(scaleBits);
     final BigInteger minValue = DecimalTranslationalOperationTest.minValue[valueBits];
     final BigInteger maxValue = DecimalTranslationalOperationTest.maxValue[valueBits];
     final int minScale = Decimal.minScale[scaleBits];

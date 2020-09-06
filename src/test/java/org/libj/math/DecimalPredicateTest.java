@@ -41,7 +41,7 @@ public class DecimalPredicateTest extends DecimalTest {
   @Test
   public void testSetScale() {
     // Special test for Long.MIN_VALUE
-    System.out.println("Long.MIN_VALUE______________________________________________________________________________________");
+    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
     final int iterations = 10000;
     int progress = 0;
     for (int i = 0; i < iterations; ++i) {
@@ -269,7 +269,7 @@ public class DecimalPredicateTest extends DecimalTest {
   @Test
   public void testFloatValue() {
     // Special test for Long.MIN_VALUE
-    System.out.println("Long.MIN_VALUE______________________________________________________________________________________");
+    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
     final int iterations = 100000;
     int progress = 0;
     for (int i = 0; i < iterations; ++i) {
@@ -292,7 +292,7 @@ public class DecimalPredicateTest extends DecimalTest {
   @Test
   public void testDoubleValue() {
     // Special test for Long.MIN_VALUE
-    System.out.println("Long.MIN_VALUE______________________________________________________________________________________");
+    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
     final int iterations = 100000;
     int progress = 0;
     for (int i = 0; i < iterations; ++i) {

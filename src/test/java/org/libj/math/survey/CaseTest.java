@@ -381,7 +381,7 @@ public abstract class CaseTest {
     final void test(final CaseTest caseTest, final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,Integer,?,O>[] cases, final Supplier<Surveys> surveys) {
       int progress = 0;
       if (!specialDone) {
-        System.out.println(label + " [DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
+        System.out.println(label + "_[DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
         if (inputs[0] != 0 || inputs[1] != 0)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
@@ -398,7 +398,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      System.out.println(label + " [PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
+      System.out.println(label + "_[PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
@@ -563,7 +563,7 @@ public abstract class CaseTest {
     final void test(final CaseTest caseTest, final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,Long,?,O>[] cases, final Supplier<Surveys> surveys) {
       int progress = 0;
       if (!specialDone) {
-        System.out.println(label + " [DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
+        System.out.println(label + "_[DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
         if (inputs[0] != 0 || inputs[1] != 0)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
@@ -580,7 +580,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      System.out.println(label + " [PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
+      System.out.println(label + "_[PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
@@ -734,7 +734,7 @@ public abstract class CaseTest {
   public static class DecimalCase<S,A,B,R,O> extends Case<S,long[],Decimal,R,O> {
     public static final ThreadLocal<Byte> scaleBitsLocal = new ThreadLocal<>();
 
-    static long randomValue(final byte maxValuePower) {
+    static long randomValue(final int maxValuePower) {
       final long maxValue = DecimalOperationTest.pow2[maxValuePower];
       return (long)((Math.random() < 0.5 ? -1 : 1) * random.nextDouble() * maxValue);
     }
@@ -782,7 +782,7 @@ public abstract class CaseTest {
 
     void init() {
       this.scaleBits = inputs[2] != 0 ? (byte)inputs[2] : scaleBitsLocal.get();
-      this.valueBits = Decimal.valueBits(scaleBits);
+      this.valueBits = (byte)Decimal.valueBits(scaleBits);
       this.minValue = Decimal.minValue(valueBits);
       this.maxValue = Decimal.maxValue(valueBits);
       this.minScale = Decimal.minScale(scaleBits);
@@ -1002,7 +1002,7 @@ public abstract class CaseTest {
       int progress = 0;
       if (!specialDone) {
         init();
-        System.out.println(label + " [DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
+        System.out.println(label + "_[DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
         testSpecial(caseTest, label, epsilon, cases, surveys, false);
         for (int i = 0; i < 100; ++i) {
           testSpecial(caseTest, label, epsilon, cases, surveys, true);
@@ -1013,7 +1013,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      System.out.println(label + " [PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
+      System.out.println(label + "_[PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
@@ -1196,7 +1196,7 @@ public abstract class CaseTest {
     final void test(final CaseTest caseTest, final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,String,?,O>[] cases, final Supplier<Surveys> surveys) {
       int progress = 0;
       if (!specialDone) {
-        System.out.println(label + " [DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
+        System.out.println(label + "_[DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
         if (inputs[0] != null || inputs[1] != null)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
@@ -1213,7 +1213,7 @@ public abstract class CaseTest {
         specialDone = true;
       }
 
-      System.out.println(label + " [PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
+      System.out.println(label + "_[PROBABLE]" + Strings.repeat('_', 100 - label.length() - 11));
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;

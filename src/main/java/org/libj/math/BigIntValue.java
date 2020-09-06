@@ -207,7 +207,7 @@ abstract class BigIntValue extends Number {
     return copy0(source, copyLength, target);
   }
 
-  static int[] copy0(final int[] source, final int copyLength, int[] target) {
+  static int[] copy0(final int[] source, final int copyLength, final int[] target) {
     System.arraycopy(source, 0, target, 0, copyLength);
     // _debugLenSig(target);
     return target;
@@ -302,6 +302,10 @@ abstract class BigIntValue extends Number {
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
+  static int[] assign0(final int[] val, final long mag) {
+    return mag < 0 ? assign0(val, -1, -mag) : assign0(val, 1, mag);
+  }
+
   /**
    * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
    * {@linkplain BigInt#val() value-encoded number}.
@@ -342,7 +346,7 @@ abstract class BigIntValue extends Number {
    *         to the provided {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(1)
    */
-  public static int[] assign(int[] val, final int sig, final long mag) {
+  public static int[] assign(final int[] val, final int sig, final long mag) {
     if (mag == 0)
       return setToZero(val);
 
@@ -351,6 +355,17 @@ abstract class BigIntValue extends Number {
       return assign0(val.length >= 3 ? val : alloc(3), sig, (int)mag, magh);
 
     return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
+  }
+
+  static int[] assign0(final int[] val, final int sig, final long mag) {
+    if (mag == 0)
+      return setToZero(val);
+
+    final int magh = (int)(mag >>> 32);
+    if (magh != 0)
+      return assign0(val, sig, (int)mag, magh);
+
+    return assign0(val, sig, (int)mag);
   }
 
   static int[] assign0(final int[] val, final int sig, final int mag, final int magh) {

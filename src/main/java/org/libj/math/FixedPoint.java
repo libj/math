@@ -64,10 +64,22 @@ abstract class FixedPoint extends Number {
    * @return The result of {@code v / 10} rounded half up.
    */
   static long roundHalfUp10(final long v) {
-    return roundHalfUp((byte)(v % 10), v / 10);
+    return roundHalfUp(v % 10, v / 10);
   }
 
-  static long roundHalfUp(final byte r, final long v) {
+  static long roundHalfUp(final int r) {
+    return r <= -5 ? -1 : r >= 5 ? 1 : 0;
+  }
+
+  static long roundHalfUp(final long r) {
+    return r <= -5 ? -1 : r >= 5 ? 1 : 0;
+  }
+
+  static long roundHalfUp(final int r, final long v) {
+    return r <= -5 ? v - 1 : r >= 5 ? v + 1 : v;
+  }
+
+  static long roundHalfUp(final long r, final long v) {
     return r <= -5 ? v - 1 : r >= 5 ? v + 1 : v;
   }
 
@@ -76,18 +88,26 @@ abstract class FixedPoint extends Number {
   }
 
   static long roundCeil10(final long v) {
-    return roundCeil((byte)(v % 10), v / 10);
+    return roundCeil(v % 10, v / 10);
   }
 
-  static long roundCeil(final byte r, final long v) {
+  static long roundCeil(final int r, final long v) {
+    return r < 0 ? v - 1 : r > 0 ? v + 1 : v;
+  }
+
+  static long roundCeil(final long r, final long v) {
     return r < 0 ? v - 1 : r > 0 ? v + 1 : v;
   }
 
   static long roundHalfDown10(final long v) {
-    return roundHalfDown((byte)(v % 10), v / 10);
+    return roundHalfDown(v % 10, v / 10);
   }
 
-  static long roundHalfDown(final byte r, final long v) {
+  static long roundHalfDown(final int r, final long v) {
+    return r < -5 ? v - 1 : r > 5 ? v + 1 : v;
+  }
+
+  static long roundHalfDown(final long r, final long v) {
     return r < -5 ? v - 1 : r > 5 ? v + 1 : v;
   }
 
@@ -106,8 +126,8 @@ abstract class FixedPoint extends Number {
    * @return The number of bits of precision required for the representation of
    *         the specified value.
    */
-  static byte bitLength(final long value) {
-    return (byte)(Long.SIZE - Long.numberOfLeadingZeros(value));
+  static int bitLength(final long value) {
+    return Long.SIZE - Long.numberOfLeadingZeros(value);
   }
 
   /**
@@ -116,8 +136,8 @@ abstract class FixedPoint extends Number {
    * @param scaleBits The number of scale bits.
    * @return the number of value bits for the specified scale bits.
    */
-  static byte valueBits(final byte scaleBits) {
-    return (byte)(63 - scaleBits);
+  static int valueBits(final int scaleBits) {
+    return 63 - scaleBits;
   }
 
   /**
@@ -126,8 +146,8 @@ abstract class FixedPoint extends Number {
    * @param valueBits The number of value bits.
    * @return the number of scale bits for the specified value bits.
    */
-  static byte scaleBits(final byte valueBits) {
-    return (byte)(63 - valueBits);
+  static int scaleBits(final int valueBits) {
+    return 63 - valueBits;
   }
 
   /**
@@ -138,7 +158,7 @@ abstract class FixedPoint extends Number {
    * @return The minimum value that can be represented with the specified number
    *         of {@code bits}.
    */
-  static long minValue(final byte valueBits) {
+  static long minValue(final int valueBits) {
     return -1L << valueBits;
   }
 
@@ -150,7 +170,7 @@ abstract class FixedPoint extends Number {
    * @return The maximum value that can be represented with the specified number
    *         of {@code bits}.
    */
-  static long maxValue(final byte valueBits) {
+  static long maxValue(final int valueBits) {
     return (1L << valueBits) - 1;
   }
 
@@ -168,7 +188,7 @@ abstract class FixedPoint extends Number {
    * @see #encode(long,short,long,byte)
    * @see #minValue(byte)
    */
-  static short minScale(final byte scaleBits) {
+  static short minScale(final int scaleBits) {
     return Decimal.minScale[scaleBits];
   }
 
@@ -186,7 +206,7 @@ abstract class FixedPoint extends Number {
    * @see #encode(long,short,long,byte)
    * @see #maxValue(byte)
    */
-  static short maxScale(final byte scaleBits) {
+  static short maxScale(final int scaleBits) {
     return Decimal.maxScale[scaleBits];
   }
 
@@ -259,9 +279,9 @@ abstract class FixedPoint extends Number {
 
       if (val != 0) {
         // FIXME: What if: f > 18 ?!
-        final byte f = (byte)(e - dot - 1);
+        final int f = e - dot - 1;
         if (e - dot - 1 >= 0)
-          val *= FastMath.E10[f];
+          val *= FastMath.longE10[f];
       }
 
       val += Long.parseLong(value.substring(dot + 1, e));
@@ -277,8 +297,8 @@ abstract class FixedPoint extends Number {
       }
 
       for (int i; adj > 0; adj -= i) {
-        i = Math.min(adj, FastMath.E10.length - 1);
-        val /= FastMath.E10[i];
+        i = Math.min(adj, FastMath.longE10.length - 1);
+        val /= FastMath.longE10[i];
         s -= i;
       }
 
@@ -297,12 +317,12 @@ abstract class FixedPoint extends Number {
         }
 
         for (int i; adj > 0; adj -= i) {
-          i = Math.min(adj, FastMath.E10.length - 1);
-          val *= FastMath.E10[i];
+          i = Math.min(adj, FastMath.longE10.length - 1);
+          val *= FastMath.longE10[i];
           s += i;
         }
 
-        final byte valueBits = valueBits(scaleBits);
+        final int valueBits = valueBits(scaleBits);
         final long minValue = FixedPoint.minValue(valueBits);
         final long maxValue = FixedPoint.maxValue(valueBits);
         if (val < 0 ? val < minValue : maxValue < val) {
@@ -334,7 +354,7 @@ abstract class FixedPoint extends Number {
     if (scaleBits == 0)
       return scale == 0 ? value : defaultValue;
 
-    final byte valueBits = valueBits(scaleBits);
+    final int valueBits = valueBits(scaleBits);
     final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
     if (value < 0 ? value < minValue : maxValue < value) {
@@ -415,13 +435,13 @@ abstract class FixedPoint extends Number {
         return false;
       }
 
-      final long e10 = FastMath.E10[ds];
+      final long e10 = FastMath.longE10[ds];
       long r1 = value % e10;
       value /= e10;
       scale -= ds;
       if (r1 != 0) {
         final byte rp = Numbers.precision(r1);
-        final byte r = (byte)(rp < ds ? 0 : rp == 1 ? r1 : r1 / FastMath.E10[rp - 1]);
+        final long r = rp < ds ? 0 : rp == 1 ? r1 : r1 / FastMath.longE10[rp - 1];
         value = roundHalfUp(r, value);
       }
     }
@@ -433,7 +453,7 @@ abstract class FixedPoint extends Number {
         return false;
       }
 
-      value *= FastMath.E10[ds];
+      value *= FastMath.longE10[ds];
       scale += ds;
     }
 

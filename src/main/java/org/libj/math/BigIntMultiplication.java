@@ -440,7 +440,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return hmul == 0 ? umul0(mag, off, len, (int)mul) : umul0(mag, off, len, mul & LONG_MASK, hmul);
   }
 
-  private static int umul0(final int[] mag, final int off, int len, final long mull, final long mulh) {
+  static int umul0(final int[] mag, final int off, int len, final long mull, final long mulh) {
     long carry = 0, mul;
     int i = off;
     len += off;

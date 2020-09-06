@@ -28,8 +28,8 @@ public class DecimalAdditionTest extends DecimalTest {
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("add(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.add(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.add(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.add(toBigDecimal(b)), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.add(toDecimal(b)), o -> o),
         d(long.class, (long a, long b) -> Decimal.add(a, b, defaultValue, scaleBits), (long o) -> o)
       );
     }
@@ -41,8 +41,8 @@ public class DecimalAdditionTest extends DecimalTest {
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("sub(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.subtract(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.sub(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.subtract(toBigDecimal(b)), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.sub(toDecimal(b)), o -> o),
         d(long.class, (long a, long b) -> Decimal.sub(a, b, defaultValue, scaleBits), (long o) -> o)
       );
     }

@@ -186,27 +186,27 @@ public final class Decimals {
       return org.libj.math.Decimal.scale(dec, scaleBits);
     }
 
-    public static byte valueBits(final byte scaleBits) {
+    public static int valueBits(final int scaleBits) {
       return org.libj.math.Decimal.valueBits(scaleBits);
     }
 
-    public static byte scaleBits(final byte valueBits) {
+    public static int scaleBits(final int valueBits) {
       return org.libj.math.Decimal.scaleBits(valueBits);
     }
 
-    public static long maxValue(final byte valueBits) {
+    public static long maxValue(final int valueBits) {
       return org.libj.math.Decimal.maxValue(valueBits);
     }
 
-    public static long minValue(final byte valueBits) {
+    public static long minValue(final int valueBits) {
       return org.libj.math.Decimal.minValue(valueBits);
     }
 
-    public static short maxScale(final byte scaleBits) {
+    public static short maxScale(final int scaleBits) {
       return org.libj.math.Decimal.maxScale(scaleBits);
     }
 
-    public static short minScale(final byte scaleBits) {
+    public static short minScale(final int scaleBits) {
       return org.libj.math.Decimal.minScale(scaleBits);
     }
 

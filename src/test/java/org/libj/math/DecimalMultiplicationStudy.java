@@ -83,11 +83,11 @@ public class DecimalMultiplicationStudy {
 
   private static long divf(long[] y, int factor) {
     if (factor <= 9) {
-      div(y, (int)FastMath.E10[factor]);
+      div(y, (int)FastMath.longE10[factor]);
     }
     else {
-      final int high = (int)FastMath.E10[factor -= 9];
-      final int low = (int)FastMath.E10[9];
+      final int high = (int)FastMath.longE10[factor -= 9];
+      final int low = (int)FastMath.longE10[9];
       div(y, low);
       div(y, high);
     }
@@ -97,11 +97,11 @@ public class DecimalMultiplicationStudy {
 
   private static long divf2(long[] two, int factor) {
     if (factor <= 9) {
-      div2(two, (int)FastMath.E10[factor]);
+      div2(two, (int)FastMath.longE10[factor]);
     }
     else {
-      final int high = (int)FastMath.E10[factor -= 9];
-      final int low = (int)FastMath.E10[9];
+      final int high = (int)FastMath.longE10[factor -= 9];
+      final int low = (int)FastMath.longE10[9];
       div2(two, high);
       div2(two, low);
     }
@@ -193,7 +193,7 @@ public class DecimalMultiplicationStudy {
     int d, f;
     do {
       f = Math.min(factor, 9);
-      d = (int)FastMath.E10[f];
+      d = (int)FastMath.longE10[f];
       factor -= f;
 
       System.err.println("d: " + Buffers.toString(d));
@@ -266,8 +266,8 @@ public class DecimalMultiplicationStudy {
    * </pre>
    */
   private static long mulMod(final long v1, long s1, final long v2, long s2, final byte valueBits) {
-    byte bp1 = FixedPoint.bitLength(v1);
-    byte bp2 = FixedPoint.bitLength(v2);
+    int bp1 = FixedPoint.bitLength(v1);
+    int bp2 = FixedPoint.bitLength(v2);
 
     // How many bits are available until we hit the max (valueBits)?
     byte bp = (byte)(bp1 + bp2 - valueBits);
@@ -299,14 +299,14 @@ public class DecimalMultiplicationStudy {
     // If bp is not fully consumed, split the difference of bp between v1
     // and v2, reducing the larger of v1 and v2 if bp is odd.
     if (bp > 0) {
-      final byte half = (byte)(bp / 2);
+      final int half = bp / 2;
       if (bias) {
-        bp1 += (byte)(bp - half);
+        bp1 += bp - half;
         bp2 += half;
       }
       else {
         bp1 += half;
-        bp2 += (byte)(bp - half);
+        bp2 += bp - half;
       }
     }
 
@@ -329,7 +329,7 @@ public class DecimalMultiplicationStudy {
     long lv2 = 0;
     long f2 = 0;
     if (dp1 > 0) {
-      f1 = FastMath.E10[dp1];
+      f1 = FastMath.longE10[dp1];
       lv1 = v1 % 1000000000;
       hv1 = (v1 - lv1) / f1;
       if (dp2 == 0)
@@ -337,7 +337,7 @@ public class DecimalMultiplicationStudy {
     }
 
     if (dp2 > 0) {
-      f2 = FastMath.E10[dp2];
+      f2 = FastMath.longE10[dp2];
       lv2 = v2 % 1000000000;
       hv2 = (v2 - lv2) / f2;
       if (dp1 == 0)
@@ -393,7 +393,7 @@ public class DecimalMultiplicationStudy {
     long h = multiplyHigh(v1, v2);
     long l = v1 * v2;
 
-    final long f = FastMath.E10[factor];
+    final long f = FastMath.longE10[factor];
 
     final int shift = Long.numberOfLeadingZeros(h);
     long shiftHigh = h << shift;
@@ -418,14 +418,14 @@ public class DecimalMultiplicationStudy {
     // Need to scale down if we have high order bits
     if (bp1 > 0) {
       final int dp1 = Numbers.precision((1 << bp1) - 1);
-      v1 /= FastMath.E10[dp1];
+      v1 /= FastMath.longE10[dp1];
       s1 -= dp1; // NOTE: s1 is reduced, and this info needs to be used
     }
 
     // Need to scale down if we have high order bits
     if (bp2 > 0) {
       final int dp2 = Numbers.precision((1 << bp2) - 1);
-      v2 /= FastMath.E10[dp2];
+      v2 /= FastMath.longE10[dp2];
       s2 -= dp2; // NOTE: s2 is reduced, and this info needs to be used
     }
 

@@ -28,8 +28,8 @@ public class DecimalMultiplicationTest extends DecimalTest {
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("mul(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.multiply(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.mul(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.multiply(toBigDecimal(b)), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.mul(toDecimal(b)), o -> o),
         d(long.class, (long a, long b) -> Decimal.mul(a, b, defaultValue, scaleBits), (long o) -> o == defaultValue ? null : o)
       );
     }

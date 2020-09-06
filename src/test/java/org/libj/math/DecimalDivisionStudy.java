@@ -55,7 +55,7 @@ public class DecimalDivisionStudy {
       a = v * 10 + r;
       // Check for overflow
       if (a < 0 || i == dp) {
-        v = roundHalfUp((byte)r, v);
+        v = roundHalfUp(r, v);
         break;
       }
     }
@@ -89,14 +89,14 @@ public class DecimalDivisionStudy {
       // Expand the value to max precision available,
       // allowing it to use the sign bit
       if (dp1 > 0) {
-        v1 = v1 * FastMath.E10[dp1];
+        v1 = v1 * FastMath.longE10[dp1];
 //        s1 += dp1;
       }
 
       // If v2 has trailing zeroes, remove them first
       final byte z2 = Numbers.trailingZeroes(v2);
       if (z2 > 0) {
-        v2 /= FastMath.E10[z2];
+        v2 /= FastMath.longE10[z2];
 //        s2 -= z2;
       }
 
@@ -135,7 +135,7 @@ public class DecimalDivisionStudy {
    * @return The result of <code>v1 * 10<sup>dp</sup> / v2</code>.
    */
   static long scaleDiv(long v1, final long v2, byte dp, int[] q, final long[] buf) {
-    final long f = FastMath.E10[dp];
+    final long f = FastMath.longE10[dp];
 
     BigInt.assign(q, 1, v1);
     if (BigInt.mul(q, f) != q)
@@ -149,11 +149,11 @@ public class DecimalDivisionStudy {
     // If v1 is bigger than the signed limit, scale it down
     if (v1 < 0) {
       FastMath.divideUnsigned(v1, 10, buf);
-      v1 = FixedPoint.roundHalfUp((byte)buf[1], buf[0]);
+      v1 = FixedPoint.roundHalfUp(buf[1], buf[0]);
     }
     else {
       remainder *= 10;
-      final byte round = (byte)FastMath.divideUnsigned(remainder, v2);
+      final long round = FastMath.divideUnsigned(remainder, v2);
       v1 = FixedPoint.roundHalfUp(round, v1);
     }
 

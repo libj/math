@@ -141,7 +141,7 @@ public abstract class DecimalOperationTest {
     return BigDecimals.intern(str);
   }
 
-  static long randomValue(final byte maxValuePower) {
+  static long randomValue(final int maxValuePower) {
     final long maxValue = pow2[maxValuePower];
     return (long)((Math.random() < 0.5 ? -1 : 1) * random.nextDouble() * maxValue);
   }
@@ -199,9 +199,9 @@ public abstract class DecimalOperationTest {
             }
             else {
               s1 = (short)(Math.random() * Decimal.maxScale(scaleBits));
-              v1 *= FastMath.E10[(int)Math.min(random.nextDouble() * s1, FastMath.E10.length - 1)];
+              v1 *= FastMath.longE10[(int)Math.min(random.nextDouble() * s1, FastMath.longE10.length - 1)];
               s2 = (short)(Math.random() * Decimal.maxScale(scaleBits));
-              v2 *= FastMath.E10[(int)Math.min(random.nextDouble() * s2, FastMath.E10.length - 1)];
+              v2 *= FastMath.longE10[(int)Math.min(random.nextDouble() * s2, FastMath.longE10.length - 1)];
             }
 
             d1 = operation.randomBounded(v1, v1, s1, scaleBits);

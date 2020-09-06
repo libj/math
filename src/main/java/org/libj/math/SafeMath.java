@@ -35,8 +35,8 @@ public final class SafeMath {
    * @param a The argument whose absolute value is to be determined.
    * @return The absolute value of the argument.
    */
-  public static byte abs(final byte a) {
-    return (byte)(a < 0 ? -a : a);
+  public static short abs(final byte a) {
+    return a < 0 ? (short)-a : a;
   }
 
   /**
@@ -46,7 +46,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static short abs(final short a) {
-    return (short)(a < 0 ? -a : a);
+    return a < 0 ? (short)-a : a;
   }
 
   /**
@@ -1142,7 +1142,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final byte a) {
-    return a < 0 ? (byte)-1 : a == 0 ? 0 : (byte)1;
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1154,7 +1154,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final short a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1166,7 +1166,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final int a) {
-    return (byte)Integer.compare(a, 0);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1178,7 +1178,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final long a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1190,7 +1190,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final float a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1202,7 +1202,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final double a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**

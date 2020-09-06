@@ -44,7 +44,7 @@ public class FastMathTest extends BigIntTest {
   @Test
   public void testE10() {
     for (byte i = 0; i < 19; ++i)
-      assertEquals((long)Math.pow(10, i), FastMath.E10[i]);
+      assertEquals((long)Math.pow(10, i), FastMath.longE10[i]);
   }
 
   @Test

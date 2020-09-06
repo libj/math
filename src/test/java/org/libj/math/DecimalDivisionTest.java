@@ -29,8 +29,8 @@ public class DecimalDivisionTest extends DecimalTest {
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("div(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.divide(b, MathContext.DECIMAL128), o -> o),
-        d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.div(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.divide(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.div(toDecimal(nz(b))), o -> o),
         d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.div(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
       );
     }
@@ -42,8 +42,8 @@ public class DecimalDivisionTest extends DecimalTest {
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
       test("rem(" + scaleBits + ")").withSkip(skip(scaleBits)).withEpsilon(BigDecimal.ZERO).withAuditReport(null).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, b -> toBigDecimal(nz(b)), (BigDecimal a, BigDecimal b) -> a.remainder(b, MathContext.DECIMAL128), o -> o),
-        d(Decimal.class, this::toDecimal, b -> toDecimal(nz(b)), (Decimal a, Decimal b) -> a.rem(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.remainder(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.rem(toDecimal(nz(b))), o -> o),
         d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
       );
     }

@@ -50,14 +50,14 @@ abstract class DecimalMultiplication extends FixedPoint {
     // If v1 has trailing zeroes, remove them first.
     final byte z1 = Numbers.trailingZeroes(v1);
     if (z1 > 0) {
-      v1 /= FastMath.E10[z1];
+      v1 /= FastMath.longE10[z1];
       s1 -= z1;
     }
 
     // If v2 has trailing zeroes, remove them first.
     final byte z2 = Numbers.trailingZeroes(v2);
     if (z2 > 0) {
-      v2 /= FastMath.E10[z2];
+      v2 /= FastMath.longE10[z2];
       s2 -= z2;
     }
 
@@ -66,25 +66,26 @@ abstract class DecimalMultiplication extends FixedPoint {
     // Check if we can do simple multiplication
     long v = mulNonZero(v1, v2, minValue, maxValue);
     if (v == 0) {
-      int[] val = BigInt.valueOf(v1);
-      val = BigInt.mul(val, v2);
-      final long dp = BigInt.longValue(BigInt.div(val.clone(), maxValue));
+      final int[] val = BigInt.assign(Decimal.buf1.get(), v1);
+      BigInt.mul(val, v2);
+      final int[] val2 = BigInt.copy0(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
+      final long dp = BigInt.longValue(BigInt.div(val2, maxValue));
       if (dp == 0) {
         v = BigInt.longValue(val);
       }
       else {
         final byte ds = Numbers.precision(dp);
-        if (ds >= FastMath.E10.length) {
+        if (ds >= FastMath.longE10.length) {
           result.error("Overflow");
           return false;
         }
 
-        final long e10 = FastMath.E10[ds];
+        final long e10 = FastMath.longE10[ds];
         final long rem = BigInt.divRem(val, e10);
         v = BigInt.longValue(val);
         if (rem != 0) {
           final byte rp = Numbers.precision(rem);
-          final byte r = (byte)(rp < ds ? 0 : rp == 1 ? rem : rem / FastMath.E10[rp - 1]);
+          final long r = rp < ds ? 0 : rp == 1 ? rem : rem / FastMath.longE10[rp - 1];
           v = roundHalfUp(r, v);
         }
 

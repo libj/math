@@ -48,7 +48,7 @@ abstract class DecimalOperation<T,C> {
     return false;
   }
 
-  byte maxValuePower(final byte scaleBits) {
+  int maxValuePower(final byte scaleBits) {
     return valueBits(scaleBits);
   }
 
@@ -56,7 +56,7 @@ abstract class DecimalOperation<T,C> {
     if (min > max)
       throw new IllegalArgumentException();
 
-    final byte valueBits = valueBits(scaleBits);
+    final int valueBits = valueBits(scaleBits);
     long value = min != max ? (long)(random.nextDouble() * (max - min)) + min : min;
     if (value < Decimal.minValue(valueBits))
       value = Decimal.minValue(valueBits);

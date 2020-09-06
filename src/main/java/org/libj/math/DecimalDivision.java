@@ -20,16 +20,16 @@ import org.libj.lang.Numbers;
 
 abstract class DecimalDivision extends FixedPoint {
   private static final long serialVersionUID = 2875665225793357664L;
-  private static final byte maxE10 = (byte)(FastMath.E10.length - 1);
+  private static final byte maxE10 = (byte)(FastMath.longE10.length - 1);
 
   static boolean div0(long v1, int s1, long v2, int s2, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
     final byte p1 = Numbers.precision(v1);
-    byte ds1 = (byte)(Numbers.precision(maxValue / v1) - 1);
+    int ds1 = Numbers.precision(maxValue / v1) - 1;
 
     // If v2 has trailing zeroes, remove them first.
     final byte z2 = Numbers.trailingZeroes(v2);
     if (z2 > 0) {
-      v2 /= FastMath.E10[z2];
+      v2 /= FastMath.longE10[z2];
       s2 -= z2;
     }
     final byte p2 = Numbers.precision(v2);
@@ -37,7 +37,7 @@ abstract class DecimalDivision extends FixedPoint {
     int s;
     long v, r1, r2;
     if (p2 == 1) {
-      v1 *= FastMath.E10[ds1];
+      v1 *= FastMath.longE10[ds1];
       s1 += ds1;
       s = s1 - s2;
 
@@ -53,16 +53,16 @@ abstract class DecimalDivision extends FixedPoint {
             v *= 10;
             v += r2;
             s += 1;
-            v = roundHalfUp((byte)(((r1 % v2) * 10) / v2), v);
+            v = roundHalfUp(((r1 % v2) * 10) / v2, v);
           }
           else {
-            v = roundHalfUp((byte)r2, v);
+            v = roundHalfUp(r2, v);
           }
         }
       }
     }
     else {
-      byte p = (byte)(Numbers.precision(maxValue) + p1 + p2 -1);
+      int p = Numbers.precision(maxValue) + p1 + p2 - 1;
       if (ds1 > p) {
         ds1 = p;
         p = 0;
@@ -71,15 +71,15 @@ abstract class DecimalDivision extends FixedPoint {
         p -= ds1;
       }
 
-      v1 *= FastMath.E10[ds1];
+      v1 *= FastMath.longE10[ds1];
       s1 += ds1;
 
-      int[] val = BigInt.valueOf(v1);
+      final int[] val = BigInt.assign(Decimal.buf1.get(), v1);
       if (p > 0) {
         if (p > maxE10)
           p = maxE10;
 
-        val = BigInt.mul(val, FastMath.E10[p]);
+        BigInt.mul(val, FastMath.longE10[p]);
         s1 += p;
       }
 
@@ -97,26 +97,26 @@ abstract class DecimalDivision extends FixedPoint {
               v *= 10;
               v += r1 / 10;
               s += 1;
-              v = roundHalfUp((byte)(r1 % 10), v);
+              v = roundHalfUp(r1 % 10, v);
             }
             else {
-              v = roundHalfUp((byte)(r1 / 10), v);
+              v = roundHalfUp(r1 / 10, v);
             }
           }
         }
       }
       else {
         final byte ds = Numbers.precision(dp);
-        if (ds >= FastMath.E10.length) {
+        if (ds >= FastMath.longE10.length) {
           result.error("Overflow");
           return false;
         }
 
-        r1 = BigInt.divRem(val, FastMath.E10[ds]);
+        r1 = BigInt.divRem(val, FastMath.longE10[ds]);
         v = BigInt.longValue(val);
         if (r1 != 0) {
           final byte rp = Numbers.precision(r1);
-          final byte r = (byte)(rp < ds ? 0 : rp == 1 ? r1 : r1 / FastMath.E10[rp - 1]);
+          final long r = rp < ds ? 0 : rp == 1 ? r1 : r1 / FastMath.longE10[rp - 1];
           v = roundHalfUp(r, v);
         }
 
@@ -141,7 +141,7 @@ abstract class DecimalDivision extends FixedPoint {
       if (ds < ds1)
         ds1 = ds;
 
-      v1 *= FastMath.E10[ds1];
+      v1 *= FastMath.longE10[ds1];
       s1 += ds1;
       ds -= ds1;
 
@@ -151,25 +151,25 @@ abstract class DecimalDivision extends FixedPoint {
           if (ds < z2)
             z2 = ds;
 
-          v2 /= FastMath.E10[z2];
+          v2 /= FastMath.longE10[z2];
           s2 -= z2;
           ds -= z2;
         }
       }
 
       if (ds > 0) {
-        if (ds > 35) {
+        if (ds > 36) {
           result.error("Underflow");
           return false;
         }
 
-        int[] val1 = BigInt.valueOf(v1);
+        final int[] val1 = BigInt.assign(Decimal.buf1.get(), v1);
         if (ds > 18) {
-          val1 = BigInt.mul(val1, FastMath.E10[18]);
+          BigInt.mul(val1, FastMath.longE10[18]);
           ds -= 18;
         }
 
-        val1 = BigInt.mul(val1, FastMath.E10[ds]);
+        BigInt.mul(val1, FastMath.longE10[ds]);
         long rem = BigInt.rem(val1, v2);
         result.assign(rem, (short)s2);
 
@@ -177,7 +177,7 @@ abstract class DecimalDivision extends FixedPoint {
       }
     }
     else {
-      v2 *= FastMath.E10[s1 - s2];
+      v2 *= FastMath.longE10[s1 - s2];
     }
 
     result.assign(v1 % v2, (short)s1);
