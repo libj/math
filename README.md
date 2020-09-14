@@ -753,6 +753,11 @@ This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.t
 [BigIntPredicateTest]: src/test/java/org/libj/math/BigIntPredicateTest.java
 [BigIntRemainderTest]: src/test/java/org/libj/math/BigIntRemainderTest.java
 
+[DecimalAdditionTest]: src/test/java/org/libj/math/DecimalAdditionTest.java
+[DecimalMultiplicationTest]: src/test/java/org/libj/math/DecimalMultiplicationTest.java
+[DecimalDivisionTest]: src/test/java/org/libj/math/DecimalDivisionTest.java
+[DecimalPredicateTest]: src/test/java/org/libj/math/DecimalPredicateTest.java
+
 [BigIntMultiplicationTest.html]: https://htmlpreview.github.io/?https://github.com/libj/math/blob/master/src/test/html/BigIntMultiplicationTest.html
 
 [bytebuddy]: https://bytebuddy.net/
