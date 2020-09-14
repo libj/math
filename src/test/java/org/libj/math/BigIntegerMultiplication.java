@@ -62,6 +62,8 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    */
   static final int MAX_MAG_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
 
+  private static final int[] ZERO = {0};
+
   int[] mul(int[] val, final boolean sig, final int len, final int[] mul, final int mlen, final boolean isRecursion, final int fixedLen) {
     if (mul == val && len > MULTIPLY_SQUARE_THRESHOLD)
       return square(val, 1, len, false, -1);
@@ -166,7 +168,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     }
     else {
       xh = getUpper0(x, xUpperLen, yUpperLen, half);
-      z = copy0(xh, xUpperLen + OFF, new int[zlen]); // This length is exact
+      z = copyUnsafe(xh, xUpperLen + OFF, new int[zlen]); // This length is exact
     }
 
     int[] yh = yIsSmall ? new int[half + OFF] : getUpper0(y, yUpperLen, xUpperLen, half);
@@ -662,7 +664,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    * Calculate bitlength of contents of the first len elements an int array,
    * assuming there are no leading zero ints.
    */
-  private static int bitLength(final int[] val, final int len) {
+  static int bitLength(final int[] val, final int len) {
     return len == 0 ? 0 : ((len - 1) << 5) + bitLengthForInt(val[0]);
   }
 

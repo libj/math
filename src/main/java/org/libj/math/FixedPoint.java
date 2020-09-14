@@ -19,27 +19,17 @@ package org.libj.math;
 import java.math.BigDecimal;
 
 import org.libj.lang.Numbers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 abstract class FixedPoint extends Number {
   private static final long serialVersionUID = -2783163338875335475L;
-  private static final Logger logger = LoggerFactory.getLogger(FixedPoint.class);
-
-  static final boolean highPrecision = System.getProperty("org.libj.math.Decimal.highPrecision") != null && !"false".equals(System.getProperty("org.libj.math.Decimal.highPrecision"));
-
-  static final long LONG_INT_MASK = 0xFFFFFFFFL;
 
   /** The minimum allowed number of scale bits (inclusive). */
-  public static final byte MIN_SCALE_BITS = 0;
+  public static final byte MIN_SCALE_BITS = 3;
   /** The maximum allowed number of scale bits (inclusive). */
   public static final byte MAX_SCALE_BITS = 16;
 
-  static final byte MAX_PRECISION_D = 19;
-  static final byte MAX_PRECISION_B = 63;
-
-  public static final short MIN_SCALE = Short.MIN_VALUE;
-  public static final short MAX_SCALE = Short.MAX_VALUE;
+  static final short MIN_SCALE = Short.MIN_VALUE;
+  static final short MAX_SCALE = Short.MAX_VALUE;
 
   private static final byte noScaleBits = MAX_SCALE_BITS + 1;
   private static final long[] pow2 = new long[noScaleBits];
@@ -63,11 +53,9 @@ abstract class FixedPoint extends Number {
   static final ThreadLocal<Decimal> threadLocal = new ThreadLocal<Decimal>() {
     @Override
     protected Decimal initialValue() {
-      return new Decimal();
+      return new Decimals.Decimal();
     }
   };
-
-  public static final Decimal ZERO = new Decimal(0, (short)0);
 
   /**
    * Returns the result of {@code v / 10} rounded half up.
@@ -75,12 +63,56 @@ abstract class FixedPoint extends Number {
    * @param v The value.
    * @return The result of {@code v / 10} rounded half up.
    */
-  static long roundDown10(final long v) {
-    return round((byte)(v % 10), v / 10);
+  static long roundHalfUp10(final long v) {
+    return roundHalfUp(v % 10, v / 10);
   }
 
-  static long round(final byte r, final long v) {
+  static long roundHalfUp(final int r) {
+    return r <= -5 ? -1 : r >= 5 ? 1 : 0;
+  }
+
+  static long roundHalfUp(final long r) {
+    return r <= -5 ? -1 : r >= 5 ? 1 : 0;
+  }
+
+  static long roundHalfUp(final int r, final long v) {
     return r <= -5 ? v - 1 : r >= 5 ? v + 1 : v;
+  }
+
+  static long roundHalfUp(final long r, final long v) {
+    return r <= -5 ? v - 1 : r >= 5 ? v + 1 : v;
+  }
+
+  static long unroundHalfUp(final byte r, final long v) {
+    return r <= -5 ? v + 1 : r >= 5 ? v - 1 : v;
+  }
+
+  static long roundCeil10(final long v) {
+    return roundCeil(v % 10, v / 10);
+  }
+
+  static long roundCeil(final int r, final long v) {
+    return r < 0 ? v - 1 : r > 0 ? v + 1 : v;
+  }
+
+  static long roundCeil(final long r, final long v) {
+    return r < 0 ? v - 1 : r > 0 ? v + 1 : v;
+  }
+
+  static long roundHalfDown10(final long v) {
+    return roundHalfDown(v % 10, v / 10);
+  }
+
+  static long roundHalfDown(final int r, final long v) {
+    return r < -5 ? v - 1 : r > 5 ? v + 1 : v;
+  }
+
+  static long roundHalfDown(final long r, final long v) {
+    return r < -5 ? v - 1 : r > 5 ? v + 1 : v;
+  }
+
+  static long unroundHalfDown(final byte r, final long v) {
+    return r < -5 ? v + 1 : r > 5 ? v - 1 : v;
   }
 
   /**
@@ -90,12 +122,12 @@ abstract class FixedPoint extends Number {
    * <b>Note:</b> It is assumed the specified value is positive, as the
    * {@link Long#numberOfLeadingZeros(long)} returns 0 for all negative values.
    *
-   * @param val The value for which to return the number of bits of precision.
+   * @param value The value for which to return the number of bits of precision.
    * @return The number of bits of precision required for the representation of
    *         the specified value.
    */
-  static byte binaryPrecisionRequiredForValue(final long val) {
-    return (byte)(Long.SIZE - Long.numberOfLeadingZeros(val));
+  static int bitLength(final long value) {
+    return Long.SIZE - Long.numberOfLeadingZeros(value);
   }
 
   /**
@@ -104,8 +136,8 @@ abstract class FixedPoint extends Number {
    * @param scaleBits The number of scale bits.
    * @return the number of value bits for the specified scale bits.
    */
-  public static byte valueBits(final byte scaleBits) {
-    return (byte)(63 - scaleBits);
+  static int valueBits(final int scaleBits) {
+    return 63 - scaleBits;
   }
 
   /**
@@ -114,121 +146,111 @@ abstract class FixedPoint extends Number {
    * @param valueBits The number of value bits.
    * @return the number of scale bits for the specified value bits.
    */
-  public static byte scaleBits(final byte valueBits) {
-    return (byte)(63 - valueBits);
+  static int scaleBits(final int valueBits) {
+    return 63 - valueBits;
   }
 
   /**
    * Returns the minimum value that can be represented with the specified number
-   * of {@code bits}.
+   * of {@code valueBits}.
    *
-   * @param bits The number of bits.
+   * @param valueBits The number of bits.
    * @return The minimum value that can be represented with the specified number
-   *         of {@code bits}.
+   *         of {@code valueBits}.
    */
-  public static long minValue(final byte bits) {
-    return -1L << bits;
+  static long minValue(final int valueBits) {
+    return -1L << valueBits;
   }
 
   /**
    * Returns the maximum value that can be represented with the specified number
-   * of {@code bits}.
+   * of {@code valueBits}.
    *
-   * @param bits The number of bit.
+   * @param valueBits The number of bit.
    * @return The maximum value that can be represented with the specified number
-   *         of {@code bits}.
+   *         of {@code valueBits}.
    */
-  public static long maxValue(final byte bits) {
-    return (1L << bits) - 1;
+  static long maxValue(final int valueBits) {
+    return (1L << valueBits) - 1;
   }
 
   /**
    * Returns the minimum scale that can be represented in a {@code long} encoded
-   * with {@link #encode(long,short,byte,long)} with the specified number of
-   * scale {@code bits}.
+   * with {@link #encode(long,short,long,byte)} with the specified number of
+   * {@code scaleBits}.
    *
-   * @param bits The number of bits reserved for the scale.
+   * @param scaleBits The number of bits reserved for the scale.
    * @return The minimum scale that can be represented in a {@code long} encoded
-   *         with {@link #encode(long,short,byte,long)} with the specified
-   *         number of scale {@code bits}.
-   * @throws ArrayIndexOutOfBoundsException If {@code bits} is negative or
+   *         with {@link #encode(long,short,long,byte)} with the specified
+   *         number of {@code scaleBits}.
+   * @throws ArrayIndexOutOfBoundsException If {@code scaleBits} is negative or
    *           greater than {@code 16}.
-   * @see #encode(long,short,byte,long)
-   * @see #minValue(byte)
+   * @see #encode(long,short,long,byte)
+   * @see #minValue(int)
    */
-  public static short minScale(final byte bits) {
-    return Decimal.minScale[bits];
+  static short minScale(final int scaleBits) {
+    return Decimal.minScale[scaleBits];
   }
 
   /**
    * Returns the maximum scale that can be represented in a {@code long} encoded
-   * with {@link #encode(long,short,byte,long)} with the specified number of
-   * scale {@code bits}.
+   * with {@link #encode(long,short,long,byte)} with the specified number of
+   * {@code scaleBits}.
    *
-   * @param bits The number of bits reserved for the scale.
+   * @param scaleBits The number of bits reserved for the scale.
    * @return The maximum scale that can be represented in a {@code long} encoded
-   *         with {@link #encode(long,short,byte,long)} with the specified
-   *         number of scale {@code bits}.
-   * @throws ArrayIndexOutOfBoundsException If {@code bits} is negative or
+   *         with {@link #encode(long,short,long,byte)} with the specified
+   *         number of {@code scaleBits}.
+   * @throws ArrayIndexOutOfBoundsException If {@code scaleBits} is negative or
    *           greater than {@code 16}.
-   * @see #encode(long,short,byte,long)
-   * @see #maxValue(byte)
+   * @see #encode(long,short,long,byte)
+   * @see #maxValue(int)
    */
-  public static short maxScale(final byte bits) {
-    return Decimal.maxScale[bits];
+  static short maxScale(final int scaleBits) {
+    return Decimal.maxScale[scaleBits];
   }
 
-  private static long mask(final byte bits) {
+  private static long mask(final byte scaleBits) {
     // Leave the first bit untouched, as that's the sign bit
-    return (0xFFFFL << 63 - bits) & 0x7fffffffffffffffL;
+    return (0xFFFFL << 63 - scaleBits) & 0x7fffffffffffffffL;
   }
 
   /**
    * Encodes the provided {@link BigDecimal} {@code value} into a {@code long}
-   * with the given number of sign {@code bits}.
-   *
-   * @param value The string representation of a decimal.
-   * @param bits The number of bits reserved for the scale.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding with the provided
-   *          {@code bits}.
-   * @return A {@code long} encoded with the provided {@code value} and
-   *         {@code scale} with the given number of sign {@code bits}.
-   * @see #minValue(byte)
-   * @see #maxValue(byte)
-   */
-  public static long encode(final BigDecimal value, final byte bits, final long defaultValue) {
-    final int scale = value.scale();
-    final int minScale = FixedPoint.minScale[bits];
-    final int maxScale = FixedPoint.maxScale[bits];
-    if (scale < minScale || maxScale < scale) {
-      if (logger.isDebugEnabled())
-        logger.debug(value + " cannot be represented with " + bits + " scale bits");
-
-      return defaultValue;
-    }
-
-    return encode(value.unscaledValue().longValue(), (short)scale, bits, defaultValue);
-  }
-
-  /**
-   * Encodes the provided string representation of a decimal {@code value} into
-   * a {@code long} with the given number of sign {@code bits}.
+   * with the given number of {@code scaleBits}.
    *
    * @param value The string representation of a decimal.
    * @param scaleBits The number of bits reserved for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
-   *          {@code bits}.
+   *          {@code scaleBits}.
    * @return A {@code long} encoded with the provided {@code value} and
-   *         {@code scale} with the given number of sign {@code bits}.
-   * @see #minValue(byte)
-   * @see #maxValue(byte)
+   *         {@code scale} with the given number of {@code scaleBits}.
+   * @see #minValue(int)
+   * @see #maxValue(int)
    */
-  public static long encode(final String value, final byte scaleBits, final long defaultValue) {
-    int e = value.indexOf('e');
+  static long encode(final BigDecimal value, final long defaultValue, final byte scaleBits) {
+    return encode(value.unscaledValue().longValue(), value.scale(), defaultValue, scaleBits);
+  }
+
+  /**
+   * Encodes the provided string representation of a decimal {@code value} into
+   * a {@code long} with the given number of {@code scaleBits}.
+   *
+   * @param value The string representation of a decimal.
+   * @param scaleBits The number of bits reserved for the scale.
+   * @param defaultValue The value to be returned if the result cannot be
+   *          represented in {@link Decimal} encoding with the provided
+   *          {@code scaleBits}.
+   * @return A {@code long} encoded with the provided {@code value} and
+   *         {@code scale} with the given number of {@code scaleBits}.
+   * @see #minValue(int)
+   * @see #maxValue(int)
+   */
+  static long encode(final String value, final long defaultValue, final byte scaleBits) {
+    int e = value.indexOf('E');
     if (e < 0)
-      e = value.indexOf('E');
+      e = value.indexOf('e');
 
     final int dot = value.indexOf('.');
     final int len = value.length();
@@ -249,9 +271,9 @@ abstract class FixedPoint extends Number {
 
       if (val != 0) {
         // FIXME: What if: f > 18 ?!
-        final byte f = (byte)(e - dot - 1);
+        final int f = e - dot - 1;
         if (e - dot - 1 >= 0)
-          val *= FastMath.e10[f];
+          val *= FastMath.longE10[f];
       }
 
       val += Long.parseLong(value.substring(dot + 1, e));
@@ -262,93 +284,88 @@ abstract class FixedPoint extends Number {
     if (s > maxScale) {
       int adj = s - maxScale;
       if (adj >= Numbers.precision(val)) {
-        if (logger.isDebugEnabled())
-          logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
-
+        // System.err.println("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
         return defaultValue;
       }
 
       for (int i; adj > 0; adj -= i) {
-        i = Math.min(adj, FastMath.e10.length - 1);
-        val /= FastMath.e10[i];
+        i = Math.min(adj, FastMath.longE10.length - 1);
+        val /= FastMath.longE10[i];
         s -= i;
       }
 
       if (val == 0) {
-        if (logger.isDebugEnabled())
-          logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
-
+        // System.err.println("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
         return defaultValue;
       }
     }
     else {
-      final int minScale = FixedPoint.minScale[scaleBits];
+      final short minScale = FixedPoint.minScale[scaleBits];
       if (s < minScale) {
         int adj = minScale - s;
         if (adj >= 20 - Numbers.precision(val)) {
-          if (logger.isDebugEnabled())
-            logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
-
+          // System.err.println("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
           return defaultValue;
         }
 
         for (int i; adj > 0; adj -= i) {
-          i = Math.min(adj, FastMath.e10.length - 1);
-          val *= FastMath.e10[i];
+          i = Math.min(adj, FastMath.longE10.length - 1);
+          val *= FastMath.longE10[i];
           s += i;
         }
 
-        final byte valueBits = valueBits(scaleBits);
+        final int valueBits = valueBits(scaleBits);
         final long minValue = FixedPoint.minValue(valueBits);
         final long maxValue = FixedPoint.maxValue(valueBits);
         if (val < 0 ? val < minValue : maxValue < val) {
-          if (logger.isDebugEnabled())
-            logger.debug("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
-
+          // System.err.println("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
           return defaultValue;
         }
+
+        return encode(val, s, defaultValue, scaleBits, minValue, maxValue, minScale, maxScale);
       }
     }
 
-    return encode(val, (short)s, scaleBits, defaultValue);
+    return encode(val, s, defaultValue, scaleBits);
   }
 
   /**
    * Encodes the provided {@code value} and {@code scale} into a {@code long}
-   * with the given number of sign {@code bits}.
+   * with the given number of {@code scaleBits}.
    *
    * @param value The numeric component.
    * @param scale The scale component.
    * @param scaleBits The number of bits reserved for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
-   *          {@code bits}.
+   *          {@code scaleBits}.
    * @return A {@code long} encoded with the provided {@code value} and
-   *         {@code scale} with the given number of sign {@code bits}.
-   * @see #minValue(byte)
-   * @see #maxValue(byte)
+   *         {@code scale} with the given number of {@code scaleBits}.
+   * @see #minValue(int)
+   * @see #maxValue(int)
    */
-  public static long encode(final long value, final short scale, final byte scaleBits, final long defaultValue) {
-    if (scaleBits == 0)
-      return scale == 0 ? value : defaultValue;
-
-    final byte valueBits = valueBits(scaleBits);
+  static long encode(final long value, final int scale, final long defaultValue, final byte scaleBits) {
+    final int valueBits = valueBits(scaleBits);
     final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
-    if (value < 0 ? value < minValue : maxValue < value) {
-      if (logger.isDebugEnabled())
-        logger.debug("Value " + value + " is outside permitted min(" + minValue(valueBits) + ") max(" + maxValue(valueBits) + ")");
+    return encode(value, scale, defaultValue, scaleBits, minValue, maxValue, FixedPoint.minScale[scaleBits], FixedPoint.maxScale[scaleBits]);
+  }
 
+  static long encode(final long value, final int scale, final long defaultValue, final byte scaleBits, final long minValue, final long maxValue, final short minScale, final short maxScale) {
+    if (value < minValue || maxValue < value) {
+      // System.err.println("Value " + value + " is outside permitted min(" + minValue + ") max(" + maxValue + ")");
       return defaultValue;
     }
 
-    if (scale < 0 ? scale < FixedPoint.minScale[scaleBits] : FixedPoint.maxScale[scaleBits] < scale) {
-      if (logger.isDebugEnabled())
-        logger.debug("Scale " + scale + " is greater than bits allow: " + (scale < 0 ? FixedPoint.minScale[scaleBits] : FixedPoint.maxScale[scaleBits]));
-
+    if (scale < minScale || maxScale < scale) {
+      // System.err.println("Scale " + scale + " is greater than bits allow: " + (scale < 0 ? minScale : maxScale));
       return defaultValue;
     }
 
+    return encodeUnsafe(value, scale, defaultValue, scaleBits);
+  }
+
+  static long encodeUnsafe(final long value, final int scale, final long defaultValue, final byte scaleBits) {
     final long scaleMask = (scale & ((1L << scaleBits) - 1)) << (63 - scaleBits);
 
     // System.out.println("value: " + Buffers.toString(value));
@@ -361,23 +378,23 @@ abstract class FixedPoint extends Number {
 
   /**
    * Decodes the value component from the
-   * {@link Decimal#encode(long,short,byte,long) encoded} value with the given
-   * number of sign {@code bits}.
+   * {@link Decimal#encode(long,short,long,byte) encoded} value with the given
+   * number of {@code scaleBits}.
    *
-   * @param encoded The {@link Decimal#encode(long,short,byte,long) encoded}
+   * @param encoded The {@link Decimal#encode(long,short,long,byte) encoded}
    *          value.
-   * @param bits The number of bits reserved for the scale.
+   * @param scaleBits The number of bits reserved for the scale.
    * @return The value component from the
-   *         {@link Decimal#encode(long,short,byte,long) encoded} value with the
-   *         given number of sign {@code bits}.
-   * @see #encode(long,short,byte,long)
-   * @see #decodeScale(long,byte)
+   *         {@link Decimal#encode(long,short,long,byte) encoded} value with the
+   *         given number of {@code scaleBits}.
+   * @see #encode(long,short,long,byte)
+   * @see #scale(long,byte)
    */
-  public static long decodeValue(final long encoded, final byte bits) {
-    if (bits == 0)
+  static long value(final long encoded, final byte scaleBits) {
+    if (scaleBits == 0)
       return encoded;
 
-    final long scaleMask = mask(bits);
+    final long scaleMask = mask(scaleBits);
     // System.out.println("encoded: " + Buffers.toString(encoded));
     // System.out.println("sleMask: " + Buffers.toString(scaleMask));
     return encoded < 0 ? encoded | scaleMask : encoded & ~scaleMask;
@@ -385,26 +402,62 @@ abstract class FixedPoint extends Number {
 
   /**
    * Decodes the scale component from the
-   * {@link Decimal#encode(long,short,byte,long) encoded} value with the given
-   * number of sign {@code bits}.
+   * {@link Decimal#encode(long,short,long,byte) encoded} value with the given
+   * number of {@code scaleBits}.
    *
-   * @param encoded The {@link Decimal#encode(long,short,byte,long) encoded}
+   * @param encoded The {@link Decimal#encode(long,short,long,byte) encoded}
    *          value.
-   * @param bits The number of bits reserved for the scale.
+   * @param scaleBits The number of bits reserved for the scale.
    * @return The scale component from the
-   *         {@link Decimal#encode(long,short,byte,long) encoded} value with the
-   *         given number of sign {@code bits}.
-   * @see #encode(long,short,byte,long)
-   * @see #decodeValue(long,byte)
+   *         {@link Decimal#encode(long,short,long,byte) encoded} value with the
+   *         given number of {@code scaleBits}.
+   * @see #encode(long,short,long,byte)
+   * @see #value(long,byte)
    */
-  public static short decodeScale(final long encoded, final byte bits) {
-    if (bits == 0)
+  static short scale(final long encoded, final byte scaleBits) {
+    if (scaleBits == 0)
       return 0;
 
-    final long scaleMask = mask(bits);
-    final short scale = (short)(encoded < 0 ? ~((encoded | ~scaleMask) >> 63 - bits) : (encoded & scaleMask) >> 63 - bits);
+    final long scaleMask = mask(scaleBits);
+    final short scale = (short)(encoded < 0 ? ~((encoded | ~scaleMask) >> 63 - scaleBits) : (encoded & scaleMask) >> 63 - scaleBits);
     // System.out.println("SMask: " + Buffers.toString(scaleMask) + " " + scale);
-    final int sign = scale & ((byte)1 << bits - 1);
-    return sign == 0 ? scale : (short)(-((~scale + 1) & ((1 << bits) - 1)));
+    final int sign = scale & ((byte)1 << scaleBits - 1);
+    // FIXME: Hmm... can <<< help with this complexity?
+    return sign == 0 ? scale : (short)(-((~scale + 1) & ((1 << scaleBits) - 1)));
+  }
+
+  static boolean checkScale(long value, int scale, final long minValue, final short minScale, final short maxScale, final Decimal result) {
+    if (scale > maxScale) {
+      final int ds = scale - maxScale;
+      final int p = Numbers.precision(value);
+      if (p <= ds) {
+        result.error("Underflow");
+        return false;
+      }
+
+      final long e10 = FastMath.longE10[ds];
+      long r1 = value % e10;
+      value /= e10;
+      scale -= ds;
+      if (r1 != 0) {
+        final byte rp = Numbers.precision(r1);
+        final long r = rp < ds ? 0 : rp == 1 ? r1 : r1 / FastMath.longE10[rp - 1];
+        value = roundHalfUp(r, value);
+      }
+    }
+    else if (scale < minScale) {
+      final int ds = minScale - scale;
+      final int fac = Numbers.precision(minValue / value);
+      if (fac <= ds) {
+        result.error("Overflow");
+        return false;
+      }
+
+      value *= FastMath.longE10[ds];
+      scale += ds;
+    }
+
+    result.assign(value, (short)scale);
+    return true;
   }
 }

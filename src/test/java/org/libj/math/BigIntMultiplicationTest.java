@@ -30,16 +30,16 @@ import gnu.java.math.MPN;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
+@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
 public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
     final int[] sig = {0};
-    test("mul(int,int)", report,
+    test("mul(int,int)").withAuditReport(report).withCases(
       i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, int b) -> a.multiply(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.mul(sig[0], b), String::valueOf),
       i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.mul(a, sig[0], b), BigInt::toString)
@@ -48,9 +48,9 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSignedInt(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
-    test("mul(int)", report,
+    test("mul(int)").withAuditReport(report).withCases(
       i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
       // i(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, int b) -> { a.mul(b); return a; }, String::valueOf),
       i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.mul(b), String::valueOf),
@@ -61,10 +61,10 @@ public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedLong(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
     final int[] sig = {0};
-    test("mul(int,long)", report,
+    test("mul(int,long)").withAuditReport(report).withCases(
       l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, long b) -> a.multiply(BigIntegers.valueOf(sig[0], b)), String::valueOf),
       l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.mul(sig[0], b), String::valueOf),
       l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.mul(a, sig[0], b), BigInt::toString)
@@ -73,9 +73,9 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSignedLong(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages the long multiplication algorithm for both `BigInt` and `BigInteger`.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the long multiplication algorithm for both `BigInt` and `BigInteger`.");
 
-    test("mul(long)", report,
+    test("mul(long)").withAuditReport(report).withCases(
       l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
       // l(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, long b) -> { a.mul(b); return a; }, String::valueOf),
       l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.mul(b), String::valueOf),
@@ -84,7 +84,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   public void testBig(final AuditReport report, final int scale, final int skip) {
-    test("mul(T): " + scale, skip, report,
+    test("mul(T): " + scale).withSkip(skip).withAuditReport(report).withCases(
       s(BigInteger.class, a -> scaledBigInteger(a, scale), a -> scaledBigInteger(a, scale), (BigInteger a, BigInteger b) -> a.multiply(b), String::valueOf),
       // s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) -> a.mul(b), String::valueOf),
       s(BigInt.class, a -> scaledBigInt(a, scale), a -> scaledBigInt(a, scale), (BigInt a, BigInt b) -> a.mul(b), String::valueOf),
@@ -118,7 +118,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   public void testSquareBig(final AuditReport report, final int scale, final int skip) {
-    test("mul(T,T): " + scale, skip, report,
+    test("mul(T,T): " + scale).withSkip(skip).withAuditReport(report).withCases(
       s(BigInteger.class, a -> scaledBigInteger(a, scale), (BigInteger a) -> a.multiply(a), String::valueOf),
       // s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a) -> a.mul(a), String::valueOf),
       s(BigInt.class, a -> scaledBigInt(a, scale), (BigInt a) -> a.mul(a), String::valueOf),
@@ -130,13 +130,13 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testBig(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages all multiplication algorithm for both `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys all multiplication algorithms in `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"small sized\" numbers, `BigInt` outperforms `BigInteger` due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"medium sized\" numbers, `BigInteger` outperforms `BigInt` due to the fact that `BigInteger.multiplyToLen(...)` is implemented as an intrinsic, which proves to beat `BigInt`'s critical native implementation of the same algorithm.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"large sized\" numbers, `BigInt` outperforms `BigInteger` due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, `BigInt` utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient `int[]` arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the `BigInt`'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.");
-    report.addComment(UNINSTRUMENTED.ordinal(), "For \"very large sized\" numbers, `BigInt` outperforms `BigInteger` due to implementat Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.");
-
-    for (int i = 1; i <= 128; i *= 2)
+    report.addComment(UNINSTRUMENTED.ordinal(), "For \"very large sized\" numbers, `BigInt` outperforms `BigInteger` in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.");
+    final int maxPrecision = isCI ? 8 : 128;
+    for (int i = 1; i <= maxPrecision; i *= 2)
       testBig(report, i, 80);
   }
 
@@ -149,9 +149,10 @@ public class BigIntMultiplicationTest extends BigIntTest {
 
   @Test
   public void testSquareBig(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "This test engages all multiplication algorithm for both `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys all multiplication algorithms in `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
     report.addComment(UNINSTRUMENTED.ordinal(), "The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the \"square\" use-case, as the equality of `x` and `y` have a better change of allowing for in-place calculations.");
-    for (int i = 1; i <= 128; i *= 2)
+    final int maxPrecision = isCI ? 8 : 128;
+    for (int i = 1; i <= maxPrecision; i *= 2)
       testSquareBig(report, i, 80);
   }
 
@@ -163,6 +164,17 @@ public class BigIntMultiplicationTest extends BigIntTest {
   }
 
   @Test
+  public void testPow(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the power algorithm for both `BigInt` and `BigInteger`. Note that the variable representing the power is limited to `2048`, otherwise with power values larger than 127 result in unreasonably long tests.");
+
+    test("pow(int)").withAuditReport(report).withCases(
+      i(BigInteger.class, this::scaledBigInteger, b -> abs(b) % 256, (BigInteger a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
+      i(BigInt.class, this::scaledBigInt, b -> abs(b) % 256, (BigInt a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
+      i(int[].class, this::scaledVal, b -> abs(b) % 256, (int[] a, int b) -> BigInt.pow(a, b), o -> o == null ? null : BigInt.toString(o))
+    );
+  }
+
+  @Test
   public void testUInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "This test validates the correctness of `[BigIntMultiplication.umul(int)][BigIntMultiplication]` against `[MPN.mul(...)][MPN]`.");
 
@@ -170,7 +182,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] x = new int[3];
     final int[] y = new int[1];
     final int[] val = new int[4];
-    test("umul(int[],int)", report,
+    test("umul(int[],int)").withAuditReport(report).withCases(
       l(MPN.class, a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);
@@ -198,7 +210,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] x = new int[3];
     final int[] y = new int[2];
     final int[] val = new int[5];
-    test("umul(int[],long)", report,
+    test("umul(int[],long)").withAuditReport(report).withCases(
       l(MPN.class, a -> {
         x[0] = (int)(a & 0xFFFFFFFFL);
         x[1] = (int)(a >>> 32);

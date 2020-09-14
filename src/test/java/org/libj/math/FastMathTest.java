@@ -19,8 +19,6 @@ package org.libj.math;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.libj.console.Tables;
-import org.libj.lang.Strings.Align;
 
 public class FastMathTest extends BigIntTest {
   private static final int numTests = 1048576;
@@ -44,42 +42,30 @@ public class FastMathTest extends BigIntTest {
   @Test
   public void testE10() {
     for (byte i = 0; i < 19; ++i)
-      assertEquals((long)Math.pow(10, i), FastMath.e10[i]);
+      assertEquals((long)Math.pow(10, i), FastMath.longE10[i]);
   }
 
   @Test
   public void testDivideUnsignedLong() {
-    test("divideUnsigned(long, long)",
-      l("Long", a -> a, this::nz, (long a, long b) -> Long.divideUnsigned(a, b)),
-      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.divideUnsigned(a, b))
+    test("divideUnsigned(long,long)").withCases(
+      l("Long", a -> a, this::nz, (long a, long b) -> Long.divideUnsigned(a, b), o -> o),
+      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.divideUnsigned(a, b), o -> o)
     );
   }
 
   @Test
   public void testRemainderUnsignedLong() {
-    test("remainderUnsigned(long, long)",
-      l("Long", a -> a, this::nz, (long a, long b) -> Long.remainderUnsigned(a, b)),
-      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.remainderUnsigned(a, b))
+    test("remainderUnsigned(long,long)").withCases(
+      l("Long", a -> a, this::nz, (long a, long b) -> Long.remainderUnsigned(a, b), o -> o),
+      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.remainderUnsigned(a, b), o -> o)
     );
   }
 
   @Test
-  public void testX() {
-    final Long[] time = {0L, 0L};
-    for (int i = 0; i < numTests; ++i) {
-      final long dividend = -7232583056709551616L;
-      final long divisor = 3376106979L;
-      long ts = System.nanoTime();
-      final long e = Long.remainderUnsigned(dividend, divisor);
-      time[0] += System.nanoTime() - ts;
-      ts = System.nanoTime();
-      final long q = FastMath.remainderUnsigned(dividend, divisor);
-      time[1] += System.nanoTime() - ts;
-      assertEquals(e, q);
-    }
-
-    time[0] /= numTests * 30;
-    time[1] /= numTests * 30;
-    System.out.println(Tables.printTable(true, Align.RIGHT, time, "Long", "FastMath"));
+  public void testDoubleE10() {
+    test("doubleE10(int)").withCases(
+      i("pow(10)", a -> abs(a), (int a) -> StrictMath.pow(10, a), o -> o),
+      i("doubleE10", a -> abs(a), (int a) -> FastMath.doubleE10(a), o -> o)
+    );
   }
 }

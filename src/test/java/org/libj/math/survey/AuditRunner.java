@@ -34,9 +34,11 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -55,7 +57,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 import org.libj.lang.Classes;
 import org.libj.lang.PackageLoader;
-import org.libj.util.ArrayUtil;
+import org.libj.util.IdentityHashSet;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.dynamic.loading.ClassInjector;
@@ -78,8 +80,8 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     else {
       try {
         instr = ByteBuddyAgent.install();
-        loadJarsInBootstrap(instr, "lang", "slf4j", "console");
-        loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport");
+        loadJarsInBootstrap(instr, "lang", "slf4j", "logback-core", "logback", "console", "api", "util");
+        loadClassesInBootstrap("org.libj.math.survey.Rule", "org.libj.math.survey.ArrayRule", "org.libj.math.survey.ClassRule", "org.libj.math.survey.Result", "org.libj.math.survey.AuditReport");
       }
       catch (final IOException e) {
         throw new ExceptionInInitializerError(e);
@@ -107,7 +109,8 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
   @Retention(RetentionPolicy.RUNTIME)
   @Repeatable(Instruments.class)
   public @interface Instrument {
-    Class<?>[] value();
+    Class<?>[] a();
+    Class<?>[] b();
   }
 
   @Target(ElementType.TYPE)
@@ -205,10 +208,10 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
         final byte[] bytes = new byte[in.available()];
         in.read(bytes);
         nameToBytes.put(className, bytes);
+        ClassInjector.UsingUnsafe.ofBootLoader().injectRaw(nameToBytes);
+        nameToBytes.clear();
       }
     }
-
-    ClassInjector.UsingUnsafe.ofBootLoader().injectRaw(nameToBytes);
   }
 
   private static void loadByteman(final Instrumentation instr, final AuditReport report) {
@@ -240,45 +243,25 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
       this.mode = execution == null ? AuditMode.INSTRUMENTED : execution.value();
       final Instrument[] instruments = instrs.value();
       final Result[] results = new Result[instruments.length + 1];
-      final Class<?>[] allTrackedClasses = collateTrackedClasses(results, instruments, 0, 0);
-      results[results.length - 1] = new Result(cls, allTrackedClasses);
-      this.report = AuditReport.init(cls, results, trim(allTrackedClasses, 0, 0));
+      final Set<Class<?>> allClasses = new IdentityHashSet<>();
+      for (int i = 0; i < instruments.length; ++i) {
+        final Instrument instrument = instruments[i];
+        Collections.addAll(allClasses, instrument.a());
+        Collections.addAll(allClasses, instrument.b());
+      }
+
+      final Class<?>[] allTrackedClasses = allClasses.toArray(new Class[allClasses.size()]);
+      for (int i = 0; i < instruments.length; ++i) {
+        results[i] = new Result(instruments[i].a(), allTrackedClasses);
+      }
+
+      results[results.length - 1] = new Result(new Class[] {cls}, allTrackedClasses);
+      this.report = AuditReport.init(cls, results, allTrackedClasses);
     }
-  }
-
-  private static Class<?>[] trim(final Class<?>[] classes, final int index, final int depth) {
-    if (index == classes.length)
-      return new Class<?>[depth];
-
-    final Class<?> cls = classes[index];
-    if (cls == null)
-      return trim(classes, index + 1, depth);
-
-    final Class<?>[] result = trim(classes, index + 1, depth + 1);
-    result[depth] = cls;
-    return result;
-  }
-
-  private static Class<?>[] collateTrackedClasses(final Result[] results, final Instrument[] instruments, final int index, final int depth) {
-    if (index == instruments.length)
-      return new Class<?>[depth];
-
-    final Instrument instrument = instruments[index];
-    final Class<?>[] trackedClasses = instrument.value();
-
-    results[index] = new Result(trackedClasses[0], trackedClasses);
-    final Class<?>[] allClasses = collateTrackedClasses(results, instruments, index + 1, depth + trackedClasses.length);
-    for (int i = 0; i < trackedClasses.length; ++i) {
-      final Class<?> t = trackedClasses[i];
-      if (!ArrayUtil.contains(allClasses, depth, allClasses.length - depth, t))
-        allClasses[depth + trackedClasses.length - i - 1] = trackedClasses[i];
-    }
-
-    return allClasses;
   }
 
   @Override
-  protected void validateTestMethods(List<Throwable> errors) {
+  protected void validateTestMethods(final List<Throwable> errors) {
   }
 
   private void beforeInvoke() {

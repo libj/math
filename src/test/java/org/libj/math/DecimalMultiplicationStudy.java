@@ -17,12 +17,12 @@
 package org.libj.math;
 
 import static org.junit.Assert.*;
-import static org.libj.math.DecimalMultiplication.*;
 
 import org.junit.Test;
 import org.libj.lang.Buffers;
 import org.libj.lang.Numbers;
 
+@SuppressWarnings("unused")
 public class DecimalMultiplicationStudy {
   private static final long v1 = 72057594037927935L;
   private static final short s1 = 22;
@@ -83,11 +83,11 @@ public class DecimalMultiplicationStudy {
 
   private static long divf(long[] y, int factor) {
     if (factor <= 9) {
-      div(y, (int)FastMath.e10[factor]);
+      div(y, (int)FastMath.longE10[factor]);
     }
     else {
-      final int high = (int)FastMath.e10[factor -= 9];
-      final int low = (int)FastMath.e10[9];
+      final int high = (int)FastMath.longE10[factor -= 9];
+      final int low = (int)FastMath.longE10[9];
       div(y, low);
       div(y, high);
     }
@@ -97,11 +97,11 @@ public class DecimalMultiplicationStudy {
 
   private static long divf2(long[] two, int factor) {
     if (factor <= 9) {
-      div2(two, (int)FastMath.e10[factor]);
+      div2(two, (int)FastMath.longE10[factor]);
     }
     else {
-      final int high = (int)FastMath.e10[factor -= 9];
-      final int low = (int)FastMath.e10[9];
+      final int high = (int)FastMath.longE10[factor -= 9];
+      final int low = (int)FastMath.longE10[9];
       div2(two, high);
       div2(two, low);
     }
@@ -193,7 +193,7 @@ public class DecimalMultiplicationStudy {
     int d, f;
     do {
       f = Math.min(factor, 9);
-      d = (int)FastMath.e10[f];
+      d = (int)FastMath.longE10[f];
       factor -= f;
 
       System.err.println("d: " + Buffers.toString(d));
@@ -266,8 +266,8 @@ public class DecimalMultiplicationStudy {
    * </pre>
    */
   private static long mulMod(final long v1, long s1, final long v2, long s2, final byte valueBits) {
-    byte bp1 = FixedPoint.binaryPrecisionRequiredForValue(v1);
-    byte bp2 = FixedPoint.binaryPrecisionRequiredForValue(v2);
+    int bp1 = FixedPoint.bitLength(v1);
+    int bp2 = FixedPoint.bitLength(v2);
 
     // How many bits are available until we hit the max (valueBits)?
     byte bp = (byte)(bp1 + bp2 - valueBits);
@@ -299,14 +299,14 @@ public class DecimalMultiplicationStudy {
     // If bp is not fully consumed, split the difference of bp between v1
     // and v2, reducing the larger of v1 and v2 if bp is odd.
     if (bp > 0) {
-      final byte half = (byte)(bp / 2);
+      final int half = bp / 2;
       if (bias) {
-        bp1 += (byte)(bp - half);
+        bp1 += bp - half;
         bp2 += half;
       }
       else {
         bp1 += half;
-        bp2 += (byte)(bp - half);
+        bp2 += bp - half;
       }
     }
 
@@ -329,7 +329,7 @@ public class DecimalMultiplicationStudy {
     long lv2 = 0;
     long f2 = 0;
     if (dp1 > 0) {
-      f1 = FastMath.e10[dp1];
+      f1 = FastMath.longE10[dp1];
       lv1 = v1 % 1000000000;
       hv1 = (v1 - lv1) / f1;
       if (dp2 == 0)
@@ -337,7 +337,7 @@ public class DecimalMultiplicationStudy {
     }
 
     if (dp2 > 0) {
-      f2 = FastMath.e10[dp2];
+      f2 = FastMath.longE10[dp2];
       lv2 = v2 % 1000000000;
       hv2 = (v2 - lv2) / f2;
       if (dp1 == 0)
@@ -351,16 +351,49 @@ public class DecimalMultiplicationStudy {
   }
 
   /**
+   * Returns as a {@code long} the most significant 64 bits of the 128-bit
+   * product of two 64-bit factors.
+   *
+   * @param x The first value.
+   * @param y The second value.
+   * @return the result.
+   */
+  static long multiplyHigh(final long x, final long y) {
+    final long x2 = x & 0xFFFFFFFFL;
+    final long y2 = y & 0xFFFFFFFFL;
+    if (x < 0 || y < 0) {
+      // Use technique from section 8-2 of Henry S. Warren, Jr.,
+      // Hacker's Delight (2nd ed.) (Addison Wesley, 2013), 173-174.
+      final long x1 = x >> 32;
+      final long y1 = y >> 32;
+      final long z2 = x2 * y2;
+      final long t = x1 * y2 + (z2 >>> 32);
+      final long z0 = t >> 32;
+      final long z1 = (t & 0xFFFFFFFFL) + x2 * y1;
+      return x1 * y1 + z0 + (z1 >> 32);
+    }
+
+    // Use Karatsuba technique with two base 2^32 digits.
+    final long x1 = x >>> 32;
+    final long y1 = y >>> 32;
+    final long a = x1 * y1;
+    final long b = x2 * y2;
+    final long c = (x1 + x2) * (y1 + y2);
+    final long k = c - a - b;
+    return (((b >>> 32) + k) >>> 32) + a;
+  }
+
+  /**
    * A <b>medium error</b> approach for {@code v1 * v2} via
-   * {@link DecimalMultiplication#multiplyHigh(long,long)} that tries to shift {@code high}
-   * and {@code low} into a single 64-bit {@code long}, perform the division by
-   * the specified {@code factor}, and then shift back to the original position.
+   * {@link #multiplyHigh(long,long)} that tries to shift {@code high} and
+   * {@code low} into a single 64-bit {@code long}, perform the division by the
+   * specified {@code factor}, and then shift back to the original position.
    */
   private static long mulHigh(final long v1, final long v2, int factor) {
     long h = multiplyHigh(v1, v2);
     long l = v1 * v2;
 
-    final long f = FastMath.e10[factor];
+    final long f = FastMath.longE10[factor];
 
     final int shift = Long.numberOfLeadingZeros(h);
     long shiftHigh = h << shift;
@@ -385,14 +418,14 @@ public class DecimalMultiplicationStudy {
     // Need to scale down if we have high order bits
     if (bp1 > 0) {
       final int dp1 = Numbers.precision((1 << bp1) - 1);
-      v1 /= FastMath.e10[dp1];
+      v1 /= FastMath.longE10[dp1];
       s1 -= dp1; // NOTE: s1 is reduced, and this info needs to be used
     }
 
     // Need to scale down if we have high order bits
     if (bp2 > 0) {
       final int dp2 = Numbers.precision((1 << bp2) - 1);
-      v2 /= FastMath.e10[dp2];
+      v2 /= FastMath.longE10[dp2];
       s2 -= dp2; // NOTE: s2 is reduced, and this info needs to be used
     }
 

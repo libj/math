@@ -67,7 +67,7 @@ abstract class BigIntBinary extends BigIntAddition {
    * negative, in which case this method performs a left shift.
    *
    * <pre>
-   * val >> num
+   * val = val >> num
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -95,7 +95,7 @@ abstract class BigIntBinary extends BigIntAddition {
     final int shiftBig = num >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig >= len)
-      return sig ? setToZero0(val) : assign(val, sig, 1);
+      return sig ? setToZeroUnsafe(val) : assign(val, sig, 1);
 
     final int shiftSmall = num & 31;
     boolean oneLost = false;
@@ -165,7 +165,7 @@ abstract class BigIntBinary extends BigIntAddition {
    * negative, in which case this method performs a right shift.
    *
    * <pre>
-   * val << num
+   * val = val << num
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -190,15 +190,15 @@ abstract class BigIntBinary extends BigIntAddition {
   }
 
   private static int[] shiftLeft0(int[] val, int len, boolean sig, final int num) {
-    final int shiftBig = num >>> 5;
-    if (shiftBig > 0) {
+    final int shiftBig = (num >>> 5) + 1;
+    if (shiftBig > 1) {
       val = bigShiftLeft(val, len, sig, shiftBig);
       sig = true; len = val[0]; if (len < 0) { len = -len; sig = false; }
     }
 
     final int shiftSmall = num & 31;
     if (shiftSmall > 0) {
-      val = smallShiftLeft(val, shiftBig + 1, len, sig, shiftSmall);
+      val = smallShiftLeft(val, shiftBig, len, sig, shiftSmall);
     }
 
     // _debugLenSig(val);
@@ -216,8 +216,7 @@ abstract class BigIntBinary extends BigIntAddition {
    * @return The length of the number, which may have changed due to the shift.
    * @complexity O(n)
    */
-  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, int num) {
-    num += OFF;
+  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, final int num) {
     int newLen = len + num;
     if (newLen > val.length) {
       final int[] tmp = alloc(newLen);
@@ -226,8 +225,6 @@ abstract class BigIntBinary extends BigIntAddition {
     }
     else {
       System.arraycopy(val, 1, val, num, len);
-//      num -= OFF;
-//      System.arraycopy(threadLocal2.get(num), 0, val, OFF, num);
       for (int i = 1; i < num; ++i)
         val[i] = 0;
     }
@@ -257,14 +254,12 @@ abstract class BigIntBinary extends BigIntAddition {
    */
   private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num) {
     int[] res = val;
-    int next;
+    int next = 0;
     if ((val[len] << num >>> num) != val[len]) { // Overflow?
       if (++len >= val.length) {
-        next = 0;
         res = realloc(val, len, len + 1);
       }
       else {
-        next = val[len];
         val[len] = 0;
       }
 
@@ -327,7 +322,11 @@ abstract class BigIntBinary extends BigIntAddition {
   /**
    * Sets the specified bit in the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = val | (1 << n)
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
@@ -348,7 +347,7 @@ abstract class BigIntBinary extends BigIntAddition {
         len = bigBit;
       }
       else if (bigBit > len) {
-        for (; len < bigBit;)
+        while (len < bigBit)
           val[++len] = 0;
 
         len = bigBit;
@@ -398,7 +397,11 @@ abstract class BigIntBinary extends BigIntAddition {
   /**
    * Clears the specified bit in the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = val & ~(1 << n)
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
@@ -425,7 +428,7 @@ abstract class BigIntBinary extends BigIntAddition {
         val[bigBit] |= 1 << smallBit;
       }
       else if (bigBit > len) {
-        for (; len < bigBit;)
+        while (len < bigBit)
           val[++len] = 0;
 
         val[bigBit] |= 1 << smallBit;
@@ -433,7 +436,7 @@ abstract class BigIntBinary extends BigIntAddition {
       }
       else {
         int j = 1;
-        for (; j <= bigBit && val[j] == 0;)
+        while (j <= bigBit && val[j] == 0)
           ++j;
 
         if (j > bigBit)
@@ -488,7 +491,11 @@ abstract class BigIntBinary extends BigIntAddition {
   /**
    * Flips the specified bit in the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = val ^ (1 << n)
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the number resulting from the operation requires a larger array.</i>
    *
@@ -510,7 +517,7 @@ abstract class BigIntBinary extends BigIntAddition {
       len = bigBit;
     }
     else if (bigBit > len) {
-      for (; len < bigBit;)
+      while (len < bigBit)
         val[++len] = 0;
 
       val[bigBit] ^= 1 << smallBit;
@@ -521,7 +528,7 @@ abstract class BigIntBinary extends BigIntAddition {
     }
     else {
       int j = 1;
-      for (; j <= bigBit && val[j] == 0;)
+      while (j <= bigBit && val[j] == 0)
         ++j;
 
       if (j < bigBit) {
@@ -600,7 +607,7 @@ abstract class BigIntBinary extends BigIntAddition {
   public static int[] and(int[] val, final int[] mask) {
     int len2 = mask[0];
     if (len2 == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     int sig1 = 1, len1 = val[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
     int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }
@@ -1200,7 +1207,7 @@ abstract class BigIntBinary extends BigIntAddition {
         for (; val[j] == 0; ++j);
         if (j < mlen) {
           val[j] = -(-val[j] & ~mask[j]);
-          for (; ++j < mlen && val[j - 1] == 0;) // FIXME:...
+          while (++j < mlen && val[j - 1] == 0) // FIXME:...
             val[j] = -~(val[j] | mask[j]); // -(~dig[j]&~val2[j])
 
           if (j == mlen && val[j - 1] == 0) {
@@ -1338,7 +1345,7 @@ abstract class BigIntBinary extends BigIntAddition {
     if (len == 0)
       return new byte[] {0};
 
-    final int byteLen = bitLength0(val, len) / 8 + 1;
+    final int byteLen = bitLength(val, len) / 8 + 1;
     int sig = 0; if (len < 0) { len = -len; sig = -1; }
     final int nzIndex = firstNonzeroIntNum(val, 1, len);
     final byte[] bytes = new byte[byteLen];

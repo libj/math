@@ -119,11 +119,11 @@ public class SafeMathITest {
 
   @Test
   public void testAbsByte() {
-    test(0, byte.class, SafeMath::abs, n -> (byte)Math.abs(n));
-    test(1, byte.class, SafeMath::abs, n -> (byte)Math.abs(n));
-    test(-1, byte.class, SafeMath::abs, n -> (byte)Math.abs(n));
+    test(0, short.class, SafeMath::abs, n -> (short)Math.abs(n));
+    test(1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
+    test(-1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
     for (int i = 0; i < numTests; ++i)
-      test(d0() * 10, byte.class, SafeMath::abs, n -> (byte)Math.abs(n));
+      test(d0() * 10, short.class, SafeMath::abs, n -> (short)Math.abs(n));
   }
 
   @Test

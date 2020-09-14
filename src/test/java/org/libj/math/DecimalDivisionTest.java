@@ -16,63 +16,46 @@
 
 package org.libj.math;
 
-import static org.libj.math.Decimal.*;
+import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.libj.math.Decimals.Decimal;
+import org.libj.math.survey.AuditReport;
+import org.libj.math.survey.AuditRunner;
 
+@RunWith(AuditRunner.class)
+@AuditRunner.Execution(PHASED)
+@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
+@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
 public class DecimalDivisionTest extends DecimalTest {
-  private static final BigDecimal[] epsilon = {
-    D("3E-16"),
-    D("3E-16"),
-    D("3E-16"),
-    D("3E-16"),
-    D("8E-13"),
-    D("7E-13"),
-    D("2E-13"),
-    D("4E-14"),
-    D("8E-15"),
-    D("9E-16"),
-    D("3E-15"),
-    D("5E-15"),
-    D("9E-15"),
-    D("2E-14"),
-    D("3E-14"),
-    D("5E-14")
-  };
-
-  private static final DecimalArithmeticOperation div = new DecimalMultiplicativeOperation("div", long.class, "%s / %s") {
-    @Override
-    final BigDecimal epsilon(final byte bits) {
-      return epsilon[bits];
+  @Test
+  public void testDiv(final AuditReport report) {
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("div(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.divide(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.div(toDecimal(nz(b))), o -> o),
+        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.div(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
+      );
     }
-
-    @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      long ts = System.nanoTime();
-      final long result = div(ld1, ld2, bits, defaultValue);
-      ts = System.nanoTime() - ts;
-      if (result != defaultValue)
-        time[0] += ts;
-
-      return result;
-    }
-
-    @Override
-    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      if (bd2.signum() == 0)
-        return null;
-
-      final long ts = System.nanoTime();
-      final BigDecimal result = bd1.divide(bd2, precision16);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
+  }
 
   @Test
-  public void testDiv() {
-    test(div);
+  public void testRem(final AuditReport report) {
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("rem(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.remainder(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.rem(toDecimal(nz(b))), o -> o),
+        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
+      );
+    }
   }
 }

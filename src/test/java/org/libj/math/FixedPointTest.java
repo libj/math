@@ -18,7 +18,7 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 import static org.libj.lang.Strings.Align.*;
-import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
 
@@ -29,26 +29,26 @@ import org.libj.lang.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FixedPointTest extends DecimalTest {
+public class FixedPointTest extends DecimalOperationTest {
   private static final Logger logger = LoggerFactory.getLogger(FixedPointTest.class);
   private static final boolean debug = false;
 
-  private static void testEncodeDecode(final long value, final short scale, final byte bits, final long[] time) {
-    final long maxValue = pow2[63 - bits];
+  private static void testEncodeDecode(final long value, final short scale, final byte scaleBits, final long[] time) {
+    final long maxValue = pow2[63 - scaleBits];
     final boolean expectOverflow = value < 0 ? value < -maxValue : value > maxValue;
 
     if (debug) {
       logger.info("Value: " + Buffers.toString(value) + " " + value);
-      logger.info("Scale: " + Buffers.toString(scale).substring(Buffers.toString(scale).length() - bits) + " " + scale + " " + bits);
+      logger.info("Scale: " + Buffers.toString(scale).substring(Buffers.toString(scale).length() - scaleBits) + " " + scale + " " + scaleBits);
     }
 
     final long defaultValue = random.nextLong();
     long ts = System.nanoTime();
-    final long encoded = encode(value, scale, bits, defaultValue);
+    final long encoded = encode(value, scale, defaultValue, scaleBits);
     time[0] += System.nanoTime() - ts;
     if (expectOverflow) {
       if (encoded != defaultValue)
-        fail("Expected IllegalArgumentException: " + value + ", " + scale + ", " + bits);
+        fail("Expected IllegalArgumentException: " + value + ", " + scale + ", " + scaleBits);
 
       return;
     }
@@ -57,8 +57,8 @@ public class FixedPointTest extends DecimalTest {
       logger.info("Encod: " + Buffers.toString(encoded));
 
     ts = System.nanoTime();
-    final long decodedValue = decodeValue(encoded, bits);
-    final short decodedScale = decodeScale(encoded, bits);
+    final long decodedValue = value(encoded, scaleBits);
+    final short decodedScale = scale(encoded, scaleBits);
     time[1] += System.nanoTime() - ts;
 
     if (debug) {
@@ -66,8 +66,8 @@ public class FixedPointTest extends DecimalTest {
       logger.info("DeSca: " + Buffers.toString(decodedScale));
     }
 
-    assertEquals("value=" + value + ", scale=" + scale + ", bits=" + bits, value, decodedValue);
-    assertEquals("value=" + value + ", scale=" + scale + ", bits=" + bits, scale, decodedScale);
+    assertEquals("value=" + value + ", scale=" + scale + ", bits=" + scaleBits, value, decodedValue);
+    assertEquals("value=" + value + ", scale=" + scale + ", bits=" + scaleBits, scale, decodedScale);
   }
 
   private static String formatOverflowPoint(final BigDecimal val, final int cut) {
@@ -237,34 +237,9 @@ public class FixedPointTest extends DecimalTest {
   }
 
   @Test
-  public void testMinScaleBits1() {
-    for (int i = 0; i < count; ++i) {
-      for (byte b = 2; b <= MAX_SCALE_BITS; ++b) {
-        final short maxScale = (short)(maxScale(b) + 1);
-        final short minScale = SafeMath.min(maxScale((byte)(b - 1)) + 2, maxScale);
-        final short randomScale = (short)(((maxScale - minScale) * random.nextDouble()) + minScale);
-        if (randomScale != 0)
-          assertEquals(randomScale + " [" + minScale + "," + maxScale + "]", b, minScaleBits(randomScale));
-      }
-    }
-  }
-
-  @Test
-  public void testMinScaleBits2() {
-    for (int i = 0; i < count; ++i) {
-      final short randomScale = (short)((random.nextBoolean() ? -1 : 0) * random.nextDouble() * 32768);
-      final byte bits = minScaleBits(randomScale);
-      final short minScale = minScale(bits);
-      final short maxScale = maxScale(bits);
-      assertTrue("scale=" + randomScale + " bits=" + bits + " [" + minScale + "," + maxScale + "]", minScale <= randomScale);
-      assertTrue("scale=" + randomScale + " bits=" + bits + " [" + minScale + "," + maxScale + "]", randomScale <= maxScale);
-    }
-  }
-
-  @Test
   public void testBinaryPrecisionRequiredForValue() {
-    assertEquals(0, Decimal.binaryPrecisionRequiredForValue(0));
+    assertEquals(0, Decimal.bitLength(0));
     for (int i = 1; i < Long.SIZE; ++i)
-      assertEquals(String.valueOf(i), i, Decimal.binaryPrecisionRequiredForValue((long)Math.pow(2, i - 1)));
+      assertEquals(String.valueOf(i), i, Decimal.bitLength((long)Math.pow(2, i - 1)));
   }
 }

@@ -17,7 +17,7 @@
 package org.libj.math;
 
 import static org.libj.lang.Strings.Align.*;
-import static org.libj.math.DecimalTest.*;
+import static org.libj.math.DecimalOperationTest.*;
 import static org.libj.math.FixedPoint.*;
 
 import java.math.BigDecimal;
@@ -41,22 +41,22 @@ abstract class DecimalOperation<T,C> {
   }
 
   abstract C control(BigDecimal bd1, BigDecimal bd2, long[] time);
-  abstract T test(long ld1, long ld2, BigDecimal bd1, BigDecimal bd2, byte bits, long defaultValue, long[] time);
-  abstract BigDecimal run(BigDecimal bd1, BigDecimal bd2, C expected, T actual, byte bits, long defaultValue, BigDecimal[] errors, boolean[] failures);
+  abstract T test(long d1, long d2, BigDecimal bd1, BigDecimal bd2, byte scaleBits, long defaultValue, long[] time);
+  abstract BigDecimal run(BigDecimal bd1, BigDecimal bd2, C expected, T actual, byte scaleBits, long defaultValue, BigDecimal[] errors, boolean[] failures);
 
   boolean lockScale() {
     return false;
   }
 
-  byte maxValuePower(final byte scaleBits) {
+  int maxValuePower(final byte scaleBits) {
     return valueBits(scaleBits);
   }
 
-  final long randomBounded(final long min, final long max, final short scale, final byte scaleBits) {
+  long randomBounded(final long min, final long max, final short scale, final byte scaleBits) {
     if (min > max)
       throw new IllegalArgumentException();
 
-    final byte valueBits = valueBits(scaleBits);
+    final int valueBits = valueBits(scaleBits);
     long value = min != max ? (long)(random.nextDouble() * (max - min)) + min : min;
     if (value < Decimal.minValue(valueBits))
       value = Decimal.minValue(valueBits);
@@ -64,23 +64,23 @@ abstract class DecimalOperation<T,C> {
       value = Decimal.maxValue(valueBits);
 
     final long defaultValue = random.nextLong();
-    final long result = encode(value, scale, scaleBits, defaultValue);
+    final long result = encode(value, scale, defaultValue, scaleBits);
     if (result == defaultValue) {
-      encode(value, scale, scaleBits, defaultValue);
+      encode(value, scale, defaultValue, scaleBits);
       throw new IllegalStateException();
     }
 
     return result;
   }
 
-  final long randomEncoded(final byte bits) {
+  final long randomEncoded(final byte scaleBits) {
     final long defaultValue = random.nextLong();
-    final long value = randomValue(maxValuePower(bits));
-    final short scale = randomScale(bits);
-    final long result = encode(value, scale, bits, defaultValue);
+    final long value = randomValue(maxValuePower(scaleBits));
+    final short scale = randomScale(scaleBits);
+    final long result = encode(value, scale, defaultValue, scaleBits);
     if (result == defaultValue) {
-      randomScale(bits);
-      encode(value, scale, bits, defaultValue);
+      randomScale(scaleBits);
+      encode(value, scale, defaultValue, scaleBits);
       throw new IllegalStateException();
     }
 

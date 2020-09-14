@@ -129,9 +129,146 @@ abstract class BigIntMultiplication extends BigIntBinary {
    */
   static final int PARALLEL_KARATSUBA_THRESHOLD_X = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 120 : 100) * PARALLEL_THRESHOLD_FACTOR); // 120 : 100
 
+  private static final int[] SMALL_5_POW = {1, 5, 5 * 5, 5 * 5 * 5, 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5};
+
+  // Maximum size of cache of powers of 5 as BigInt
+  private static final int MAX_FIVE_POW = 340;
+
+  // Cache of big powers of 5 as BigInt
+  private static final int[][] POW_5_CACHE;
+
+  // Initialize BigInt cache of powers of 5
+  static {
+    int i = 0;
+    for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < SMALL_5_POW.length; ++i) {
+      POW_5_CACHE[i] = assignUnsafe(new int[2], SMALL_5_POW[i]);
+    }
+
+    for (int[] prev = POW_5_CACHE[i - 1]; i < MAX_FIVE_POW; ++i) {
+      final int ext = 3 - (prev.length - prev[0]);
+      final int[] next = ext == 0 ? prev.clone() : reallocExact(prev, prev[0] + 1, prev.length + ext);
+      POW_5_CACHE[i] = prev = mulUnsafe(next, 5);
+    }
+  }
+
+  /**
+   * Compares the provided {@linkplain BigInt#val() value-encoded number} with
+   * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, and returns one of
+   * {@code -1}, {@code 0}, or {@code 1} if {@code val} is less than, equal to,
+   * or greater than <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, respectively.
+   * <p>
+   * <i><b>Note:</b> This function assumes {@code val} is positive.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to compare.
+   * @param p5 The exponent of the power-of-five factor.
+   * @param p2 The exponent of the power-of-two factor.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if {@code val} is less
+   *         than, equal to, or greater than
+   *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, respectively.
+   */
+  static int compareToPow52(final int[] val, final int p5, final int p2) {
+    if (p5 == 0) {
+      final int wordcount = (p2 >> 5) + 1;
+      final int len = val[0];
+      if (len > wordcount)
+        return 1;
+      else if (len < wordcount)
+        return -1;
+
+      final int a = val[len];
+      final int b = 1 << (p2 & 0x1f);
+      return a == b ? checkZeroTail(val, len) : (a & LONG_MASK) < (b & LONG_MASK) ? -1 : 1;
+    }
+
+    // FIXME: Cache shiftLeft(big5pow(p5).clone(), p2)
+    return compareTo(val, shiftLeft(big5pow(p5).clone(), p2));
+  }
+
+  /**
+   * Determines whether all elements of a {@linkplain BigInt#val() value-encoded
+   * array} are zero for all indices less than a given index.
+   *
+   * @param a The {@linkplain BigInt#val() value-encoded array} to be examined.
+   * @param from The index strictly below which elements are to be examined.
+   * @return {@code 0} if all elements below the {@code from} index (but above
+   *         index of {@code 1}) are zero, {@code 1} otherwise.
+   */
+  private static int checkZeroTail(final int[] a, int from) {
+    while (from > 1)
+      if (a[--from] != 0)
+        return 1;
+
+    return 0;
+  }
+
+  /**
+   * Multiplies the provided {@linkplain BigInt#val() value-encoded number} by
+   * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   * <p>
+   * <i><b>Note:</b> This function assumes the provided array is big enough for
+   * the operation to be performed in place.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to multiply.
+   * @param p5 The exponent of the power-of-five factor.
+   * @param p2 The exponent of the power-of-two factor.
+   * @return The provided {@code val} reference after its multiplication by
+   *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   */
+  static int[] mulPow52(final int[] val, final int p5, final int p2) {
+    if (val[0] == 0)
+      return val;
+
+    if (p5 != 0) {
+      if (p5 < SMALL_5_POW.length)
+        mulUnsafe(val, SMALL_5_POW[p5]);
+      else
+        mulUnsafe(val, big5pow(p5));
+    }
+
+    shiftLeft(val, p2);
+    return val;
+  }
+
+  /**
+   * Returns the value of <code>5<sup>p</sup></code> as a
+   * {@linkplain BigInt#val() value-encoded number}.
+   *
+   * @param p The exponent of {@code 5}.
+   * @return The value of <code>5<sup>p</sup></code> as a
+   *         {@linkplain BigInt#val() value-encoded number}.
+   */
+  private static int[] big5pow(final int p) {
+    return p < MAX_FIVE_POW ? POW_5_CACHE[p] : big5powRec(p);
+  }
+
+  /**
+   * Recursive function that computes the value of <code>5<sup>p</sup></code> as
+   * a {@linkplain BigInt#val() value-encoded number}.
+   *
+   * @param p The exponent of {@code 5}.
+   * @return The value of <code>5<sup>p</sup></code> as a
+   *         {@linkplain BigInt#val() value-encoded number}.
+   */
+  private static int[] big5powRec(final int p) {
+    if (p < MAX_FIVE_POW)
+      return POW_5_CACHE[p];
+
+    // Construct the value recursively.
+    // In order to compute 5^p, compute its square root, 5^(p/2) and square.
+    // Or, let q = p / 2, r = p -q, then 5^p = 5^(q+r) = 5^q * 5^r
+    final int q = p >> 1;
+    final int r = p - q;
+    final int[] bigq = big5powRec(q);
+    return r < SMALL_5_POW.length ? mulUnsafe(bigq, 1, SMALL_5_POW[r]) : mulUnsafe(bigq, big5powRec(r));
+  }
+
   /**
    * Multiplies the provided number by an {@code int} multiplicand.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
@@ -143,13 +280,17 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int mul) {
-    return mul < 0 ? mul0(val, -1, -mul) : mul > 0 ? mul0(val, 1, mul) : setToZero0(val);
+    return mul < 0 ? mul0(val, -1, -mul, false) : mul > 0 ? mul0(val, 1, mul, false) : setToZeroUnsafe(val);
   }
 
   /**
    * Multiplies the provided number by an <i>unsigned</i> {@code int}
    * multiplicand.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
@@ -162,14 +303,22 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int sig, final int mul) {
-    return mul == 0 ? setToZero0(val) : mul0(val, sig, mul);
+    return mul == 0 ? setToZeroUnsafe(val) : mul0(val, sig, mul, false);
   }
 
-  static int[] mul0(int[] val, int sig, final int mul) {
-    int len = val[0]; if (len < 0) { len = -len; sig *= -1; }
-    if (len + 1 >= val.length)
-      val = realloc(val, len + OFF, len + 1);
+  private static int[] mul0(int[] val, int sig, final int mul, final boolean allocExact) {
+    int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
+    if (len + 2 >= val.length)
+      val = allocExact ? reallocExact(val, len + OFF, len + 2) : realloc(val, len + OFF, len + 2);
 
+    len = umul0(val, OFF, len, mul);
+    val[0] = sig * len;
+    // _debugLenSig(val);
+    return val;
+  }
+
+  private static int[] mulUnsafe(int[] val, int sig, final int mul) {
+    int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
     len = umul0(val, OFF, len, mul);
     val[0] = sig * len;
     // _debugLenSig(val);
@@ -178,7 +327,11 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
   /**
    * Multiplies the provided number by an {@code long} multiplicand.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
@@ -193,10 +346,18 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul < 0 ? mul(val, -1, -mul) : mul(val, 1, mul);
   }
 
+  protected static int[] mulUnsafe(final int[] val, final long mul) {
+    return mul < 0 ? mulUnsafe(val, -1, -mul) : mulUnsafe(val, 1, mul);
+  }
+
   /**
    * Multiplies the provided number by an <i>unsigned</i> {@code long}
    * multiplicand.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
@@ -214,13 +375,13 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return val;
 
     if (mul == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     final long mulh = mul >>> 32;
     if (mulh == 0)
-      return mul0(val, sig, (int)mul);
+      return mul0(val, sig, (int)mul, false);
 
-    if (len < 0) { len = -len; sig *= -1; }
+    if (len < 0) { len = -len; sig = -sig; }
     if (len + 3 >= val.length)
       val = realloc(val, len + OFF, len + 3);
 
@@ -231,10 +392,34 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return val;
   }
 
+  protected static int[] mulUnsafe(final int[] val, int sig, final long mul) {
+    int len = val[0];
+    if (len == 0)
+      return val;
+
+    if (mul == 0)
+      return setToZeroUnsafe(val);
+
+    final long mulh = mul >>> 32;
+    if (mulh == 0)
+      return mulUnsafe(val, sig, (int)mul);
+
+    if (len < 0) { len = -len; sig = -sig; }
+    len = umul0(val, 1, len, mul & LONG_MASK, mulh);
+    val[0] = sig * len;
+
+    // _debugLenSig(val);
+    return val;
+  }
+
   /**
    * Multiplies the provided magnitude by an <i>unsigned</i> {@code int}
    * multiplicand.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> This method assumes that the length of the provided
    * magnitude array will accommodate for the result of the multiplication,
    * which may at most require 1 free limb.</i>
@@ -251,17 +436,23 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul == 0 ? mag[0] = 0 : umul0(mag, off, len, mul);
   }
 
-  private static int umul0(final int[] mag, final int off, int len, int mul) {
+  static int umul0(final int[] mag, final int off, int len, int mul) {
     long carry = 0, longMul = mul & LONG_MASK;
     for (mul = off, len += off; mul < len; mag[mul] = (int)(carry += (mag[mul++] & LONG_MASK) * longMul), carry >>>= 32);
-    if (carry != 0) mag[len++] = (int)carry;
+    if (carry != 0)
+      mag[len++] = (int)carry;
+
     return len - off;
   }
 
   /**
    * Multiplies the provided magnitude by an <i>unsigned</i> {@code long}
    * multiplicand.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> This method assumes that the length of the provided
    * magnitude array will accommodate for the result of the multiplication,
    * which may at most require 2 free limbs.</i>
@@ -283,7 +474,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return hmul == 0 ? umul0(mag, off, len, (int)mul) : umul0(mag, off, len, mul & LONG_MASK, hmul);
   }
 
-  private static int umul0(final int[] mag, final int off, int len, final long mull, final long mulh) {
+  static int umul0(final int[] mag, final int off, int len, final long mull, final long mulh) {
     long carry = 0, mul;
     int i = off;
     len += off;
@@ -302,7 +493,11 @@ abstract class BigIntMultiplication extends BigIntBinary {
   /**
    * Multiplies the provided number by a {@linkplain BigInt#val() value-encoded
    * multiplicand}.
-   * <p>
+   *
+   * <pre>
+   * val = val * mul
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the multiplication of the provided number by the specified multiplier
    * requires a larger array.</i>
@@ -314,14 +509,22 @@ abstract class BigIntMultiplication extends BigIntBinary {
    *         {@linkplain BigInt#val() value-encoded multiplier}.
    * @complexity O(n^2) - O(n log n)
    */
-  public static int[] mul(int[] val, int[] mul) {
+  public static int[] mul(final int[] val, final int[] mul) {
+    return mul(val, mul, false);
+  }
+
+  protected static int[] mulUnsafe(final int[] val, final int[] mul) {
+    return mul(val, mul, false);
+  }
+
+  static int[] mul(int[] val, int[] mul, final boolean allocExact) {
     int len = val[0];
     if (len == 0)
       return val;
 
     int mlen = mul[0];
     if (mlen == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     boolean sig = true;
     if (len < 0) { len = -len; sig = false; }
@@ -334,7 +537,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     if (len <= 2 || mlen <= 2) {
       if (mlen == 1) {
         if (len + 2 >= val.length)
-          val = realloc(val, len + OFF, len + 2);
+          val = allocExact ? reallocExact(val, len + OFF, len + 2) : realloc(val, len + OFF, len + 2);
 
         len = umul0(val, OFF, len, mul[1]);
       }
@@ -345,7 +548,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
       else if (mlen == 2) {
         if (len + 3 >= val.length)
-          val = realloc(val, len + OFF, len + 3);
+          val = allocExact ? reallocExact(val, len + OFF, len + 3) : realloc(val, len + OFF, len + 3);
 
         len = umul0(val, OFF, len, mul[1] & LONG_MASK, mul[2] & LONG_MASK);
       }
@@ -362,7 +565,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     final int zlen = len + mlen + 1;
     if (len < KARATSUBA_THRESHOLD_X || mlen < KARATSUBA_THRESHOLD_X || zlen < KARATSUBA_THRESHOLD_Z)
-      return mulQuad(val, len, mul, mlen, zlen, sig);
+      return mulQuad(val, len, mul, mlen, zlen, sig, allocExact);
 
     return karatsuba(val, len, mul, mlen, zlen, sig);
   }
@@ -390,6 +593,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
 //      if (record) { final int X[] = PARALLEL ? X_KPI : X_KI; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = x;
+      z[zlen] = 0;
       karatsuba(x, y, z, inlineLen, len);
     }
     else {
@@ -411,7 +615,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return z;
   }
 
-  private static int[] mulQuad(final int[] x, int xlen, final int[] y, int ylen, int zlen, final boolean sig) {
+  static int[] mulQuad(final int[] x, final int xlen, final int[] y, final int ylen, int zlen, final boolean sig, final boolean allocExact) {
     final int[] z;
     if (x.length >= zlen + xlen) {
 //      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_QI : X_QIN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
@@ -425,7 +629,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     else {
 //      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_Q : X_QN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
-      z = alloc(zlen);
+      z = allocExact ? new int[zlen] : alloc(zlen);
       if (xlen < ylen) {
         if (xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD)
           javaMulQuad(x, xlen, y, ylen, z);
@@ -440,7 +644,9 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
 
-    if (z[--zlen] == 0) --zlen;
+    if (z[--zlen] == 0)
+      --zlen;
+
     z[0] = sig ? zlen : -zlen;
     // _debugLenSig(z);
     return z;
@@ -494,14 +700,14 @@ abstract class BigIntMultiplication extends BigIntBinary {
     }
   }
 
-  private static void karatsuba(final int[] x, final int[] y, final int[] z, final int zlen, int len) {
+  private static void karatsuba(final int[] x, final int[] y, final int[] z, final int zlen, final int len) {
     if (len < NATIVE_THRESHOLD)
       javaKaratsuba(x, OFF, y, OFF, z, OFF, zlen, 0, len, PARALLEL_KARATSUBA_THRESHOLD_X, PARALLEL_KARATSUBA_THRESHOLD_Z);
     else
       nativeKaratsuba(x, OFF, y, OFF, z, OFF, zlen, z.length, 0, len, PARALLEL_KARATSUBA_THRESHOLD_X, PARALLEL_KARATSUBA_THRESHOLD_Z);
   }
 
-  private static native void nativeKaratsuba(int[] x, int xoff, int[] y, int yoff, int[] z, int zoff, int zlen, int zlength, int off, int len, int parallelThresholdX, int parallelThresholdZ);
+  private static native void nativeKaratsuba(int[] x, int xoff, int[] y, int yoff, int[] z, int zoff, int zlen, int zlength, int off, int len, int parallelThreshold, int parallelThresholdZ);
 
   /**
    * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
@@ -516,10 +722,11 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @param zlen Length of {@code z}.
    * @param off Offset for {@code x}, {@code y} and {@code z}.
    * @param len The length of each of the two partial arrays.
-   * @param parallel Count of parallel execution depths.
+   * @param parallelThreshold Threshold of {@code len} for parallel execution.
+   * @param parallelThresholdZ Threshold of {@code zlen} for parallel execution.
    * @complexity O(n^1.585)
    */
-  private static void javaKaratsuba(final int[] x, final int xoff, final int[] y, final int yoff, final int[] z, final int zoff, final int zlen, final int off, final int len, final int parallelThresholdX, final int parallelThresholdZ) {
+  private static void javaKaratsuba(final int[] x, final int xoff, final int[] y, final int yoff, final int[] z, final int zoff, final int zlen, final int off, final int len, final int parallelThreshold, final int parallelThresholdZ) {
     int i, j, k, l, m;
 
     final int xoffoff = xoff + off, yoffoff = yoff + off;
@@ -547,7 +754,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
     else {
-      final boolean parallel = len > parallelThresholdX && zlen > parallelThresholdZ;
+      final boolean parallel = len > parallelThreshold && zlen > parallelThresholdZ;
       final int b = len >> 1, b2 = b * 2, ll = len * 2, l_b = len - b, l_b2 = l_b * 2;
       final int tmpoff, x2offl_b2, y2offl_b2;
       final int[] tmp;
@@ -568,17 +775,20 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
 
       final int x2offl_b2b = x2offl_b2 + b, y2offl_b = x2offl_b2 + l_b, y2offl_b1 = y2offl_b + 1, y2offl_b1b = y2offl_b1 + b;
+      tmp[x2offl_b2b] = tmp[y2offl_b1b] = tmp[y2offl_b] = tmp[y2offl_b2] = 0;
 
       for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) {
         tmp[i] = (int)(carry += (x[j] & LONG_MASK) + (x[k] & LONG_MASK));
         carry >>>= 32;
       }
 
-      if ((len & 1) != 0)
+      if ((len & 1) != 0) {
         tmp[x2offl_b2b] = x[xoffoff + b2];
+      }
 
-      if (carry != 0 && ++tmp[x2offl_b2b] == 0)
+      if (carry != 0 && ++tmp[x2offl_b2b] == 0) {
         ++tmp[x2offl_b2b + 1];
+      }
 
       carry = 0;
       for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) {
@@ -586,15 +796,18 @@ abstract class BigIntMultiplication extends BigIntBinary {
         carry >>>= 32;
       }
 
-      if ((len & 1) != 0)
+      if ((len & 1) != 0) {
         tmp[y2offl_b1b] = y[yoffoff + b2];
+      }
 
-      if (carry != 0 && ++tmp[y2offl_b1b] == 0)
+      if (carry != 0 && ++tmp[y2offl_b1b] == 0) {
         ++tmp[y2offl_b1b + 1];
+      }
 
       final int tmpoffl_b2 = tmpoff + l_b2;
       final int tmplen = tmpoffl_b2 + l_b2 + 4;
       final int r = l_b + (tmp[y2offl_b] != 0 || tmp[y2offl_b2] != 0 ? 1 : 0);
+
       final int tmpoffrr = tmpoff + r * 2, tmpoffbb = tmpoff + b2, tmpoffrrbb = tmpoffrr + b2;
       if (!parallel) {
         javaKaratsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, 0, r, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -606,21 +819,21 @@ abstract class BigIntMultiplication extends BigIntBinary {
           @Override
           public void run() {
             // System.err.print(".");
-            javaKaratsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, 0, r, parallelThresholdX * 2, parallelThresholdZ * 2);
+            javaKaratsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, 0, r, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };
 
         final Thread t2 = new Thread() {
           @Override
           public void run() {
-            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrr, tmplen, off, b, parallelThresholdX * 2, parallelThresholdZ * 2);
+            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrr, tmplen, off, b, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };
 
         final Thread t3 = new Thread() {
           @Override
           public void run() {
-            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, off + b, l_b, parallelThresholdX * 2, parallelThresholdZ * 2);
+            javaKaratsuba(x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, off + b, l_b, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };
 
@@ -660,12 +873,13 @@ abstract class BigIntMultiplication extends BigIntBinary {
         carry >>= 32;
       }
 
-      if (carry != 0)
+      if (carry != 0) {
         while (++z[j++] == 0);
+      }
     }
   }
 
-  private static int[] square(final int[] x, final int len) {
+  static int[] square(final int[] x, final int len) {
     final int[] z;
     int zlen = len * 2;
     if (len < KARATSUBA_SQUARE_THRESHOLD) {
@@ -707,13 +921,14 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     for (; z[zlen] == 0 && zlen > 0; --zlen);
     z[0] = zlen;
+
     // _debugLenSig(z);
     return z;
   }
 
-  private static native void nativeSquareKaratsuba(int[] x, int len, int[] z, int zlen, int zlength, boolean yCopy, int parallelThresholdX, int parallelThresholdZ);
+  private static native void nativeSquareKaratsuba(int[] x, int len, int[] z, int zlen, int zlength, boolean yCopy, int parallelThreshold, int parallelThresholdZ);
 
-  private static void javaSquareKaratsuba(final int[] x, final int len, final int[] z, final int zlen, final boolean yCopy, final int parallelThresholdX, final int parallelThresholdZ) {
+  private static void javaSquareKaratsuba(final int[] x, final int len, final int[] z, final int zlen, final boolean yCopy, final int parallelThreshold, final int parallelThresholdZ) {
     final int[] y;
     if (yCopy) {
       // "In place" computation for (mag) requires a copy for (y), otherwise
@@ -725,7 +940,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       y = x;
     }
 
-    javaKaratsuba(x, OFF, y, OFF, z, OFF, zlen, 0, len, parallelThresholdX, parallelThresholdZ);
+    javaKaratsuba(x, OFF, y, OFF, z, OFF, zlen, 0, len, parallelThreshold, parallelThresholdZ);
   }
 
   private static native void nativeSquareQuad(int[] x, int xoff, int xlen, int[] z, int zoff, int zlen);
@@ -760,7 +975,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
   }
 
   // shifts a up to len left n bits assumes no leading zeros, 0<=n<32
-  static void primitiveLeftShift(final int[] a, final int start, int end, final int n) {
+  private static void primitiveLeftShift(final int[] a, final int start, int end, final int n) {
 //    if (end <= start || n == 0)
 //      return;
 
@@ -812,5 +1027,136 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     // _debugLenSig(mag);
     return 1;
+  }
+
+  /**
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} raised
+   * to the power of the given exponent.
+   *
+   * <pre>
+   * val = val<sup>exp</sup>
+   * </pre>
+   *
+   * This method returns {@code 0} in the following situations:
+   * <ol>
+   * <li>If {@code exp} is negative.</li>
+   * <li>If the length of the resulting value array is greater than the
+   * {@link BigInt#MAX_VAL_LENGTH}.</li>
+   * </ol>
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the operation results in a number that requires a larger array.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to raise to
+   *          the power of the given {@code exponent}.
+   * @param exp The exponent to which {@code val} is to be raised.
+   * @return <code>val<sup>exponent</sup></code>
+   * @complexity O(n^2 exp log exp) - O(n log n exp log exp)
+   */
+  public static int[] pow(int[] val, final int exp) {
+    if (exp <= 0)
+      return exp == 0 ? assign(val, 1, 1) : setToZero(val);
+
+    int len = val[0];
+    if (len == 0)
+      return val;
+
+    boolean sig = true; if (len < 0) { val[0] = len = -len; sig = false; }
+
+    int[] res;
+    if (len == 1 && val[1] == 10) {
+      res = FastMath.E10(exp).clone();
+      if (!sig && exp % 2 == 1)
+        res[0] = -res[0];
+
+      return res;
+    }
+
+    res = val;
+
+    // Factor out powers of two from the base, as the exponentiation of these
+    // can be done by left shifts only. The remaining part can then be
+    // exponentiated faster. Powers of two will be multiplied back at the end.
+    final int powersOfTwo = getLowestSetBit(res);
+    final long bitsToShiftLong = (long)powersOfTwo * exp;
+    if (bitsToShiftLong > Integer.MAX_VALUE)
+      return setToZero(val);
+
+    final int bitsToShift = (int)bitsToShiftLong;
+    final int remainingBits;
+
+    // Factor the powers of two out quickly by shifting right, if needed.
+    if (powersOfTwo > 0) {
+      res = shiftRight(res, powersOfTwo);
+      remainingBits = bitLength(res);
+      if (remainingBits == 1) // Nothing left but +/- 1?
+        return shiftLeft(assign(val, sig || (exp & 1) != 1 ? 1 : -1), bitsToShift);
+    }
+    else {
+      remainingBits = bitLength(res);
+      if (remainingBits == 1) // Nothing left but +/- 1?
+        return assign(val, sig || (exp & 1) != 1 ? 1 : -1);
+    }
+
+    // This is a quick way to approximate the size of the result,
+    // similar to doing log2[n] * exponent. This will give an upper bound
+    // of how big the result can be, and which algorithm to use.
+    final long scaleFactor = (long)remainingBits * exp;
+
+    // Use slightly different algorithms for small and large operands.
+    // See if the result will safely fit into a long. (Largest 2^63-1)
+    if (len == 1 && scaleFactor <= 62) {
+      // Small number algorithm. Everything fits into a long.
+      final int newSign = sig || (exp & 1) != 1 ? 1 : -1;
+      long result = 1;
+      long baseToPow2 = res[len] & LONG_MASK;
+
+      int workingExponent = exp;
+
+      // Perform exponentiation using repeated squaring trick
+      while (workingExponent != 0) {
+        if ((workingExponent & 1) == 1)
+          result *= baseToPow2;
+
+        if ((workingExponent >>>= 1) != 0)
+          baseToPow2 *= baseToPow2;
+      }
+
+      // Multiply back the powers of two (quickly, by shifting left)
+      if (powersOfTwo > 0) {
+        if (bitsToShift + scaleFactor <= 62) // Fits in long?
+          return assign(val, (result << bitsToShift) * newSign);
+
+        return shiftLeft(assign(val, result * newSign), bitsToShift);
+      }
+
+      return assign(val, result * newSign);
+    }
+
+    final long newLen = (long)bitLengthPos(val, len) * exp / Integer.SIZE;
+    if (newLen > MAX_VAL_LENGTH)
+      return setToZero(val);
+
+    // Large number algorithm. This is basically identical to the algorithm
+    // above, but calls mul() and square() which may use more efficient
+    // algorithms for large numbers.
+    int[] answer = new int[Math.min(MAX_VAL_LENGTH, 4 * (int)newLen + (bitsToShift >> 5))];
+    answer[0] = answer[1] = 1;
+
+    int workingExponent = exp;
+    // Perform exponentiation using repeated squaring trick
+    while (workingExponent != 0) {
+      if ((workingExponent & 1) == 1)
+        answer = mul(answer, res);
+
+      if ((workingExponent >>>= 1) != 0)
+        res = square(res, res[0]);
+    }
+
+    // Multiply back the (exponentiated) powers of two (quickly, by shifting left)
+    if (powersOfTwo > 0)
+      answer = shiftLeft(answer, bitsToShift);
+
+    return sig || (exp & 1) != 1 ? answer : neg(answer);
   }
 }

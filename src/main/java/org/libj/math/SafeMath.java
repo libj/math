@@ -35,8 +35,8 @@ public final class SafeMath {
    * @param a The argument whose absolute value is to be determined.
    * @return The absolute value of the argument.
    */
-  public static byte abs(final byte a) {
-    return (byte)(a < 0 ? -a : a);
+  public static short abs(final byte a) {
+    return a < 0 ? (short)-a : a;
   }
 
   /**
@@ -46,7 +46,7 @@ public final class SafeMath {
    * @return The absolute value of the argument.
    */
   public static short abs(final short a) {
-    return (short)(a < 0 ? -a : a);
+    return a < 0 ? (short)-a : a;
   }
 
   /**
@@ -1142,7 +1142,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final byte a) {
-    return a < 0 ? (byte)-1 : a == 0 ? 0 : (byte)1;
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1154,7 +1154,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final short a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1166,7 +1166,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final int a) {
-    return (byte)Integer.compare(a, 0);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1178,7 +1178,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final long a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1190,7 +1190,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final float a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -1202,7 +1202,7 @@ public final class SafeMath {
    * @return The signum function of the argument.
    */
   public static byte signum(final double a) {
-    return (byte)(a < 0 ? -1 : a == 0 ? 0 : 1);
+    return a < 0 ? -1 : a == 0 ? 0 : (byte)1;
   }
 
   /**
@@ -2248,7 +2248,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static byte max(final byte a, final byte b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2259,7 +2259,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static short max(final byte a, final short b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2270,7 +2270,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static int max(final byte a, final int b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2281,7 +2281,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final byte a, final long b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2292,7 +2292,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final byte a, final float b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2303,7 +2303,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final byte a, final double b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2314,7 +2314,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static short max(final short a, final byte b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2325,7 +2325,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static short max(final short a, final short b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2336,7 +2336,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static int max(final short a, final int b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2347,7 +2347,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final short a, final long b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2358,7 +2358,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final short a, final float b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2369,7 +2369,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final short a, final double b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2380,7 +2380,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static int max(final int a, final byte b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2391,7 +2391,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static int max(final int a, final short b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2402,7 +2402,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static int max(final int a, final int b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2413,7 +2413,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final int a, final long b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2424,7 +2424,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final int a, final float b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2435,7 +2435,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final int a, final double b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2446,7 +2446,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final long a, final byte b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2457,7 +2457,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final long a, final short b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2468,7 +2468,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final long a, final int b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2479,7 +2479,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static long max(final long a, final long b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2490,7 +2490,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final long a, final float b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2501,7 +2501,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final long a, final double b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2512,7 +2512,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final float a, final byte b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2523,7 +2523,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final float a, final short b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2534,7 +2534,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final float a, final int b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2545,7 +2545,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final float a, final long b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2556,7 +2556,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static float max(final float a, final float b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2567,7 +2567,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final float a, final double b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2578,7 +2578,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final byte b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2589,7 +2589,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final short b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2600,7 +2600,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final int b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2611,7 +2611,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final long b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2622,7 +2622,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final float b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2633,7 +2633,7 @@ public final class SafeMath {
    * @return The larger of {@code a} and {@code b}.
    */
   public static double max(final double a, final double b) {
-    return (a >= b) ? a : b;
+    return a > b ? a : b;
   }
 
   /**
@@ -2644,7 +2644,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final byte a, final byte b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2655,7 +2655,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final byte a, final short b) {
-    return (byte)((a <= b) ? a : b);
+    return a <= b ? a : (byte)b;
   }
 
   /**
@@ -2666,7 +2666,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final byte a, final int b) {
-    return (byte)((a <= b) ? a : b);
+    return a <= b ? a : (byte)b;
   }
 
   /**
@@ -2677,7 +2677,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final byte a, final long b) {
-    return (byte)((a <= b) ? a : b);
+    return a <= b ? a : (byte)b;
   }
 
   /**
@@ -2688,7 +2688,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final byte a, final float b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2699,7 +2699,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final byte a, final double b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2710,7 +2710,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final short a, final byte b) {
-    return (byte)((a <= b) ? a : b);
+    return a < b ? (byte)a : b;
   }
 
   /**
@@ -2721,7 +2721,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static short min(final short a, final short b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2732,7 +2732,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static short min(final short a, final int b) {
-    return (short)((a <= b) ? a : b);
+    return a <= b ? a : (short)b;
   }
 
   /**
@@ -2743,7 +2743,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static short min(final short a, final long b) {
-    return (short)((a <= b) ? a : b);
+    return a <= b ? a : (short)b;
   }
 
   /**
@@ -2754,7 +2754,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final short a, final float b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2765,7 +2765,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final short a, final double b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2776,7 +2776,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final int a, final byte b) {
-    return (byte)((a <= b) ? a : b);
+    return a < b ? (byte)a : b;
   }
 
   /**
@@ -2787,7 +2787,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static short min(final int a, final short b) {
-    return (short)((a <= b) ? a : b);
+    return a < b ? (short)a : b;
   }
 
   /**
@@ -2798,7 +2798,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static int min(final int a, final int b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2809,7 +2809,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static int min(final int a, final long b) {
-    return (int)((a <= b) ? a : b);
+    return a <= b ? a : (int)b;
   }
 
   /**
@@ -2820,7 +2820,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final int a, final float b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2831,7 +2831,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final int a, final double b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2842,7 +2842,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static byte min(final long a, final byte b) {
-    return (byte)((a <= b) ? a : b);
+    return a < b ? (byte)a : b;
   }
 
   /**
@@ -2853,7 +2853,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static short min(final long a, final short b) {
-    return (short)((a <= b) ? a : b);
+    return a < b ? (short)a : b;
   }
 
   /**
@@ -2864,7 +2864,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static int min(final long a, final int b) {
-    return (int)((a <= b) ? a : b);
+    return a < b ? (int)a : b;
   }
 
   /**
@@ -2875,7 +2875,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static long min(final long a, final long b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2886,7 +2886,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final long a, final float b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2897,7 +2897,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final long a, final double b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2908,7 +2908,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final float a, final byte b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2919,7 +2919,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final float a, final short b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2930,7 +2930,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final float a, final int b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2941,7 +2941,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final float a, final long b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2952,7 +2952,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static float min(final float a, final float b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2963,7 +2963,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final float a, final double b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2974,7 +2974,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final double a, final byte b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2985,7 +2985,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final double a, final short b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -2996,7 +2996,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final double a, final int b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -3007,7 +3007,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final double a, final long b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -3018,7 +3018,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final double a, final float b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   /**
@@ -3029,7 +3029,7 @@ public final class SafeMath {
    * @return The smaller of {@code a} and {@code b}.
    */
   public static double min(final double a, final double b) {
-    return (a <= b) ? a : b;
+    return a < b ? a : b;
   }
 
   private SafeMath() {

@@ -70,18 +70,18 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMul
 }
 
 typedef struct KaratsubaArgs {
-  jint *x, xoff, *y, yoff, *z, zoff, zlen, zlength, off, len, parallelThresholdX, parallelThresholdZ;
+  jint *x, xoff, *y, yoff, *z, zoff, zlen, zlength, off, len, parallelThreshold, parallelThresholdZ;
 } KaratsubaArgs;
 
 void* karatsubaThread(void *args) {
-  KaratsubaArgs *ka = (KaratsubaArgs *)args;
-  jint *x = ka->x, xoff = ka->xoff, *y = ka->y, yoff = ka->yoff, *z = ka->z, zoff = ka->zoff, zlen = ka->zlen, zlength = ka->zlength, off = ka->off, len = ka->len, parallelThresholdX = ka->parallelThresholdX, parallelThresholdZ = ka->parallelThresholdZ;
+  KaratsubaArgs *ka = (KaratsubaArgs*)args;
+  jint *x = ka->x, xoff = ka->xoff, *y = ka->y, yoff = ka->yoff, *z = ka->z, zoff = ka->zoff, zlen = ka->zlen, zlength = ka->zlength, off = ka->off, len = ka->len, parallelThreshold = ka->parallelThreshold, parallelThresholdZ = ka->parallelThresholdZ;
   free(args);
-  karatsuba(x, xoff, y, yoff, z, zoff, zlen, zlength, off, len, parallelThresholdX, parallelThresholdZ);
+  karatsuba(x, xoff, y, yoff, z, zoff, zlen, zlength, off, len, parallelThreshold, parallelThresholdZ);
   return NULL;
 }
 
-void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThresholdX, jint parallelThresholdZ) {
+void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThreshold, jint parallelThresholdZ) {
   jint i, j, k, l, m;
   jlong x0;
 
@@ -110,7 +110,7 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     }
   }
   else {
-    const bool parallel = len > parallelThresholdX && zlen > parallelThresholdZ;
+    const bool parallel = len > parallelThreshold && zlen > parallelThresholdZ;
     const jint b = len >> 1, b2 = b * 2, ll = len * 2, l_b = len - b, l_b2 = l_b * 2;
     jint tmpoff, x2offl_b2, y2offl_b2;
     jint *tmp;
@@ -135,17 +135,20 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     }
 
     const jint x2offl_b2b = x2offl_b2 + b, y2offl_b = x2offl_b2 + l_b, y2offl_b1 = y2offl_b + 1, y2offl_b1b = y2offl_b1 + b;
+    tmp[x2offl_b2b] = tmp[y2offl_b1b] = tmp[y2offl_b] = tmp[y2offl_b2] = 0;
 
     for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) {
       tmp[i] = (jint)(carry += (x[j] & LONG_MASK) + (x[k] & LONG_MASK));
       carry >>= 32;
     }
 
-    if ((len & 1) != 0)
+    if ((len & 1) != 0) {
       tmp[x2offl_b2b] = x[xoffoff + b2];
+    }
 
-    if (carry != 0 && ++tmp[x2offl_b2b] == 0)
+    if (carry != 0 && ++tmp[x2offl_b2b] == 0) {
       ++tmp[x2offl_b2b + 1];
+    }
 
     carry = 0;
     for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) {
@@ -153,11 +156,13 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
       carry >>= 32;
     }
 
-    if ((len & 1) != 0)
+    if ((len & 1) != 0) {
       tmp[y2offl_b1b] = y[yoffoff + b2];
+    }
 
-    if (carry != 0 && ++tmp[y2offl_b1b] == 0)
+    if (carry != 0 && ++tmp[y2offl_b1b] == 0) {
       ++tmp[y2offl_b1b + 1];
+    }
 
     const jint tmpoffl_b2 = tmpoff + l_b2;
     const jint tmplen = tmpoffl_b2 + l_b2 + 3;
@@ -170,13 +175,13 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     }
     else {
       KaratsubaArgs *args1 = (KaratsubaArgs*)malloc(sizeof(KaratsubaArgs));
-      *args1 = (KaratsubaArgs){ tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, zlength, 0, r, parallelThresholdX * 2, parallelThresholdZ * 2 };
+      *args1 = (KaratsubaArgs){ tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, zlength, 0, r, parallelThreshold * 2, parallelThresholdZ * 2 };
 
       KaratsubaArgs *args2 = (KaratsubaArgs*)malloc(sizeof(KaratsubaArgs));
-      *args2 = (KaratsubaArgs){ x, xoff, y, yoff, tmp, tmpoffrr, tmplen, zlength, off, b, parallelThresholdX * 2, parallelThresholdZ * 2 };
+      *args2 = (KaratsubaArgs){ x, xoff, y, yoff, tmp, tmpoffrr, tmplen, zlength, off, b, parallelThreshold * 2, parallelThresholdZ * 2 };
 
       KaratsubaArgs *args3 = (KaratsubaArgs*)malloc(sizeof(KaratsubaArgs));
-      *args3 = (KaratsubaArgs){ x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, zlength, off + b, l_b, parallelThresholdX * 2, parallelThresholdZ * 2 };
+      *args3 = (KaratsubaArgs){ x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, zlength, off + b, l_b, parallelThreshold * 2, parallelThresholdZ * 2 };
 
       pthread_t t1;
       int s1 = pthread_create(&t1, NULL, karatsubaThread, args1);
@@ -213,26 +218,27 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     if (allocated)
       free(tmp);
 
-    if (x0 != 0)
+    if (x0 != 0) {
       while (++z[j++] == 0);
+    }
   }
 }
 
-JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba(jint _x, jint *x, jint xoff, jint _y, jint *y, jint yoff, jint _z, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThresholdX, jint parallelThresholdZ) {
-  karatsuba(x, xoff, y, yoff, z, zoff, zlen, zlength, off, len, parallelThresholdX, parallelThresholdZ);
+JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba(jint _x, jint *x, jint xoff, jint _y, jint *y, jint yoff, jint _z, jint *z, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThreshold, jint parallelThresholdZ) {
+  karatsuba(x, xoff, y, yoff, z, zoff, zlen, zlength, off, len, parallelThreshold, parallelThresholdZ);
 }
 
-JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(jint _x, jint *x, jint len, jint _z, jint *z, jint zlen, jint zlength, jboolean yCopy, jint parallelThresholdX, jint parallelThresholdZ) {
+JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(jint _x, jint *x, jint len, jint _z, jint *z, jint zlen, jint zlength, jboolean yCopy, jint parallelThreshold, jint parallelThresholdZ) {
   if (yCopy) {
     // InPlace computation for (mag) requires a copy for (y), otherwise we're
     // reading and writing from the same array for (x) (y) and (z)
     jint *y = (jint*)calloc(len + OFF, sizeof(jint));
     memcpy(y, x, (len + OFF) * sizeof(jint));
-    karatsuba(x, OFF, y, OFF, z, OFF, zlen, zlength, 0, len, parallelThresholdX, parallelThresholdZ);
+    karatsuba(x, OFF, y, OFF, z, OFF, zlen, zlength, 0, len, parallelThreshold, parallelThresholdZ);
     free(y);
   }
   else {
-    karatsuba(x, OFF, x, OFF, z, OFF, zlen, zlength, 0, len, parallelThresholdX, parallelThresholdZ);
+    karatsuba(x, OFF, x, OFF, z, OFF, zlen, zlength, 0, len, parallelThreshold, parallelThresholdZ);
   }
 }
 
@@ -325,11 +331,11 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
 #ifdef CRITICAL_NATIVE
 
 static JNINativeMethod criticalMethods[] = {
-  { "nativeKaratsuba", "([II[II[IIIIIIII)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba },
-  { "nativeMulQuad", "([II[II[I)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad },
-  { "nativeMulQuadInPlace", "([II[III)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace },
-  { "nativeSquareKaratsuba", "([II[IIIZII)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba },
-  { "nativeSquareQuad", "([III[III)V", (void *)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareQuad }
+  { "nativeKaratsuba", "([II[II[IIIIIIII)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba },
+  { "nativeMulQuad", "([II[II[I)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad },
+  { "nativeMulQuadInPlace", "([II[III)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace },
+  { "nativeSquareKaratsuba", "([II[IIIZII)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba },
+  { "nativeSquareQuad", "([III[III)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareQuad }
 };
 
 jint JNI_OnLoad(JavaVM* vm, void* reserved) {
@@ -372,25 +378,25 @@ JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuadInPl
   (*env)->ReleasePrimitiveArrayCritical(env, yarr, y, ycopy ? 0 : JNI_ABORT);
 }
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint xoff, jintArray yarr, jint yoff, jintArray zarr, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThresholdX, jint parallelThresholdZ) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint xoff, jintArray yarr, jint yoff, jintArray zarr, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThreshold, jint parallelThresholdZ) {
   jboolean zcopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *y = (jint*)(*env)->GetPrimitiveArrayCritical(env, yarr, NULL);
   jint *z = (jint*)(*env)->GetPrimitiveArrayCritical(env, zarr, &zcopy);
 
-  JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba(0, x, xoff, 0, y, yoff, 0, z, zoff, zlen, zlength, off, len, parallelThresholdX, parallelThresholdZ);
+  JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba(0, x, xoff, 0, y, yoff, 0, z, zoff, zlen, zlength, off, len, parallelThreshold, parallelThresholdZ);
 
   (*env)->ReleasePrimitiveArrayCritical(env, xarr, x, JNI_ABORT);
   (*env)->ReleasePrimitiveArrayCritical(env, yarr, y, JNI_ABORT);
   (*env)->ReleasePrimitiveArrayCritical(env, zarr, z, zcopy ? 0 : JNI_ABORT);
 }
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint len, jintArray zarr, jint zlen, jint zlength, jboolean yCopy, jint parallelThresholdX, jint parallelThresholdZ) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint len, jintArray zarr, jint zlen, jint zlength, jboolean yCopy, jint parallelThreshold, jint parallelThresholdZ) {
   jboolean zcopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *z = (jint*)(*env)->GetPrimitiveArrayCritical(env, zarr, &zcopy);
 
-  JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(0, x, len, 0, z, zlen, zlength, yCopy, parallelThresholdX, parallelThresholdZ);
+  JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(0, x, len, 0, z, zlen, zlength, yCopy, parallelThreshold, parallelThresholdZ);
 
   (*env)->ReleasePrimitiveArrayCritical(env, xarr, x, JNI_ABORT);
   (*env)->ReleasePrimitiveArrayCritical(env, zarr, z, zcopy ? 0 : JNI_ABORT);

@@ -357,9 +357,11 @@ public class BigIntBasicTest {
     final char[] num = new char[len + sign];
     if (sign > 0)
       num[0] = '-';
+
     num[sign] = (char)('1' + rnd.nextInt(9));
     for (int i = sign + 1; i < len + sign; i++)
       num[i] = (char)('0' + rnd.nextInt(10));
+
     return num;
   }
 

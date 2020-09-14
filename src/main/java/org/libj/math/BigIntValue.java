@@ -39,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
+import org.libj.lang.Numbers;
 import org.libj.lang.OperatingSystem;
 
 abstract class BigIntValue extends Number {
@@ -47,7 +48,6 @@ abstract class BigIntValue extends Number {
   static final int NATIVE_THRESHOLD;
 
   static {
-    final OperatingSystem operatingSystem = OperatingSystem.get();
     final String noNativeProp = System.getProperty("org.libj.math.BigInt.noNative");
     if (noNativeProp != null && !noNativeProp.equals("false")) {
       NATIVE_THRESHOLD = Integer.MAX_VALUE;
@@ -57,6 +57,7 @@ abstract class BigIntValue extends Number {
 
       final String fileName = "libmath" + (useCritical ? "c" : "j");
       final String extension;
+      final OperatingSystem operatingSystem = OperatingSystem.get();
       if (operatingSystem.isMac())
         extension = ".dylib";
       else if (operatingSystem.isUnix())
@@ -104,9 +105,14 @@ abstract class BigIntValue extends Number {
     }
   }
 
+  /**
+   * The maximum supported length of {@linkplain BigInt#val() value-encoded
+   * number} arrays.
+   */
+  public static final int MAX_VAL_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
+
   static final long LONG_MASK = 0xFFFFFFFFL;
   static final int[] emptyVal = {};
-  static final int[] ZERO = {0};
   static final int OFF = 1;
 
   static final LocalArray threadLocal = new LocalArray(); // FIXME: Experimental
@@ -128,62 +134,6 @@ abstract class BigIntValue extends Number {
     }
   }
 
-  private static volatile int[][] e10 = {new int[] {1, 1}};
-
-  static {
-    e10(8);
-  }
-
-  /**
-   * Return 10 to the power n, as a {@linkplain BigInt#val() value-encoded
-   * number}, and expand the {@link #e10} array if necessary.
-   *
-   * @param n The power of ten to be returned (>= 0).
-   * @return A {@linkplain BigInt#val() value-encoded number} with the value
-   *         (10<sup>n</sup>).
-   */
-  private static int[] e10(final int n) {
-    if (n < 0)
-      return ZERO;
-
-    int[][] pows = e10;
-    if (n < pows.length)
-      return pows[n];
-
-    synchronized (e10) {
-      final int curLen = pows.length;
-      // The following comparison and the above synchronized statement is
-      // to prevent multiple threads from expanding the same array.
-      if (curLen <= n) {
-        int newLen;
-        if (n < 256) {
-          newLen = curLen * 2;
-          while (newLen <= n)
-            newLen *= 2;
-        }
-        else {
-          newLen = n + 64;
-        }
-
-        pows = Arrays.copyOf(pows, newLen);
-        for (int i = curLen, len; i < newLen; ++i) {
-          pows[i] = pows[i - 1].clone();
-          len = pows[i][0] + 1;
-          pows[i] = realloc(pows[i], len, len + 1);
-          pows[i] = BigIntMultiplication.mul0(pows[i], 1, 10);
-        }
-
-        // Based on the following facts:
-        // 1. pows is a private local variable;
-        // 2. the following store is a volatile store.
-        // Thus the newly created array elements can be safely published.
-        e10 = pows;
-      }
-
-      return pows[n];
-    }
-  }
-
   /**
    * Creates a new {@code int[]} with length that is at least {@code len}.
    * <p>
@@ -193,7 +143,7 @@ abstract class BigIntValue extends Number {
    * @return A new {@code int[]} with a length that is at least {@code len}.
    */
   static int[] alloc(final int len) {
-    return new int[32 + len]; // FIXME: Tune
+    return new int[32 + len];
   }
 
   /**
@@ -211,7 +161,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(n)
    */
   static int[] realloc(final int[] array, final int len, final int newLen) {
-    final int[] v = new int[32 + newLen]; // FIXME: Tune
+    final int[] v = new int[32 + newLen];
     System.arraycopy(array, 0, v, 0, len);
     return v;
   }
@@ -254,10 +204,10 @@ abstract class BigIntValue extends Number {
     if (arrayLength > target.length)
       target = alloc(arrayLength);
 
-    return copy0(source, copyLength, target);
+    return copyUnsafe(source, copyLength, target);
   }
 
-  static int[] copy0(final int[] source, final int copyLength, int[] target) {
+  protected static int[] copyUnsafe(final int[] source, final int copyLength, final int[] target) {
     System.arraycopy(source, 0, target, 0, copyLength);
     // _debugLenSig(target);
     return target;
@@ -266,7 +216,11 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns an {@code int} magnitude to the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -301,7 +255,11 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns an <i>unsigned</i> {@code int} magnitude to the provided
    * {@linkplain BigInt#val() value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -313,10 +271,10 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] assign(final int[] val, final int sig, final int mag) {
-    return mag == 0 ? setToZero(val) : assign0(val.length > 1 ? val : alloc(2), sig, mag);
+    return mag == 0 ? setToZero(val) : assignUnsafe(val.length > 1 ? val : alloc(2), sig, mag);
   }
 
-  static int[] assign0(final int[] val, final int sig, final int mag) {
+  protected static int[] assignUnsafe(final int[] val, final int sig, final int mag) {
     val[0] = sig;
     val[1] = mag;
     // _debugLenSig(val);
@@ -326,7 +284,11 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns an {@code long} magnitude to the provided {@linkplain BigInt#val()
    * value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -340,10 +302,18 @@ abstract class BigIntValue extends Number {
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
+  protected static int[] assignUnsafe(final int[] val, final long mag) {
+    return mag < 0 ? assignUnsafe(val, -1, -mag) : assignUnsafe(val, 1, mag);
+  }
+
   /**
    * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
    * {@linkplain BigInt#val() value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -361,7 +331,11 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns an <i>unsigned</i> {@code long} magnitude to the provided
    * {@linkplain BigInt#val() value-encoded number}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -372,18 +346,29 @@ abstract class BigIntValue extends Number {
    *         to the provided {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(1)
    */
-  public static int[] assign(int[] val, final int sig, final long mag) {
+  public static int[] assign(final int[] val, final int sig, final long mag) {
     if (mag == 0)
       return setToZero(val);
 
     final int magh = (int)(mag >>> 32);
     if (magh != 0)
-      return assign0(val.length >= 3 ? val : alloc(3), sig, (int)mag, magh);
+      return assignUnsafe(val.length >= 3 ? val : alloc(3), sig, (int)mag, magh);
 
-    return assign0(val.length >= 2 ? val : alloc(2), sig, (int)mag);
+    return assignUnsafe(val.length >= 2 ? val : alloc(2), sig, (int)mag);
   }
 
-  static int[] assign0(final int[] val, final int sig, final int mag, final int magh) {
+  protected static int[] assignUnsafe(final int[] val, final int sig, final long mag) {
+    if (mag == 0)
+      return setToZeroUnsafe(val);
+
+    final int magh = (int)(mag >>> 32);
+    if (magh != 0)
+      return assignUnsafe(val, sig, (int)mag, magh);
+
+    return assignUnsafe(val, sig, (int)mag);
+  }
+
+  static int[] assignUnsafe(final int[] val, final int sig, final int mag, final int magh) {
     val[0] = sig < 0 ? -2 : 2;
     val[1] = mag;
     val[2] = magh;
@@ -392,10 +377,42 @@ abstract class BigIntValue extends Number {
   }
 
   /**
+   * Assigns the specified {@linkplain BigInt#val() value-encoded number}
+   * {@code val} to the contents of {@linkplain BigInt#val() value-encoded
+   * number} {@code src}.
+   * <p>
+   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.</i>
+   *
+   * <pre>
+   * this = val
+   * </pre>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to receive
+   *          the contents of {@code src}.
+   * @param src The {@linkplain BigInt#val() value-encoded number} to provide
+   *          its contents to {@code val}.
+   * @return {@code this}
+   * @complexity O(n)
+   */
+  public static int[] assign(int[] val, final int[] src) {
+    final int len = Math.abs(val[0]);
+    if (val.length <= len)
+      val = alloc(len);
+
+    System.arraycopy(src, 0, val, 0, len + 1);
+    return val;
+  }
+
+  /**
    * Assigns a byte array containing the two's-complement binary representation
    * of a {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
    * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -419,7 +436,11 @@ abstract class BigIntValue extends Number {
    * Assigns a byte array containing the two's-complement binary representation
    * of a {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
    * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * <p>
+   *
+   * <pre>
+   * val = mag
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -435,7 +456,7 @@ abstract class BigIntValue extends Number {
    *         two's-complement binary representation of a
    *         {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
    *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @complexity O(1)
+   * @complexity O(n^2)
    */
   public static int[] assign(final int[] val, final byte[] mag, final int off, final int len, final boolean littleEndian) {
     return littleEndian ? assignLittleEndian(val, mag, off, len) : assignBigEndian(val, mag, off, len);
@@ -515,7 +536,7 @@ abstract class BigIntValue extends Number {
       val = alloc(vlen + 1);
 
     if (vlen == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     for (int i = 1, j, b = indexBound, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
       bytesRemaining = keep - b;
@@ -596,7 +617,7 @@ abstract class BigIntValue extends Number {
       val = alloc(vlen + 1);
 
     if (vlen == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     for (int i = 1, j, b = indexBound - 1, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
       bytesRemaining = b - keep;
@@ -614,7 +635,11 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns the specified number as a string to the provided
    * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * <p>
+   *
+   * <pre>
+   * val = s
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -632,7 +657,11 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns the specified number as a {@code char[]} to the provided
    * {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * <p>
+   *
+   * <pre>
+   * val = s
+   * </pre>
+   *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
    * the assignment requires a larger array.</i>
    *
@@ -896,10 +925,10 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] setToZero(final int[] val) {
-    return setToZero0(val.length > 0 ? val : alloc(1));
+    return setToZeroUnsafe(val.length > 0 ? val : alloc(1));
   }
 
-  static int[] setToZero0(final int[] val) {
+  protected static int[] setToZeroUnsafe(final int[] val) {
     val[0] = 0;
     return val;
   }
@@ -1024,8 +1053,8 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static long longValueUnsigned(final int[] val) {
-    int len = val[0]; if (len < 0) { len = -len; }
-    return longValue(val, 1, len);
+    final int len = val[0];
+    return longValue(val, 1, len < 0 ? -len : len);
   }
 
   /**
@@ -1041,9 +1070,9 @@ abstract class BigIntValue extends Number {
     return len == 0 ? 0 : longValue0(mag, off, len);
   }
 
-  static long longValue0(final int[] mag, final int off, final int len) {
-    final long val0l = mag[off] & LONG_MASK;
-    return len > 1 ? (long)mag[off + 1] << 32 | val0l : val0l;
+  private static long longValue0(final int[] mag, final int off, final int len) {
+    final long low0 = mag[off] & LONG_MASK;
+    return len > 1 ? (long)mag[off + 1] << 32 | low0 : low0;
   }
 
   /**
@@ -1080,26 +1109,57 @@ abstract class BigIntValue extends Number {
     if (len == 1 && s >= 8)
       return sig < 0 ? -mag[off] : mag[off];
 
-    final int exponent = ((len - 1) << 5) + (32 - s) - 1;
+    final int exponent = ((end - 1) << 5) + bitLengthForInt(mag[end]) - 1;
     if (exponent < Long.SIZE - 1)
       return longValue(mag, off, len, sig);
 
     if (exponent > Float.MAX_EXPONENT)
-      return sig < 0 ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
+      return sig > 0 ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
 
-    int bits = mag[end]; // Mask out the 24 MSBits
-    if (s <= 8)
-      bits >>>= 8 - s;
-    else
-      bits = bits << s - 8 | mag[end - 1] >>> 32 - (s - 8); // s-8==additional bits we need
+    /*
+     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit.
+     * To make rounding easier, we pick out the top SIGNIFICAND_WIDTH + 1 bits,
+     * so we have one to help us round up or down. twiceSignifFloor will contain
+     * the top SIGNIFICAND_WIDTH + 1 bits, and signifFloor the top
+     * SIGNIFICAND_WIDTH. It helps to consider the real number signif =
+     * abs(this) * 2^(SIGNIFICAND_WIDTH - 1 - exponent).
+     */
+    final int shift = exponent - FloatingDecimal.SIGNIFICAND_WIDTH_FLOAT;
 
-    bits ^= 1L << 23; // The leading bit is implicit, so cancel it out
+    int twiceSignifFloor;
+    // twiceSignifFloor will be == abs().shiftRight(shift).intValue()
+    // We do the shift into an int directly to improve performance.
 
-    final int exp = (int)(((32 - s + 32L * (len - 1)) - 1 + 127) & 0xFF);
-    bits |= exp << 23; // Add exponent
-    bits |= sig & (1 << 31); // Add sign-bit
+    final int nBits = shift & 0x1f;
+    if (nBits == 0) {
+      twiceSignifFloor = mag[end];
+    }
+    else {
+      twiceSignifFloor = mag[end] >>> nBits;
+      if (twiceSignifFloor == 0)
+        twiceSignifFloor = (mag[end] << (32 - nBits)) | (mag[end - 1] >>> nBits);
+    }
 
-    return Float.intBitsToFloat(bits);
+    final int signifFloor = twiceSignifFloor >> 1 & FloatingDecimal.SIGNIF_BIT_MASK_FLOAT; // remove the implied bit
+
+    /*
+     * We round up if either the fractional part of signif is strictly greater
+     * than 0.5 (which is true if the 0.5 bit is set and any lower bit is set),
+     * or if the fractional part of signif is >= 0.5 and signifFloor is odd
+     * (which is true if both the 0.5 bit and the 1 bit are set). This is
+     * equivalent to the desired HALF_EVEN rounding.
+     */
+    final boolean increment = (twiceSignifFloor & 1) != 0 && ((signifFloor & 1) != 0 || getLowestSetBit(mag) < shift);
+    final int signifRounded = increment ? signifFloor + 1 : signifFloor;
+    final int bits = ((exponent + FloatingDecimal.EXP_BIAS_FLOAT) << (FloatingDecimal.SIGNIFICAND_WIDTH_FLOAT - 1)) + signifRounded;
+
+    /*
+     * If signifRounded == 2^24, we'd need to set all of the significand bits to
+     * zero and add 1 to the exponent. This is exactly the behavior we get from
+     * just adding signifRounded to bits directly. If the exponent is
+     * Float.MAX_EXPONENT, we round up (correctly) to Float.POSITIVE_INFINITY.
+     */
+    return Float.intBitsToFloat(bits | sig & FloatingDecimal.SIGN_BIT_MASK_FLOAT);
   }
 
   /**
@@ -1137,32 +1197,65 @@ abstract class BigIntValue extends Number {
     }
 
     final int end = off + len - 1;
-    final int z = Integer.numberOfLeadingZeros(mag[end]);
-    final int exponent = ((len - 1) << 5) + (32 - z) - 1;
+    int exponent = ((end - 1) << 5) + bitLengthForInt(mag[end]) - 1;
     if (exponent < Long.SIZE - 1)
       return longValue(mag, off, len, sig < 0 ? -1 : 1);
 
     if (exponent > Double.MAX_EXPONENT)
-      return sig < 0 ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+      return sig > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
 
-    if (len == 2 && 32 - z + 32 <= 53) {
-      final double v = ((long)mag[off + 1] << 32 | (mag[off] & LONG_MASK));
-      return sig < 0 ? -v : v;
+    /*
+     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit.
+     * To make rounding easier, we pick out the top SIGNIFICAND_WIDTH + 1 bits,
+     * so we have one to help us round up or down. twiceSignifFloor will contain
+     * the top SIGNIFICAND_WIDTH + 1 bits, and signifFloor the top
+     * SIGNIFICAND_WIDTH. It helps to consider the real number signif =
+     * abs(this) * 2^(SIGNIFICAND_WIDTH - 1 - exponent).
+     */
+    final int shift = exponent - FloatingDecimal.SIGNIFICAND_WIDTH_DOUBLE;
+
+    // twiceSignifFloor will be == abs().shiftRight(shift).longValue()
+    // We do the shift into a long directly to improve performance.
+
+    final int nBits = shift & 0x1f;
+
+    int highBits;
+    int lowBits;
+    if (nBits == 0) {
+      highBits = mag[end];
+      lowBits = mag[end - 1];
+    }
+    else {
+      final int nBits2 = 32 - nBits;
+      highBits = mag[end] >>> nBits;
+      lowBits = (mag[end] << nBits2) | (mag[end - 1] >>> nBits);
+      if (highBits == 0) {
+        highBits = lowBits;
+        lowBits = (mag[end - 1] << nBits2) | (mag[end - 2] >>> nBits);
+      }
     }
 
-    long bits = (long)mag[end] << 32 | (mag[end - 1] & LONG_MASK); // Mask out the 53 MSBits
-    if (z <= 11)
-      bits >>>= 11 - z;
-    else
-      bits = bits << z - 11 | mag[len - 2] >>> 32 - (z - 11); // s-11==additional bits we need
+    final long twiceSignifFloor = ((highBits & LONG_MASK) << 32) | (lowBits & LONG_MASK);
+    final long signifFloor = twiceSignifFloor >> 1 & FloatingDecimal.SIGNIF_BIT_MASK_DOUBLE; // remove the implied bit
 
-    bits ^= 1L << 52; // The leading bit is implicit, cancel it out
+    /*
+     * We round up if either the fractional part of signif is strictly greater
+     * than 0.5 (which is true if the 0.5 bit is set and any lower bit is set),
+     * or if the fractional part of signif is >= 0.5 and signifFloor is odd
+     * (which is true if both the 0.5 bit and the 1 bit are set). This is
+     * equivalent to the desired HALF_EVEN rounding.
+     */
+    final boolean increment = (twiceSignifFloor & 1) != 0 && ((signifFloor & 1) != 0 || getLowestSetBit(mag) < shift);
+    final long signifRounded = increment ? signifFloor + 1 : signifFloor;
+    final long bits = ((long)(exponent + FloatingDecimal.EXP_BIAS_DOUBLE) << (FloatingDecimal.SIGNIFICAND_WIDTH_DOUBLE - 1)) + signifRounded;
 
-    final long exp = ((32 - z + 32L * (len - 1)) - 1 + 1023) & 0x7FF;
-    bits |= exp << 52; // Add exponent
-    bits |= sig & (1L << 63); // Add sign-bit
-
-    return Double.longBitsToDouble(bits);
+    /*
+     * If signifRounded == 2^53, we'd need to set all of the significand bits to
+     * zero and add 1 to the exponent. This is exactly the behavior we get from
+     * just adding signifRounded to bits directly. If the exponent is
+     * Double.MAX_EXPONENT, we round up (correctly) to Double.POSITIVE_INFINITY.
+     */
+    return Double.longBitsToDouble(bits | sig & FloatingDecimal.SIGN_BIT_MASK_DOUBLE);
   }
 
   /**
@@ -1177,6 +1270,7 @@ abstract class BigIntValue extends Number {
    *         absolute value is less than, equal to, or greater than that of the
    *         second argument, respectively.
    * @complexity O(n)
+   * @amortized O(1)
    */
   public static int compareToAbs(final int[] val1, final int[] val2) {
     return compareToAbs(val1, Math.abs(val1[0]), val2, Math.abs(val2[0]));
@@ -1196,6 +1290,7 @@ abstract class BigIntValue extends Number {
    *         absolute value is less than, equal to, or greater than that of the
    *         second argument, respectively.
    * @complexity O(n)
+   * @amortized O(1)
    */
   static int compareToAbs(final int[] val1, int len1, final int[] val2, final int len2) {
     if (len1 > len2)
@@ -1229,6 +1324,7 @@ abstract class BigIntValue extends Number {
    *         value is less than, equal to, or greater than that of the second
    *         argument, respectively.
    * @complexity O(n)
+   * @amortized O(1)
    */
   public static int compareTo(final int[] val1, final int[] val2) {
     int sig1 = 1, len1 = val1[0];
@@ -1254,7 +1350,7 @@ abstract class BigIntValue extends Number {
    * absolute value.
    *
    * <pre>
-   * {@code val = | val |}
+   * val = | val |
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
@@ -1275,7 +1371,7 @@ abstract class BigIntValue extends Number {
    * negated value.
    *
    * <pre>
-   * {@code val = -val }
+   * val = -val
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
@@ -1420,6 +1516,9 @@ abstract class BigIntValue extends Number {
    * @complexity O(n^2)
    */
   public static String toString(final int[] val) {
+    if (val == null)
+      return "null";
+
     if (isZero(val))
       return "0";
 
@@ -1458,8 +1557,6 @@ abstract class BigIntValue extends Number {
    * <em>excluding</em> a sign bit. For positive numbers, this is equivalent to
    * the number of bits in the ordinary binary representation. For zero this
    * method returns {@code 0}.
-   * <p>
-   * Computes:
    *
    * <pre>
    * ceil(log2(val < 0 ? -val : val + 1))
@@ -1473,14 +1570,14 @@ abstract class BigIntValue extends Number {
    */
   public static int bitLength(final int[] val) {
     int len = val[0];
-    return len == 0 ? 0 : bitLength0(val, len);
+    return len == 0 ? 0 : bitLength(val, len);
   }
 
-  static int bitLength0(final int[] val, int len) {
-    if (len > 0)
-      return ((len - 1) << 5) + bitLengthForInt(val[len]);
+  static int bitLengthPos(final int[] val, final int len) {
+    return ((len - 1) << 5) + bitLengthForInt(val[len]);
+  }
 
-    len = -len;
+  static int bitLengthNeg(final int[] val, int len) {
     // Use magBitLength to temporarily hold val[len], and decrement len
     int magBitLength = val[len--];
     // Check if magnitude is a power of two
@@ -1493,11 +1590,39 @@ abstract class BigIntValue extends Number {
     return pow2 ? magBitLength - 1 : magBitLength;
   }
 
+  static int bitLength(final int[] val, final int len) {
+    return len > 0 ? bitLengthPos(val, len) : bitLengthNeg(val, -len);
+  }
+
+  /**
+   * Returns the index of the rightmost (lowest-order) one bit in the provided
+   * {@linkplain BigInt#val() value-encoded number} (the number of zero bits to
+   * the right of the rightmost one bit). Returns {@code -1} if number contains
+   * no one bits.
+   *
+   * <pre>
+   * val == 0 ? -1 : log2(val & -val)
+   * </pre>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The index of the rightmost (lowest-order) one bit in the provided
+   *         {@linkplain BigInt#val() value-encoded number}.
+   */
+  public static int getLowestSetBit(final int[] val) {
+    if (val[0] == 0)
+      return -1;
+
+    // Search for lowest order nonzero int
+    int i, b;
+    for (i = 1; (b = val[i]) == 0; ++i);
+    return ((i - 1) << 5) + Integer.numberOfTrailingZeros(b);
+  }
+
   /**
    * Returns the bit length of the provided integer.
    *
-   * @param n The integer.
-   * @return Bit length of the provided integer.
+   * @param n The integer whose bit length to return.
+   * @return The bit length of the provided integer.
    */
   static int bitLengthForInt(final int n) {
     return Integer.SIZE - Integer.numberOfLeadingZeros(n);
@@ -1510,21 +1635,20 @@ abstract class BigIntValue extends Number {
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return The number of digits in the provided {@linkplain BigInt#val()
    *         value-encoded number} (radix 10).
-   * @complexity O(n^2) // FIXME: There must be a more efficient way to do this!
+   * @complexity O(n)
+   * @amortized O(1)
    */
   public static int precision(final int[] val) {
-    final int len = val[0];
+    int len = val[0];
     if (len == 0)
       return 1;
 
-    /*
-     * Same idea as the long version, but we need a better approximation of
-     * log10(2). Using 646456993/2^31 is accurate up to max possible reported
-     * bitLength.
-     */
-    final long bitLength = bitLength0(val, len);
-    final int r = (int)(((bitLength + 1) * 646456993) >>> 31);
-    return compareToAbs(val, e10(r)) < 0 ? r : r + 1;
+    if (len < 0) { len = -len; }
+    if (len == 1)
+      return Numbers.precision(BigInt.longValue(val));
+
+    final int p = (int)(((1 + len * 32 - Integer.numberOfLeadingZeros(val[len])) * 646456993L) >>> 31);
+    return compareToAbs(val, FastMath.E10(p)) < 0 ? p : p + 1;
   }
 
   static void _debugLenSig(final int[] val) {

@@ -17,337 +17,318 @@
 package org.libj.math;
 
 import static org.junit.Assert.*;
-import static org.libj.math.Decimal.*;
+import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.libj.math.survey.AuditReport;
+import org.libj.math.survey.AuditRunner;
+import org.libj.math.survey.CaseTest;
 
+@RunWith(AuditRunner.class)
+@AuditRunner.Execution(PHASED)
+@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
+@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
 public class DecimalPredicateTest extends DecimalTest {
-  private static final DecimalOperation<Short,Short> precision = new DecimalOperation<Short,Short>("precision", long.class, "precision(%s)") {
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Short expected, final Short actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
-    }
-
-    @Override
-    Short test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final short result = Decimal.precision(ld1, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Short control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final short result = (short)bd1.precision();
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final DecimalOperation<BigDecimal,BigDecimal> toBigDecimal = new DecimalOperation<BigDecimal,BigDecimal>("toBigDecimal", long.class, "toBigDecimal(%s)") {
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final BigDecimal actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
-    }
-
-    @Override
-    BigDecimal test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final BigDecimal result = Decimal.toBigDecimal(ld1, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final String str = bd1.toString();
-      final long ts = System.nanoTime();
-      final BigDecimal result = new BigDecimal(str);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final DecimalOperation<Double,Double> doubleValue = new DecimalOperation<Double,Double>("doubleValue", long.class, "doubleValue(%s)") {
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Double expected, final Double actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
-    }
-
-    @Override
-    Double test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final double result = Decimal.doubleValue(ld1, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Double control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final double result = bd1.doubleValue();
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final DecimalOperation<Integer,Integer> compare = new DecimalOperation<Integer,Integer>("compare", long.class, "compare(%s, %s)") {
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Integer expected, final Integer actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected == actual ? null : BigDecimal.ONE;
-    }
-
-    @Override
-    Integer test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final int result = compare(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Integer control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final int result = bd1.compareTo(bd2);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private abstract static class PredicateOperation extends DecimalOperation<Long,BigDecimal> {
-    private PredicateOperation(final String label, final Class<?> arg, final String operator) {
-      super(label, arg, operator);
-    }
-
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final Long actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected.compareTo(toBigDecimal(actual, bits)) == 0 ? null : BigDecimal.ONE;
-    }
-  }
-
-  private static final PredicateOperation min = new PredicateOperation("min", long.class, "<min>") {
-    @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final long result = min(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final BigDecimal result = bd1.min(bd2);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final PredicateOperation max = new PredicateOperation("max", long.class, "<max>") {
-    @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final long result = max(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    BigDecimal control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final BigDecimal result = bd1.max(bd2);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private abstract static class InequalityOperation extends DecimalOperation<Boolean,Boolean> {
-    private InequalityOperation(final String label, final Class<?> arg, final String operator) {
-      super(label, arg, operator);
-    }
-
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Boolean expected, final Boolean actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected == actual ? null : BigDecimal.ONE;
-    }
-  }
-
-  private static final InequalityOperation eq = new InequalityOperation("eq", long.class, "%s = %s") {
-    @Override
-    Boolean test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = eq(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Boolean control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = bd1.equals(bd2);
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final InequalityOperation lt = new InequalityOperation("lt", long.class, "%s < %s") {
-    @Override
-    Boolean test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = lt(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Boolean control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = bd1.compareTo(bd2) < 0;
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final InequalityOperation lte = new InequalityOperation("lte", long.class, "%s <= %s") {
-    @Override
-    Boolean test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = lte(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Boolean control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = bd1.compareTo(bd2) <= 0;
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final InequalityOperation gt = new InequalityOperation("gt", long.class, "%s > %s") {
-    @Override
-    Boolean test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = gt(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Boolean control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = bd1.compareTo(bd2) > 0;
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final InequalityOperation gte = new InequalityOperation("gte", long.class, "%s >= %s") {
-    @Override
-    Boolean test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = gte(ld1, ld2, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    Boolean control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final boolean result = bd1.compareTo(bd2) >= 0;
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
-  private static final DecimalOperation<String,String> toString = new DecimalOperation<String,String>("toString", long.class, "toString(%s)") {
-    @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final String expected, final String actual, final byte bits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return new BigDecimal(expected).compareTo(new BigDecimal(actual)) == 0 ? null : BigDecimal.ONE;
-    }
-
-    @Override
-    String test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte bits, final long defaultValue, final long[] time) {
-      final long ts = System.nanoTime();
-      final String result = Decimal.toString(ld1, bits);
-      time[0] += System.nanoTime() - ts;
-      return result;
-    }
-
-    @Override
-    String control(final BigDecimal bd1, final BigDecimal bd2, final long[] time) {
-      final long ts = System.nanoTime();
-      final String result = bd1.toString();
-      time[1] += System.nanoTime() - ts;
-      return result;
-    }
-  };
-
   @Test
-  public void testMin() {
-    test(min);
+  public void testEquals(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("eq(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.equals(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.equals(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.eq(a, b, scaleBits), o -> o)
+      );
+    }
   }
 
   @Test
-  public void testMax() {
-    test(max);
+  public void testSetScale(final AuditReport report) {
+    // Special test for Long.MIN_VALUE
+    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
+    final int iterations = 10000;
+    int progress = 0;
+    for (int i = 0; i < iterations; ++i) {
+      progress = progress(progress, i, i, iterations);
+
+      final short newScale = CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS));
+      final Decimal decimal = new Decimals.Decimal(Long.MIN_VALUE, CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS)));
+      final BigDecimal bigDecimal = decimal.toBigDecimal();
+      String bigDecimalString = null;
+      String decimalString = null;
+      int j = 0;
+      do {
+        if (j > 0) {
+          System.err.println(bigDecimalString + " != " + decimalString);
+          decimal.clear();
+        }
+
+        try {
+          final BigDecimal res = bigDecimal.setScale(newScale, RoundingMode.HALF_UP).stripTrailingZeros();
+          bigDecimalString = res.signum() == 0 ? "0" : CaseTest.DecimalCase.format.format(res).replaceAll("\\.?0+(E[-+0-9]*)$", "$1").replaceAll("E0$", "");
+        }
+        catch (final ArithmeticException e) {
+          bigDecimalString = null;
+        }
+
+        decimalString = decimal.setScale(newScale).toScientificString();
+      }
+      while (++j < 100 && (bigDecimalString == null ? decimalString != null : !bigDecimalString.equals(decimalString)));
+      assertEquals(bigDecimalString, decimal.setScale(newScale).toScientificString());
+    }
+
+    System.out.println();
+
+    final long defaultValue = random.nextLong();
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("setScale(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, b -> (byte)b, (BigDecimal a, long b) -> a.setScale((byte)b, RoundingMode.HALF_UP), o -> o),
+        d(Decimal.class, this::toDecimal, b -> (byte)b, (Decimal a, long b) -> a.setScale((byte)b), o -> o),
+        d(long.class, a -> a, b -> (byte)b, (long a, long b) -> Decimal.setScale(a, (byte)b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
+      );
+    }
   }
 
   @Test
-  public void testEq() {
-    test(eq);
+  public void testCompareTo(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("compare(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.compare(a, b, scaleBits), (long o) -> o)
+      );
+    }
   }
 
   @Test
-  public void testCompare() {
-    test(compare);
+  public void testLt(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("lt(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) < 0, o -> o),
+        d(long.class, (long a, long b) -> Decimal.lt(a, b, scaleBits), o -> o)
+      );
+    }
   }
 
   @Test
-  public void testLt() {
-    test(lt);
+  public void testGt(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("gt(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) > 0, o -> o),
+        d(long.class, (long a, long b) -> Decimal.gt(a, b, scaleBits), o -> o)
+      );
+    }
   }
 
   @Test
-  public void testLte() {
-    test(lte);
+  public void testLte(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("lte(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) <= 0, o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) <= 0, o -> o),
+        d(long.class, (long a, long b) -> Decimal.lte(a, b, scaleBits), o -> o)
+      );
+    }
   }
 
   @Test
-  public void testGt() {
-    test(gt);
+  public void testGte(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("gte(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) >= 0, o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) >= 0, o -> o),
+        d(long.class, (long a, long b) -> Decimal.gte(a, b, scaleBits), o -> o)
+      );
+    }
   }
 
   @Test
-  public void testGte() {
-    test(gte);
+  public void testMin(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("min(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.min(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.min(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.min(a, b, scaleBits), (long o) -> o)
+      );
+    }
   }
 
   @Test
-  public void testDoubleValue() {
-    test(doubleValue);
+  public void testMax(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("max(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.max(b), o -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.max(b), o -> o),
+        d(long.class, (long a, long b) -> Decimal.max(a, b, scaleBits), (long o) -> o)
+      );
+    }
   }
 
   @Test
-  public void testPrecision() {
-    test(precision);
+  public void testPrecision(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("precision(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.precision(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.precision(), String::valueOf),
+        d(long.class, (long a) -> Decimal.precision(a, scaleBits), String::valueOf)
+      );
+    }
   }
 
   @Test
-  public void testToBigDecimal() {
-    test(toBigDecimal);
+  public void testHashCode(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("hashCode(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.hashCode(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.hashCode(), String::valueOf),
+        d(long.class, (long a) -> Decimal.hashCode(a, scaleBits), String::valueOf)
+      );
+    }
   }
 
   @Test
-  public void testToString() {
-    final byte scaleBits = 7;
-    assertEquals("10000000000E-43", Decimal.toString(3098476553630901248L, scaleBits));
-    assertEquals("72057594037927935E-40", Decimal.toString(2954361355555045375L, scaleBits));
-    test(toString);
+  public void testScale(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("scale(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.scale(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.scale(), String::valueOf),
+        d(long.class, (long a) -> Decimal.scale(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testSignum(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("signum(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.signum(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.signum(), String::valueOf),
+        d(long.class, (long a) -> Decimal.signum(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testByteValue(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("byteValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.byteValue(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.byteValue(), String::valueOf),
+        d(long.class, (long a) -> Decimal.byteValue(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testShortValue(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("shortValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.shortValue(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.shortValue(), String::valueOf),
+        d(long.class, (long a) -> Decimal.shortValue(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testIntValue(final AuditReport report) {
+    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("intValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.intValue(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.intValue(), String::valueOf),
+        d(long.class, (long a) -> Decimal.intValue(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testLongValue(final AuditReport report) {
+    for (byte i = 6; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("longValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, (long a) -> toBigDecimal(a).longValue(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.longValue(), String::valueOf),
+        d(long.class, (long a) -> Decimal.longValue(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testFloatValue(final AuditReport report) {
+    // Special test for Long.MIN_VALUE
+    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
+    final int iterations = 100000;
+    int progress = 0;
+    for (int i = 0; i < iterations; ++i) {
+      final Decimal minDecimal = new Decimals.Decimal(Long.MIN_VALUE, CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS)));
+      final BigDecimal minBigDecimal = minDecimal.toBigDecimal();
+      assertEquals(minBigDecimal.floatValue(), minDecimal.floatValue(), 0);
+      progress = progress(progress, i, i, iterations);
+    }
+
+    for (byte i = 0; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("floatValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.floatValue(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.floatValue(), String::valueOf),
+        d(long.class, (long a) -> Decimal.floatValue(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testDoubleValue(final AuditReport report) {
+    // Special test for Long.MIN_VALUE
+    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
+    final int iterations = 100000;
+    int progress = 0;
+    for (int i = 0; i < iterations; ++i) {
+      final Decimal minDecimal = new Decimals.Decimal(Long.MIN_VALUE, CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS)));
+      final BigDecimal minBigDecimal = minDecimal.toBigDecimal();
+      assertEquals(minBigDecimal.doubleValue(), minDecimal.doubleValue(), 0);
+      progress = progress(progress, i, i, iterations);
+    }
+
+    for (byte i = 0; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("doubleValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.doubleValue(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.doubleValue(), String::valueOf),
+        d(long.class, (long a) -> Decimal.doubleValue(a, scaleBits), String::valueOf)
+      );
+    }
+  }
+
+  @Test
+  public void testToBigInt(final AuditReport report) {
+    for (byte i = 6; i <= MAX_SCALE_BITS; ++i) {
+      final byte scaleBits = i;
+      test("toBigInt(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.toBigInteger(), String::valueOf),
+        d(Decimal.class, this::toDecimal, (Decimal a) -> a.toBigInt(), BigInt::toString),
+        d(long.class, (long a) -> Decimal.toBigInt(a, scaleBits), BigInt::toString)
+      );
+    }
   }
 }
