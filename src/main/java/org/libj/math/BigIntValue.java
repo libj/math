@@ -204,10 +204,10 @@ abstract class BigIntValue extends Number {
     if (arrayLength > target.length)
       target = alloc(arrayLength);
 
-    return copyUnsafe(source, copyLength, target);
+    return copyInPlace(source, copyLength, target);
   }
 
-  protected static int[] copyUnsafe(final int[] source, final int copyLength, final int[] target) {
+  protected static int[] copyInPlace(final int[] source, final int copyLength, final int[] target) {
     System.arraycopy(source, 0, target, 0, copyLength);
     // _debugLenSig(target);
     return target;
@@ -271,10 +271,10 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] assign(final int[] val, final int sig, final int mag) {
-    return mag == 0 ? setToZero(val) : assignUnsafe(val.length > 1 ? val : alloc(2), sig, mag);
+    return mag == 0 ? setToZero(val) : assignInPlace(val.length > 1 ? val : alloc(2), sig, mag);
   }
 
-  protected static int[] assignUnsafe(final int[] val, final int sig, final int mag) {
+  protected static int[] assignInPlace(final int[] val, final int sig, final int mag) {
     val[0] = sig;
     val[1] = mag;
     // _debugLenSig(val);
@@ -302,8 +302,8 @@ abstract class BigIntValue extends Number {
     return mag < 0 ? assign(val, -1, -mag) : assign(val, 1, mag);
   }
 
-  protected static int[] assignUnsafe(final int[] val, final long mag) {
-    return mag < 0 ? assignUnsafe(val, -1, -mag) : assignUnsafe(val, 1, mag);
+  protected static int[] assignInPlace(final int[] val, final long mag) {
+    return mag < 0 ? assignInPlace(val, -1, -mag) : assignInPlace(val, 1, mag);
   }
 
   /**
@@ -352,23 +352,23 @@ abstract class BigIntValue extends Number {
 
     final int magh = (int)(mag >>> 32);
     if (magh != 0)
-      return assignUnsafe(val.length >= 3 ? val : alloc(3), sig, (int)mag, magh);
+      return assignInPlace(val.length >= 3 ? val : alloc(3), sig, (int)mag, magh);
 
-    return assignUnsafe(val.length >= 2 ? val : alloc(2), sig, (int)mag);
+    return assignInPlace(val.length >= 2 ? val : alloc(2), sig, (int)mag);
   }
 
-  protected static int[] assignUnsafe(final int[] val, final int sig, final long mag) {
+  protected static int[] assignInPlace(final int[] val, final int sig, final long mag) {
     if (mag == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     final int magh = (int)(mag >>> 32);
     if (magh != 0)
-      return assignUnsafe(val, sig, (int)mag, magh);
+      return assignInPlace(val, sig, (int)mag, magh);
 
-    return assignUnsafe(val, sig, (int)mag);
+    return assignInPlace(val, sig, (int)mag);
   }
 
-  static int[] assignUnsafe(final int[] val, final int sig, final int mag, final int magh) {
+  static int[] assignInPlace(final int[] val, final int sig, final int mag, final int magh) {
     val[0] = sig < 0 ? -2 : 2;
     val[1] = mag;
     val[2] = magh;
@@ -536,7 +536,7 @@ abstract class BigIntValue extends Number {
       val = alloc(vlen + 1);
 
     if (vlen == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     for (int i = 1, j, b = indexBound, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
       bytesRemaining = keep - b;
@@ -617,7 +617,7 @@ abstract class BigIntValue extends Number {
       val = alloc(vlen + 1);
 
     if (vlen == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     for (int i = 1, j, b = indexBound - 1, bytesRemaining, bytesToTransfer; i <= vlen; ++i) {
       bytesRemaining = b - keep;
@@ -925,10 +925,10 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static int[] setToZero(final int[] val) {
-    return setToZeroUnsafe(val.length > 0 ? val : alloc(1));
+    return setToZeroInPlace(val.length > 0 ? val : alloc(1));
   }
 
-  protected static int[] setToZeroUnsafe(final int[] val) {
+  protected static int[] setToZeroInPlace(final int[] val) {
     val[0] = 0;
     return val;
   }

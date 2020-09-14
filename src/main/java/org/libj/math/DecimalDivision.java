@@ -74,19 +74,19 @@ abstract class DecimalDivision extends FixedPoint {
       v1 *= FastMath.longE10[ds1];
       s1 += ds1;
 
-      final int[] val = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
+      final int[] val = BigInt.assignInPlace(Decimal.buf1.get(), v1);
       if (p > 0) {
         if (p > maxE10)
           p = maxE10;
 
-        BigInt.mulUnsafe(val, FastMath.longE10[p]);
+        BigInt.mulInPlace(val, FastMath.longE10[p]);
         s1 += p;
       }
 
       s = s1 - s2;
 
       r1 = BigInt.divRem(val, v2);
-      final int[] val2 = BigInt.copyUnsafe(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
+      final int[] val2 = BigInt.copyInPlace(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
       final long dp = BigInt.longValue(BigInt.div(val2, maxValue));
       if (dp == 0) {
         v = BigInt.longValue(val);
@@ -164,13 +164,13 @@ abstract class DecimalDivision extends FixedPoint {
           return false;
         }
 
-        final int[] val1 = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
+        final int[] val1 = BigInt.assignInPlace(Decimal.buf1.get(), v1);
         if (ds > 18) {
-          BigInt.mulUnsafe(val1, FastMath.longE10[18]);
+          BigInt.mulInPlace(val1, FastMath.longE10[18]);
           ds -= 18;
         }
 
-        BigInt.mulUnsafe(val1, FastMath.longE10[ds]);
+        BigInt.mulInPlace(val1, FastMath.longE10[ds]);
         final long rem = BigInt.rem(val1, v2);
         result.assign(rem, (short)s2);
 

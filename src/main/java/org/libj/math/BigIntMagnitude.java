@@ -66,7 +66,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     return val;
   }
 
-  static int[] uaddValUnsafe(int[] val, int len, final boolean sig, final int add) {
+  static int[] uaddValInPlace(int[] val, int len, final boolean sig, final int add) {
     final long sum = (val[1] & LONG_MASK) + (add & LONG_MASK);
     val[1] = (int)sum;
     if ((sum >>> 32) != 0) {

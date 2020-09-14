@@ -564,7 +564,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     final long maxValue = FixedPoint.maxValue(valueBits);
     final Decimal result = threadLocal.get();
     if (div0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, result))
-      return encodeUnsafe(result.value, result.scale, defaultValue, scaleBits);
+      return encodeInPlace(result.value, result.scale, defaultValue, scaleBits);
 
     return defaultValue;
   }
@@ -1077,9 +1077,9 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
       if (s < Numbers.precision(Long.MIN_VALUE / value))
         return value * FastMath.longE10[s];
 
-      final int[] val = BigInt.assignUnsafe(buf1.get(), value);
+      final int[] val = BigInt.assignInPlace(buf1.get(), value);
       if (s < 19)
-        return BigInt.longValue(BigInt.mulUnsafe(val, FastMath.longE10[s]));
+        return BigInt.longValue(BigInt.mulInPlace(val, FastMath.longE10[s]));
 
       final boolean sig = value >= 0;
       final int len = sig ? val[0] : -val[0];
@@ -1218,9 +1218,9 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
         value *= FastMath.longE10[s];
       }
       else {
-        final int[] val = BigInt.assignUnsafe(new int[5], value);
+        final int[] val = BigInt.assignInPlace(new int[5], value);
         if (s < 19)
-          return BigInt.mulUnsafe(val, FastMath.longE10[s]);
+          return BigInt.mulInPlace(val, FastMath.longE10[s]);
 
         final boolean sig = value >= 0;
         final int len = sig ? val[0] : -val[0];
@@ -1236,7 +1236,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
       value /= FastMath.longE10[scale];
     }
 
-    return BigInt.assignUnsafe(new int[4], value);
+    return BigInt.assignInPlace(new int[4], value);
   }
 
   /**

@@ -95,7 +95,7 @@ abstract class BigIntBinary extends BigIntAddition {
     final int shiftBig = num >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig >= len)
-      return sig ? setToZeroUnsafe(val) : assign(val, sig, 1);
+      return sig ? setToZeroInPlace(val) : assign(val, sig, 1);
 
     final int shiftSmall = num & 31;
     boolean oneLost = false;
@@ -607,7 +607,7 @@ abstract class BigIntBinary extends BigIntAddition {
   public static int[] and(int[] val, final int[] mask) {
     int len2 = mask[0];
     if (len2 == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     int sig1 = 1, len1 = val[0]; if (len1 < 0) { len1 = -len1; sig1 = -1; }
     int sig2 = 1; if (len2 < 0) { len2 = -len2; sig2 = -1; }

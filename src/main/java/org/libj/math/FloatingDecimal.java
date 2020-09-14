@@ -250,7 +250,7 @@ class FloatingDecimal {
     // dValue is now approximately the result
     // The hard part is adjusting it, by comparison with BigInt arithmetic.
     // Formulate the EXACT big-number result as bigD0 * 10^exp.
-    int[] bigD0 = BigInt.mulPow52(BigInt.assignUnsafe(new int[27], absValNz), d5, 0);
+    int[] bigD0 = BigInt.mulPow52(BigInt.assignInPlace(new int[27], absValNz), d5, 0);
     int[] bigD = null;
     int prevD2 = 0;
 
@@ -310,7 +310,7 @@ class FloatingDecimal {
       dlp2 -= common2;
 
       // do multiplications by powers of 5 and 2
-      final int[] bigB = BigInt.mulPow52(BigInt.assignUnsafe(new int[(b2 >> 5) + 28], bigBbits), b5, b2);
+      final int[] bigB = BigInt.mulPow52(BigInt.assignInPlace(new int[(b2 >> 5) + 28], bigBbits), b5, b2);
       if (bigD == null || prevD2 != d2) {
         bigD = BigInt.shiftLeft(bigD0, d2).clone();
         prevD2 = d2;

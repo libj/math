@@ -220,7 +220,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
           val[0] = -val[0];
       }
       else {
-        setToZeroUnsafe(val);
+        setToZeroInPlace(val);
       }
 
       return r;
@@ -507,7 +507,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     else {
       final int c = compareToAbs(val, len1, div, len2);
       if (c < 0) {
-        setToZeroUnsafe(val);
+        setToZeroInPlace(val);
       }
       else if (c == 0) {
         val[0] = flipSig ? -1 : 1;
@@ -581,7 +581,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
   private static int[] divRem0(int[] val1, final int[] val2) {
     final int c = compareToAbs(val1, val2);
     if (c == 0) {
-      assignUnsafe(val1, 1, 1);
+      assignInPlace(val1, 1, 1);
       return alloc(2);
     }
 
@@ -591,7 +591,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       final int[] r = alloc(len1);
       System.arraycopy(val1, 0, r, 0, len1);
       val1.clone();
-      setToZeroUnsafe(val1);
+      setToZeroInPlace(val1);
       return r;
     }
 
@@ -840,7 +840,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
         div0(val, len1, sig1, div, len2, sig2, q);
       }
       else if (c == 0) {
-        setToZeroUnsafe(val);
+        setToZeroInPlace(val);
       }
     }
 

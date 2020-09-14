@@ -167,7 +167,7 @@ abstract class DecimalAddition extends FixedPoint {
         }
 
         if (ds2 > 0) {
-          final int[] val1 = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
+          final int[] val1 = BigInt.assignInPlace(Decimal.buf1.get(), v1);
           int len = val1[0];
           final int sig;
           if (len < 0) { len = -len; sig = -1; } else sig = 1;
@@ -179,9 +179,9 @@ abstract class DecimalAddition extends FixedPoint {
             len = BigInt.umul0(val1, BigInt.OFF, len, f & BigInt.LONG_MASK, f >>> 32);
 
           val1[0] = len * sig;
-          BigInt.addUnsafe(val1, v2);
+          BigInt.addInPlace(val1, v2);
 
-          if (f <= 100 && BigInt.equals(BigInt.assignUnsafe(Decimal.buf2.get(), v = BigInt.longValue(val1)), val1)) {
+          if (f <= 100 && BigInt.equals(BigInt.assignInPlace(Decimal.buf2.get(), v = BigInt.longValue(val1)), val1)) {
             s1 += f == 100 ? 2 : 1;
             final long p = v / minValue;
             if (p != 0 && (ds = Numbers.precision(p)) > 0) {

@@ -105,7 +105,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static int[] add0(int[] val, final int add) {
     int len = val[0];
     if (len == 0) {
-      val = assignUnsafe(val.length >= 2 ? val : alloc(2), 1, add);
+      val = assignInPlace(val.length >= 2 ? val : alloc(2), 1, add);
     }
     else if (len > 0) {
       val = uaddVal(val, len, true, add);
@@ -124,13 +124,13 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
-  private static int[] addUnsafe(final int[] val, final int add) {
+  private static int[] addInPlace(final int[] val, final int add) {
     int len = val[0];
     if (len == 0) {
-      assignUnsafe(val, 1, add);
+      assignInPlace(val, 1, add);
     }
     else if (len > 0) {
-      uaddValUnsafe(val, len, true, add);
+      uaddValInPlace(val, len, true, add);
     }
     else if ((len = -len) > 1 || (val[1] & LONG_MASK) > (add & LONG_MASK)) {
       usubVal(val, len, false, add);
@@ -172,7 +172,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static int[] sub0(int[] val, final int sub) {
     final int len = val[0];
     if (len == 0) {
-      val = assignUnsafe(val.length >= 2 ? val : alloc(2), -1, sub);
+      val = assignInPlace(val.length >= 2 ? val : alloc(2), -1, sub);
     }
     else if (len < 0) {
       val = uaddVal(val, -len, false, sub);
@@ -189,13 +189,13 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
-  private static int[] subUnsafe(final int[] val, final int sub) {
+  private static int[] subInPlace(final int[] val, final int sub) {
     final int len = val[0];
     if (len == 0) {
-      assignUnsafe(val, -1, sub);
+      assignInPlace(val, -1, sub);
     }
     else if (len < 0) {
-      uaddValUnsafe(val, -len, false, sub);
+      uaddValInPlace(val, -len, false, sub);
     }
     else if (len == 1 && (val[1] & LONG_MASK) < (sub & LONG_MASK)) {
       val[0] = -len;
@@ -231,7 +231,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
   }
 
-  protected static int[] addUnsafe(final int[] val, final long add) {
+  protected static int[] addInPlace(final int[] val, final long add) {
     return add > 0 ? addUnsafe0(val, add) : add < 0 ? subUnsafe0(val, -add) : val;
   }
 
@@ -280,7 +280,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
   }
 
-  protected static int[] addUnsafe(final int[] val, final int sig, final long add) {
+  protected static int[] addInPlace(final int[] val, final int sig, final long add) {
     return add == 0 ? val : sig < 0 ? subUnsafe0(val, add) : addUnsafe0(val, add);
   }
 
@@ -291,7 +291,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     int len = val[0];
     if (len == 0)
-      return assignUnsafe(val.length >= 3 ? val : alloc(3), 1, (int)add, (int)addh);
+      return assignInPlace(val.length >= 3 ? val : alloc(3), 1, (int)add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, add & LONG_MASK, addh, true);
@@ -300,14 +300,14 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static int[] addUnsafe0(final int[] val, final long add) {
     final long addh = add >>> 32;
     if (addh == 0)
-      return addUnsafe(val, (int)add);
+      return addInPlace(val, (int)add);
 
     int len = val[0];
     if (len == 0)
-      return assignUnsafe(val, 1, (int)add, (int)addh);
+      return assignInPlace(val, 1, (int)add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSubUnsafe(val, len, sig, add & LONG_MASK, addh, true);
+    return uaddSubInPlace(val, len, sig, add & LONG_MASK, addh, true);
   }
 
   /**
@@ -333,7 +333,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
   }
 
-  protected static int[] subUnsafe(final int[] val, final int sig, final long sub) {
+  protected static int[] subInPlace(final int[] val, final int sig, final long sub) {
     return sub == 0 ? val : sig < 0 ? addUnsafe0(val, sub) : subUnsafe0(val, sub);
   }
 
@@ -344,7 +344,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     int len = val[0];
     if (len == 0)
-      return assignUnsafe(val.length >= 3 ? val : alloc(3), -1, (int)sub, (int)subh);
+      return assignInPlace(val.length >= 3 ? val : alloc(3), -1, (int)sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, sub & LONG_MASK, subh, false);
@@ -353,14 +353,14 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static int[] subUnsafe0(final int[] val, final long sub) {
     final long subh = sub >>> 32;
     if (subh == 0)
-      return subUnsafe(val, (int)sub);
+      return subInPlace(val, (int)sub);
 
     int len = val[0];
     if (len == 0)
-      return assignUnsafe(val, -1, (int)sub, (int)subh);
+      return assignInPlace(val, -1, (int)sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return uaddSubUnsafe(val, len, sig, sub & LONG_MASK, subh, false);
+    return uaddSubInPlace(val, len, sig, sub & LONG_MASK, subh, false);
   }
 
   /**
@@ -418,7 +418,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return val;
   }
 
-  private static int[] uaddSubUnsafe(final int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
+  private static int[] uaddSubInPlace(final int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
     if (addOrSub == sig) {
       uaddVal(val, len, sig, addl, addh);
     }

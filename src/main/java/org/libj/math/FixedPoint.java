@@ -362,10 +362,10 @@ abstract class FixedPoint extends Number {
       return defaultValue;
     }
 
-    return encodeUnsafe(value, scale, defaultValue, scaleBits);
+    return encodeInPlace(value, scale, defaultValue, scaleBits);
   }
 
-  static long encodeUnsafe(final long value, final int scale, final long defaultValue, final byte scaleBits) {
+  static long encodeInPlace(final long value, final int scale, final long defaultValue, final byte scaleBits) {
     final long scaleMask = (scale & ((1L << scaleBits) - 1)) << (63 - scaleBits);
 
     // System.out.println("value: " + Buffers.toString(value));

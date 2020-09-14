@@ -141,13 +141,13 @@ abstract class BigIntMultiplication extends BigIntBinary {
   static {
     int i = 0;
     for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < SMALL_5_POW.length; ++i) {
-      POW_5_CACHE[i] = assignUnsafe(new int[2], SMALL_5_POW[i]);
+      POW_5_CACHE[i] = assignInPlace(new int[2], SMALL_5_POW[i]);
     }
 
     for (int[] prev = POW_5_CACHE[i - 1]; i < MAX_FIVE_POW; ++i) {
       final int ext = 3 - (prev.length - prev[0]);
       final int[] next = ext == 0 ? prev.clone() : reallocExact(prev, prev[0] + 1, prev.length + ext);
-      POW_5_CACHE[i] = prev = mulUnsafe(next, 5);
+      POW_5_CACHE[i] = prev = mulInPlace(next, 5);
     }
   }
 
@@ -220,9 +220,9 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     if (p5 != 0) {
       if (p5 < SMALL_5_POW.length)
-        mulUnsafe(val, SMALL_5_POW[p5]);
+        mulInPlace(val, SMALL_5_POW[p5]);
       else
-        mulUnsafe(val, big5pow(p5));
+        mulInPlace(val, big5pow(p5));
     }
 
     shiftLeft(val, p2);
@@ -259,7 +259,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     final int q = p >> 1;
     final int r = p - q;
     final int[] bigq = big5powRec(q);
-    return r < SMALL_5_POW.length ? mulUnsafe(bigq, 1, SMALL_5_POW[r]) : mulUnsafe(bigq, big5powRec(r));
+    return r < SMALL_5_POW.length ? mulInPlace(bigq, 1, SMALL_5_POW[r]) : mulInPlace(bigq, big5powRec(r));
   }
 
   /**
@@ -280,7 +280,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int mul) {
-    return mul < 0 ? mul0(val, -1, -mul, false) : mul > 0 ? mul0(val, 1, mul, false) : setToZeroUnsafe(val);
+    return mul < 0 ? mul0(val, -1, -mul, false) : mul > 0 ? mul0(val, 1, mul, false) : setToZeroInPlace(val);
   }
 
   /**
@@ -303,7 +303,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int sig, final int mul) {
-    return mul == 0 ? setToZeroUnsafe(val) : mul0(val, sig, mul, false);
+    return mul == 0 ? setToZeroInPlace(val) : mul0(val, sig, mul, false);
   }
 
   private static int[] mul0(int[] val, int sig, final int mul, final boolean allocExact) {
@@ -317,7 +317,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return val;
   }
 
-  private static int[] mulUnsafe(int[] val, int sig, final int mul) {
+  private static int[] mulInPlace(int[] val, int sig, final int mul) {
     int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
     len = umul0(val, OFF, len, mul);
     val[0] = sig * len;
@@ -346,8 +346,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul < 0 ? mul(val, -1, -mul) : mul(val, 1, mul);
   }
 
-  protected static int[] mulUnsafe(final int[] val, final long mul) {
-    return mul < 0 ? mulUnsafe(val, -1, -mul) : mulUnsafe(val, 1, mul);
+  protected static int[] mulInPlace(final int[] val, final long mul) {
+    return mul < 0 ? mulInPlace(val, -1, -mul) : mulInPlace(val, 1, mul);
   }
 
   /**
@@ -375,7 +375,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return val;
 
     if (mul == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     final long mulh = mul >>> 32;
     if (mulh == 0)
@@ -392,17 +392,17 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return val;
   }
 
-  protected static int[] mulUnsafe(final int[] val, int sig, final long mul) {
+  protected static int[] mulInPlace(final int[] val, int sig, final long mul) {
     int len = val[0];
     if (len == 0)
       return val;
 
     if (mul == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     final long mulh = mul >>> 32;
     if (mulh == 0)
-      return mulUnsafe(val, sig, (int)mul);
+      return mulInPlace(val, sig, (int)mul);
 
     if (len < 0) { len = -len; sig = -sig; }
     len = umul0(val, 1, len, mul & LONG_MASK, mulh);
@@ -513,7 +513,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul(val, mul, false);
   }
 
-  protected static int[] mulUnsafe(final int[] val, final int[] mul) {
+  protected static int[] mulInPlace(final int[] val, final int[] mul) {
     return mul(val, mul, false);
   }
 
@@ -524,7 +524,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     int mlen = mul[0];
     if (mlen == 0)
-      return setToZeroUnsafe(val);
+      return setToZeroInPlace(val);
 
     boolean sig = true;
     if (len < 0) { len = -len; sig = false; }
