@@ -686,18 +686,20 @@ For example, consider the following table with scale **`scaleBits`** as the vari
 | <sup>`8`</sup> | <sup>[`-128`, `127`]</sup> | <sup>`56`</sup> | <sup>[`-2⁵⁵`, `2⁵⁵ - 1`]</sup> | <sup>`3.6028797018963968E111`</sup> |
 | <sup>`16`</sup> | <sup>[`-32768`, `32767`]</sup> | <sup>`48`</sup> | <sup>[`-2⁴⁷`, `2⁴⁷ - 1`]</sup> | <sup>`1.40737488355328E−32768`</sup> |
 
+Technically, `scaleBits` below `3` are not very useful. Therefore, `Decimal` officially supports `scaleBits` values between `3` and `16` with its unit tests. Some unit tests also test for `scaleBits` values of `0`, `1` and `2`, but this is supplementary.
+
 The following illustrates the way `Decimal` encodes the **`value`** and **`scale`** inside a `long` primitive:
 
 ```
         scale sign bit (for scaleBits > 0)
        /
       1
-.---+---+---- // --------+---------------------------- // -----------------------------.
-|   |   '                |                                                             |
-|   |   '   scale        |                           value                             |
-|   |   '                |                                                             |
-'---+---+---- // --------+--------------------------- // ------------------------------'
-  0      [1, scaleBits+1]                [scaleBits+1, 63-scaleBits]
+.---+---+---- // --------+------------------------------ // -------------------------------.
+|   |   '                |                                                                 |
+|   |   '   scale        |                             value                               |
+|   |   '                |                                                                 |
+'---+---+---- // --------+----------------------------- // --------------------------------'
+  0      [1, scaleBits+1]                  [scaleBits+1, 63-scaleBits]
    \
     value sign bit
 ```
