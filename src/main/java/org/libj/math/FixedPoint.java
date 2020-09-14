@@ -152,11 +152,11 @@ abstract class FixedPoint extends Number {
 
   /**
    * Returns the minimum value that can be represented with the specified number
-   * of {@code bits}.
+   * of {@code valueBits}.
    *
    * @param valueBits The number of bits.
    * @return The minimum value that can be represented with the specified number
-   *         of {@code bits}.
+   *         of {@code valueBits}.
    */
   static long minValue(final int valueBits) {
     return -1L << valueBits;
@@ -164,11 +164,11 @@ abstract class FixedPoint extends Number {
 
   /**
    * Returns the maximum value that can be represented with the specified number
-   * of {@code bits}.
+   * of {@code valueBits}.
    *
    * @param valueBits The number of bit.
    * @return The maximum value that can be represented with the specified number
-   *         of {@code bits}.
+   *         of {@code valueBits}.
    */
   static long maxValue(final int valueBits) {
     return (1L << valueBits) - 1;
@@ -177,16 +177,16 @@ abstract class FixedPoint extends Number {
   /**
    * Returns the minimum scale that can be represented in a {@code long} encoded
    * with {@link #encode(long,short,long,byte)} with the specified number of
-   * scale {@code bits}.
+   * {@code scaleBits}.
    *
    * @param scaleBits The number of bits reserved for the scale.
    * @return The minimum scale that can be represented in a {@code long} encoded
    *         with {@link #encode(long,short,long,byte)} with the specified
-   *         number of scale {@code bits}.
-   * @throws ArrayIndexOutOfBoundsException If {@code bits} is negative or
+   *         number of {@code scaleBits}.
+   * @throws ArrayIndexOutOfBoundsException If {@code scaleBits} is negative or
    *           greater than {@code 16}.
    * @see #encode(long,short,long,byte)
-   * @see #minValue(byte)
+   * @see #minValue(int)
    */
   static short minScale(final int scaleBits) {
     return Decimal.minScale[scaleBits];
@@ -195,16 +195,16 @@ abstract class FixedPoint extends Number {
   /**
    * Returns the maximum scale that can be represented in a {@code long} encoded
    * with {@link #encode(long,short,long,byte)} with the specified number of
-   * scale {@code bits}.
+   * {@code scaleBits}.
    *
    * @param scaleBits The number of bits reserved for the scale.
    * @return The maximum scale that can be represented in a {@code long} encoded
    *         with {@link #encode(long,short,long,byte)} with the specified
-   *         number of scale {@code bits}.
-   * @throws ArrayIndexOutOfBoundsException If {@code bits} is negative or
+   *         number of {@code scaleBits}.
+   * @throws ArrayIndexOutOfBoundsException If {@code scaleBits} is negative or
    *           greater than {@code 16}.
    * @see #encode(long,short,long,byte)
-   * @see #maxValue(byte)
+   * @see #maxValue(int)
    */
   static short maxScale(final int scaleBits) {
     return Decimal.maxScale[scaleBits];
@@ -217,48 +217,40 @@ abstract class FixedPoint extends Number {
 
   /**
    * Encodes the provided {@link BigDecimal} {@code value} into a {@code long}
-   * with the given number of sign {@code bits}.
+   * with the given number of {@code scaleBits}.
    *
    * @param value The string representation of a decimal.
    * @param scaleBits The number of bits reserved for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
-   *          {@code bits}.
+   *          {@code scaleBits}.
    * @return A {@code long} encoded with the provided {@code value} and
-   *         {@code scale} with the given number of sign {@code bits}.
-   * @see #minValue(byte)
-   * @see #maxValue(byte)
+   *         {@code scale} with the given number of {@code scaleBits}.
+   * @see #minValue(int)
+   * @see #maxValue(int)
    */
   static long encode(final BigDecimal value, final long defaultValue, final byte scaleBits) {
-    final int scale = value.scale();
-    final int minScale = FixedPoint.minScale[scaleBits];
-    final int maxScale = FixedPoint.maxScale[scaleBits];
-    if (scale < minScale || maxScale < scale) {
-      // System.err.println(value + " cannot be represented with " + bits + " scale bits");
-      return defaultValue;
-    }
-
-    return encode(value.unscaledValue().longValue(), (short)scale, defaultValue, scaleBits);
+    return encode(value.unscaledValue().longValue(), value.scale(), defaultValue, scaleBits);
   }
 
   /**
    * Encodes the provided string representation of a decimal {@code value} into
-   * a {@code long} with the given number of sign {@code bits}.
+   * a {@code long} with the given number of {@code scaleBits}.
    *
    * @param value The string representation of a decimal.
    * @param scaleBits The number of bits reserved for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
-   *          {@code bits}.
+   *          {@code scaleBits}.
    * @return A {@code long} encoded with the provided {@code value} and
-   *         {@code scale} with the given number of sign {@code bits}.
-   * @see #minValue(byte)
-   * @see #maxValue(byte)
+   *         {@code scale} with the given number of {@code scaleBits}.
+   * @see #minValue(int)
+   * @see #maxValue(int)
    */
   static long encode(final String value, final long defaultValue, final byte scaleBits) {
-    int e = value.indexOf('e');
+    int e = value.indexOf('E');
     if (e < 0)
-      e = value.indexOf('E');
+      e = value.indexOf('e');
 
     final int dot = value.indexOf('.');
     final int len = value.length();
@@ -308,7 +300,7 @@ abstract class FixedPoint extends Number {
       }
     }
     else {
-      final int minScale = FixedPoint.minScale[scaleBits];
+      final short minScale = FixedPoint.minScale[scaleBits];
       if (s < minScale) {
         int adj = minScale - s;
         if (adj >= 20 - Numbers.precision(val)) {
@@ -329,44 +321,51 @@ abstract class FixedPoint extends Number {
           // System.err.println("value=" + val + " scale=" + s + " cannot be represented with " + scaleBits + " scale bits");
           return defaultValue;
         }
+
+        return encode(val, s, defaultValue, scaleBits, minValue, maxValue, minScale, maxScale);
       }
     }
 
-    return encode(val, (short)s, defaultValue, scaleBits);
+    return encode(val, s, defaultValue, scaleBits);
   }
 
   /**
    * Encodes the provided {@code value} and {@code scale} into a {@code long}
-   * with the given number of sign {@code bits}.
+   * with the given number of {@code scaleBits}.
    *
    * @param value The numeric component.
    * @param scale The scale component.
    * @param scaleBits The number of bits reserved for the scale.
    * @param defaultValue The value to be returned if the result cannot be
    *          represented in {@link Decimal} encoding with the provided
-   *          {@code bits}.
+   *          {@code scaleBits}.
    * @return A {@code long} encoded with the provided {@code value} and
-   *         {@code scale} with the given number of sign {@code bits}.
-   * @see #minValue(byte)
-   * @see #maxValue(byte)
+   *         {@code scale} with the given number of {@code scaleBits}.
+   * @see #minValue(int)
+   * @see #maxValue(int)
    */
-  static long encode(final long value, final short scale, final long defaultValue, final byte scaleBits) {
-    if (scaleBits == 0)
-      return scale == 0 ? value : defaultValue;
-
+  static long encode(final long value, final int scale, final long defaultValue, final byte scaleBits) {
     final int valueBits = valueBits(scaleBits);
     final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
-    if (value < 0 ? value < minValue : maxValue < value) {
-      // System.err.println("Value " + value + " is outside permitted min(" + minValue(valueBits) + ") max(" + maxValue(valueBits) + ")");
+    return encode(value, scale, defaultValue, scaleBits, minValue, maxValue, FixedPoint.minScale[scaleBits], FixedPoint.maxScale[scaleBits]);
+  }
+
+  static long encode(final long value, final int scale, final long defaultValue, final byte scaleBits, final long minValue, final long maxValue, final short minScale, final short maxScale) {
+    if (value < minValue || maxValue < value) {
+      // System.err.println("Value " + value + " is outside permitted min(" + minValue + ") max(" + maxValue + ")");
       return defaultValue;
     }
 
-    if (scale < 0 ? scale < FixedPoint.minScale[scaleBits] : FixedPoint.maxScale[scaleBits] < scale) {
-      // System.err.println("Scale " + scale + " is greater than bits allow: " + (scale < 0 ? FixedPoint.minScale[scaleBits] : FixedPoint.maxScale[scaleBits]));
+    if (scale < minScale || maxScale < scale) {
+      // System.err.println("Scale " + scale + " is greater than bits allow: " + (scale < 0 ? minScale : maxScale));
       return defaultValue;
     }
 
+    return encodeUnsafe(value, scale, defaultValue, scaleBits);
+  }
+
+  static long encodeUnsafe(final long value, final int scale, final long defaultValue, final byte scaleBits) {
     final long scaleMask = (scale & ((1L << scaleBits) - 1)) << (63 - scaleBits);
 
     // System.out.println("value: " + Buffers.toString(value));
@@ -380,14 +379,14 @@ abstract class FixedPoint extends Number {
   /**
    * Decodes the value component from the
    * {@link Decimal#encode(long,short,long,byte) encoded} value with the given
-   * number of sign {@code bits}.
+   * number of {@code scaleBits}.
    *
    * @param encoded The {@link Decimal#encode(long,short,long,byte) encoded}
    *          value.
    * @param scaleBits The number of bits reserved for the scale.
    * @return The value component from the
    *         {@link Decimal#encode(long,short,long,byte) encoded} value with the
-   *         given number of sign {@code bits}.
+   *         given number of {@code scaleBits}.
    * @see #encode(long,short,long,byte)
    * @see #scale(long,byte)
    */
@@ -404,14 +403,14 @@ abstract class FixedPoint extends Number {
   /**
    * Decodes the scale component from the
    * {@link Decimal#encode(long,short,long,byte) encoded} value with the given
-   * number of sign {@code bits}.
+   * number of {@code scaleBits}.
    *
    * @param encoded The {@link Decimal#encode(long,short,long,byte) encoded}
    *          value.
    * @param scaleBits The number of bits reserved for the scale.
    * @return The scale component from the
    *         {@link Decimal#encode(long,short,long,byte) encoded} value with the
-   *         given number of sign {@code bits}.
+   *         given number of {@code scaleBits}.
    * @see #encode(long,short,long,byte)
    * @see #value(long,byte)
    */
@@ -423,10 +422,11 @@ abstract class FixedPoint extends Number {
     final short scale = (short)(encoded < 0 ? ~((encoded | ~scaleMask) >> 63 - scaleBits) : (encoded & scaleMask) >> 63 - scaleBits);
     // System.out.println("SMask: " + Buffers.toString(scaleMask) + " " + scale);
     final int sign = scale & ((byte)1 << scaleBits - 1);
+    // FIXME: Hmm... can <<< help with this complexity?
     return sign == 0 ? scale : (short)(-((~scale + 1) & ((1 << scaleBits) - 1)));
   }
 
-  static boolean checkScale(long value, int scale, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
+  static boolean checkScale(long value, int scale, final long minValue, final short minScale, final short maxScale, final Decimal result) {
     if (scale > maxScale) {
       final int ds = scale - maxScale;
       final int p = Numbers.precision(value);
@@ -447,7 +447,7 @@ abstract class FixedPoint extends Number {
     }
     else if (scale < minScale) {
       final int ds = minScale - scale;
-      final int fac = Numbers.precision(maxValue / value);
+      final int fac = Numbers.precision(minValue / value);
       if (fac <= ds) {
         result.error("Overflow");
         return false;

@@ -39,10 +39,12 @@ import org.libj.lang.Strings.Align;
 import org.openjax.xml.api.CharacterDatas;
 
 public class AuditReport {
+  public static boolean isInTest;
   private static AuditReport instance;
 
   public static void allocate(final String from, final String className) {
-    instance.alloc(from, className);
+    if (isInTest)
+      instance.alloc(from, className);
   }
 
   private static File toFile(final Set<Rule> rules) throws IOException {
@@ -54,6 +56,7 @@ public class AuditReport {
       builder.append(rule);
     }
 
+    // System.out.println(builder);
     final Path path = Files.createTempFile("rules", "btm");
     Files.write(path, builder.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     return path.toFile();
@@ -102,7 +105,7 @@ public class AuditReport {
       }
     }
 
-    throw new IllegalArgumentException(from + " -> " + className);
+    System.err.println("ERROR: Unable to alloc " + from + " -> " + className);
   }
 
   public void reset() {
@@ -127,7 +130,7 @@ public class AuditReport {
   public void dump() {
     if (results != null) {
       for (int i = 0; i < results.length; ++i) {
-        System.err.println(results[i].auditClass.getName());
+        System.err.println(Arrays.toString(results[i].auditClasses));
         for (int j = 0; j < results[i].resultClassNames.length; ++j) {
           System.err.println("  " + results[i].resultClassNames[j] + ": " + results[i].getCounts()[j]);
         }
@@ -186,6 +189,10 @@ public class AuditReport {
     map.put(mode, new String[] {label, result});
   }
 
+  public static String getAnchor(final String methodName) {
+    return methodName.replaceAll("[(),:\\[\\]]", "").replace(' ', '-').toLowerCase();
+  }
+
   public void print(final PrintStream out, final Map<String,String> links) {
     if (out != null) {
       final String testClassSimpleName = testClass.getSimpleName();
@@ -228,7 +235,7 @@ public class AuditReport {
         if (out != null) {
           if (i == 0) {
             final String methodName = entry.getValue()[0];
-            out.println("<h5><a name=\"" + methodName.replaceAll("[(),:\\[\\]]", "").replace(' ', '-').toLowerCase() + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
+            out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
             final Map<Integer,String> modeToComment = methodToModeToComment.get((Method)result.getKey().get(0));
             if (modeToComment != null) {

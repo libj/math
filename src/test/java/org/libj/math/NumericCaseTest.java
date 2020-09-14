@@ -74,46 +74,46 @@ public abstract class NumericCaseTest extends CaseTest {
   }
 
   @Override
-  public int[] randomInputs(final int p1, final int p2, final int[] values) {
+  public int[] randomInputs(final int p1, final int p2, final int[] inputs) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomInt(p1));
+      Arrays.fill(inputs, randomInt(p1));
     }
     else {
-      values[0] = randomInt(p1);
-      values[1] = randomInt(p2);
-      if (values.length > 2)
+      inputs[0] = randomInt(p1);
+      inputs[1] = randomInt(p2);
+      if (inputs.length > 2)
         throw new UnsupportedOperationException();
     }
 
-    return values;
+    return inputs;
   }
 
   @Override
-  public long[] randomInputs(final int p1, final int p2, final long[] values) {
+  public long[] randomInputs(final int p1, final int p2, final long[] inputs) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomLong(p1));
+      Arrays.fill(inputs, randomLong(p1));
     }
     else {
-      values[0] = randomLong(p1);
-      values[1] = randomLong(p2);
+      inputs[0] = randomLong(p1);
+      inputs[1] = randomLong(p2);
     }
 
-    return values;
+    return inputs;
   }
 
   @Override
-  public String[] randomInputs(final int p1, final int p2, final String[] values) {
+  public String[] randomInputs(final int p1, final int p2, final String[] inputs) {
     if (shouldBeEqual) {
-      Arrays.fill(values, randomBig(p1, true));
+      Arrays.fill(inputs, randomBig(p1, true));
     }
     else {
-      values[0] = randomBig(p1, true);
-      values[1] = randomBig(p2, true);
-      if (values.length > 2)
+      inputs[0] = randomBig(p1, true);
+      inputs[1] = randomBig(p2, true);
+      if (inputs.length > 2)
         throw new UnsupportedOperationException();
     }
 
-    return values;
+    return inputs;
   }
 
   @Override

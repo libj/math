@@ -168,7 +168,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     }
     else {
       xh = getUpper0(x, xUpperLen, yUpperLen, half);
-      z = copy0(xh, xUpperLen + OFF, new int[zlen]); // This length is exact
+      z = copyUnsafe(xh, xUpperLen + OFF, new int[zlen]); // This length is exact
     }
 
     int[] yh = yIsSmall ? new int[half + OFF] : getUpper0(y, yUpperLen, xUpperLen, half);

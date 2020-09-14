@@ -18,7 +18,6 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.junit.Test;
@@ -82,7 +81,7 @@ public class BigIntegersTest extends BigIntTest {
 
   @Test
   public void testUnsignedBigIntegerInt() {
-    test("new unsigned BigInteger: byte[] vs shift").withEpsilon(BigDecimal.ZERO).withCases(
+    test("new unsigned BigInteger: byte[] vs shift").withCases(
       i("byte[]", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> new BigInteger(a, toByteArray(b)), String::valueOf),
       i("shift", a -> a % 2 == 0 ? -1 : 1, (int a, int b) -> BigIntegers.valueOf(a, b), String::valueOf)
     );
@@ -90,7 +89,7 @@ public class BigIntegersTest extends BigIntTest {
 
   @Test
   public void testUnsignedBigIntegerLong() {
-    test("new unsigned BigInteger: byte[] vs shift").withEpsilon(BigDecimal.ZERO).withCases(
+    test("new unsigned BigInteger: byte[] vs shift").withCases(
       l("byte[]", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> new BigInteger((int)a, toByteArray(b)), String::valueOf),
       l("shift", a -> a % 2 == 0 ? -1 : 1, (long a, long b) -> BigIntegers.valueOf((int)a, b), String::valueOf)
     );

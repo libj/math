@@ -18,8 +18,6 @@ package org.libj.math;
 
 import static org.junit.Assert.*;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
 
 public class FastMathTest extends BigIntTest {
@@ -49,7 +47,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testDivideUnsignedLong() {
-    test("divideUnsigned(long,long)").withEpsilon(BigDecimal.ZERO).withCases(
+    test("divideUnsigned(long,long)").withCases(
       l("Long", a -> a, this::nz, (long a, long b) -> Long.divideUnsigned(a, b), o -> o),
       l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.divideUnsigned(a, b), o -> o)
     );
@@ -57,7 +55,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testRemainderUnsignedLong() {
-    test("remainderUnsigned(long,long)").withEpsilon(BigDecimal.ZERO).withCases(
+    test("remainderUnsigned(long,long)").withCases(
       l("Long", a -> a, this::nz, (long a, long b) -> Long.remainderUnsigned(a, b), o -> o),
       l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.remainderUnsigned(a, b), o -> o)
     );
@@ -65,7 +63,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testDoubleE10() {
-    test("doubleE10(int)").withEpsilon(BigDecimal.ZERO).withCases(
+    test("doubleE10(int)").withCases(
       i("pow(10)", a -> abs(a), (int a) -> StrictMath.pow(10, a), o -> o),
       i("doubleE10", a -> abs(a), (int a) -> FastMath.doubleE10(a), o -> o)
     );

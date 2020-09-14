@@ -22,9 +22,9 @@ abstract class DecimalDivision extends FixedPoint {
   private static final long serialVersionUID = 2875665225793357664L;
   private static final byte maxE10 = (byte)(FastMath.longE10.length - 1);
 
-  static boolean div0(long v1, int s1, long v2, int s2, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
+  static boolean div0(long v1, int s1, long v2, int s2, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
     final byte p1 = Numbers.precision(v1);
-    int ds1 = Numbers.precision(maxValue / v1) - 1;
+    int ds1 = Numbers.precision(minValue / v1) - 1;
 
     // If v2 has trailing zeroes, remove them first.
     final byte z2 = Numbers.trailingZeroes(v2);
@@ -48,7 +48,7 @@ abstract class DecimalDivision extends FixedPoint {
         r1 *= 10;
         r2 = r1 / v2;
         if (r2 != 0) {
-          final int ds = Numbers.precision(maxValue / v) - 1;
+          final int ds = Numbers.precision(minValue / v) - 1;
           if (ds > 0) {
             v *= 10;
             v += r2;
@@ -74,25 +74,26 @@ abstract class DecimalDivision extends FixedPoint {
       v1 *= FastMath.longE10[ds1];
       s1 += ds1;
 
-      final int[] val = BigInt.assign(Decimal.buf1.get(), v1);
+      final int[] val = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
       if (p > 0) {
         if (p > maxE10)
           p = maxE10;
 
-        BigInt.mul(val, FastMath.longE10[p]);
+        BigInt.mulUnsafe(val, FastMath.longE10[p]);
         s1 += p;
       }
 
       s = s1 - s2;
 
       r1 = BigInt.divRem(val, v2);
-      final long dp = BigInt.longValue(BigInt.div(val.clone(), maxValue));
+      final int[] val2 = BigInt.copyUnsafe(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
+      final long dp = BigInt.longValue(BigInt.div(val2, maxValue));
       if (dp == 0) {
         v = BigInt.longValue(val);
         if (r1 != 0) {
           r1 /= v2 / 100;
           if (r1 != 0) {
-            final int ds = Numbers.precision(maxValue / v) - 1;
+            final int ds = Numbers.precision(minValue / v) - 1;
             if (ds > 0) {
               v *= 10;
               v += r1 / 10;
@@ -124,7 +125,7 @@ abstract class DecimalDivision extends FixedPoint {
       }
     }
 
-    return checkScale(v, s, maxValue, minScale, maxScale, result);
+    return checkScale(v, s, minValue, minScale, maxScale, result);
   }
 
   static boolean rem0(long v1, int s1, long v2, int s2, final Decimal result) {
@@ -137,7 +138,7 @@ abstract class DecimalDivision extends FixedPoint {
 
     if (s1 < s2) {
       int ds = s2 - s1;
-      int ds1 = Numbers.precision(Long.MAX_VALUE / v1) - 1;
+      int ds1 = Numbers.precision(Long.MIN_VALUE / v1) - 1;
       if (ds < ds1)
         ds1 = ds;
 
@@ -163,14 +164,14 @@ abstract class DecimalDivision extends FixedPoint {
           return false;
         }
 
-        final int[] val1 = BigInt.assign(Decimal.buf1.get(), v1);
+        final int[] val1 = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
         if (ds > 18) {
-          BigInt.mul(val1, FastMath.longE10[18]);
+          BigInt.mulUnsafe(val1, FastMath.longE10[18]);
           ds -= 18;
         }
 
-        BigInt.mul(val1, FastMath.longE10[ds]);
-        long rem = BigInt.rem(val1, v2);
+        BigInt.mulUnsafe(val1, FastMath.longE10[ds]);
+        final long rem = BigInt.rem(val1, v2);
         result.assign(rem, (short)s2);
 
         return true;

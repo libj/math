@@ -19,23 +19,26 @@ package org.libj.math.survey;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.libj.lang.Classes;
 
 public class Result {
-  final Class<?> auditClass;
-  private final Class<?>[] trackedClasses;
+  final Class<?>[] auditClasses;
+  private final Class<?>[] classTypes;
+  private final Class<?>[] arrayTypes;
 
-  private String[] sourceClassNames;
+  private final Set<String> sourceClassNames = new HashSet<>();
   private final int[] counts;
   final String[] resultClassNames;
 
-  public Result(final Class<?> auditClass, final Class<?>[] trackedClasses) {
-    this.auditClass = auditClass;
-    this.trackedClasses = trackedClasses;
-    this.resultClassNames = classesToNames(trackedClasses, 0, 0);
-    this.counts = new int[trackedClasses.length];
+  public Result(final Class<?>[] auditClasses, final Class<?>[] allClasses) {
+    this.auditClasses = auditClasses;
+    this.classTypes = filterTypes(allClasses, false, 0, 0);
+    this.arrayTypes = filterTypes(allClasses, true, 0, 0);
+    this.resultClassNames = classesToNames(allClasses, 0, 0);
+    this.counts = new int[allClasses.length];
   }
 
   private static String[] classesToNames(final Class<?>[] classes, final int index, final int depth) {
@@ -51,6 +54,18 @@ public class Result {
     return names;
   }
 
+  private static Class<?>[] filterTypes(final Class<?>[] classes, final boolean arrayOrClass, final int index, final int depth) {
+    if (index == classes.length)
+      return new Class<?>[depth];
+
+    if (arrayOrClass != classes[index].isArray())
+      return filterTypes(classes, arrayOrClass, index + 1, depth);
+
+    final Class<?>[] names = filterTypes(classes, arrayOrClass, index + 1, depth + 1);
+    names[depth] = classes[index];
+    return names;
+  }
+
   public void alloc(final String className) {
     for (int i = 0; i < resultClassNames.length; ++i) {
       if (className.equals(resultClassNames[i])) {
@@ -59,7 +74,7 @@ public class Result {
       }
     }
 
-    throw new IllegalArgumentException(className);
+    System.err.println("ERROR: Unable to alloc " + className);
   }
 
   public int[] getCounts() {
@@ -80,33 +95,22 @@ public class Result {
   }
 
   public boolean isMatch(final String className) {
-    for (int i = 0; i < sourceClassNames.length; ++i)
-      if (className.equals(sourceClassNames[i]))
-        return true;
-
-    return false;
+    return sourceClassNames.contains(className);
   }
 
   public void append(final Set<Rule> rules) {
-    if (sourceClassNames != null)
-      throw new IllegalStateException();
+    rules.add(new ClassRule(classTypes));
+    for (final Class<?> cls : auditClasses) {
+      for (final Method method : Classes.getDeclaredMethodsDeep(cls)) {
+        if (!method.isSynthetic()) {
+          rules.add(new ArrayRule(method, arrayTypes));
+          sourceClassNames.add(method.getDeclaringClass().getCanonicalName());
+        }
+      }
 
-    sourceClassNames = appendMethods(rules, Classes.getDeclaredMethodsDeep(auditClass), 0, 0);
-    for (final Constructor<?> constructor : auditClass.getDeclaredConstructors())
-      rules.add(new Rule(constructor, trackedClasses));
-  }
-
-  private String[] appendMethods(final Set<Rule> rules, final Method[] methods, final int index, final int depth) {
-    if (index == methods.length)
-      return new String[depth];
-
-    final Method method = methods[index];
-    if (method.isSynthetic())
-      return appendMethods(rules, methods, index + 1, depth);
-
-    rules.add(new Rule(method, trackedClasses));
-    final String[] result = appendMethods(rules, methods, index + 1, depth + 1);
-    result[depth] = method.getDeclaringClass().getName();
-    return result;
+      for (final Constructor<?> constructor : cls.getDeclaredConstructors()) {
+        rules.add(new ArrayRule(constructor, arrayTypes));
+      }
+    }
   }
 }

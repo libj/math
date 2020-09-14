@@ -18,7 +18,6 @@ package org.libj.math;
 
 import static org.libj.math.survey.AuditMode.*;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.junit.Test;
@@ -28,14 +27,14 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument({BigInt.class, int[].class})
-@AuditRunner.Instrument({BigInteger.class, int[].class})
+@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
+@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
 public class BigIntBinaryTest extends BigIntTest {
   @Test
   public void testAnd(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`and` with `T`.");
 
-    test("and(T)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
+    test("and(T)").withAuditReport(report).withCases(
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.and(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.and(b), String::valueOf),
       s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.and(a, b), BigInt::toString)
@@ -46,7 +45,7 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testOr(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`or` with `T`.");
 
-    test("or(T)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
+    test("or(T)").withAuditReport(report).withCases(
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.or(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.or(b), String::valueOf),
       s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.or(a, b), BigInt::toString)
@@ -57,7 +56,7 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testXor(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`xor` with `T`.");
 
-    test("xor(T)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
+    test("xor(T)").withAuditReport(report).withCases(
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.xor(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.xor(b), String::valueOf),
       s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.xor(a, b), BigInt::toString)
@@ -68,7 +67,7 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testNot(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`not` with `T`.");
 
-    test("not()").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
+    test("not()").withAuditReport(report).withCases(
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.not(), String::valueOf),
       s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.not(), String::valueOf),
       s(int[].class, this::scaledVal, (int[] a) -> BigInt.not(a), BigInt::toString)
@@ -79,7 +78,7 @@ public class BigIntBinaryTest extends BigIntTest {
   public void testAndNot(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`andNot` with `T`.");
 
-    test("andNot(T)").withEpsilon(BigDecimal.ZERO).withAuditReport(report).withCases(
+    test("andNot(T)").withAuditReport(report).withCases(
       s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.andNot(b), String::valueOf),
       s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.andNot(b), String::valueOf),
       s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.andNot(a, b), BigInt::toString)

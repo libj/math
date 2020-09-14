@@ -152,7 +152,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @complexity O(1)
    */
   public BigInt(final int sig, final int mag) {
-    val = mag == 0 ? alloc(1) : assign0(alloc(2), sig, mag);
+    val = mag == 0 ? alloc(1) : assignUnsafe(alloc(2), sig, mag);
   }
 
   /**
@@ -169,7 +169,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
     }
     else {
       final int magh = (int)(mag >>> 32);
-      val = magh != 0 ? assign0(alloc(3), sig, (int)mag, magh) : assign0(alloc(2), sig, (int)mag);
+      val = magh != 0 ? assignUnsafe(alloc(3), sig, (int)mag, magh) : assignUnsafe(alloc(2), sig, (int)mag);
     }
   }
 
@@ -180,7 +180,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @complexity O(1)
    */
   public BigInt(final int mag) {
-    val = mag == 0 ? alloc(1) : mag < 0 ? assign0(alloc(2), -1, -mag) : assign0(alloc(2), 1, mag);
+    val = mag == 0 ? alloc(1) : mag < 0 ? assignUnsafe(alloc(2), -1, -mag) : assignUnsafe(alloc(2), 1, mag);
   }
 
   /**
@@ -196,7 +196,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
     else {
       int sig = 1; if (mag < 0) { mag = -mag; sig = -1; }
       final int magh = (int)(mag >>> 32);
-      val = magh != 0 ? assign0(alloc(3), sig, (int)mag, magh) : assign0(alloc(2), sig, (int)mag);
+      val = magh != 0 ? assignUnsafe(alloc(3), sig, (int)mag, magh) : assignUnsafe(alloc(2), sig, (int)mag);
     }
   }
 

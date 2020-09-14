@@ -66,9 +66,9 @@ abstract class DecimalMultiplication extends FixedPoint {
     // Check if we can do simple multiplication
     long v = mulNonZero(v1, v2, minValue, maxValue);
     if (v == 0) {
-      final int[] val = BigInt.assign(Decimal.buf1.get(), v1);
-      BigInt.mul(val, v2);
-      final int[] val2 = BigInt.copy0(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
+      final int[] val = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
+      BigInt.mulUnsafe(val, v2);
+      final int[] val2 = BigInt.copyUnsafe(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
       final long dp = BigInt.longValue(BigInt.div(val2, maxValue));
       if (dp == 0) {
         v = BigInt.longValue(val);
@@ -80,8 +80,7 @@ abstract class DecimalMultiplication extends FixedPoint {
           return false;
         }
 
-        final long e10 = FastMath.longE10[ds];
-        final long rem = BigInt.divRem(val, e10);
+        final long rem = BigInt.divRem(val, FastMath.longE10[ds]);
         v = BigInt.longValue(val);
         if (rem != 0) {
           final byte rp = Numbers.precision(rem);
@@ -93,6 +92,6 @@ abstract class DecimalMultiplication extends FixedPoint {
       }
     }
 
-    return checkScale(v, s, maxValue, minScale, maxScale, result);
+    return checkScale(v, s, minValue, minScale, maxScale, result);
   }
 }

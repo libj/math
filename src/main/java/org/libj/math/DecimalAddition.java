@@ -21,20 +21,20 @@ import org.libj.lang.Numbers;
 abstract class DecimalAddition extends FixedPoint {
   private static final long serialVersionUID = 2903111300785124642L;
 
-  static Decimal add0(final Decimal d1, final long v2, final short s2) {
+  static Decimal add0(final Decimal dec, final long v2, final short s2) {
     if (v2 == 0)
-      return d1;
+      return dec;
 
-    if (d1.value == 0)
-      return d1.assign(v2, s2);
+    if (dec.value == 0)
+      return dec.assign(v2, s2);
 
-    if (add0(d1.value, d1.scale, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, d1))
-      return d1;
+    if (add0(dec.value, dec.scale, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, dec))
+      return dec;
 
     // Special situation where negation may have caused an overflow,
     // but the result is clearly zero
-    if (Decimal.compare(d1.value, d1.scale, -v2, s2) == 0)
-      return d1.assign(0, (short)0);
+    if (Decimal.compare(dec.value, dec.scale, -v2, s2) == 0)
+      return dec.assign(0, (short)0);
 
     return null;
   };
@@ -57,7 +57,7 @@ abstract class DecimalAddition extends FixedPoint {
     final short s2 = scale(dec2, scaleBits);
     final Decimal result = threadLocal.get();
     if (add0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, false, result))
-      return result.encode(scaleBits, defaultValue);
+      return result.encode(scaleBits, defaultValue, minValue, maxValue, minScale, maxScale);
 
     return defaultValue;
   }
@@ -71,8 +71,6 @@ abstract class DecimalAddition extends FixedPoint {
       s = s1;
     }
     else {
-      long r0 = 0;
-      short ds2 = 0;
       // If v1 has trailing zeroes, remove them first.
       byte z1 = Numbers.trailingZeroes(v1);
       if (z1 > 0) {
@@ -102,9 +100,9 @@ abstract class DecimalAddition extends FixedPoint {
         s1 ^= s2;
       }
 
-      final int p1 = Numbers.precision(v1) - s1;
-      final int p2 = Numbers.precision(v2) - s2;
-      if (p1 - p2 > Numbers.precision(maxValue)) {
+      final int p1 = Numbers.precision(v1);
+      final int p2 = Numbers.precision(v2);
+      if ((p1 - s1) - (p2 - s2) > Numbers.precision(maxValue)) {
         if (z1 > 0) {
           v1 *= FastMath.longE10[z1];
           s1 += z1;
@@ -129,13 +127,16 @@ abstract class DecimalAddition extends FixedPoint {
       int ds = s2 - s1;
 
       // What is the most we can up-scale v1?
-      int ds1 = SafeMath.min(dp1, ds);
+      int ds1 = Math.min(dp1, ds);
 
       // Don't go past maxScale when adjusting v1 and s1
-      ds1 = SafeMath.min(ds1, maxScale - s1);
+      ds1 = Math.min(ds1, maxScale - s1);
 
       ds -= ds1;
       s1 += ds1;
+
+      long r0 = 0;
+      int ds2 = 0;
 
       // What is the most we can down-scale v2?
       if (ds != 0) {
@@ -146,13 +147,13 @@ abstract class DecimalAddition extends FixedPoint {
         // have the opportunity to check the prior-to-last digit (right before
         // v2 becomes 0) if it would round up or down. If it rounds up, then we
         // add 1, otherwise the result is insignificant.
-        ds2 = Numbers.precision(v2);
+        ds2 = p2;
 
         // Take the lesser of ds2 and ds
-        ds2 = SafeMath.min(ds2, ds);
+        ds2 = Math.min(ds2, ds);
 
         // Don't go past minScale when adjusting v2 and s2
-        ds2 = SafeMath.min(ds2, s2 - minScale);
+        ds2 = Math.min(ds2, s2 - minScale);
 
         ds -= ds2;
         s2 -= ds2;
@@ -166,9 +167,10 @@ abstract class DecimalAddition extends FixedPoint {
         }
 
         if (ds2 > 0) {
-          final int[] val1 = BigInt.assign(Decimal.buf1.get(), v1);
-          int sig = 1, len = val1[0];
-          if (len < 0) { len = -len; sig *= -1; }
+          final int[] val1 = BigInt.assignUnsafe(Decimal.buf1.get(), v1);
+          int len = val1[0];
+          final int sig;
+          if (len < 0) { len = -len; sig = -1; } else sig = 1;
 
           long f = FastMath.longE10[ds2];
           if (ds2 < 10)
@@ -177,9 +179,9 @@ abstract class DecimalAddition extends FixedPoint {
             len = BigInt.umul0(val1, BigInt.OFF, len, f & BigInt.LONG_MASK, f >>> 32);
 
           val1[0] = len * sig;
-          BigInt.add(val1, v2);
+          BigInt.addUnsafe(val1, v2);
 
-          if (f <= 100 && BigInt.equals(BigInt.assign0(Decimal.buf2.get(), v = BigInt.longValue(val1)), val1)) {
+          if (f <= 100 && BigInt.equals(BigInt.assignUnsafe(Decimal.buf2.get(), v = BigInt.longValue(val1)), val1)) {
             s1 += f == 100 ? 2 : 1;
             final long p = v / minValue;
             if (p != 0 && (ds = Numbers.precision(p)) > 0) {
@@ -291,6 +293,6 @@ abstract class DecimalAddition extends FixedPoint {
       v = -v;
     }
 
-    return checkScale(v, s, maxValue, minScale, maxScale, result);
+    return checkScale(v, s, minValue, minScale, maxScale, result);
   }
 }

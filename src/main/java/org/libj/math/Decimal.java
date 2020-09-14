@@ -52,7 +52,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
    * <p>
    * <b>Note:</b> If the argument is equal to the most negative representable
    * value for the specified {@code scaleBits} (i.e.
-   * {@link Decimal#minValue(byte) minValue(bits)}), {@code defaultValue} is
+   * {@link Decimal#minValue(int) minValue(bits)}), {@code defaultValue} is
    * returned.
    *
    * @param encoded The value (encoded with
@@ -70,6 +70,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   }
 
   public Decimal abs() {
+    clear();
     if (value == Long.MIN_VALUE) {
       value /= -10;
       --scale;
@@ -90,7 +91,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
    *
    * <b>Note:</b> If the argument is equal to the most negative representable
    * value for the specified {@code scaleBits} (i.e.
-   * {@link Decimal#minValue(byte) minValue(bits)}), {@code defaultValue} is
+   * {@link Decimal#minValue(int) minValue(bits)}), {@code defaultValue} is
    * returned.
    *
    * @param encoded The value (encoded with
@@ -235,6 +236,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   private float floatValue;
   private boolean doubleValueDirty = true;
   private double doubleValue;
+  private boolean error;
   private String string;
   private String scientificString;
 
@@ -278,8 +280,13 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   }
 
   Decimal error(final String error) {
+    this.error = true;
     this.string = this.scientificString = error;
     return this;
+  }
+
+  public boolean isError() {
+    return error;
   }
 
   /**
@@ -294,12 +301,13 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     this.longValueDirty = true;
     this.floatValueDirty = true;
     this.doubleValueDirty = true;
+    this.error = false;
     this.string = null;
     this.scientificString = null;
   }
 
-  long encode(final byte scaleBits, final long defaultValue) {
-    return encode(value, scale, defaultValue, scaleBits);
+  long encode(final byte scaleBits, final long defaultValue, final long minValue, final long maxValue, final short minScale, final short maxScale) {
+    return encode(value, scale, defaultValue, scaleBits, minValue, maxValue, minScale, maxScale);
   }
 
   public Decimal assign(final Decimal copy) {
@@ -355,7 +363,6 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   }
 
   public Decimal add(final Decimal add) {
-    clear();
     return add(this, add);
   }
 
@@ -419,8 +426,8 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
       return 0;
 
     final int valueBits = valueBits(scaleBits);
-    final long minValue = Decimal.minValue(valueBits);
-    final long maxValue = Decimal.maxValue(valueBits);
+    final long minValue = minValue(valueBits);
+    final long maxValue = maxValue(valueBits);
     final short minScale = minScale(scaleBits);
     final short maxScale = maxScale(scaleBits);
     final Decimal result = threadLocal.get();
@@ -432,7 +439,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
       return defaultValue;
     }
 
-    return result.encode(scaleBits, defaultValue);
+    return result.encode(scaleBits, defaultValue, minValue, maxValue, minScale, maxScale);
   }
 
   public static Decimal sub(final Decimal dec, final Decimal sub) {
@@ -440,7 +447,6 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   }
 
   public Decimal sub(final Decimal sub) {
-    clear();
     return sub(this, sub);
   }
 
@@ -502,26 +508,18 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     return defaultValue;
   }
 
-  public static Decimal mul(final Decimal dec, final Decimal mul) {
-    long v1 = dec.value;
-    if (v1 == 0)
-      return dec;
+  public Decimal mul(final Decimal mul) {
+    if (value == 0)
+      return this;
 
-    long v2 = mul.value;
+    final long v2 = mul.value;
     if (v2 == 0)
-      return dec.assign(0, (short)0);
+      return assign(0, (short)0);
 
-    short s1 = dec.scale;
-    short s2 = mul.scale;
-    if (mul0(v1, s1, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, dec))
-      return dec;
+    if (mul0(value, scale, v2, mul.scale, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, this))
+      return this;
 
     return null;
-  }
-
-  public Decimal mul(final Decimal mul) {
-    clear();
-    return mul(this, mul);
   }
   /**
    * Returns the result of the division of {@code d1} by {@code d2}, i.e.:
@@ -562,10 +560,11 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     final short minScale = FixedPoint.minScale[scaleBits];
     final short maxScale = FixedPoint.maxScale[scaleBits];
     final int valueBits = valueBits(scaleBits);
+    final long minValue = FixedPoint.minValue(valueBits);
     final long maxValue = FixedPoint.maxValue(valueBits);
     final Decimal result = threadLocal.get();
-    if (div0(v1, s1, v2, s2, maxValue, minScale, maxScale, result))
-      return encode(result.value, result.scale, defaultValue, scaleBits);
+    if (div0(v1, s1, v2, s2, minValue, maxValue, minScale, maxScale, result))
+      return encodeUnsafe(result.value, result.scale, defaultValue, scaleBits);
 
     return defaultValue;
   }
@@ -579,14 +578,13 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     if (v2 == 0)
       return dec.assign(0, (short)0);
 
-    if (div0(v1, dec.scale, v2, div.scale, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, dec))
+    if (div0(v1, dec.scale, v2, div.scale, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, dec))
       return dec;
 
     return null;
   }
 
   public Decimal div(final Decimal div) {
-    clear();
     return div(this, div);
   }
 
@@ -628,7 +626,6 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   }
 
   public Decimal rem(final Decimal div) {
-    clear();
     return rem(this, div);
   }
 
@@ -662,7 +659,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
    * @see #value(long,byte)
    */
   static byte precision(final long encoded, final byte scaleBits) {
-    return encoded == 0 ? 1 : Numbers.precision(value(encoded, scaleBits));
+    return Numbers.precision(value(encoded, scaleBits));
   }
 
   public byte precision() {
@@ -726,7 +723,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
       return encode(value, newScale, defaultValue, scaleBits);
 
     final int valueBits = valueBits(scaleBits);
-    final long minValue = Decimal.minValue(valueBits);
+    final long minValue = minValue(valueBits);
 
     ds = minScale - newScale;
     // How many multiples of 10 until overflow?
@@ -736,7 +733,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
 
     value *= FastMath.longE10[ds];
     newScale += ds;
-    return encode(value, newScale, defaultValue, scaleBits);
+    return encode(value, newScale, defaultValue, scaleBits, minValue, maxValue(valueBits), minScale, maxScale(scaleBits));
   }
 
   /**
@@ -849,7 +846,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
 
     if (s1 < s2) {
       final int ds = s2 - s1;
-      int ds1 = Numbers.precision(Long.MAX_VALUE / v1) - 1;
+      int ds1 = Numbers.precision(Long.MIN_VALUE / v1) - 1;
       if (ds < ds1)
         ds1 = ds;
 
@@ -858,7 +855,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     }
     else if (s1 > s2) {
       final int ds = s1 - s2;
-      int ds2 = Numbers.precision(Long.MAX_VALUE / v2) - 1;
+      int ds2 = Numbers.precision(Long.MIN_VALUE / v2) - 1;
       if (ds < ds2)
         ds2 = ds;
 
@@ -1071,25 +1068,27 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     return intValue = intValue(value, scale);
   }
 
-  public static long longValue(long value, final short scale) {
-    if (scale > 19 || value == 0)
+  public static long longValue(final long value, final short scale) {
+    if (value == 0)
       return 0;
 
     if (scale < 0) {
       final int s = -scale;
-      if (s < Numbers.precision(Long.MAX_VALUE / value)) {
-        value *= FastMath.longE10[s];
-      }
-      else {
-        final int[] val = BigInt.assign(Decimal.buf1.get(), value);
-        return BigInt.longValue(s < 19 ? BigInt.mul(val, FastMath.longE10[s]) : BigInt.mul(val, FastMath.E10(s)));
-      }
+      if (s < Numbers.precision(Long.MIN_VALUE / value))
+        return value * FastMath.longE10[s];
+
+      final int[] val = BigInt.assignUnsafe(buf1.get(), value);
+      if (s < 19)
+        return BigInt.longValue(BigInt.mulUnsafe(val, FastMath.longE10[s]));
+
+      final boolean sig = value >= 0;
+      final int len = sig ? val[0] : -val[0];
+      final int[] mul = FastMath.E10(s);
+      final int mlen = mul[0];
+      return BigInt.longValue(BigInt.mulQuad(val, len, mul, mlen, len + mlen + 1, sig, true));
     }
     else if (scale > 0) {
-      if (scale < 19)
-        value /= FastMath.longE10[scale];
-      else
-        return 0;
+      return scale > 18 ? 0 : value / FastMath.longE10[scale];
     }
 
     return value;
@@ -1125,7 +1124,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
 
     if (scale < 0) {
       final int s = -scale;
-      if (s < Numbers.precision(Long.MAX_VALUE / value))
+      if (s < Numbers.precision(Long.MIN_VALUE / value))
         return value * FastMath.longE10[s];
     }
 
@@ -1210,27 +1209,34 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
   }
 
   public static int[] toBigInt(long value, final short scale) {
-    if (scale > 19 || value == 0)
+    if (value == 0)
       return new int[] {0};
 
     if (scale < 0) {
       final int s = -scale;
-      if (s < Numbers.precision(Long.MAX_VALUE / value)) {
+      if (s < Numbers.precision(Long.MIN_VALUE / value)) {
         value *= FastMath.longE10[s];
       }
       else {
-        final int[] val = BigInt.assign(new int[4], value);
-        return s < 19 ? BigInt.mul(val, FastMath.longE10[s]) : BigInt.mul(val, FastMath.E10(s));
+        final int[] val = BigInt.assignUnsafe(new int[5], value);
+        if (s < 19)
+          return BigInt.mulUnsafe(val, FastMath.longE10[s]);
+
+        final boolean sig = value >= 0;
+        final int len = sig ? val[0] : -val[0];
+        final int[] mul = FastMath.E10(s);
+        final int mlen = mul[0];
+        return BigInt.mulQuad(val, len, mul, mlen, len + mlen + 1, sig, true);
       }
     }
     else if (scale > 0) {
-      if (scale < 19)
-        value /= FastMath.longE10[scale];
-      else
+      if (scale > 18)
         return new int[] {0};
+
+      value /= FastMath.longE10[scale];
     }
 
-    return BigInt.valueOf(value);
+    return BigInt.assignUnsafe(new int[4], value);
   }
 
   /**

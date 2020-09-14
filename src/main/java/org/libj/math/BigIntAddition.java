@@ -105,10 +105,32 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static int[] add0(int[] val, final int add) {
     int len = val[0];
     if (len == 0) {
-      val = assign0(val.length >= 2 ? val : alloc(2), 1, add);
+      val = assignUnsafe(val.length >= 2 ? val : alloc(2), 1, add);
     }
     else if (len > 0) {
       val = uaddVal(val, len, true, add);
+    }
+    else if ((len = -len) > 1 || (val[1] & LONG_MASK) > (add & LONG_MASK)) {
+      usubVal(val, len, false, add);
+    }
+    else {
+      if ((val[1] = add - val[1]) == 0)
+        --len;
+
+      val[0] = len;
+    }
+
+    // _debugLenSig(val);
+    return val;
+  }
+
+  private static int[] addUnsafe(final int[] val, final int add) {
+    int len = val[0];
+    if (len == 0) {
+      assignUnsafe(val, 1, add);
+    }
+    else if (len > 0) {
+      uaddValUnsafe(val, len, true, add);
     }
     else if ((len = -len) > 1 || (val[1] & LONG_MASK) > (add & LONG_MASK)) {
       usubVal(val, len, false, add);
@@ -150,10 +172,30 @@ abstract class BigIntAddition extends BigIntMagnitude {
   private static int[] sub0(int[] val, final int sub) {
     final int len = val[0];
     if (len == 0) {
-      val = assign0(val.length >= 2 ? val : alloc(2), -1, sub);
+      val = assignUnsafe(val.length >= 2 ? val : alloc(2), -1, sub);
     }
     else if (len < 0) {
       val = uaddVal(val, -len, false, sub);
+    }
+    else if (len == 1 && (val[1] & LONG_MASK) < (sub & LONG_MASK)) {
+      val[0] = -len;
+      val[1] = sub - val[1];
+    }
+    else {
+      usubVal(val, len, true, sub);
+    }
+
+    // _debugLenSig(val);
+    return val;
+  }
+
+  private static int[] subUnsafe(final int[] val, final int sub) {
+    final int len = val[0];
+    if (len == 0) {
+      assignUnsafe(val, -1, sub);
+    }
+    else if (len < 0) {
+      uaddValUnsafe(val, -len, false, sub);
     }
     else if (len == 1 && (val[1] & LONG_MASK) < (sub & LONG_MASK)) {
       val[0] = -len;
@@ -187,6 +229,10 @@ abstract class BigIntAddition extends BigIntMagnitude {
    */
   public static int[] add(final int[] val, final long add) {
     return add > 0 ? add0(val, add) : add < 0 ? sub0(val, -add) : val;
+  }
+
+  protected static int[] addUnsafe(final int[] val, final long add) {
+    return add > 0 ? addUnsafe0(val, add) : add < 0 ? subUnsafe0(val, -add) : val;
   }
 
   /**
@@ -234,6 +280,10 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return add == 0 ? val : sig < 0 ? sub0(val, add) : add0(val, add);
   }
 
+  protected static int[] addUnsafe(final int[] val, final int sig, final long add) {
+    return add == 0 ? val : sig < 0 ? subUnsafe0(val, add) : addUnsafe0(val, add);
+  }
+
   private static int[] add0(final int[] val, final long add) {
     final long addh = add >>> 32;
     if (addh == 0)
@@ -241,10 +291,23 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3), 1, (int)add, (int)addh);
+      return assignUnsafe(val.length >= 3 ? val : alloc(3), 1, (int)add, (int)addh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, add & LONG_MASK, addh, true);
+  }
+
+  private static int[] addUnsafe0(final int[] val, final long add) {
+    final long addh = add >>> 32;
+    if (addh == 0)
+      return addUnsafe(val, (int)add);
+
+    int len = val[0];
+    if (len == 0)
+      return assignUnsafe(val, 1, (int)add, (int)addh);
+
+    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    return uaddSubUnsafe(val, len, sig, add & LONG_MASK, addh, true);
   }
 
   /**
@@ -270,6 +333,10 @@ abstract class BigIntAddition extends BigIntMagnitude {
     return sub == 0 ? val : sig < 0 ? add0(val, sub) : sub0(val, sub);
   }
 
+  protected static int[] subUnsafe(final int[] val, final int sig, final long sub) {
+    return sub == 0 ? val : sig < 0 ? addUnsafe0(val, sub) : subUnsafe0(val, sub);
+  }
+
   private static int[] sub0(final int[] val, final long sub) {
     final long subh = sub >>> 32;
     if (subh == 0)
@@ -277,10 +344,23 @@ abstract class BigIntAddition extends BigIntMagnitude {
 
     int len = val[0];
     if (len == 0)
-      return assign0(val.length >= 3 ? val : alloc(3), -1, (int)sub, (int)subh);
+      return assignUnsafe(val.length >= 3 ? val : alloc(3), -1, (int)sub, (int)subh);
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, sub & LONG_MASK, subh, false);
+  }
+
+  private static int[] subUnsafe0(final int[] val, final long sub) {
+    final long subh = sub >>> 32;
+    if (subh == 0)
+      return subUnsafe(val, (int)sub);
+
+    int len = val[0];
+    if (len == 0)
+      return assignUnsafe(val, -1, (int)sub, (int)subh);
+
+    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    return uaddSubUnsafe(val, len, sig, sub & LONG_MASK, subh, false);
   }
 
   /**
@@ -303,12 +383,46 @@ abstract class BigIntAddition extends BigIntMagnitude {
    */
   private static int[] uaddSub(int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
     if (addOrSub == sig) {
+      if (val.length <= 3)
+        val = realloc(val, len + OFF, 4);
+
       val = uaddVal(val, len, sig, addl, addh);
     }
     else {
       if (val.length <= 2)
         val = realloc(val, len + 1, 3);
 
+      final long val0 = val[1] & LONG_MASK;
+      final long val1 = val[2] & LONG_MASK;
+      if (len > 2 || len == 2 && (val1 > addh || val1 == addh && val0 >= addl) || addh == 0 && val0 >= addl) {
+        usubVal(val, len, sig, val0, val1, addl, addh);
+      }
+      else {
+        if (len == 1)
+          val[++len] = 0;
+
+        long dif = addl - val0;
+        val[1] = (int)dif;
+        dif >>= 32;
+        dif += addh - val1;
+        val[2] = (int)dif;
+        // dif >> 32 != 0 should be impossible
+        if (dif == 0)
+          --len;
+
+        val[0] = addOrSub ? len : -len;
+      }
+    }
+
+    // _debugLenSig(val);
+    return val;
+  }
+
+  private static int[] uaddSubUnsafe(final int[] val, int len, final boolean sig, final long addl, final long addh, final boolean addOrSub) {
+    if (addOrSub == sig) {
+      uaddVal(val, len, sig, addl, addh);
+    }
+    else {
       final long val0 = val[1] & LONG_MASK;
       final long val1 = val[2] & LONG_MASK;
       if (len > 2 || len == 2 && (val1 > addh || val1 == addh && val0 >= addl) || addh == 0 && val0 >= addl) {
@@ -399,7 +513,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
    *         addend} (or minuend).
    * @complexity O(n)
    */
-  static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
+  private static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
     int len = val[0];
     if (len == 0) {
       len = Math.abs(add[0]);

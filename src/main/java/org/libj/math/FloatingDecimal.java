@@ -82,7 +82,7 @@ class FloatingDecimal {
 
     if (scale < 0) {
       final int s = -scale;
-      if (s < Numbers.precision(Long.MAX_VALUE / value))
+      if (s < Numbers.precision(Long.MIN_VALUE / value))
         return value * FastMath.longE10[s];
     }
 
@@ -113,7 +113,7 @@ class FloatingDecimal {
     final long absValNz = absVal;
     final int nDigits = Numbers.precision(absVal);
 
-    ds = Numbers.precision(absVal) - 16;
+    ds = nDigits - 16;
     if (ds > 0)
       absVal /= FastMath.longE10[ds];
 
@@ -236,13 +236,21 @@ class FloatingDecimal {
     exp2 = exp10 - nDigits;
 
     long ieeeBits = Double.doubleToRawLongBits(dValue); // IEEE-754 bits of double candidate
-    final int b5 = Math.max(0, -exp2); // Powers of 5 in bigB
-    final int d5 = Math.max(0, exp2); // Powers of 5 in bigD
+    final int b5; // Powers of 5 in bigB
+    final int d5; // Powers of 5 in bigD
+    if (exp2 > 0) {
+      b5 = 0;
+      d5 = exp2;
+    }
+    else {
+      b5 = -exp2;
+      d5 = 0;
+    }
 
     // dValue is now approximately the result
     // The hard part is adjusting it, by comparison with BigInt arithmetic.
     // Formulate the EXACT big-number result as bigD0 * 10^exp.
-    int[] bigD0 = BigInt.mulPow52(BigInt.assign(new int[27], absValNz), d5, 0);
+    int[] bigD0 = BigInt.mulPow52(BigInt.assignUnsafe(new int[27], absValNz), d5, 0);
     int[] bigD = null;
     int prevD2 = 0;
 
@@ -274,13 +282,12 @@ class FloatingDecimal {
       // use, then factor out common divisors before doing the work.
       int b2 = b5; // Powers of 2 in bigB
       int d2 = d5; // Powers of 2 in bigD
-      int dlp2; // Powers of 2 in halfUlp
       if (bigIntExp >= 0)
         b2 += bigIntExp;
       else
         d2 -= bigIntExp;
 
-      dlp2 = b2;
+      int dlp2 = b2; // Powers of 2 in halfUlp
       // shift bigB and bigD left by a number s. t. halfUlp is still an integer.
       final int hulpbias;
       if (binexp <= -EXP_BIAS_DOUBLE) {
@@ -303,7 +310,7 @@ class FloatingDecimal {
       dlp2 -= common2;
 
       // do multiplications by powers of 5 and 2
-      int[] bigB = BigInt.mulPow52(BigInt.assign(new int[(b2 >> 5) + 28], bigBbits), b5, b2);
+      final int[] bigB = BigInt.mulPow52(BigInt.assignUnsafe(new int[(b2 >> 5) + 28], bigBbits), b5, b2);
       if (bigD == null || prevD2 != d2) {
         bigD = BigInt.shiftLeft(bigD0, d2).clone();
         prevD2 = d2;

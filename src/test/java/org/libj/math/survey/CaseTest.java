@@ -230,6 +230,40 @@ public abstract class CaseTest {
       return (variable == 0 ? scaleFactorFactorA : scaleFactorFactorB) * maxPrecision();
     }
 
+    int precision(final Object obj) {
+      if (obj instanceof Integer)
+        return Numbers.precision((Integer)obj);
+
+      if (obj instanceof Long)
+        return Numbers.precision((Long)obj);
+
+      if (obj instanceof BigInteger)
+        return Numbers.precision((BigInteger)obj);
+
+      if (obj instanceof BigDecimal) {
+        final BigDecimal val = (BigDecimal)obj;
+        return val.precision();
+      }
+
+      if (obj instanceof BigIntHuldra)
+        return ((BigIntHuldra)obj).precision();
+
+      if (obj instanceof BigInt)
+        return ((BigInt)obj).precision();
+
+      if (obj instanceof int[])
+        return BigInt.precision((int[])obj);
+
+      // FIXME: This is incorrect! But, whatever!
+      if (obj instanceof byte[])
+        return 25 * ((byte[])obj).length;
+
+      if (obj instanceof String)
+        return CaseTest.precision((String)obj);
+
+      throw new UnsupportedOperationException("Unsupported type: " + obj.getClass().getName());
+    }
+
     abstract void test(CaseTest caseTest, String label, int skip, BigDecimal epsilon, AuditReport report, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys);
     abstract <I,O>int test(CaseTest caseTest, String label, BigDecimal epsilon, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys, T inputs);
 
@@ -300,10 +334,10 @@ public abstract class CaseTest {
         }
       }
 
-      int precision = precision(in1);
+      int precision = cse.precision(in1);
       surveys.get().addSample(c, 0, in1, time, error);
       if (cse.variables() == 2) {
-        precision = Math.max(precision, precision(in2));
+        precision = Math.max(precision, cse.precision(in2));
         surveys.get().addSample(c, 1, in2, time, error);
       }
 
@@ -437,6 +471,8 @@ public abstract class CaseTest {
           if (!caseTest.initialized())
             caseTest.setScaleFactor(IntCase.class, 1);
 
+          AuditReport.isInTest = true;
+
           if (cse.aToA instanceof IntToIntFunction)
             a = ((IntToIntFunction)cse.aToA).applyAsInt(a);
           else if (cse.aToA instanceof IntFunction)
@@ -464,6 +500,8 @@ public abstract class CaseTest {
           else if (cse.bToB != null)
             throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
+          AuditReport.isInTest = false;
+
           if (!caseTest.initialized())
             scaleFactorFactorB = caseTest.getScaleFactor(IntCase.class);
 
@@ -477,6 +515,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a, b);
             }
@@ -485,6 +524,7 @@ public abstract class CaseTest {
               in1 = a;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a);
             }
@@ -493,6 +533,7 @@ public abstract class CaseTest {
               in1 = a;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.applyAsInt(a);
             }
@@ -502,6 +543,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 26;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b);
             }
@@ -511,6 +553,7 @@ public abstract class CaseTest {
               in2 = CaseTest.clone(b0);
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b0);
             }
@@ -519,6 +562,7 @@ public abstract class CaseTest {
               in1 = CaseTest.clone(a0);
 
               overhead = 27;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0);
             }
@@ -529,6 +573,7 @@ public abstract class CaseTest {
             time = System.nanoTime() - time - overhead;
           }
 
+          AuditReport.isInTest = false;
           precision = Math.max(precision, verify(label, cse, epsilon, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
@@ -619,6 +664,8 @@ public abstract class CaseTest {
           if (!caseTest.initialized())
             caseTest.setScaleFactor(LongCase.class, 1);
 
+          AuditReport.isInTest = true;
+
           if (cse.aToA instanceof LongToLongFunction)
             a = ((LongToLongFunction)cse.aToA).applyAsLong(a);
           else if (cse.aToA instanceof LongFunction)
@@ -644,6 +691,8 @@ public abstract class CaseTest {
           else if (cse.bToB != null)
             throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
+          AuditReport.isInTest = false;
+
           if (!caseTest.initialized())
             scaleFactorFactorB = caseTest.getScaleFactor(LongCase.class);
 
@@ -657,6 +706,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a, b);
             }
@@ -666,6 +716,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 27;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.applyAsLong(a, b);
             }
@@ -675,6 +726,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 27;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b);
             }
@@ -683,6 +735,7 @@ public abstract class CaseTest {
               in1 = a;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a);
             }
@@ -691,6 +744,7 @@ public abstract class CaseTest {
               in1 = a;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.applyAsLong(a);
             }
@@ -700,6 +754,7 @@ public abstract class CaseTest {
               in2 = CaseTest.clone(b0);
 
               overhead = 29;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b0);
             }
@@ -708,6 +763,7 @@ public abstract class CaseTest {
               in1 = CaseTest.clone(a0);
 
               overhead = 29;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0);
             }
@@ -718,6 +774,7 @@ public abstract class CaseTest {
             time = System.nanoTime() - time - overhead;
           }
 
+          AuditReport.isInTest = false;
           precision = Math.max(precision, verify(label, cse, epsilon, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
@@ -885,7 +942,7 @@ public abstract class CaseTest {
       final BigDecimal limit = new BigDecimal(y.signum() < 0 ? minValue : maxValue);
       int totalScale = y.scale() < 0 ? y.scale() - y.precision() + px : y.scale();
       y = y.setScale(totalScale);
-      if (y.precision() == Numbers.precision(minValue)) {
+      if (y.precision() == Numbers.precision(maxValue)) {
         final int c = y.compareTo(limit.scaleByPowerOfTen(-totalScale));
         if (y.signum() < 0 ? c < 0 : c > 0)
           y.setScale(--totalScale, RoundingMode.HALF_UP);
@@ -922,8 +979,12 @@ public abstract class CaseTest {
       }
 
       if (o1 instanceof Decimal) {
-        final BigDecimal a = ((Decimal)o1).toBigDecimal();
-        return resultType == Long.class ? new BigDecimal(conform(a, resultType)) : a;
+        final Decimal decimal = (Decimal)o1;
+        if (decimal.isError())
+          return null;
+
+        final BigDecimal bigDecimal = decimal.toBigDecimal();
+        return resultType == Long.class ? new BigDecimal(conform(bigDecimal, resultType)) : bigDecimal;
       }
 
       if (o1 instanceof Long)
@@ -938,6 +999,19 @@ public abstract class CaseTest {
       }
 
       throw new UnsupportedOperationException(o1.getClass().getName());
+    }
+
+    @Override
+    int precision(final Object obj) {
+      if (obj instanceof Long)
+        return Numbers.precision(Decimal.value((Long)obj, scaleBits));
+
+      if (obj instanceof Decimal) {
+        final Decimal val = (Decimal)obj;
+        return val.precision();
+      }
+
+      return super.precision(obj);
     }
 
     @Override
@@ -1063,6 +1137,8 @@ public abstract class CaseTest {
           if (!caseTest.initialized())
             caseTest.setScaleFactor(DecimalCase.class, 1);
 
+          AuditReport.isInTest = true;
+
           if (cse.aToA instanceof LongToLongFunction)
             a = ((LongToLongFunction)cse.aToA).applyAsLong(a);
           else if (cse.aToA instanceof LongFunction)
@@ -1088,6 +1164,8 @@ public abstract class CaseTest {
           else if (cse.bToB != null)
             throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
+          AuditReport.isInTest = false;
+
           if (!caseTest.initialized())
             scaleFactorFactorB = caseTest.getScaleFactor(DecimalCase.class);
 
@@ -1101,6 +1179,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a, b);
             }
@@ -1110,6 +1189,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 27;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.applyAsLong(a, b);
             }
@@ -1119,6 +1199,7 @@ public abstract class CaseTest {
               in2 = b;
 
               overhead = 27;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b);
             }
@@ -1127,6 +1208,7 @@ public abstract class CaseTest {
               in1 = a;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a);
             }
@@ -1135,6 +1217,7 @@ public abstract class CaseTest {
               in1 = a;
 
               overhead = 28;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.applyAsLong(a);
             }
@@ -1144,6 +1227,7 @@ public abstract class CaseTest {
               in2 = CaseTest.clone(b0);
 
               overhead = 29;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b0);
             }
@@ -1152,6 +1236,7 @@ public abstract class CaseTest {
               in1 = CaseTest.clone(a0);
 
               overhead = 29;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0);
             }
@@ -1162,6 +1247,7 @@ public abstract class CaseTest {
             time = System.nanoTime() - time - overhead;
           }
 
+          AuditReport.isInTest = false;
           precision = Math.max(precision, verify(label, cse, epsilon, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
@@ -1252,6 +1338,8 @@ public abstract class CaseTest {
           if (!caseTest.initialized())
             caseTest.setScaleFactor(StringCase.class, 1);
 
+          AuditReport.isInTest = true;
+
           if (cse.aToA instanceof Function)
             a0 = ((Function)cse.aToA).apply(a0);
           else if (cse.aToA != null)
@@ -1277,6 +1365,8 @@ public abstract class CaseTest {
           else if (cse.bToB != null)
             throw new UnsupportedOperationException(cse.bToB.getClass().getName());
 
+          AuditReport.isInTest = false;
+
           if (!caseTest.initialized())
             scaleFactorFactorB = caseTest.getScaleFactor(StringCase.class);
 
@@ -1292,6 +1382,7 @@ public abstract class CaseTest {
                 throw new IllegalArgumentException();
 
               overhead = 31;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b1);
             }
@@ -1303,6 +1394,7 @@ public abstract class CaseTest {
                 throw new IllegalArgumentException();
 
               overhead = 31;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b2);
             }
@@ -1312,6 +1404,7 @@ public abstract class CaseTest {
               in2 = CaseTest.clone(b0);
 
               overhead = 36;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0, b0);
             }
@@ -1320,6 +1413,7 @@ public abstract class CaseTest {
               in1 = CaseTest.clone(a0);
 
               overhead = 33;
+              AuditReport.isInTest = true;
               time = System.nanoTime();
               result = test.apply(a0);
             }
@@ -1330,6 +1424,7 @@ public abstract class CaseTest {
             time = System.nanoTime() - time - overhead;
           }
 
+          AuditReport.isInTest = false;
           precision = Math.max(precision, verify(label, cse, epsilon, in1, in2, result, c, time, surveys));
         }
         catch (final Throwable t) {
@@ -1341,45 +1436,6 @@ public abstract class CaseTest {
       onSuccess(caseTest, surveys.get());
       return precision;
     }
-  }
-
-  private static int precision(final Object obj) {
-    if (obj instanceof Integer)
-      return Numbers.precision((Integer)obj);
-
-    if (obj instanceof Long)
-      return Numbers.precision((Long)obj);
-
-    if (obj instanceof BigInteger)
-      return Numbers.precision((BigInteger)obj);
-
-    if (obj instanceof BigDecimal) {
-      final BigDecimal val = (BigDecimal)obj;
-      return val.precision() - val.scale();
-    }
-
-    if (obj instanceof Decimal) {
-      final Decimal val = (Decimal)obj;
-      return val.precision() - val.scale();
-    }
-
-    if (obj instanceof BigIntHuldra)
-      return ((BigIntHuldra)obj).precision();
-
-    if (obj instanceof BigInt)
-      return ((BigInt)obj).precision();
-
-    if (obj instanceof int[])
-      return BigInt.precision((int[])obj);
-
-    // FIXME: This is incorrect! But, whatever!
-    if (obj instanceof byte[])
-      return 25 * ((byte[])obj).length;
-
-    if (obj instanceof String)
-      return precision((String)obj);
-
-    throw new UnsupportedOperationException("Unsupported type: " + obj.getClass().getName());
   }
 
   private static Object clone(final Object obj) {
@@ -1573,8 +1629,8 @@ public abstract class CaseTest {
 
   public class Builder<O,S> {
     private final String label;
-    private int skip;
-    private BigDecimal epsilon;
+    private int skip = 1;
+    private BigDecimal epsilon = BigDecimal.ZERO;
     private AuditReport auditReport;
 
     private Builder(final String label) {
@@ -1667,7 +1723,7 @@ public abstract class CaseTest {
           }
           else if (obj instanceof Long) {
             final long val = (Long)obj;
-            dig = Numbers.precision(val) * Numbers.signum(val);
+            dig = prototype.precision(val) * Numbers.signum(val);
           }
           else if (obj instanceof BigInteger) {
             final BigInteger val = (BigInteger)obj;

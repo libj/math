@@ -220,7 +220,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
           val[0] = -val[0];
       }
       else {
-        setToZero0(val);
+        setToZeroUnsafe(val);
       }
 
       return r;
@@ -293,8 +293,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     // _debugLenSig(val);
 
     final long tmp = u1 << 32 - s | u0 >>> s;
-    r = s == 0 ? tmp : u2 << 64 - s | tmp;
-    return r;
+    return s == 0 ? tmp : u2 << 64 - s | tmp;
   }
 
   /**
@@ -508,7 +507,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
     else {
       final int c = compareToAbs(val, len1, div, len2);
       if (c < 0) {
-        setToZero0(val);
+        setToZeroUnsafe(val);
       }
       else if (c == 0) {
         val[0] = flipSig ? -1 : 1;
@@ -582,7 +581,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
   private static int[] divRem0(int[] val1, final int[] val2) {
     final int c = compareToAbs(val1, val2);
     if (c == 0) {
-      assign0(val1, 1, 1);
+      assignUnsafe(val1, 1, 1);
       return alloc(2);
     }
 
@@ -592,7 +591,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
       final int[] r = alloc(len1);
       System.arraycopy(val1, 0, r, 0, len1);
       val1.clone();
-      setToZero0(val1);
+      setToZeroUnsafe(val1);
       return r;
     }
 
@@ -841,7 +840,7 @@ abstract class BigIntDivision extends BigIntMultiplication {
         div0(val, len1, sig1, div, len2, sig2, q);
       }
       else if (c == 0) {
-        setToZero0(val);
+        setToZeroUnsafe(val);
       }
     }
 

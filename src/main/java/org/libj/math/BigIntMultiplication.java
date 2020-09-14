@@ -141,13 +141,13 @@ abstract class BigIntMultiplication extends BigIntBinary {
   static {
     int i = 0;
     for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < SMALL_5_POW.length; ++i) {
-      POW_5_CACHE[i] = BigInt.assign(new int[2], SMALL_5_POW[i]);
+      POW_5_CACHE[i] = assignUnsafe(new int[2], SMALL_5_POW[i]);
     }
 
     for (int[] prev = POW_5_CACHE[i - 1]; i < MAX_FIVE_POW; ++i) {
       final int ext = 3 - (prev.length - prev[0]);
       final int[] next = ext == 0 ? prev.clone() : reallocExact(prev, prev[0] + 1, prev.length + ext);
-      POW_5_CACHE[i] = prev = BigInt.mul(next, 5);
+      POW_5_CACHE[i] = prev = mulUnsafe(next, 5);
     }
   }
 
@@ -180,8 +180,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return a == b ? checkZeroTail(val, len) : (a & LONG_MASK) < (b & LONG_MASK) ? -1 : 1;
     }
 
-    // FIXME: Cache BigInt.shiftLeft(big5pow(p5).clone(), p2)
-    return compareTo(val, BigInt.shiftLeft(big5pow(p5).clone(), p2));
+    // FIXME: Cache shiftLeft(big5pow(p5).clone(), p2)
+    return compareTo(val, shiftLeft(big5pow(p5).clone(), p2));
   }
 
   /**
@@ -220,12 +220,12 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     if (p5 != 0) {
       if (p5 < SMALL_5_POW.length)
-        BigInt.mul(val, SMALL_5_POW[p5]);
+        mulUnsafe(val, SMALL_5_POW[p5]);
       else
-        BigInt.mul(val, big5pow(p5));
+        mulUnsafe(val, big5pow(p5));
     }
 
-    BigInt.shiftLeft(val, p2);
+    shiftLeft(val, p2);
     return val;
   }
 
@@ -259,7 +259,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     final int q = p >> 1;
     final int r = p - q;
     final int[] bigq = big5powRec(q);
-    return r < SMALL_5_POW.length ? BigInt.mul0(bigq, 1, SMALL_5_POW[r], true) : BigInt.mul(bigq, big5powRec(r), true);
+    return r < SMALL_5_POW.length ? mulUnsafe(bigq, 1, SMALL_5_POW[r]) : mulUnsafe(bigq, big5powRec(r));
   }
 
   /**
@@ -280,7 +280,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int mul) {
-    return mul < 0 ? mul0(val, -1, -mul, false) : mul > 0 ? mul0(val, 1, mul, false) : setToZero0(val);
+    return mul < 0 ? mul0(val, -1, -mul, false) : mul > 0 ? mul0(val, 1, mul, false) : setToZeroUnsafe(val);
   }
 
   /**
@@ -303,14 +303,22 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int sig, final int mul) {
-    return mul == 0 ? setToZero0(val) : mul0(val, sig, mul, false);
+    return mul == 0 ? setToZeroUnsafe(val) : mul0(val, sig, mul, false);
   }
 
-  static int[] mul0(int[] val, int sig, final int mul, final boolean allocExact) {
-    int len = val[0]; if (len < 0) { len = -len; sig *= -1; }
+  private static int[] mul0(int[] val, int sig, final int mul, final boolean allocExact) {
+    int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
     if (len + 2 >= val.length)
       val = allocExact ? reallocExact(val, len + OFF, len + 2) : realloc(val, len + OFF, len + 2);
 
+    len = umul0(val, OFF, len, mul);
+    val[0] = sig * len;
+    // _debugLenSig(val);
+    return val;
+  }
+
+  private static int[] mulUnsafe(int[] val, int sig, final int mul) {
+    int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
     len = umul0(val, OFF, len, mul);
     val[0] = sig * len;
     // _debugLenSig(val);
@@ -338,6 +346,10 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul < 0 ? mul(val, -1, -mul) : mul(val, 1, mul);
   }
 
+  protected static int[] mulUnsafe(final int[] val, final long mul) {
+    return mul < 0 ? mulUnsafe(val, -1, -mul) : mulUnsafe(val, 1, mul);
+  }
+
   /**
    * Multiplies the provided number by an <i>unsigned</i> {@code long}
    * multiplicand.
@@ -363,16 +375,36 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return val;
 
     if (mul == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     final long mulh = mul >>> 32;
     if (mulh == 0)
       return mul0(val, sig, (int)mul, false);
 
-    if (len < 0) { len = -len; sig *= -1; }
+    if (len < 0) { len = -len; sig = -sig; }
     if (len + 3 >= val.length)
       val = realloc(val, len + OFF, len + 3);
 
+    len = umul0(val, 1, len, mul & LONG_MASK, mulh);
+    val[0] = sig * len;
+
+    // _debugLenSig(val);
+    return val;
+  }
+
+  protected static int[] mulUnsafe(final int[] val, int sig, final long mul) {
+    int len = val[0];
+    if (len == 0)
+      return val;
+
+    if (mul == 0)
+      return setToZeroUnsafe(val);
+
+    final long mulh = mul >>> 32;
+    if (mulh == 0)
+      return mulUnsafe(val, sig, (int)mul);
+
+    if (len < 0) { len = -len; sig = -sig; }
     len = umul0(val, 1, len, mul & LONG_MASK, mulh);
     val[0] = sig * len;
 
@@ -407,7 +439,9 @@ abstract class BigIntMultiplication extends BigIntBinary {
   static int umul0(final int[] mag, final int off, int len, int mul) {
     long carry = 0, longMul = mul & LONG_MASK;
     for (mul = off, len += off; mul < len; mag[mul] = (int)(carry += (mag[mul++] & LONG_MASK) * longMul), carry >>>= 32);
-    if (carry != 0) mag[len++] = (int)carry;
+    if (carry != 0)
+      mag[len++] = (int)carry;
+
     return len - off;
   }
 
@@ -479,6 +513,10 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return mul(val, mul, false);
   }
 
+  protected static int[] mulUnsafe(final int[] val, final int[] mul) {
+    return mul(val, mul, false);
+  }
+
   static int[] mul(int[] val, int[] mul, final boolean allocExact) {
     int len = val[0];
     if (len == 0)
@@ -486,7 +524,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
 
     int mlen = mul[0];
     if (mlen == 0)
-      return setToZero0(val);
+      return setToZeroUnsafe(val);
 
     boolean sig = true;
     if (len < 0) { len = -len; sig = false; }
@@ -577,7 +615,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return z;
   }
 
-  private static int[] mulQuad(final int[] x, int xlen, final int[] y, int ylen, int zlen, final boolean sig, final boolean allocExact) {
+  static int[] mulQuad(final int[] x, final int xlen, final int[] y, final int ylen, int zlen, final boolean sig, final boolean allocExact) {
     final int[] z;
     if (x.length >= zlen + xlen) {
 //      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_QI : X_QIN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
@@ -606,7 +644,9 @@ abstract class BigIntMultiplication extends BigIntBinary {
       }
     }
 
-    if (z[--zlen] == 0) --zlen;
+    if (z[--zlen] == 0)
+      --zlen;
+
     z[0] = sig ? zlen : -zlen;
     // _debugLenSig(z);
     return z;
@@ -660,7 +700,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     }
   }
 
-  private static void karatsuba(final int[] x, final int[] y, final int[] z, final int zlen, int len) {
+  private static void karatsuba(final int[] x, final int[] y, final int[] z, final int zlen, final int len) {
     if (len < NATIVE_THRESHOLD)
       javaKaratsuba(x, OFF, y, OFF, z, OFF, zlen, 0, len, PARALLEL_KARATSUBA_THRESHOLD_X, PARALLEL_KARATSUBA_THRESHOLD_Z);
     else
@@ -989,9 +1029,6 @@ abstract class BigIntMultiplication extends BigIntBinary {
     return 1;
   }
 
-  private static final int[][] e10 = new int[16384][];
-
-
   /**
    * Returns the provided {@linkplain BigInt#val() value-encoded number} raised
    * to the power of the given exponent.
@@ -1024,11 +1061,18 @@ abstract class BigIntMultiplication extends BigIntBinary {
     if (len == 0)
       return val;
 
-    if (len == 1 && val[1] == 10)
-      return FastMath.E10(exp).clone();
-
     boolean sig = true; if (len < 0) { val[0] = len = -len; sig = false; }
-    int[] res = val;
+
+    int[] res;
+    if (len == 1 && val[1] == 10) {
+      res = FastMath.E10(exp).clone();
+      if (!sig && exp % 2 == 1)
+        res[0] = -res[0];
+
+      return res;
+    }
+
+    res = val;
 
     // Factor out powers of two from the base, as the exponentiation of these
     // can be done by left shifts only. The remaining part can then be
@@ -1094,7 +1138,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return setToZero(val);
 
     // Large number algorithm. This is basically identical to the algorithm
-    // above, but calls multiply() and square() which may use more efficient
+    // above, but calls mul() and square() which may use more efficient
     // algorithms for large numbers.
     int[] answer = new int[Math.min(MAX_VAL_LENGTH, 4 * (int)newLen + (bitsToShift >> 5))];
     answer[0] = answer[1] = 1;

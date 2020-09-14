@@ -44,8 +44,9 @@ public abstract class Survey {
     this.variables = variables;
     this.divisions = divisions;
     this.counts = new int[variables][divisions];
-    for (int v = 0; v < variables; ++v)
-      Arrays.fill(this.counts[v], -warmup);
+    if (trackedClasses == null)
+      for (int v = 0; v < variables; ++v)
+        Arrays.fill(this.counts[v], -warmup);
 
     this.times = new long[variables][divisions];
 
@@ -84,14 +85,14 @@ public abstract class Survey {
         if (error.compareTo(this.error[variable][division]) > 0)
           this.error[variable][division] = error;
       }
+
+      if (report != null && report.getMode() == 1) {
+        for (int c = 0; c < trackedClasses.length; ++c)
+          allocations[c][division] += report.getAllocations(trackedClasses[c]);
+
+        report.reset();
+      }
     }
-
-    if (trackedClasses != null)
-      for (int c = 0; c < trackedClasses.length; ++c)
-        allocations[c][division] += report.getAllocations(trackedClasses[c]);
-
-    if (report != null && report.getMode() == 1)
-      report.reset();
   }
 
   public Class<?>[] getTrackedClasses() {
@@ -141,8 +142,9 @@ public abstract class Survey {
 
     if (trackedClasses != null)
       for (int d = 0; d < divisions; ++d)
-        for (int c = 0; c < trackedClasses.length; ++c)
-          allocations[c][d] /= counts[0][d];
+        for (int c = 0; c < allocations.length; ++c)
+          if (counts[0][d] != 0)
+            allocations[c][d] = (int)Math.round((double)allocations[c][d] / counts[0][d]);
   }
 
   public void reset() {
