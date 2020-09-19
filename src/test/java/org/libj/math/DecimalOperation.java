@@ -133,7 +133,7 @@ abstract class DecimalOperation<T,C> {
     final long timePerf = timeDecimal == 0 ? 0 : ((timeBigDecimal - timeDecimal) * 1000) / timeDecimal;
     String perf = String.valueOf(timePerf);
     perf = perf.substring(0, perf.length() - 1) + "." + perf.substring(perf.length() - 1);
-    perf = c(timePerf <= 0 ? Color.RED : Color.GREEN, Strings.pad(timePerf > 0 ? "+" + perf : perf, LEFT, 8) + "%");
+    perf = c(timePerf <= 0 ? Color.RED : Color.GREEN, Strings.pad(timePerf > 0 ? "+" + perf : perf, LEFT, 9) + "%");
 
     final String f = Strings.pad(label + "(" + arg.getSimpleName() + ")", LEFT, 18);
     final String l = Strings.pad("Decimal=" + timeDecimal, RIGHT, 17);
