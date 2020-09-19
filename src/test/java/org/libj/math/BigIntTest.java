@@ -157,6 +157,13 @@ public abstract class BigIntTest extends NumericCaseTest {
     return new BigIntHuldra(newMag(0));
   }
 
+  public String scaledString(final String a, final int factor) {
+    if (!initialized())
+      setScaleFactor(StringCase.class, factor);
+
+    return shoudlScale ? stringScale(a, factor) : a;
+  }
+
   private static int[] newMag(final int size) {
     return shouldInflate ? new int[Math.max(size, getInflatedSize())] : new int[size];
   }

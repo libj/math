@@ -31,6 +31,8 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -98,9 +100,7 @@ public abstract class CaseTest {
   }
 
   private static int skip(final int precision, int skip) {
-    final double x = precision / 4000d;
-    final int maxSkip = Math.max(0, (int)((1d + x * x) / 25d)); // necessary to ensure enough tests are run to get past the warmup
-    skip = Math.min(maxSkip, skip / 100 + (int)((skip + 1) * Math.pow(precision, 1.6d) / 600000)) + 1;
+    skip = Math.min((int)Math.pow(precision, Math.pow(precision, 0.19) / 10d), 5000);
     return random.nextInt(skip) + 1;
   }
 

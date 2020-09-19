@@ -324,6 +324,7 @@ public abstract class Decimal extends FixedPoint implements Comparable<Decimal>,
     return this;
   }
 
+  // FIXME: Is this needed?
   public static Decimal add(final long v1, final short s1, final long v2, final short s2) {
     final Decimal result = threadLocal.get();
     if (add0(v1, s1, v2, s2, Long.MIN_VALUE, Long.MAX_VALUE, MIN_SCALE, MAX_SCALE, false, result))

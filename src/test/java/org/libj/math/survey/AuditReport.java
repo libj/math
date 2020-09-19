@@ -197,7 +197,7 @@ public class AuditReport {
     if (out != null) {
       final String testClassSimpleName = testClass.getSimpleName();
       final String testClassPath = "src/test/java/" + testClass.getName().replace('.', '/') + ".java";
-      out.println("<h4>" + testClassSimpleName.substring(6, testClassSimpleName.length() - 4) + " (<a href=\"" + testClassPath + "\"><code>" + testClassSimpleName + "</code></a>)</h4>\n");
+      out.println("<h4>" + testClassSimpleName.substring(Character.isLowerCase(testClassSimpleName.charAt(6)) ? 7 : 6, testClassSimpleName.length() - 5) + " (<a href=\"" + testClassPath + "\"><code>" + testClassSimpleName + "</code></a>)</h4>\n");
       out.println("<p><strong>Summary</strong></p>\n");
       out.println("<pre><code>");
     }
@@ -237,11 +237,12 @@ public class AuditReport {
             final String methodName = entry.getValue()[0];
             out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
-            final Map<Integer,String> modeToComment = methodToModeToComment.get((Method)result.getKey().get(0));
+            final Method key = (Method)result.getKey().get(0);
+            final Map<Integer,String> modeToComment = methodToModeToComment.get(key);
             if (modeToComment != null) {
               final String comment = modeToComment.get(entry.getKey());
               if (comment != null)
-                out.println("<p>" + mdToHtml(comment, links) + "</p>\n");
+                out.println("<p>" + mdToHtml(comment, links).replace("\n", "<br>") + "</p>\n");
             }
 
             out.println("<pre><code>");
