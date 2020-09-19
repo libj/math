@@ -49,7 +49,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>${argLine} -Xcomp -Xmx2g</argLine>
+          <argLine>${argLine} -Xmx1G</argLine>
           <reuseForks>false</reuseForks>
         </configuration>
       </plugin>

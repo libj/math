@@ -183,10 +183,11 @@ public class BigIntMultiplicationTest extends BigIntTest {
   public void testPow(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys the power algorithm for both `BigInt` and `BigInteger`. Note that the variable representing the power is limited to `2048`, otherwise with power values larger than 127 result in unreasonably long tests.");
 
+    final int maxPow = TestAide.isInSurefireTest() ? 128 : TestAide.isInCiTest() ? 64 : 256;
     test("pow(int)").withAuditReport(report).withCases(
-      i(BigInteger.class, this::scaledBigInteger, b -> abs(b) % 256, (BigInteger a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
-      i(BigInt.class, this::scaledBigInt, b -> abs(b) % 256, (BigInt a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
-      i(int[].class, this::scaledVal, b -> abs(b) % 256, (int[] a, int b) -> BigInt.pow(a, b), o -> o == null ? null : BigInt.toString(o))
+      i(BigInteger.class, this::scaledBigInteger, b -> abs(b) % maxPow, (BigInteger a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
+      i(BigInt.class, this::scaledBigInt, b -> abs(b) % maxPow, (BigInt a, int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
+      i(int[].class, this::scaledVal, b -> abs(b) % maxPow, (int[] a, int b) -> BigInt.pow(a, b), o -> o == null ? null : BigInt.toString(o))
     );
   }
 
