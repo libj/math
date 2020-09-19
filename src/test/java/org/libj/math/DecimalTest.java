@@ -22,7 +22,7 @@ import org.libj.console.Ansi;
 import org.libj.console.Ansi.Color;
 
 abstract class DecimalTest extends NumericCaseTest {
-  static final int MAX_SCALE_BITS = isCI ? 9 : Decimal.MAX_SCALE_BITS;
+  static final int MAX_SCALE_BITS = isCI ? 13 : Decimal.MAX_SCALE_BITS;
 
   static int skip(final byte scaleBits) {
     return (int)Math.pow(scaleBits, scaleBits / 9d);
