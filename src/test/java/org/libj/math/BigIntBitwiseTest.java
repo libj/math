@@ -30,7 +30,7 @@ import org.libj.util.ArrayUtil;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntBitwiseITest extends BigIntTest {
+public class BigIntBitwiseTest extends BigIntTest {
   private static int randomBit(final String seed, final int bitCount) {
     return Math.abs(seed.hashCode() % (bitCount + 1));
   }

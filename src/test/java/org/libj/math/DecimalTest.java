@@ -20,9 +20,10 @@ import java.math.BigDecimal;
 
 import org.libj.console.Ansi;
 import org.libj.console.Ansi.Color;
+import org.libj.test.TestAide;
 
 abstract class DecimalTest extends NumericCaseTest {
-  static final int MAX_SCALE_BITS = isCI ? 14 : Decimal.MAX_SCALE_BITS;
+  static final int MAX_SCALE_BITS = TestAide.isInSurefireTest() ? 5 : TestAide.isInCiTest() ? 12 : Decimal.MAX_SCALE_BITS;
 
   static int skip(final byte scaleBits) {
     return (int)Math.pow(scaleBits, scaleBits / 9d);

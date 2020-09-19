@@ -33,7 +33,7 @@ import org.libj.math.survey.CaseTest;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
 @AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
-public class DecimalPredicateITest extends DecimalTest {
+public class DecimalPredicateTest extends DecimalTest {
   @Test
   public void testEquals(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Equate `T` with `T`.");

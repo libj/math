@@ -29,7 +29,7 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntAdditionITest extends BigIntTest {
+public class BigIntAdditionTest extends BigIntTest {
   @Test
   public void testAddUnsignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Addition of unsigned `int`.");

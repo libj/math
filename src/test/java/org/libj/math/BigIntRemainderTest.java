@@ -29,7 +29,7 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntRemainderITest extends BigIntTest {
+public class BigIntRemainderTest extends BigIntTest {
   @Test
   public void testUnsignedRemInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Remainder from division by an unsigned `int`, setting to `this`, and returning the value as an absolute unsigned `int`.");

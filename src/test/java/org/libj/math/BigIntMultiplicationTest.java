@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
+import org.libj.test.TestAide;
 
 import gnu.java.math.MPN;
 
@@ -32,7 +33,7 @@ import gnu.java.math.MPN;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntMultiplicationITest extends BigIntTest {
+public class BigIntMultiplicationTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
@@ -150,7 +151,7 @@ public class BigIntMultiplicationITest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"medium sized\" numbers, `BigInteger` outperforms `BigInt` due to the fact that `BigInteger.multiplyToLen(...)` is implemented as an intrinsic, which proves to beat `BigInt`'s critical native implementation of the same algorithm.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"large sized\" numbers, `BigInt` outperforms `BigInteger` due to the efficiency gained from mutable design, and the reuse of the underlying magnitude array for calculations. Furthermore, `BigInt` utilizes an implementation of Karatsuba multiplication that is designed to reduce (or even eliminate) the need to instantiate transient `int[]` arrays for calculations. This algorithm is specifically designed to take advantage of any free space available in the `BigInt`'s own magnitude array. The free space in this array is used for calculation, if the space is sufficient. If not sufficient, the algorithm creates necessary arrays. Since this algorithm is implemented in JNI, all transient arrays are freed immediately after use, thus not impacting the heap allocation.");
     report.addComment(UNINSTRUMENTED.ordinal(), "For \"very large sized\" numbers, `BigInt` outperforms `BigInteger` in lieu of its Parallel Karatsuba algorithm. Given input of a size above a threshold, the algorithm breaks the problem into its 3 parts (left, middle, right), and executes 3 threads to perform the calculations in parallel. Due to the recursive nature of the Karatsuba algorithm, subsequent recursion can also result in parallel execution. However, such a situation would only occur for very very very large numbers, because the threshold for recursive parallel execution is doubled for each recursion.");
-    final int maxPrecision = isCI ? 8 : 1024;
+    final int maxPrecision = TestAide.isInSurefireTest() ? 4 : TestAide.isInCiTest() ? 8 : 1024;
     for (int i = 1; i <= maxPrecision; i *= 2)
       testBig(report, i, i);
   }
@@ -166,7 +167,7 @@ public class BigIntMultiplicationITest extends BigIntTest {
   public void testSquareBig(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "This test surveys all multiplication algorithms in `BigInt` and `BigInteger`, whereby the algorithm are designed to engage based on a threshold length of the underlying magnitude array.");
     report.addComment(UNINSTRUMENTED.ordinal(), "The behavior of square multiplication is similar to the behavior of regular multiplication (where the input argument is not the same instance as the target object). It is, however, interesting to note that the Karatsuba algorithm runs faster for the \"square\" use-case, as the equality of `x` and `y` have a better change of allowing for in-place calculations.");
-    final int maxPrecision = isCI ? 8 : 2048;
+    final int maxPrecision = TestAide.isInSurefireTest() ? 4 : TestAide.isInCiTest() ? 8 : 1024;
     for (int i = 1; i <= maxPrecision; i *= 2)
       testSquareBig(report, i, i);
   }

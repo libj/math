@@ -29,7 +29,7 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntBinaryITest extends BigIntTest {
+public class BigIntBinaryTest extends BigIntTest {
   @Test
   public void testAnd(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`and` with `T`.");

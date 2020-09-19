@@ -30,7 +30,7 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
 @AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
-public class DecimalMultiplicationITest extends DecimalTest {
+public class DecimalMultiplicationTest extends DecimalTest {
   @Test
   public void testMul(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Multiply `T` by `T`.");

@@ -29,7 +29,7 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntDivisionITest extends BigIntTest {
+public class BigIntDivisionTest extends BigIntTest {
   @Test
   public void testUnsignedDivInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Divide by an unsigned `int`.");

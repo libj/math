@@ -30,7 +30,7 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntPredicateITest extends BigIntTest {
+public class BigIntPredicateTest extends BigIntTest {
   @Test
   public void testByteValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Value of number as a `byte`.");

@@ -198,7 +198,7 @@ public class AuditReport {
       final String testClassSimpleName = testClass.getSimpleName();
       final String testClassPath = "src/test/java/" + testClass.getName().replace('.', '/') + ".java";
       final int start = Character.isLowerCase(testClassSimpleName.charAt(6)) ? 7 : 6;
-      final int end = testClassSimpleName.length() - 5;
+      final int end = testClassSimpleName.length() - 4;
       final String label = start < end ? testClassSimpleName.substring(start, end) : testClassSimpleName;
       out.println("<h4>" + label + " (<a href=\"" + testClassPath + "\"><code>" + testClassSimpleName + "</code></a>)</h4>\n");
       out.println("<p><strong>Summary</strong></p>\n");

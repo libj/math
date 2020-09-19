@@ -31,8 +31,6 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -65,7 +63,6 @@ import org.libj.util.function.ObjLongToLongFunction;
 
 @SuppressWarnings("hiding")
 public abstract class CaseTest {
-  protected static final boolean isCI = "true".equals(System.getenv("CI"));
   protected static final Random random = new Random();
   private static final BigDecimal[] e10 = new BigDecimal[128];
 

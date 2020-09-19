@@ -30,7 +30,7 @@ import org.libj.util.ArrayUtil;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
 @AuditRunner.Instrument(a=BigInt.class, b=int[].class)
-public class BigIntConstructorITest extends BigIntTest {
+public class BigIntConstructorTest extends BigIntTest {
   @Test
   public void testUnsignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the [`BigIntegers.valueOf(int)`][BigIntegers] utility method is used to provide this missing function.");

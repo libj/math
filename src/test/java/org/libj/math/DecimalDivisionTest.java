@@ -20,9 +20,11 @@ import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libj.math.Decimals.Decimal;
 import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
@@ -30,33 +32,33 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Execution(PHASED)
 @AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
 @AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
-public class DecimalAdditionITest extends DecimalTest {
+public class DecimalDivisionTest extends DecimalTest {
   @Test
-  public void testAdd(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "Add `T` to `T`.");
+  public void testDiv(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Divide `T` by `T`.");
 
     final long defaultValue = random.nextLong();
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
-      test("add(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.add(toBigDecimal(b)), o -> o),
-        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.add(toDecimal(b)), o -> o),
-        d(long.class, (long a, long b) -> Decimal.add(a, b, defaultValue, scaleBits), (long o) -> o)
+      test("div(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.divide(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.div(toDecimal(nz(b))), o -> o),
+        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.div(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
       );
     }
   }
 
   @Test
-  public void testSub(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "Subtract `T` from `T`.");
+  public void testRem(final AuditReport report) {
+    report.addComment(UNINSTRUMENTED.ordinal(), "Remainder of `T` divided by `T`.");
 
     final long defaultValue = random.nextLong();
     for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
       final byte scaleBits = i;
-      test("sub(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.subtract(toBigDecimal(b)), o -> o),
-        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.sub(toDecimal(b)), o -> o),
-        d(long.class, (long a, long b) -> Decimal.sub(a, b, defaultValue, scaleBits), (long o) -> o)
+      test("rem(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
+        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.remainder(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.rem(toDecimal(nz(b))), o -> o),
+        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
       );
     }
   }
