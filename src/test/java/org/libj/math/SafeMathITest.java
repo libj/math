@@ -27,6 +27,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.junit.Test;
+import org.libj.test.TestAide;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
@@ -1453,6 +1454,57 @@ public class SafeMathITest {
     }
   }
 
+  private static void testRoundFloatScale(final RoundingMode rm) {
+    for (int j = 0; j < 3; ++j) {
+      final int s = j;
+      test(0, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      test(1, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      test(-1, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      for (int i = 0; i < numTests; ++i)
+        test(d0() * 10, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+    }
+  }
+
+  @Test
+  public void testRoundFloatScaleDown() {
+    testRoundFloatScale(RoundingMode.DOWN);
+  }
+
+  @Test
+  public void testRoundFloatScaleUp() {
+    testRoundFloatScale(RoundingMode.UP);
+  }
+
+  @Test
+  public void testRoundFloatScaleFloor() {
+    testRoundFloatScale(RoundingMode.FLOOR);
+  }
+
+  @Test
+  public void testRoundFloatScaleCeiling() {
+    testRoundFloatScale(RoundingMode.CEILING);
+  }
+
+  @Test
+  public void testRoundFloatScaleHalfUp() {
+    testRoundFloatScale(RoundingMode.HALF_UP);
+  }
+
+  @Test
+  public void testRoundFloatScaleHalfDown() {
+    testRoundFloatScale(RoundingMode.HALF_DOWN);
+  }
+
+  @Test
+  public void testRoundFloatScaleHalfEven() {
+    testRoundFloatScale(RoundingMode.HALF_EVEN);
+  }
+
+  @Test
+  public void testRoundFloatScaleUnnecessary() {
+    testRoundFloatScale(RoundingMode.UNNECESSARY);
+  }
+
   @Test
   public void testRoundDouble() {
     for (int j = 0; j < 3; ++j) {
@@ -1463,6 +1515,57 @@ public class SafeMathITest {
       for (int i = 0; i < numTests; ++i)
         test(d0() * 10, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
     }
+  }
+
+  private static void testRoundDoubleScale(final RoundingMode rm) {
+    for (int j = 0; j < 3; ++j) {
+      final int s = j;
+      test(0, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      test(1, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      test(-1, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      for (int i = 0; i < numTests; ++i)
+        test(d0() * 10, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+    }
+  }
+
+  @Test
+  public void testRoundDoubleScaleDown() {
+    testRoundDoubleScale(RoundingMode.DOWN);
+  }
+
+  @Test
+  public void testRoundDoubleScaleUp() {
+    testRoundDoubleScale(RoundingMode.UP);
+  }
+
+  @Test
+  public void testRoundDoubleScaleFloor() {
+    testRoundDoubleScale(RoundingMode.FLOOR);
+  }
+
+  @Test
+  public void testRoundDoubleScaleCeiling() {
+    testRoundDoubleScale(RoundingMode.CEILING);
+  }
+
+  @Test
+  public void testRoundDoubleScaleHalfUp() {
+    testRoundDoubleScale(RoundingMode.HALF_UP);
+  }
+
+  @Test
+  public void testRoundDoubleScaleHalfDown() {
+    testRoundDoubleScale(RoundingMode.HALF_DOWN);
+  }
+
+  @Test
+  public void testRoundDoubleScaleHalfEven() {
+    testRoundDoubleScale(RoundingMode.HALF_EVEN);
+  }
+
+  @Test
+  public void testRoundDoubleScaleUnnecessary() {
+    testRoundDoubleScale(RoundingMode.UNNECESSARY);
   }
 
   @Test
@@ -1628,5 +1731,145 @@ public class SafeMathITest {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(n, mc));
     for (int i = 0; i < numTests; ++i)
       test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(n, mc));
+  }
+
+  private static void testRoundFloat(final RoundingMode rm) {
+    for (int i = 0; i < numTests * 100; ++i) {
+      float v = i < 100 ? (i + 0.5f) * (random.nextBoolean() ? -1 : 1) : random.nextFloat();
+      float r1 = 0, r2 = 0;
+      final float delta = Math.ulp(v);
+      int j = 0;
+      do {
+        if (j > 0) {
+          if (TestAide.isInDebug())
+            // TODO: Place breakpoint here to debug...
+            System.console();
+          else
+            assertEquals(r1, r2, Math.ulp(v));
+        }
+
+        try {
+          BigDecimal bd = new BigDecimal(v);
+          bd = bd.setScale(0, rm);
+          r2 = bd.floatValue();
+        }
+        catch (final ArithmeticException e) {
+          r2 = Float.NaN;
+        }
+
+        r1 = SafeMath.round(v, rm);
+      }
+      while ((Float.isNaN(r1) ? !Float.isNaN(r2) : Float.isNaN(r2) || Math.abs(r1 - r2) > delta) && ++j < 100);
+    }
+  }
+
+  @Test
+  public void testRoundFloatDown() {
+    testRoundFloat(RoundingMode.DOWN);
+  }
+
+  @Test
+  public void testRoundFloatUp() {
+    testRoundFloat(RoundingMode.UP);
+  }
+
+  @Test
+  public void testRoundFloatFloor() {
+    testRoundFloat(RoundingMode.FLOOR);
+  }
+
+  @Test
+  public void testRoundFloatCeiling() {
+    testRoundFloat(RoundingMode.CEILING);
+  }
+
+  @Test
+  public void testRoundFloatHalfUp() {
+    testRoundFloat(RoundingMode.HALF_UP);
+  }
+
+  @Test
+  public void testRoundFloatHalfDown() {
+    testRoundFloat(RoundingMode.HALF_DOWN);
+  }
+
+  @Test
+  public void testRoundFloatHalfEven() {
+    testRoundFloat(RoundingMode.HALF_EVEN);
+  }
+
+  @Test
+  public void testRoundFloatUnnecessary() {
+    testRoundFloat(RoundingMode.UNNECESSARY);
+  }
+
+  private static void testRoundDouble(final RoundingMode rm) {
+    for (int i = 0; i < numTests * 100; ++i) {
+      double v = i < 100 ? (i + 0.5d) * (random.nextBoolean() ? -1 : 1) : random.nextFloat();
+      double r1 = 0, r2 = 0;
+      final double delta = Math.ulp(v);
+      int j = 0;
+      do {
+        if (j > 0) {
+          if (TestAide.isInDebug())
+            // TODO: Place breakpoint here to debug...
+            System.err.println(r1 + " != " + r2);
+          else
+            assertEquals(r1, r2, Math.ulp(v));
+        }
+
+        try {
+          BigDecimal bd = new BigDecimal(v);
+          bd = bd.setScale(0, rm);
+          r2 = bd.doubleValue();
+        }
+        catch (final ArithmeticException e) {
+          r2 = Double.NaN;
+        }
+
+        r1 = SafeMath.round(v, rm);
+      }
+      while ((Double.isNaN(r1) ? !Double.isNaN(r2) : Double.isNaN(r2) || Math.abs(r1 - r2) > delta) && ++j < 100);
+    }
+  }
+
+  @Test
+  public void testRoundDoubleDown() {
+    testRoundDouble(RoundingMode.DOWN);
+  }
+
+  @Test
+  public void testRoundDoubleUp() {
+    testRoundDouble(RoundingMode.UP);
+  }
+
+  @Test
+  public void testRoundDoubleFloor() {
+    testRoundDouble(RoundingMode.FLOOR);
+  }
+
+  @Test
+  public void testRoundDoubleCeiling() {
+    testRoundDouble(RoundingMode.CEILING);
+  }
+
+  @Test
+  public void testRoundDoubleHalfUp() {
+    testRoundDouble(RoundingMode.HALF_UP);
+  }
+
+  @Test
+  public void testRoundDoubleHalfDown() {
+    testRoundDouble(RoundingMode.HALF_DOWN);
+  }
+
+  @Test
+  public void testRoundDoubleHalfEven() {
+    testRoundDouble(RoundingMode.HALF_EVEN);
+  }
+
+  @Test
+  public void testRoundDoubleUnnecessary() {
+    testRoundDouble(RoundingMode.UNNECESSARY);
   }
 }
