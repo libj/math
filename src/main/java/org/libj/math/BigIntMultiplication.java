@@ -29,7 +29,9 @@
 
 package org.libj.math;
 
-abstract class BigIntMultiplication extends BigIntBinary {
+import java.util.Arrays;
+
+abstract class BigIntMultiplication extends BigIntAddition {
   private static final long serialVersionUID = -4907342078241892616L;
 
   // For debugging
@@ -129,7 +131,52 @@ abstract class BigIntMultiplication extends BigIntBinary {
    */
   static final int PARALLEL_KARATSUBA_THRESHOLD_X = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 120 : 100) * PARALLEL_THRESHOLD_FACTOR); // 120 : 100
 
-  private static final int[] SMALL_5_POW = {1, 5, 5 * 5, 5 * 5 * 5, 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5, 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5};
+  static final int[] INT_5_POW = {
+    1,
+    5,
+    5 * 5,
+    5 * 5 * 5,
+    5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5
+  };
+
+  static final long[] LONG_5_POW = {
+    1L,
+    5L,
+    5L * 5,
+    5L * 5 * 5,
+    5L * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+    5L * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5 * 5,
+  };
 
   // Maximum size of cache of powers of 5 as BigInt
   private static final int MAX_FIVE_POW = 340;
@@ -140,8 +187,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
   // Initialize BigInt cache of powers of 5
   static {
     int i = 0;
-    for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < SMALL_5_POW.length; ++i) {
-      POW_5_CACHE[i] = assignInPlace(new int[2], SMALL_5_POW[i]);
+    for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < INT_5_POW.length; ++i) {
+      POW_5_CACHE[i] = assignInPlace(new int[2], INT_5_POW[i]);
     }
 
     for (int[] prev = POW_5_CACHE[i - 1]; i < MAX_FIVE_POW; ++i) {
@@ -172,7 +219,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
       final int len = val[0];
       if (len > wordcount)
         return 1;
-      else if (len < wordcount)
+
+      if (len < wordcount)
         return -1;
 
       final int a = val[len];
@@ -181,7 +229,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     }
 
     // FIXME: Cache shiftLeft(big5pow(p5).clone(), p2)
-    return compareTo(val, shiftLeft(big5pow(p5).clone(), p2));
+    return compareTo(val, shiftLeft(big5pow(p5).clone(), p2, true));
   }
 
   /**
@@ -202,8 +250,8 @@ abstract class BigIntMultiplication extends BigIntBinary {
   }
 
   /**
-   * Multiplies the provided {@linkplain BigInt#val() value-encoded number} by
-   * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number}
+   * multiplied by <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
    * <p>
    * <i><b>Note:</b> This function assumes the provided array is big enough for
    * the operation to be performed in place.</i>
@@ -214,18 +262,66 @@ abstract class BigIntMultiplication extends BigIntBinary {
    * @return The provided {@code val} reference after its multiplication by
    *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
    */
-  static int[] mulPow52(final int[] val, final int p5, final int p2) {
+  static int[] mulPow52InPlace(final int[] val, final int p5, final int p2) {
     if (val[0] == 0)
       return val;
 
     if (p5 != 0) {
-      if (p5 < SMALL_5_POW.length)
-        mulInPlace(val, SMALL_5_POW[p5]);
+      if (p5 < INT_5_POW.length)
+        mulInPlace(val, INT_5_POW[p5]);
       else
         mulInPlace(val, big5pow(p5));
     }
 
-    shiftLeft(val, p2);
+    shiftLeft(val, p2, true);
+    return val;
+  }
+
+  /**
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set to
+   * the numerical value of <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   * <p>
+   * <i><b>Note:</b> This function assumes the provided array is big enough for
+   * the operation to be performed in place.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to be set.
+   * @param p5 The exponent of 5.
+   * @param p2 The exponent of 2.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set to
+   *         the numerical value of
+   *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   */
+  static int[] valueOfPow52(final int[] val, final int p5, final int p2) {
+    if (p5 == 0)
+      return valueOfPow2(val, p2);
+
+    if (p5 < INT_5_POW.length)
+      assign(val, INT_5_POW[p5]);
+    else
+      assign(val, big5pow(p5));
+
+    shiftLeft(val, p2, true);
+    return val;
+  }
+
+  /**
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set to
+   * the numerical value of <code>2<sup>p2</sup></code>.
+   * <p>
+   * <i><b>Note:</b> This function assumes the provided array is big enough for
+   * the operation to be performed in place.</i>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to be set.
+   * @param p2 The exponent of 2.
+   * @return the provided {@linkplain BigInt#val() value-encoded number} set to
+   *         the numerical value of <code>2<sup>p2</sup></code>.
+   */
+  private static int[] valueOfPow2(final int[] val, final int p2) {
+    final int offBig = (p2 >> 5) + 1;
+    final int offSmall = p2 & 0x1f;
+    val[0] = offBig;
+    val[offBig] = 1 << offSmall;
+    Arrays.fill(val, 1, offBig, 0);
     return val;
   }
 
@@ -259,7 +355,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     final int q = p >> 1;
     final int r = p - q;
     final int[] bigq = big5powRec(q);
-    return r < SMALL_5_POW.length ? mulInPlace(bigq, 1, SMALL_5_POW[r]) : mulInPlace(bigq, big5powRec(r));
+    return r < INT_5_POW.length ? mulInPlace(bigq, 1, INT_5_POW[r]) : mulInPlace(bigq, big5powRec(r));
   }
 
   /**
@@ -1083,7 +1179,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
       return setToZero(val);
 
     final int bitsToShift = (int)bitsToShiftLong;
-    final int remainingBits;
+    final long remainingBits;
 
     // Factor the powers of two out quickly by shifting right, if needed.
     if (powersOfTwo > 0) {
@@ -1101,7 +1197,7 @@ abstract class BigIntMultiplication extends BigIntBinary {
     // This is a quick way to approximate the size of the result,
     // similar to doing log2[n] * exponent. This will give an upper bound
     // of how big the result can be, and which algorithm to use.
-    final long scaleFactor = (long)remainingBits * exp;
+    final long scaleFactor = remainingBits * exp;
 
     // Use slightly different algorithms for small and large operands.
     // See if the result will safely fit into a long. (Largest 2^63-1)
@@ -1122,24 +1218,24 @@ abstract class BigIntMultiplication extends BigIntBinary {
           baseToPow2 *= baseToPow2;
       }
 
+      if (powersOfTwo <= 0)
+        return assign(val, result * newSign);
+
       // Multiply back the powers of two (quickly, by shifting left)
-      if (powersOfTwo > 0) {
-        if (bitsToShift + scaleFactor <= 62) // Fits in long?
-          return assign(val, (result << bitsToShift) * newSign);
+      if (bitsToShift + scaleFactor <= 62) // Fits in long?
+        return assign(val, (result << bitsToShift) * newSign);
 
-        return shiftLeft(assign(val, result * newSign), bitsToShift);
-      }
-
-      return assign(val, result * newSign);
+      return shiftLeft(assign(val, result * newSign), bitsToShift);
     }
 
-    final long newLen = (long)bitLengthPos(val, len) * exp / Integer.SIZE;
+    final long newLen = bitLength(val, len) * exp / Integer.SIZE;
     if (newLen > MAX_VAL_LENGTH)
       return setToZero(val);
 
     // Large number algorithm. This is basically identical to the algorithm
     // above, but calls mul() and square() which may use more efficient
     // algorithms for large numbers.
+    // FIXME: Can we make `answer` final?
     int[] answer = new int[Math.min(MAX_VAL_LENGTH, 4 * (int)newLen + (bitsToShift >> 5))];
     answer[0] = answer[1] = 1;
 
@@ -1158,5 +1254,35 @@ abstract class BigIntMultiplication extends BigIntBinary {
       answer = shiftLeft(answer, bitsToShift);
 
     return sig || (exp & 1) != 1 ? answer : neg(answer);
+  }
+
+  /**
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set its
+   * value minus the multiple of the provided parameters.
+   *
+   * <pre>
+   * val = val - q * s
+   * return borrow
+   * </pre>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} subtracter.
+   * @param q The integer multiplicand.
+   * @param s The {@linkplain BigInt#val() value-encoded number} multiplier.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set its
+   *         value minus the multiple of the provided parameters.
+   */
+  static long multDiffMe(final int[] val, final long q, final int[] s) {
+    if (q == 0)
+      return 0;
+
+    long diff = 0L;
+    final int lenS = s[0];
+    for (int sIndex = 1, tIndex = 1; sIndex <= lenS; ++sIndex, ++tIndex) {
+      diff += (val[tIndex] & LONG_MASK) - q * (s[sIndex] & LONG_MASK);
+      val[tIndex] = (int)diff;
+      diff >>= 32; // N.B. SIGNED shift.
+    }
+
+    return diff;
   }
 }

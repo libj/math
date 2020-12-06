@@ -260,9 +260,7 @@ public class DecimalMultiplicationStudy {
    * A <b>low error</b> approach for {@code v1 * v2} via:
    *
    * <pre>
-   * <code>
    * v = v1 * v2 = (v1h + v1l) * (v2h + v2l)
-   * </code>
    * </pre>
    */
   private static long mulMod(final long v1, long s1, final long v2, long s2, final byte valueBits) {

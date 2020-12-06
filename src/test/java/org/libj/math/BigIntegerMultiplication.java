@@ -664,7 +664,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    * Calculate bitlength of contents of the first len elements an int array,
    * assuming there are no leading zero ints.
    */
-  static int bitLength(final int[] val, final int len) {
+  static long bitLength(final int[] val, final int len) {
     return len == 0 ? 0 : ((len - 1) << 5) + bitLengthForInt(val[0]);
   }
 
@@ -674,7 +674,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
       m = BigInteger.class.getDeclaredMethod("multiplyToLen", int[].class, int.class, int[].class, int.class, int[].class);
       m.setAccessible(true);
     }
-    catch (NoSuchMethodException | SecurityException e) {
+    catch (final NoSuchMethodException | SecurityException e) {
       throw new ExceptionInInitializerError(e);
     }
   }
@@ -692,7 +692,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     try {
       m.invoke(null, xx, xlen, yy, ylen, z);
     }
-    catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+    catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
 

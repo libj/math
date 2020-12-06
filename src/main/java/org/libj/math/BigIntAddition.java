@@ -29,7 +29,7 @@
 
 package org.libj.math;
 
-abstract class BigIntAddition extends BigIntMagnitude {
+abstract class BigIntAddition extends BigIntPrimitive {
   private static final long serialVersionUID = 2873086066678372875L;
 
   /**
@@ -469,7 +469,11 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] add(final int[] val, final int[] add) {
-    return addSub(val, add, true);
+    return addSub(val, add, true, false);
+  }
+
+  protected static int[] addInPlace(final int[] val, final int[] add) {
+    return addSub(val, add, true, true);
   }
 
   /**
@@ -493,7 +497,11 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int[] sub) {
-    return addSub(val, sub, false);
+    return addSub(val, sub, false, false);
+  }
+
+  protected static int[] subInPlace(final int[] val, final int[] sub) {
+    return addSub(val, sub, false, true);
   }
 
   /**
@@ -508,16 +516,17 @@ abstract class BigIntAddition extends BigIntMagnitude {
    * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
+   * @param inPlace Whether the operation should be performed in-place.
    * @return The result of the addition (or subtraction) of the specified amount
    *         to (or from) the provided {@linkplain BigInt#val() value-encoded
    *         addend} (or minuend).
    * @complexity O(n)
    */
-  private static int[] addSub(int[] val, final int[] add, final boolean addOrSub) {
+  private static int[] addSub(int[] val, final int[] add, final boolean addOrSub, final boolean inPlace) {
     int len = val[0];
     if (len == 0) {
       len = Math.abs(add[0]);
-      if (len >= val.length)
+      if (!inPlace && len >= val.length)
         val = alloc(len + 1);
 
       System.arraycopy(add, 0, val, 0, len + 1);
@@ -528,10 +537,10 @@ abstract class BigIntAddition extends BigIntMagnitude {
     }
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return addSub0(val, len, sig, add, addOrSub);
+    return addSub0(val, len, sig, add, addOrSub, inPlace);
   }
 
-  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub) {
+  static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub, final boolean inPlace) {
     int len2 = add[0]; if (len2 < 0) { len2 = -len2; }
     if (addOrSub == (sig == add[0] >= 0))
       return addVal(val, len, sig, add, len2);
@@ -540,7 +549,7 @@ abstract class BigIntAddition extends BigIntMagnitude {
       subVal(val, len, sig, add, len2);
     }
     else {
-      if (len2 >= val.length)
+      if (!inPlace && len2 >= val.length)
         val = realloc(val, len + 1, len2 + 2);
 
       sig = !sig;

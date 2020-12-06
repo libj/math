@@ -21,10 +21,11 @@ import static org.libj.math.survey.AuditMode.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.libj.math.Decimals.Decimal;
 import org.libj.math.survey.AuditReport;
 import org.libj.math.survey.AuditRunner;
 
@@ -33,19 +34,69 @@ import org.libj.math.survey.AuditRunner;
 @AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
 @AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
 public class DecimalDivisionTest extends DecimalTest {
-  @Test
-  public void testDiv(final AuditReport report) {
+  private void testDiv(final AuditReport report, final RoundingMode rm) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Divide `T` by `T`.");
 
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("div(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.divide(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
-        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.div(toDecimal(nz(b))), o -> o),
-        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.div(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
-      );
-    }
+    test("div(" + rm + ")").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.divide(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
+      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.div(toDecimal(dnz(b)), rm), o -> o),
+      d(long.class, a -> a, b -> dnz(b), (long a, long b) -> Decimal.div(a, b, rm, defaultValue), o -> o == defaultValue ? null : o)
+    );
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivDown(final AuditReport report) {
+    testDiv(report, RoundingMode.DOWN);
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivUp(final AuditReport report) {
+    testDiv(report, RoundingMode.UP);
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivFloor(final AuditReport report) {
+    testDiv(report, RoundingMode.FLOOR);
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivCeiling(final AuditReport report) {
+    testDiv(report, RoundingMode.CEILING);
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivHalfDown(final AuditReport report) {
+    testDiv(report, RoundingMode.HALF_DOWN);
+  }
+
+  @Test
+  public void testDivHalfUp(final AuditReport report) {
+    testDiv(report, RoundingMode.HALF_UP);
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivHalfEven(final AuditReport report) {
+    testDiv(report, RoundingMode.HALF_EVEN);
+  }
+
+  @Test
+  @Ignore("Not supported yet")
+  //FIXME: Support this RoundingMode
+  public void testDivUnnecessary(final AuditReport report) {
+    testDiv(report, RoundingMode.UNNECESSARY);
   }
 
   @Test
@@ -53,13 +104,10 @@ public class DecimalDivisionTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Remainder of `T` divided by `T`.");
 
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("rem(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.remainder(toBigDecimal(nz(b)), MathContext.DECIMAL128), o -> o),
-        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.rem(toDecimal(nz(b))), o -> o),
-        d(long.class, a -> a, b -> nz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
-      );
-    }
+    test("rem").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.remainder(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
+      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.rem(toDecimal(dnz(b))), o -> o),
+      d(long.class, a -> a, b -> dnz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue), o -> o == defaultValue ? null : o)
+    );
   }
 }

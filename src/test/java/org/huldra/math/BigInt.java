@@ -1,5 +1,4 @@
-/* Copyright (c) 2020 Seva Safris, LibJ
- * Copyright (c) 2015-2016 Simon Klein, Google Inc.
+/* Copyright (c) 2015-2016 Simon Klein, Google Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,7 +26,7 @@
  * policies, either expressed or implied, of the Huldra and the LibJ projects.
  */
 
-package org.libj.math;
+package org.huldra.math;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
@@ -49,7 +48,7 @@ import java.util.concurrent.Future;
 * @version 0.7
 */
 @SuppressWarnings("all")
-public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cloneable
+public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 {
 	/**
 	* Used to cast a (base 2^32) digit to a long without getting unwanted sign extension.
@@ -81,7 +80,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param len	The (first) number of entries of v that are considered part of the number.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra(final int sign, final int[] v, final int len)
+	public BigInt(final int sign, final int[] v, final int len)
 	{
 		assign(sign,v,len);
 	}
@@ -94,7 +93,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param len	The (first) number of entries of v that are considered part of the number.
 	* @complexity	O(n)
 	*/
-	public BigIntHuldra(final int sign, final byte[] v, int vlen)
+	public BigInt(final int sign, final byte[] v, int vlen)
 	{
 		while(vlen>1 && v[vlen-1]==0) --vlen;
 		dig = new int[(vlen+3)/4];
@@ -108,7 +107,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The magnitude of the number.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra(final int sign, final int val)
+	public BigInt(final int sign, final int val)
 	{
 		dig = new int[1];
 		uassign(sign,val);
@@ -121,7 +120,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The magnitude of the number.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra(final int sign, final long val)
+	public BigInt(final int sign, final long val)
 	{
 		dig = new int[2];
 		uassign(sign,val);
@@ -133,7 +132,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The value of the number.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra(final int val)
+	public BigInt(final int val)
 	{
 		dig = new int[1];
 		assign(val);
@@ -145,7 +144,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The value of the number.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra(final long val)
+	public BigInt(final long val)
 	{
 		dig = new int[2];
 		assign(val);
@@ -156,7 +155,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param s	A string representing the number in decimal.
 	* @complexity	O(n^2)
 	*/
-	public BigIntHuldra(final String s)
+	public BigInt(final String s)
 	{
 		assign(s);
 	}
@@ -166,13 +165,13 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param s	A char array representing the number in decimal.
 	* @complexity	O(n^2)
 	*/
-	public BigIntHuldra(final char[] s)
+	public BigInt(final char[] s)
 	{
 		assign(s);
 	}
 	/*** </Constructors> ***/
 
-	public BigIntHuldra(final int[] dig) {
+	public BigInt(final int[] dig) {
 	  this.dig = dig;
   }
   /*** <General Helper> ***/
@@ -250,9 +249,9 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @return The BigInt copy.
 	* @complexity	O(n)
 	*/
-	public BigIntHuldra copy()
+	public BigInt copy()
 	{
-		return new BigIntHuldra(sign, Arrays.copyOf(dig,len), len);
+		return new BigInt(sign, Arrays.copyOf(dig,len), len);
 	}
 	/**
 	* Assigns the given number to this BigInt object.
@@ -260,7 +259,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param The BigInt to copy/assign to this BigInt.
 	* @complexity	O(n)
 	*/
-	public void assign(final BigIntHuldra other)
+	public void assign(final BigInt other)
 	{
 		sign = other.sign;
 		assign(other.dig, other.len);
@@ -325,7 +324,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param s		A string representing the number in decimal.
 	* @complexity	O(n^2)
 	*/
-	public BigIntHuldra assign(final String s)
+	public BigInt assign(final String s)
 	{
 		assign(s.toCharArray());
 		return this;
@@ -407,7 +406,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The number to be assigned.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra assign(final int val)
+	public BigInt assign(final int val)
 	{
 		uassign(val<0 ? -1 : 1, val<0 ? -val : val);
 		return this;
@@ -418,7 +417,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param val	The number to be assigned.
 	* @complexity	O(1)
 	*/
-	public BigIntHuldra assign(final long val)
+	public BigInt assign(final long val)
 	{
 		uassign(val<0 ? -1 : 1, val<0 ? -val : val);
 		return this;
@@ -450,7 +449,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @return	-1 if the absolute value of this number is less, 0 if it's equal, 1 if it's greater.
 	* @complexity	O(n)
 	*/
-	public int compareAbsTo(final BigIntHuldra a)
+	public int compareAbsTo(final BigInt a)
 	{
 		if(len>a.len) return 1;
 		if(len<a.len) return -1;
@@ -467,7 +466,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @return	-1 if the value of this number is less, 0 if it's equal, 1 if it's greater.
 	* @complexity	O(n)
 	*/
-	public int compareTo(final BigIntHuldra a)
+	public int compareTo(final BigInt a)
 	{
 		if(sign<0)
 		{
@@ -484,7 +483,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @return	true if the two numbers are equal, false otherwise.
 	* @complexity	O(n)
 	*/
-	public boolean equals(final BigIntHuldra a)
+	public boolean equals(final BigInt a)
 	{
 		if(len!=a.len) return false;
 		if(isZero() && a.isZero()) return true;
@@ -497,7 +496,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	@Override
 	public boolean equals(final Object o) //Todo: Equality on other Number objects?
 	{
-		if(o instanceof BigIntHuldra) return equals((BigIntHuldra)o);
+		if(o instanceof BigInt) return equals((BigInt)o);
 		return false;
 	}
 	/** {@inheritDoc}
@@ -1202,7 +1201,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param a	The number to add.
 	* @complexity	O(n)
 	*/
-	public void add(final BigIntHuldra a)
+	public void add(final BigInt a)
 	{
 		if(sign==a.sign){ addMag(a.dig,a.len); return; }
 		if(compareAbsTo(a)>=0)
@@ -1238,7 +1237,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param a	The number to subtract.
 	* @complexity	O(n)
 	*/
-	public void sub(final BigIntHuldra a) //Fix naming.
+	public void sub(final BigInt a) //Fix naming.
 	{
 		if(sign!=a.sign){ addMag(a.dig,a.len); return; }
 		if(compareAbsTo(a)>=0)
@@ -1277,7 +1276,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mul	The number to multiply with.
 	* @complexity	O(n^2) - O(n log n)
 	*/
-	public BigIntHuldra mul(final BigIntHuldra mul)
+	public BigInt mul(final BigInt mul)
 	{
 		if(isZero()) return this;
 
@@ -1305,7 +1304,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mul	The number to multiply with.
 	* @complexity	O(n^2)
 	*/
-	public void smallMul(final BigIntHuldra mul)
+	public void smallMul(final BigInt mul)
 	{
 		if(isZero()) return; //Remove?
 		if(mul.isZero()){ setToZero(); return; }
@@ -1329,7 +1328,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mul		The number to multiply with.
 	* @complexity		O(n^1.585)
 	*/
-	public void karatsuba(final BigIntHuldra mul) //Fix naming?
+	public void karatsuba(final BigInt mul) //Fix naming?
 	{
 		karatsuba(mul,false);
 	}
@@ -1341,7 +1340,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param parallel	true if we should try to parallelize the algorithm, false if we shouldn't.
 	* @complexity		O(n^1.585)
 	*/
-  public void karatsuba(final BigIntHuldra mul, final boolean parallel) {
+  public void karatsuba(final BigInt mul, final boolean parallel) {
 //    final long ts = System.nanoTime();
     if (mul.dig.length < len)
       mul.realloc(len);
@@ -1631,7 +1630,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param div	The number to divide with.
 	* @complexity	O(n^2)
 	*/
-	public void div(final BigIntHuldra div)
+	public void div(final BigInt div)
 	{
 		if(div.len==1){ sign *= div.sign; udiv(div.dig[0]); return; }
 
@@ -1653,7 +1652,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param div	The number to use in the division causing the remainder.
 	* @complexity	O(n^2)
 	*/
-	public void rem(final BigIntHuldra div)
+	public void rem(final BigInt div)
 	{
 		// -7/-3 = 2, 2*-3 + -1
 		// -7/3 = -2, -2*3 + -1
@@ -1679,19 +1678,19 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @return		The remainder.
 	* @complexity	O(n^2)
 	*/
-	public BigIntHuldra divRem(final BigIntHuldra div)
+	public BigInt divRem(final BigInt div)
 	{
 		int tmp = sign;
-		if(div.len==1){ sign *= div.sign; return new BigIntHuldra(tmp, udiv(div.dig[0])); }
+		if(div.len==1){ sign *= div.sign; return new BigInt(tmp, udiv(div.dig[0])); }
 
 		tmp = compareAbsTo(div);
 		if(tmp<0)
 		{
-			final BigIntHuldra cpy = new BigIntHuldra(sign,dig,len);
+			final BigInt cpy = new BigInt(sign,dig,len);
 			dig = new int[2]; len = 1; //setToZero()
 			return cpy;
 		}
-		if(tmp==0){ uassign(1, sign *= div.sign); return new BigIntHuldra(1,0); }
+		if(tmp==0){ uassign(1, sign *= div.sign); return new BigInt(1,0); }
 
 		final int[] q = new int[len-div.len+1];
 		if(len==dig.length) realloc(len+1); //We need an extra slot.
@@ -1704,7 +1703,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 		tmp = div.len;
 		while(tmp>1 && r[tmp-1]==0) --tmp;
 		sign *= div.sign;
-		return new BigIntHuldra(sign/div.sign, r, tmp);
+		return new BigInt(sign/div.sign, r, tmp);
 	}
 	/**
 	 * Sets this number to {@code (this mod m}).  This method
@@ -1713,7 +1712,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	 * @param  div The number to use in the division causing the remainder.
 	 * @see    #rem
 	 */
-	public BigIntHuldra mod(BigIntHuldra div) {
+	public BigInt mod(BigInt div) {
 		if (div.sign <= 0)
 			throw new ArithmeticException("BigInt: modulus not positive");
 
@@ -2176,7 +2175,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mask	The number to bitwise-and with.
 	* @complexity	O(n)
 	*/
-	public void and(final BigIntHuldra mask)
+	public void and(final BigInt mask)
 	{
 		if(sign>0)
 		{
@@ -2297,7 +2296,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mask	The number to bitwise-or with.
 	* @complexity	O(n)
 	*/
-	public void or(final BigIntHuldra mask)
+	public void or(final BigInt mask)
 	{
 		if(sign>0)
 		{
@@ -2404,7 +2403,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mask	The number to bitwise-xor with.
 	* @complexity	O(n)
 	*/
-	public void xor(final BigIntHuldra mask)
+	public void xor(final BigInt mask)
 	{
 		if(sign>0)
 		{
@@ -2531,7 +2530,7 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
 	* @param mask	The number to bitwise-and-not with.
 	* @complexity	O(n)
 	*/
-	public void andNot(final BigIntHuldra mask)
+	public void andNot(final BigInt mask)
 	{
 		final int mlen = Math.min(len, mask.len);
 		if(sign>0)
@@ -2643,18 +2642,18 @@ public class BigIntHuldra extends Number implements Comparable<BigIntHuldra>, Cl
   }
 
   public static int[] valueOf(final String s) {
-    return new BigIntHuldra(s).dig;
+    return new BigInt(s).dig;
   }
 
-  public BigIntHuldra neg() {
+  public BigInt neg() {
     sign = -sign;
     return this;
   }
 
   @Override
-  public BigIntHuldra clone() {
+  public BigInt clone() {
     try {
-      final BigIntHuldra clone = (BigIntHuldra)super.clone();
+      final BigInt clone = (BigInt)super.clone();
       clone.dig = dig.clone();
       return clone;
     }

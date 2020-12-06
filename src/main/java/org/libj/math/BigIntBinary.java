@@ -29,7 +29,10 @@
 
 package org.libj.math;
 
-abstract class BigIntBinary extends BigIntAddition {
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+abstract class BigIntBinary extends BigIntMagnitude {
   private static final long serialVersionUID = 6584645376198040730L;
 
   /**
@@ -80,6 +83,10 @@ abstract class BigIntBinary extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] shiftRight(final int[] val, final int num) {
+    return shiftRight(val, num, false);
+  }
+
+  static int[] shiftRight(final int[] val, final int num, final boolean inPlace) {
     if (num == 0)
       return val;
 
@@ -88,14 +95,14 @@ abstract class BigIntBinary extends BigIntAddition {
       return val;
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return num < 0 ? shiftLeft0(val, len, sig, -num) : shiftRight0(val, len, sig, num);
+    return num < 0 ? shiftLeft0(val, len, sig, -num, inPlace) : shiftRight0(val, len, sig, num);
   }
 
   private static int[] shiftRight0(final int[] val, int len, final boolean sig, final int num) {
     final int shiftBig = num >>> 5;
     // Special case: entire contents shifted off the end
     if (shiftBig >= len)
-      return sig ? setToZeroInPlace(val) : assign(val, sig, 1);
+      return sig ? setToZeroInPlace(val) : assignInPlace(val, sig, 1);
 
     final int shiftSmall = num & 31;
     boolean oneLost = false;
@@ -178,6 +185,10 @@ abstract class BigIntBinary extends BigIntAddition {
    * @complexity O(n)
    */
   public static int[] shiftLeft(final int[] val, final int num) {
+    return shiftLeft(val, num, false);
+  }
+
+  static int[] shiftLeft(final int[] val, final int num, final boolean inPlace) {
     if (num == 0)
       return val;
 
@@ -186,13 +197,13 @@ abstract class BigIntBinary extends BigIntAddition {
       return val;
 
     boolean sig = true; if (len < 0) { len = -len; sig = false; }
-    return num < 0 ? shiftRight0(val, len, sig, -num) : shiftLeft0(val, len, sig, num);
+    return num < 0 ? shiftRight0(val, len, sig, -num) : shiftLeft0(val, len, sig, num, inPlace);
   }
 
-  private static int[] shiftLeft0(int[] val, int len, boolean sig, final int num) {
+  private static int[] shiftLeft0(int[] val, int len, boolean sig, final int num, final boolean inPlace) {
     final int shiftBig = (num >>> 5) + 1;
     if (shiftBig > 1) {
-      val = bigShiftLeft(val, len, sig, shiftBig);
+      val = bigShiftLeft(val, len, sig, shiftBig, inPlace);
       sig = true; len = val[0]; if (len < 0) { len = -len; sig = false; }
     }
 
@@ -213,12 +224,13 @@ abstract class BigIntBinary extends BigIntAddition {
    * @param len The number of limbs of the number to shift.
    * @param sig The sign of the number to shift.
    * @param num The number of {@code bits / 32} by which to shift.
+   * @param inPlace Whether the operation should be performed in-place.
    * @return The length of the number, which may have changed due to the shift.
    * @complexity O(n)
    */
-  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, final int num) {
+  private static int[] bigShiftLeft(int[] val, final int len, final boolean sig, final int num, final boolean inPlace) {
     int newLen = len + num;
-    if (newLen > val.length) {
+    if (!inPlace && newLen > val.length) {
       final int[] tmp = alloc(newLen);
       System.arraycopy(val, 1, tmp, num, len);
       val = tmp;
@@ -1345,8 +1357,8 @@ abstract class BigIntBinary extends BigIntAddition {
     if (len == 0)
       return new byte[] {0};
 
-    final int byteLen = bitLength(val, len) / 8 + 1;
     int sig = 0; if (len < 0) { len = -len; sig = -1; }
+    final int byteLen = (int)(bitLength(val, len) / 8L + 1L);
     final int nzIndex = firstNonzeroIntNum(val, 1, len);
     final byte[] bytes = new byte[byteLen];
 
@@ -1383,6 +1395,28 @@ abstract class BigIntBinary extends BigIntAddition {
   }
 
   /**
+   * Returns a {@link BigInteger} representation of the provided
+   * {@linkplain BigInt#val() value-encoded number}.
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return A {@link BigInteger} representation of the provided
+   *         {@linkplain BigInt#val() value-encoded number}.
+   */
+  public static BigInteger toBigInteger(final int[] val) {
+    return new BigInteger(toByteArray(val, false));
+  }
+
+  /**
+   * Returns a {@link BigDecimal} representation of the provided {@linkplain BigInt#val() value-encoded number}.
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return A {@link BigDecimal} representation of the provided {@linkplain BigInt#val() value-encoded number}.
+   */
+  public static BigDecimal toBigDecimal(final int[] val) {
+    return new BigDecimal(toBigInteger(val));
+  }
+
+  /**
    * Returns the specified int of the little-endian two's complement
    * representation (int 0 is the least significant). The {@code int} number can
    * be arbitrarily high (values are logically preceded by infinitely many sign
@@ -1399,8 +1433,15 @@ abstract class BigIntBinary extends BigIntAddition {
     return sig < 0 ? n <= nzIndex ? -v : ~v : v;
   }
 
+  /**
+   * Returns the index of the first non-zero limb.
+   *
+   * @param mag The magnitude.
+   * @param off The offset.
+   * @param len The length.
+   * @return The index of the first non-zero limb.
+   */
   private static int firstNonzeroIntNum(final int[] mag, int off, int len) {
-    // Search for the first nonzero int
     len += off;
     for (; off < len && mag[off] == 0; ++off); // FIXME: Make more efficient
     return off;

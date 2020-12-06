@@ -21,7 +21,6 @@ import static org.libj.math.survey.AuditMode.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,337 +37,230 @@ public class DecimalPredicateTest extends DecimalTest {
   public void testEquals(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Equate `T` with `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("eq(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.equals(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.equals(b), o -> o),
-        d(long.class, (long a, long b) -> Decimal.eq(a, b, scaleBits), o -> o)
-      );
-    }
-  }
-
-  @Test
-  public void testSetScale(final AuditReport report) {
-    report.addComment(UNINSTRUMENTED.ordinal(), "Set scale of `T`.");
-
-    // Special test for Long.MIN_VALUE
-    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
-    final int iterations = 10000;
-    int progress = 0;
-    for (int i = 0; i < iterations; ++i) {
-      progress = progress(progress, i, i, iterations);
-
-      final short newScale = CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS));
-      final Decimal decimal = new Decimals.Decimal(Long.MIN_VALUE, CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS)));
-      final BigDecimal bigDecimal = decimal.toBigDecimal();
-      String bigDecimalString = null;
-      String decimalString = null;
-      int j = 0;
-      do {
-        if (j > 0) {
-          System.err.println(bigDecimalString + " != " + decimalString);
-          decimal.clear();
-        }
-
-        try {
-          final BigDecimal res = bigDecimal.setScale(newScale, RoundingMode.HALF_UP).stripTrailingZeros();
-          bigDecimalString = res.signum() == 0 ? "0" : CaseTest.DecimalCase.format.format(res).replaceAll("\\.?0+(E[-+0-9]*)$", "$1").replaceAll("E0$", "");
-        }
-        catch (final ArithmeticException e) {
-          bigDecimalString = null;
-        }
-
-        decimalString = decimal.setScale(newScale).toScientificString();
-      }
-      while (++j < 100 && (bigDecimalString == null ? decimalString != null : !bigDecimalString.equals(decimalString)));
-      assertEquals(bigDecimalString, decimal.setScale(newScale).toScientificString());
-    }
-
-    System.out.println();
-
-    final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("setScale(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, b -> (byte)b, (BigDecimal a, long b) -> a.setScale((byte)b, RoundingMode.HALF_UP), o -> o),
-        d(Decimal.class, this::toDecimal, b -> (byte)b, (Decimal a, long b) -> a.setScale((byte)b), o -> o),
-        d(long.class, a -> a, b -> (byte)b, (long a, long b) -> Decimal.setScale(a, (byte)b, defaultValue, scaleBits), o -> o == defaultValue ? null : o)
-      );
-    }
+    test("eq").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.equals(b), o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.equals(b), o -> o),
+      d(long.class, (long a, long b) -> Decimal.eq(a, b), o -> o)
+    );
   }
 
   @Test
   public void testCompareTo(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Compare `T` to `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("compare(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b), o -> o),
-        d(long.class, (long a, long b) -> Decimal.compare(a, b, scaleBits), (long o) -> o)
-      );
-    }
+    test("compareTo").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b), o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b), o -> o),
+      d(long.class, (long a, long b) -> Decimal.compare(a, b), (long o) -> o)
+    );
   }
 
   @Test
   public void testLt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`T` < `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("lt(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) < 0, o -> o),
-        d(long.class, (long a, long b) -> Decimal.lt(a, b, scaleBits), o -> o)
-      );
-    }
+    test("lt").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) < 0, o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) < 0, o -> o),
+      d(long.class, (long a, long b) -> Decimal.lt(a, b), o -> o)
+    );
   }
 
   @Test
   public void testGt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`T` > `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("gt(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) > 0, o -> o),
-        d(long.class, (long a, long b) -> Decimal.gt(a, b, scaleBits), o -> o)
-      );
-    }
+    test("gt").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) > 0, o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) > 0, o -> o),
+      d(long.class, (long a, long b) -> Decimal.gt(a, b), o -> o)
+    );
   }
 
   @Test
   public void testLte(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`T` <= `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("lte(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) <= 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) <= 0, o -> o),
-        d(long.class, (long a, long b) -> Decimal.lte(a, b, scaleBits), o -> o)
-      );
-    }
+    test("lte").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) <= 0, o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) <= 0, o -> o),
+      d(long.class, (long a, long b) -> Decimal.lte(a, b), o -> o)
+    );
   }
 
   @Test
   public void testGte(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`T` >= `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("gte(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) >= 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) >= 0, o -> o),
-        d(long.class, (long a, long b) -> Decimal.gte(a, b, scaleBits), o -> o)
-      );
-    }
+    test("gte").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.compareTo(b) >= 0, o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.compareTo(b) >= 0, o -> o),
+      d(long.class, (long a, long b) -> Decimal.gte(a, b), o -> o)
+    );
   }
 
   @Test
   public void testMax(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Maximum of `T` and `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("max(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.max(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.max(b), o -> o),
-        d(long.class, (long a, long b) -> Decimal.max(a, b, scaleBits), (long o) -> o)
-      );
-    }
+    test("max").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.max(b), o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.max(b), o -> o),
+      d(long.class, (long a, long b) -> Decimal.max(a, b), (long o) -> o)
+    );
   }
 
   @Test
   public void testMin(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Minimum of `T` and `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("min(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.min(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.min(b), o -> o),
-        d(long.class, (long a, long b) -> Decimal.min(a, b, scaleBits), (long o) -> o)
-      );
-    }
+    test("min").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (BigDecimal a, BigDecimal b) -> a.min(b), o -> o),
+      d(Decimal.class, this::toDecimal, this::toDecimal, (Decimal a, Decimal b) -> a.min(b), o -> o),
+      d(long.class, (long a, long b) -> Decimal.min(a, b), (long o) -> o)
+    );
   }
 
   @Test
   public void testPrecision(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Precision of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("precision(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.precision(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.precision(), String::valueOf),
-        d(long.class, (long a) -> Decimal.precision(a, scaleBits), String::valueOf)
-      );
-    }
+    test("precision").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.precision(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.precision(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.precision(a), String::valueOf)
+    );
   }
 
   @Test
   public void testHashCode(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Hash code of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("hashCode(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.hashCode(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.hashCode(), String::valueOf),
-        d(long.class, (long a) -> Decimal.hashCode(a, scaleBits), String::valueOf)
-      );
-    }
+    test("hashCode").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.hashCode(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.hashCode(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.hashCode(a), String::valueOf)
+    );
   }
 
   @Test
   public void testScale(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Scale of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("scale(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.scale(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.scale(), String::valueOf),
-        d(long.class, (long a) -> Decimal.scale(a, scaleBits), String::valueOf)
-      );
-    }
+    test("scale").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.scale(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.scale(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.scale(a), String::valueOf)
+    );
   }
 
   @Test
   public void testSignum(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Signum of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("signum(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.signum(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.signum(), String::valueOf),
-        d(long.class, (long a) -> Decimal.signum(a, scaleBits), String::valueOf)
-      );
-    }
+    test("signum").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.signum(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.signum(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.signum(a), String::valueOf)
+    );
   }
 
   @Test
   public void testByteValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`byte` valye of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("byteValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.byteValue(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.byteValue(), String::valueOf),
-        d(long.class, (long a) -> Decimal.byteValue(a, scaleBits), String::valueOf)
-      );
-    }
+    test("byteValue").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.byteValue(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.byteValue(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.byteValue(a), String::valueOf)
+    );
   }
 
   @Test
   public void testShortValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`short` valye of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("shortValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.shortValue(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.shortValue(), String::valueOf),
-        d(long.class, (long a) -> Decimal.shortValue(a, scaleBits), String::valueOf)
-      );
-    }
+    test("shortValue").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.shortValue(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.shortValue(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.shortValue(a), String::valueOf)
+    );
   }
 
   @Test
   public void testIntValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`int` valye of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("intValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.intValue(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.intValue(), String::valueOf),
-        d(long.class, (long a) -> Decimal.intValue(a, scaleBits), String::valueOf)
-      );
-    }
+    test("intValue").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.intValue(), (long a) -> String.valueOf(a)),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.intValue(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.intValue(a), String::valueOf)
+    );
   }
 
   @Test
   public void testLongValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`long` valye of `T`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("longValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, (long a) -> toBigDecimal(a).longValue(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.longValue(), String::valueOf),
-        d(long.class, (long a) -> Decimal.longValue(a, scaleBits), String::valueOf)
-      );
-    }
+    test("longValue").withAuditReport(report).withCases(
+      d(BigDecimal.class, (long a) -> toBigDecimal(a).longValue(), String::valueOf),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.longValue(), (long a) -> String.valueOf(a)),
+      d(long.class, (long a) -> Decimal.longValue(a), String::valueOf)
+    );
   }
 
   @Test
   public void testFloatValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`float` valye of `T`.");
 
-    // Special test for Long.MIN_VALUE
-    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
+    // Special test for Decimal.MIN_VALUE
+    System.out.println("[Decimal.MIN_VALUE]_________________________________________________________________________________");
     final int iterations = 100000;
     int progress = 0;
     for (int i = 0; i < iterations; ++i) {
-      final Decimal minDecimal = new Decimals.Decimal(Long.MIN_VALUE, CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS)));
+      final Decimal minDecimal = new Decimal(Decimal.MIN_SIGNIFICAND, CaseTest.DecimalCase.randomScale(Decimal.MIN_SIGNIFICAND));
       final BigDecimal minBigDecimal = minDecimal.toBigDecimal();
       assertEquals(minBigDecimal.floatValue(), minDecimal.floatValue(), 0);
       progress = progress(progress, i, i, iterations);
     }
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("floatValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.floatValue(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.floatValue(), String::valueOf),
-        d(long.class, (long a) -> Decimal.floatValue(a, scaleBits), String::valueOf)
-      );
-    }
+    test("floatValue").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.floatValue(), String::valueOf),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.floatValue(), String::valueOf),
+      d(long.class, (long a) -> Decimal.floatValue(a), String::valueOf)
+    );
   }
 
   @Test
   public void testDoubleValue(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`double` valye of `T`.");
 
-    // Special test for Long.MIN_VALUE
-    System.out.println("[Long.MIN_VALUE]____________________________________________________________________________________");
+    // Special test for Decimal.MIN_VALUE
+    System.out.println("[Decimal.MIN_VALUE]_________________________________________________________________________________");
     final int iterations = 100000;
     int progress = 0;
     for (int i = 0; i < iterations; ++i) {
-      final Decimal minDecimal = new Decimals.Decimal(Long.MIN_VALUE, CaseTest.DecimalCase.randomScale((byte)(i % Decimal.MAX_SCALE_BITS)));
+      final Decimal minDecimal = new Decimal(Decimal.MIN_SIGNIFICAND, CaseTest.DecimalCase.randomScale(Decimal.MIN_SIGNIFICAND));
       final BigDecimal minBigDecimal = minDecimal.toBigDecimal();
       assertEquals(minBigDecimal.doubleValue(), minDecimal.doubleValue(), 0);
       progress = progress(progress, i, i, iterations);
     }
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("doubleValue(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.doubleValue(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.doubleValue(), String::valueOf),
-        d(long.class, (long a) -> Decimal.doubleValue(a, scaleBits), String::valueOf)
-      );
-    }
+    test("doubleValue").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.doubleValue(), String::valueOf),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.doubleValue(), String::valueOf),
+      d(long.class, (long a) -> Decimal.doubleValue(a), String::valueOf)
+    );
   }
 
   @Test
   public void testToBigInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "`T` to `BigInt` or `BigInteger`.");
 
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("toBigInt(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.toBigInteger(), String::valueOf),
-        d(Decimal.class, this::toDecimal, (Decimal a) -> a.toBigInt(), BigInt::toString),
-        d(long.class, (long a) -> Decimal.toBigInt(a, scaleBits), BigInt::toString)
-      );
-    }
+    test("toBigInt").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> a.toBigInteger(), String::valueOf),
+      d(Decimal.class, this::toDecimal, (Decimal a) -> a.toBigInt(), BigInt::toString),
+      d(long.class, (long a) -> Decimal.toBigInt(a), BigInt::toString)
+    );
   }
 }

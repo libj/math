@@ -25,15 +25,26 @@ TARGET_LIB=$(TARGET_DIR)/lib$(TARGET_LIB_NAME)
 # Java Headers Directories
 JAVA_INCLUDE=$(shell echo $$JAVA_HOME)/include
 
-# Java Platform Dependant Header Directories
+# GCC
+#CC=gcc
+#CC_ARGS_QUAD=-lquadmath
+#CC_ARGS=-shared -Ofast -fPIC -axCORE-AVX512,CORE-AVX2,AVX -xSSE4.2 -axCORE-AVX2,AVX,SSE4.2
+
+# Intel
 CC=icc
-CC_ARGS=-static-intel -shared -fast -fp-model fast=2 -Wc
+CC_ARGS_QUAD=-Qoption,cpp,--extended_float_type
+CC_ARGS=$(CC_ARGS_QUAD) -static-intel -shared -fast -fp-model fast=2 -Wc
+
+# Java Platform Dependant Header Directories
+
+# Darwin
 LIB_EXT=.dylib
 JAVA_PLATFORM_INCLUDE=$(shell \
 	if test -d $(JAVA_INCLUDE)/darwin; then \
 		echo $(JAVA_INCLUDE)/darwin; \
 	fi;)
 
+# Linux
 ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 	CC_ARGS:=-fPIC $(CC_ARGS)
 	LIB_EXT=.so
@@ -43,10 +54,11 @@ ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 		fi;)
 endif
 
+# Windows
 ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 	TMP_DIR=target/c
 	CC=icl
-	CC_ARGS=-LD -MT -Qstd=c99 -Qipp -Qipp-link:static -O3 -fp:fast=2 /Fa$(TMP_DIR)/ /Fo$(TMP_DIR)/ /Fi$(TMP_DIR)/ -DPTW32_STATIC_LIB -I"$(SRC_DIR)/win32" $(SRC_DIR)/win32/libpthreadVC3.lib
+	CC_ARGS=-LD -MT -Qstd=c99 -Qipp -Qipp-link:static $(CC_ARGS_QUAD) -O3 -fp:fast=2 /Qlong-double /Fa$(TMP_DIR)/ /Fo$(TMP_DIR)/ /Fi$(TMP_DIR)/ -DPTW32_STATIC_LIB -I"$(SRC_DIR)/win32" $(SRC_DIR)/win32/libpthreadVC3.lib
 	LINK_ARGS=-link -implib:$(TMP_DIR)/libmath.lib
 	LIB_EXT=.dll
 	JAVA_PLATFORM_INCLUDE=$(shell \
@@ -56,9 +68,6 @@ ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 		fi;)
 endif
 
-# gcc: -shared -Ofast -fPIC
-# -axCORE-AVX512,CORE-AVX2,AVX -xSSE4.2
-# -axCORE-AVX2,AVX,SSE4.2
 BUILD=$(CC) -o $(TARGET_LIB)$(1)$(LIB_EXT) $(2) \
 	-I"$(JAVA_PLATFORM_INCLUDE)" \
 	-I"$(JAVA_INCLUDE)" \

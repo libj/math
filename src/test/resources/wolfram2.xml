@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<queryresult
+  success='true'
+  error='false'
+  numpods='2'
+  datatypes=''
+  timedout=''
+  timedoutpods=''
+  timing='0.7030000000000001'
+  parsetiming='0.233'
+  parsetimedout='false'
+  recalculate=''
+  id='MSP25911fhbbf589774a4ic0000232aai4agfaic60b'
+  host='https://www4f.wolframalpha.com'
+  server='30'
+  related='https://www4f.wolframalpha.com/api/v1/relatedQueries.jsp?id=MSPa25921fhbbf589774a4ic00001g586i87440ibd012487641487972069250'
+  version='2.6'>
+  <pod title='Input'
+    scanner='Identity'
+    id='Input'
+    position='100'
+    error='false'
+    numsubpods='1'>
+    <subpod title=''>
+      <plaintext>log(2^(32�67108864))</plaintext>
+    </subpod>
+    <expressiontypes count='1'>
+      <expressiontype name='Default' />
+    </expressiontypes>
+    <infos count='1'>
+      <info text='log(x) is the natural logarithm'>
+        <link url='http://reference.wolfram.com/language/ref/Log.html'
+          text='Documentation'
+          title='Mathematica' />
+        <link url='http://functions.wolfram.com/ElementaryFunctions/Log'
+          text='Properties'
+          title='Wolfram Functions Site' />
+        <link url='http://mathworld.wolfram.com/NaturalLogarithm.html'
+          text='Definition'
+          title='MathWorld' />
+      </info>
+    </infos>
+  </pod>
+  <pod title='Decimal approximation'
+    scanner='Numeric'
+    id='Result'
+    position='200'
+    error='false'
+    numsubpods='1'
+    primary='true'>
+    <subpod title=''>
+      <plaintext>1.48852223590978603574780639025178409583889536796045109933024... � 10^9</plaintext>
+    </subpod>
+    <expressiontypes count='1'>
+      <expressiontype name='Default' />
+    </expressiontypes>
+    <states count='1'>
+      <state name='More digits'
+        input='Result__More digits' />
+    </states>
+  </pod>
+</queryresult>

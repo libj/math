@@ -16,7 +16,6 @@
 
 package org.libj.math;
 
-import static org.junit.Assert.*;
 import static org.libj.math.Decimal.*;
 
 import java.math.BigDecimal;
@@ -26,14 +25,14 @@ import org.junit.Test;
 public class DecimalPredicateOperationTest extends DecimalOperationTest {
   private static final DecimalOperation<Short,Short> precision = new DecimalOperation<Short,Short>("precision", long.class, "precision(%s)") {
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Short expected, final Short actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Short expected, final Short actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
     }
 
     @Override
-    Short test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Short test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final short result = Decimal.precision(d1, scaleBits);
+      final short result = Decimal.precision(d1);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -49,14 +48,14 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final DecimalOperation<BigDecimal,BigDecimal> toBigDecimal = new DecimalOperation<BigDecimal,BigDecimal>("toBigDecimal", long.class, "toBigDecimal(%s)") {
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final BigDecimal actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final BigDecimal actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
     }
 
     @Override
-    BigDecimal test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    BigDecimal test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final BigDecimal result = Decimal.toBigDecimal(d1, scaleBits);
+      final BigDecimal result = Decimal.toBigDecimal(d1);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -73,14 +72,14 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final DecimalOperation<Double,Double> doubleValue = new DecimalOperation<Double,Double>("doubleValue", long.class, "doubleValue(%s)") {
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Double expected, final Double actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Double expected, final Double actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return expected.compareTo(actual) == 0 ? null : BigDecimal.ONE;
     }
 
     @Override
-    Double test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Double test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final double result = Decimal.doubleValue(d1, scaleBits);
+      final double result = Decimal.doubleValue(d1);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -96,14 +95,14 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final DecimalOperation<Integer,Integer> compare = new DecimalOperation<Integer,Integer>("compare", long.class, "compare(%s, %s)") {
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Integer expected, final Integer actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Integer expected, final Integer actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return expected == actual ? null : BigDecimal.ONE;
     }
 
     @Override
-    Integer test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Integer test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final int result = compare(d1, d2, scaleBits);
+      final int result = compare(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -123,16 +122,16 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
     }
 
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final Long actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
-      return expected.compareTo(toBigDecimal(actual, scaleBits)) == 0 ? null : BigDecimal.ONE;
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final Long actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+      return expected.compareTo(toBigDecimal(actual)) == 0 ? null : BigDecimal.ONE;
     }
   }
 
   private static final PredicateOperation min = new PredicateOperation("min", long.class, "<min>") {
     @Override
-    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final long result = min(d1, d2, scaleBits);
+      final long result = min(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -148,9 +147,9 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final PredicateOperation max = new PredicateOperation("max", long.class, "<max>") {
     @Override
-    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final long result = max(d1, d2, scaleBits);
+      final long result = max(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -170,16 +169,16 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
     }
 
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Boolean expected, final Boolean actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final Boolean expected, final Boolean actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return expected == actual ? null : BigDecimal.ONE;
     }
   }
 
   private static final InequalityOperation eq = new InequalityOperation("eq", long.class, "%s = %s") {
     @Override
-    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final boolean result = eq(d1, d2, scaleBits);
+      final boolean result = eq(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -195,9 +194,9 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final InequalityOperation lt = new InequalityOperation("lt", long.class, "%s < %s") {
     @Override
-    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final boolean result = lt(d1, d2, scaleBits);
+      final boolean result = lt(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -213,9 +212,9 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final InequalityOperation lte = new InequalityOperation("lte", long.class, "%s <= %s") {
     @Override
-    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final boolean result = lte(d1, d2, scaleBits);
+      final boolean result = lte(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -231,9 +230,9 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final InequalityOperation gt = new InequalityOperation("gt", long.class, "%s > %s") {
     @Override
-    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final boolean result = gt(d1, d2, scaleBits);
+      final boolean result = gt(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -249,9 +248,9 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final InequalityOperation gte = new InequalityOperation("gte", long.class, "%s >= %s") {
     @Override
-    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Boolean test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final boolean result = gte(d1, d2, scaleBits);
+      final boolean result = gte(d1, d2);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -267,14 +266,14 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   private static final DecimalOperation<String,String> toString = new DecimalOperation<String,String>("toString", long.class, "toString(%s)") {
     @Override
-    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final String expected, final String actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+    BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final String expected, final String actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
       return new BigDecimal(expected).compareTo(new BigDecimal(actual)) == 0 ? null : BigDecimal.ONE;
     }
 
     @Override
-    String test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    String test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       final long ts = System.nanoTime();
-      final String result = Decimal.toString(d1, scaleBits);
+      final String result = Decimal.toString(d1);
       time[0] += System.nanoTime() - ts;
       return result;
     }
@@ -345,9 +344,6 @@ public class DecimalPredicateOperationTest extends DecimalOperationTest {
 
   @Test
   public void testToString() {
-    final byte scaleBits = 7;
-    assertEquals("10000000000E-43", Decimal.toString(3098476553630901248L, scaleBits));
-    assertEquals("72057594037927935E-40", Decimal.toString(2954361355555045375L, scaleBits));
     test(toString);
   }
 }

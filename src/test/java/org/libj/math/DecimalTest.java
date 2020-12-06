@@ -20,25 +20,79 @@ import java.math.BigDecimal;
 
 import org.libj.console.Ansi;
 import org.libj.console.Ansi.Color;
-import org.libj.test.TestAide;
 
 abstract class DecimalTest extends NumericCaseTest {
-  static final int MAX_SCALE_BITS = TestAide.isInSurefireTest() ? 5 : TestAide.isInCiTest() ? 12 : Decimal.MAX_SCALE_BITS;
-
-  static int skip(final byte scaleBits) {
+  static int skip(final int scaleBits) {
     return (int)Math.pow(scaleBits, scaleBits / 9d);
   }
 
   BigDecimal toBigDecimal(final long decimal) {
-    return Decimal.toBigDecimal(decimal, DecimalCase.scaleBitsLocal.get());
+    return Decimal.toBigDecimal(decimal);
   }
 
   Decimal toDecimal(final long decimal) {
-    return new Decimals.Decimal(decimal, DecimalCase.scaleBitsLocal.get());
+    return new Decimal(decimal);
   }
 
-  public long nz(final long d) {
-    return d != 0 ? d : 1;
+  long lim(final long dec, final long maxSignificand, final int maxScale) {
+    return lim(dec, maxSignificand, maxScale, true);
+  }
+
+  long ulim(final long dec, final long maxSignificand, final int maxScale) {
+    return lim(dec, maxSignificand, maxScale, false);
+  }
+
+  private static long lim(final long dec, final long maxSignificand, final int maxScale, final boolean signed) {
+    long significand = Decimal.significand(dec);
+    if (significand == 0)
+      return 0;
+
+    if (!signed)
+      significand = Math.abs(significand);
+
+    boolean changed = false;
+    if (changed = (significand <= -maxSignificand || maxSignificand <= significand))
+      significand = significand % maxSignificand;
+
+    if (significand == 0)
+      return 0;
+
+    short scale = Decimal.scale(dec, significand);
+    if (changed |= (scale <= -maxScale || maxScale <= scale))
+      scale = (short)(maxScale == 0 ? 0 : scale % maxScale);
+
+    return changed ? Decimal.valueOf(significand, scale, 0) : dec;
+  }
+
+  String toDecimalString(final long decimal) {
+    final Decimal dec = new Decimal(decimal);
+    if (shouldScale[0])
+      dec.significand *= 9;
+
+    if (shouldScale[1])
+      dec.scale *= 9;
+
+    return shouldScale[2] ? dec.toScientificString() : dec.toString();
+  }
+
+  float toDecimalFloat(final long decimal) {
+    final Decimal dec = toDecimal(decimal);
+    // Have to reduce the scale, otherwise floatValue() returns +/- Infinity
+    dec.scale /= 12;
+    return dec.floatValue();
+  }
+
+  double toDecimalDouble(final long decimal) {
+    return toDecimal(decimal).doubleValue();
+  }
+
+  public long nz(final long v) {
+    return v != 0 ? v : 1;
+  }
+
+  public long dnz(final long dec) {
+    final long v = FixedPoint.significand(dec);
+    return v != 0 ? dec : Decimal.valueOf(1, FixedPoint.scale(dec), 0);
   }
 
   @Override

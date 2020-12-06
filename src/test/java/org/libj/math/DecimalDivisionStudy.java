@@ -188,4 +188,30 @@ public class DecimalDivisionStudy {
       test3(v1, v2, zds, x, y, buf);
     }
   }
+
+  public static double getMantissa(final double x, final int exp) {
+    return x / Math.pow(2, exp);
+  }
+
+  @Test
+  public void testFloatingDecimal() {
+    for (int i = 0; i < 10; ++i) {
+      final double v = random.nextDouble() / random.nextLong();
+      final int exp2 = Math.getExponent(v);
+
+      final double exp = exp2 * Constants.LOG_2 / Constants.LOG_10;
+      final double exp10f = Math.floor(exp);
+      final double rem10 = exp - exp10f;
+      final int exp10 = (int)exp10f;
+
+      long x = 1000000000000000000L;
+      final double man2 = getMantissa(v, exp2);
+      final double man10 = man2 * Math.exp((exp10f + rem10 - exp10) * Constants.LOG_10);
+
+      System.err.println(v);
+      System.err.println(man2 * Math.pow(2, exp2) + " " + man2 + " " + man2);
+      System.err.println(man10 + " " + exp10);
+      System.err.println("----");
+    }
+  }
 }

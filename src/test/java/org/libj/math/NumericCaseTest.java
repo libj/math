@@ -26,7 +26,7 @@ public abstract class NumericCaseTest extends CaseTest {
   protected static final double shouldBeEqualFactor = 0; // 0.1;
   protected static final double shouldInflateFactor = 0; // 0.2;
 
-  protected static boolean shoudlScale;
+  protected static boolean[] shouldScale = new boolean[3];
   protected static boolean shouldInflate;
   protected static boolean shouldBeEqual;
 
@@ -118,7 +118,9 @@ public abstract class NumericCaseTest extends CaseTest {
 
   @Override
   public void onSuccess() {
-    shoudlScale = random.nextDouble() < shouldScaleFactor;
+    for (int i = 0; i < shouldScale.length; ++i)
+      shouldScale[i] = random.nextDouble() < shouldScaleFactor;
+
     shouldInflate = random.nextDouble() < shouldInflateFactor;
     shouldBeEqual = random.nextDouble() < shouldBeEqualFactor;
   }

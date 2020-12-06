@@ -23,24 +23,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 public class DecimalAdditionOperationTest extends DecimalOperationTest {
-  private static final BigDecimal[] epsilon = {
-    D("5E-16"),
-    D("5E-16"),
-    D("3E-14"),
-    D("4E-15"),
-    D("3E-15"),
-    D("5E-15"),
-    D("2E-12"),
-    D("2E-12"),
-    D("7E-13"),
-    D("1E-11"),
-    D("2E-11"),
-    D("1E-12"),
-    D("2E-11"),
-    D("6E-12"),
-    D("7E-12"),
-    D("4E-12")
-  };
+  private static final BigDecimal[] epsilon = {D("0")};
 
   static abstract class AdditiveOperation extends DecimalArithmeticOperation {
     AdditiveOperation(final String label, final Class<?> arg, final String operator) {
@@ -55,9 +38,9 @@ public class DecimalAdditionOperationTest extends DecimalOperationTest {
 
   private static final DecimalArithmeticOperation add = new AdditiveOperation("add", long.class, "%s + %s") {
     @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = add(ld1, ld2, defaultValue, scaleBits);
+      final long result = add(ld1, ld2, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;
@@ -76,9 +59,9 @@ public class DecimalAdditionOperationTest extends DecimalOperationTest {
 
   private static final DecimalArithmeticOperation sub = new AdditiveOperation("sub", long.class, "%s - %s") {
     @Override
-    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Long test(final long ld1, final long ld2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = sub(ld1, ld2, defaultValue, scaleBits);
+      final long result = sub(ld1, ld2, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

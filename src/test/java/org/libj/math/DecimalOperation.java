@@ -41,61 +41,49 @@ abstract class DecimalOperation<T,C> {
   }
 
   abstract C control(BigDecimal bd1, BigDecimal bd2, long[] time);
-  abstract T test(long d1, long d2, BigDecimal bd1, BigDecimal bd2, byte scaleBits, long defaultValue, long[] time);
-  abstract BigDecimal run(BigDecimal bd1, BigDecimal bd2, C expected, T actual, byte scaleBits, long defaultValue, BigDecimal[] errors, boolean[] failures);
+  abstract T test(long d1, long d2, BigDecimal bd1, BigDecimal bd2, long defaultValue, long[] time);
+  abstract BigDecimal run(BigDecimal bd1, BigDecimal bd2, C expected, T actual, long defaultValue, BigDecimal[] errors, boolean[] failures);
 
   boolean lockScale() {
     return false;
   }
 
-  int maxValuePower(final byte scaleBits) {
-    return valueBits(scaleBits);
-  }
-
-  long randomBounded(final long min, final long max, final short scale, final byte scaleBits) {
+  long randomBounded(final long min, final long max, final short scale) {
     if (min > max)
       throw new IllegalArgumentException();
 
-    final int valueBits = valueBits(scaleBits);
-    long value = min != max ? (long)(random.nextDouble() * (max - min)) + min : min;
-    if (value < Decimal.minValue(valueBits))
-      value = Decimal.minValue(valueBits);
-    else if (value > Decimal.maxValue(valueBits))
-      value = Decimal.maxValue(valueBits);
+    long significand = min != max ? (long)(random.nextDouble() * (max - min)) + min : min;
+    if (significand < Decimal.MIN_SIGNIFICAND)
+      significand = Decimal.MIN_SIGNIFICAND;
+    else if (significand > Decimal.MAX_SIGNIFICAND)
+      significand = Decimal.MAX_SIGNIFICAND;
 
     final long defaultValue = random.nextLong();
-    final long result = encode(value, scale, defaultValue, scaleBits);
+    final long result = valueOf(significand, scale, defaultValue);
     if (result == defaultValue) {
-      encode(value, scale, defaultValue, scaleBits);
+      valueOf(significand, scale, defaultValue);
       throw new IllegalStateException();
     }
 
     return result;
   }
 
-  final long randomEncoded(final byte scaleBits) {
+  final long randomEncoded() {
     final long defaultValue = random.nextLong();
-    final long value = randomValue(maxValuePower(scaleBits));
-    final short scale = randomScale(scaleBits);
-    final long result = encode(value, scale, defaultValue, scaleBits);
+    final long significand = randomSignificand();
+    final short scale = randomScale();
+    final long result = valueOf(significand, scale, defaultValue);
     if (result == defaultValue) {
-      randomScale(scaleBits);
-      encode(value, scale, defaultValue, scaleBits);
+      randomScale();
+      valueOf(significand, scale, defaultValue);
       throw new IllegalStateException();
     }
 
     return result;
   }
 
-  short randomScale(final byte bits) {
-    if (bits <= 1)
-      return 0;
-
-    if (bits == 2)
-      return (short)(Math.random() < 0.5 ? -1 : 0);
-
-    final short maxScale = Decimal.maxScale[bits];
-    final double scale = random.nextDouble() * maxScale;
+  short randomScale() {
+    final double scale = random.nextDouble() * (Decimal.MAX_PSCALE - 18);
     return (short)((Math.random() < 0.5 ? -1 : 1) * scale);
   }
 
@@ -143,15 +131,15 @@ abstract class DecimalOperation<T,C> {
     logger.info(f + " | " + l + " | " + b  + " | count=" + c + " | perf=" + perf + " | error=" + e + builder);
   }
 
-  String format1(final long value, final short scale) {
-    return Decimal.toString(value, scale);
+  String format1(final long significand, final short scale) {
+    return Decimal.toString(significand, scale);
   }
 
-  String format2(final long value, final short scale) {
-    return Decimal.toString(value, scale);
+  String format2(final long significand, final short scale) {
+    return Decimal.toString(significand, scale);
   }
 
-  final String toString(final long v1, final short s1, final long v2, final short s2) {
-    return String.format(operator, format1(v1, s1), format2(v2, s2));
+  final String toString(final long significand1, final short scale1, final long significand2, final short scale2) {
+    return String.format(operator, format1(significand1, scale1), format2(significand2, scale2));
   }
 }

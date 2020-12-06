@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:wa="https://products.wolframalpha.com/api/explorer"
+  targetNamespace="https://products.wolframalpha.com/api/explorer"
+  elementFormDefault="qualified">
+  <xs:element name="queryresult">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="wa:pod"/>
+      </xs:sequence>
+      <xs:attribute name="datatypes" use="required"/>
+      <xs:attribute name="error" use="required" type="xs:boolean"/>
+      <xs:attribute name="host" use="required" type="xs:anyURI"/>
+      <xs:attribute name="id" use="required"/>
+      <xs:attribute name="numpods" use="required" type="xs:integer"/>
+      <xs:attribute name="parsetimedout" use="required" type="xs:boolean"/>
+      <xs:attribute name="parsetiming" use="required" type="xs:decimal"/>
+      <xs:attribute name="recalculate" use="required"/>
+      <xs:attribute name="related" use="required" type="xs:anyURI"/>
+      <xs:attribute name="server" use="required" type="xs:integer"/>
+      <xs:attribute name="success" use="required" type="xs:boolean"/>
+      <xs:attribute name="timedout" use="required"/>
+      <xs:attribute name="timedoutpods" use="required"/>
+      <xs:attribute name="timing" use="required" type="xs:decimal"/>
+      <xs:attribute name="version" use="required" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pod">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="wa:subpod"/>
+        <xs:element ref="wa:expressiontypes"/>
+        <xs:choice>
+          <xs:element ref="wa:infos"/>
+          <xs:element ref="wa:states"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="error" use="required" type="xs:boolean"/>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="numsubpods" use="required" type="xs:integer"/>
+      <xs:attribute name="position" use="required" type="xs:integer"/>
+      <xs:attribute name="primary" type="xs:boolean"/>
+      <xs:attribute name="scanner" use="required" type="xs:NCName"/>
+      <xs:attribute name="title" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="subpod">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="wa:plaintext"/>
+      </xs:sequence>
+      <xs:attribute name="title" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="plaintext" type="xs:string"/>
+  <xs:element name="expressiontypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="wa:expressiontype"/>
+      </xs:sequence>
+      <xs:attribute name="count" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="expressiontype">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="infos">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="wa:info"/>
+      </xs:sequence>
+      <xs:attribute name="count" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="info">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="wa:link"/>
+      </xs:sequence>
+      <xs:attribute name="text" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="link">
+    <xs:complexType>
+      <xs:attribute name="text" use="required" type="xs:NCName"/>
+      <xs:attribute name="title" use="required"/>
+      <xs:attribute name="url" use="required" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="states">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="wa:state"/>
+      </xs:sequence>
+      <xs:attribute name="count" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="state">
+    <xs:complexType>
+      <xs:attribute name="input" use="required"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 
-public class BigIntegerHack {
+public class BigIntegerStudy {
   private static final Method multiplyToomCook3;
   private static final Field mag;
 

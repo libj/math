@@ -46,6 +46,26 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.jaxsb</groupId>
+        <artifactId>jaxsb-maven-plugin</artifactId>
+        <version>2.1.7-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>jaxsb-generate</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+            <configuration>
+              <destDir>${project.build.directory}/generated-test-sources/jaxsb</destDir>
+              <schemas>
+                <schema>src/test/resources/wolfram.xsd</schema>
+              </schemas>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -91,6 +111,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jaxsb</groupId>
+      <artifactId>generator</artifactId>
+      <version>2.1.7-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.byteman</groupId>
       <artifactId>byteman</artifactId>
       <version>4.0.12</version>
@@ -112,6 +138,12 @@
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
       <version>4.3.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>30.0-jre</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

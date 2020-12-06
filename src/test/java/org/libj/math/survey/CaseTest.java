@@ -33,10 +33,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BiFunction;
+import java.util.function.DoubleFunction;
+import java.util.function.DoubleToLongFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.LongFunction;
+import java.util.function.LongToDoubleFunction;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 
 import org.junit.internal.ArrayComparisonFailure;
 import org.libj.console.Ansi;
@@ -44,9 +48,9 @@ import org.libj.console.Ansi.Color;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 import org.libj.math.BigInt;
-import org.libj.math.BigIntHuldra;
+import org.libj.math.Decimal;
 import org.libj.math.DecimalOperationTest;
-import org.libj.math.Decimals.Decimal;
+import org.libj.math.FixedPointProxy;
 import org.libj.test.TestAide;
 import org.libj.util.CollectionUtil;
 import org.libj.util.function.BiIntFunction;
@@ -54,7 +58,10 @@ import org.libj.util.function.BiLongFunction;
 import org.libj.util.function.BiLongToLongFunction;
 import org.libj.util.function.BiObjToIntFunction;
 import org.libj.util.function.BiObjToLongFunction;
+import org.libj.util.function.FloatFunction;
+import org.libj.util.function.FloatToLongFunction;
 import org.libj.util.function.IntToIntFunction;
+import org.libj.util.function.LongToFloatFunction;
 import org.libj.util.function.LongToLongFunction;
 import org.libj.util.function.ObjIntFunction;
 import org.libj.util.function.ObjIntToIntFunction;
@@ -99,6 +106,12 @@ public abstract class CaseTest {
   private static int skip(final int precision, int skip) {
     skip = Math.min((int)Math.pow(precision, Math.pow(precision, 0.19) / 10d), 5000);
     return random.nextInt(skip) + 1;
+  }
+
+  private static RoundingMode rm = RoundingMode.HALF_UP;
+
+  public void setRoundingMode(final RoundingMode rm) {
+    CaseTest.rm = rm;
   }
 
   public boolean initialized() {
@@ -231,6 +244,12 @@ public abstract class CaseTest {
       if (obj instanceof Integer)
         return Numbers.precision((Integer)obj);
 
+      if (obj instanceof Float)
+        return new BigDecimal((Float)obj).precision();
+
+      if (obj instanceof Double)
+        return new BigDecimal((Double)obj).precision();
+
       if (obj instanceof Long)
         return Numbers.precision((Long)obj);
 
@@ -242,8 +261,8 @@ public abstract class CaseTest {
         return val.precision();
       }
 
-      if (obj instanceof BigIntHuldra)
-        return ((BigIntHuldra)obj).precision();
+      if (obj instanceof org.huldra.math.BigInt)
+        return ((org.huldra.math.BigInt)obj).precision();
 
       if (obj instanceof BigInt)
         return ((BigInt)obj).precision();
@@ -320,13 +339,16 @@ public abstract class CaseTest {
         }
         else {
           error = (epsilon == null || epsilon.scale() == 0) && previous.equals(o) ? null : checkError(previous, previousType, o, resultType);
-          if (error != null && error.compareTo(epsilon) > 0) {
+          if (error != null && (epsilon == null || error.compareTo(epsilon) > 0)) {
             final StringBuilder message = new StringBuilder("\n");
             message.append(label).append('\n');
             message.append("in1: ").append(toExactString(in1, resultType)).append('\n');
             message.append("in2: ").append(toExactString(in2, previousType)).append('\n');
-            message.append(toDetailString(previous, resultType)).append('\n').append(toDetailString(o, previousType)).append("\nerror: ").append(error);
-            assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), toDetailString(previous, resultType), toDetailString(o, previousType));
+            final String x = toDetailString(previous, resultType);
+            final String y = toDetailString(o, previousType);
+            previous = null; // Reset previous so it doesn't mess up debugging
+            message.append(x).append('\n').append(y).append("\nerror: ").append(error);
+            assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), x, y);
           }
         }
       }
@@ -372,6 +394,9 @@ public abstract class CaseTest {
 
       if (o1 instanceof Boolean)
         return o1.toString();
+
+      if (o1 instanceof BigDecimal || o1 instanceof Decimal)
+        return toExactString(o1, resultType);
 
       throw new UnsupportedOperationException("Unsupported type: " + o1.getClass().getName());
     }
@@ -566,7 +591,7 @@ public abstract class CaseTest {
 
             time = System.nanoTime() - time - overhead;
           }
-          catch (final ArithmeticException e) {
+          catch (final ArithmeticException | IllegalArgumentException e) {
             time = System.nanoTime() - time - overhead;
           }
 
@@ -767,7 +792,7 @@ public abstract class CaseTest {
 
             time = System.nanoTime() - time - overhead;
           }
-          catch (final ArithmeticException e) {
+          catch (final ArithmeticException | IllegalArgumentException e) {
             time = System.nanoTime() - time - overhead;
           }
 
@@ -786,30 +811,23 @@ public abstract class CaseTest {
   }
 
   public static class DecimalCase<S,A,B,R,O> extends Case<S,long[],Decimal,R,O> {
-    public static final ThreadLocal<Byte> scaleBitsLocal = new ThreadLocal<>();
+    private static final byte maxValuePower = 52;
 
-    static long randomValue(final int maxValuePower) {
+    static long randomValue() {
       final long maxValue = DecimalOperationTest.pow2[maxValuePower];
       return (long)((Math.random() < 0.5 ? -1 : 1) * random.nextDouble() * maxValue);
     }
 
-    public static short randomScale(final byte bits) {
-      if (bits <= 1)
-        return 0;
-
-      if (bits == 2)
-        return (short)(Math.random() < 0.5 ? -1 : 0);
-
-      final short maxScale = Decimal.maxScale(bits);
-      final double scale = random.nextDouble() * maxScale;
+    public static short randomScale(final long value) {
+      final double scale = random.nextDouble() * (FixedPointProxy.MAX_PSCALE - Numbers.precision(value));
       return (short)((Math.random() < 0.5 ? -1 : 1) * scale);
     }
 
-    public static long randomEncoded(final byte scaleBits) {
+    public static long randomEncoded() {
       final long defaultValue = random.nextLong();
-      final long value = randomValue(Decimal.valueBits(scaleBits));
-      final short scale = randomScale(scaleBits);
-      final long decimal = Decimal.encode(value, scale, defaultValue, scaleBits);
+      final long value = randomValue();
+      final short scale = randomScale(value);
+      final long decimal = Decimal.valueOf(value, scale, defaultValue);
       if (decimal == defaultValue)
         throw new IllegalStateException();
 
@@ -822,12 +840,6 @@ public abstract class CaseTest {
     private final long[] inputs = readErrorFile(new long[3]);
     private boolean specialDone;
 
-    private byte scaleBits;
-    private byte valueBits;
-    private long minValue;
-    private long maxValue;
-    private short minScale;
-    private short maxScale;
     private int MAX_PRECISION;
 
     DecimalCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Object out) {
@@ -835,29 +847,23 @@ public abstract class CaseTest {
     }
 
     void init() {
-      this.scaleBits = inputs[2] != 0 ? (byte)inputs[2] : scaleBitsLocal.get();
-      this.valueBits = (byte)Decimal.valueBits(scaleBits);
-      this.minValue = Decimal.minValue(valueBits);
-      this.maxValue = Decimal.maxValue(valueBits);
-      this.minScale = Decimal.minScale(scaleBits);
-      this.maxScale = Decimal.maxScale(scaleBits);
-      this.MAX_PRECISION = Numbers.precision(this.minValue);
+      this.MAX_PRECISION = Numbers.precision(FixedPointProxy.MIN_VALUE);
     }
 
     @Override
     protected String toExactString(final Object o1, final Class<?> resultType) {
       if (o1 instanceof BigDecimal)
-        return conform((BigDecimal)o1, resultType);
+        return conform((BigDecimal)o1);
 
       if (o1 instanceof Decimal) {
         if (resultType != Long.class)
           return ((Decimal)o1).toScientificString();
 
-        return conform(((Decimal)o1).toBigDecimal(), resultType);
+        return conform(((Decimal)o1).toBigDecimal());
       }
 
       if (o1 instanceof Long)
-        return Decimal.toScientificString((Long)o1, scaleBits);
+        return Decimal.toScientificString((Long)o1);
 
       return super.toExactString(o1, resultType);
     }
@@ -868,46 +874,23 @@ public abstract class CaseTest {
         return (String)o1;
 
       if (o1 instanceof Long)
-        return Decimal.toScientificString((Long)o1, scaleBits);
-
-      if (o1 instanceof BigDecimal || o1 instanceof Decimal)
-        return toExactString(o1, resultType);
+        return Decimal.toScientificString((Long)o1);
 
       return super.toDetailString(o1, resultType);
     }
 
     public static final DecimalFormat format = new DecimalFormat("0E0");
+    private static final byte px = Numbers.precision(FixedPointProxy.MIN_VALUE);
+    private static final BigInteger minValue = BigInteger.valueOf(FixedPointProxy.MIN_VALUE);
+    private static final BigInteger maxValue = BigInteger.valueOf(FixedPointProxy.MAX_VALUE);
 
     static {
-      format.setRoundingMode(RoundingMode.HALF_UP);
+      format.setRoundingMode(rm);
       format.setMinimumFractionDigits(20);
       format.setPositivePrefix("");
     }
 
-    private String conform(BigDecimal o1, final Class<?> resultType) {
-      final byte px;
-      final short minScale;
-      final short maxScale;
-      final BigInteger minValue;
-      final BigInteger maxValue;
-      if (resultType == Decimal.class || resultType == null) {
-        px = Numbers.precision(Long.MIN_VALUE);
-        minValue = BigInteger.valueOf(Long.MIN_VALUE);
-        maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-        minScale = Short.MIN_VALUE;
-        maxScale = Short.MAX_VALUE;
-      }
-      else if (resultType == Long.class) {
-        px = Numbers.precision(this.minValue);
-        minValue = BigInteger.valueOf(this.minValue);
-        maxValue = BigInteger.valueOf(this.maxValue);
-        minScale = this.minScale;
-        maxScale = this.maxScale;
-      }
-      else {
-        throw new UnsupportedOperationException(resultType.getName());
-      }
-
+    private static String conform(BigDecimal o1) {
       if (o1.signum() == 0)
         return "0";
 
@@ -928,13 +911,30 @@ public abstract class CaseTest {
       }
 
       BigDecimal y = o1.scaleByPowerOfTen(o1.scale());
+      BigDecimal z = y;
       BigInteger bi;
-      for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(minValue) < 0 : bi.compareTo(maxValue) > 0; ++i, --scale) {
-        y = o1.scaleByPowerOfTen(o1.scale()).divide(e10[i], RoundingMode.HALF_UP);
+      try {
+        for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(minValue) < 0 : bi.compareTo(maxValue) > 0; ++i, --scale) {
+          // y = z.divide(e10[i], rm); // This variation makes BigDecimal consider all of e10[i] when doing rounding
+
+          // This variation makes BigDecimal consider only e10[1] when doing rounding
+          // This is preferred for Decimal, because Decimal can only assert it has enough precision to know how to round e10[1]
+          y = z;
+          if (i > 1)
+            y = y.divide(e10[i - 1], RoundingMode.DOWN);
+
+            y = y.divide(e10[1], rm);
+        }
+      }
+      catch (final ArithmeticException e) {
+        return null;
       }
 
-      y = y.setScale(0, RoundingMode.HALF_UP);
-      y = y.scaleByPowerOfTen(-scale);
+      y = y.setScale(0, rm);
+      y = y.scaleByPowerOfTen(-scale).stripTrailingZeros();
+
+      if (y.scale() - y.precision() < FixedPointProxy.MIN_PSCALE)
+        return null;
 
       final BigDecimal limit = new BigDecimal(y.signum() < 0 ? minValue : maxValue);
       int totalScale = y.scale() < 0 ? y.scale() - y.precision() + px : y.scale();
@@ -942,20 +942,16 @@ public abstract class CaseTest {
       if (y.precision() == Numbers.precision(maxValue)) {
         final int c = y.compareTo(limit.scaleByPowerOfTen(-totalScale));
         if (y.signum() < 0 ? c < 0 : c > 0)
-          y.setScale(--totalScale, RoundingMode.HALF_UP);
+          y.setScale(--totalScale, rm);
       }
 
-      if (totalScale > maxScale) {
-        final int diff = totalScale - maxScale;
-        final int p = Numbers.precision(y);
-        if (p <= diff)
-          return null;
+      totalScale -= y.stripTrailingZeros().precision();
+      if (totalScale > FixedPointProxy.MAX_PSCALE)
+        return null;
 
-        y = y.setScale(y.scale() - diff, RoundingMode.HALF_UP);
-      }
-      else if (totalScale < minScale) {
-        final int diff = minScale - totalScale;
-        y = y.setScale(y.scale() + diff, RoundingMode.HALF_UP);
+      if (totalScale < FixedPointProxy.MIN_PSCALE) {
+        final int diff = FixedPointProxy.MIN_PSCALE - totalScale;
+        y = y.setScale(y.scale() + diff, rm);
         if (y.precision() > Numbers.precision(maxValue)) {
           final int c = y.compareTo(limit.scaleByPowerOfTen(-y.scale()));
           if (y.signum() < 0 ? c < 0 : c > 0)
@@ -963,16 +959,16 @@ public abstract class CaseTest {
         }
       }
 
-      return format.format(y).replaceAll("\\.?0+(E[-+0-9]*)$", "$1");
+      return format.format(y).replaceAll("\\.?0+(E[-+0-9]*)$", "$1").replace("E0", "");
     }
 
-    private BigDecimal conform(final Object o1, final Class<?> resultType) {
+    private static BigDecimal conform(final Object o1, final Class<?> resultType) {
       if (o1 == null)
         return null;
 
       if (o1 instanceof BigDecimal) {
-        final String srt = conform((BigDecimal)o1, resultType);
-        return srt == null ? null : new BigDecimal(srt);
+        final String str = conform((BigDecimal)o1);
+        return str == null ? null : new BigDecimal(str);
       }
 
       if (o1 instanceof Decimal) {
@@ -981,14 +977,14 @@ public abstract class CaseTest {
           return null;
 
         final BigDecimal bigDecimal = decimal.toBigDecimal();
-        return resultType == Long.class ? new BigDecimal(conform(bigDecimal, resultType)) : bigDecimal;
+        return resultType == Long.class ? new BigDecimal(conform(bigDecimal)) : bigDecimal;
       }
 
       if (o1 instanceof Long)
-        return Decimal.toBigDecimal((Long)o1, scaleBits);
+        return Decimal.toBigDecimal((Long)o1);
 
       if (o1 instanceof Integer)
-        return Decimal.toBigDecimal((Integer)o1, scaleBits);
+        return Decimal.toBigDecimal((Integer)o1);
 
       if (o1 instanceof String) {
         final String str = (String)o1;
@@ -1001,7 +997,7 @@ public abstract class CaseTest {
     @Override
     int precision(final Object obj) {
       if (obj instanceof Long)
-        return Numbers.precision(Decimal.value((Long)obj, scaleBits));
+        return Numbers.precision(Decimal.significand((Long)obj));
 
       if (obj instanceof Decimal) {
         final Decimal val = (Decimal)obj;
@@ -1024,7 +1020,8 @@ public abstract class CaseTest {
         bd2 = bd2.scaleByPowerOfTen(scale);
       }
 
-      return bd1.subtract(bd2).abs().divide(e10[bd1.precision()]);
+      final BigDecimal error = bd1.subtract(bd2).abs().divide(e10[bd1.precision()]);
+      return error.signum() == 0 ? null : error;
     }
 
     @Override
@@ -1034,10 +1031,10 @@ public abstract class CaseTest {
 
     boolean setInput(final long[] inputs, final int index, long value) {
       boolean changed = false;
-      if (changed = (value < minValue))
-        value = minValue + 1;
-      else if (changed = (value > maxValue))
-        value = maxValue - 1;
+      if (changed = (value < FixedPointProxy.MIN_VALUE))
+        value = FixedPointProxy.MIN_VALUE + 1;
+      else if (changed = (value > FixedPointProxy.MAX_VALUE))
+        value = FixedPointProxy.MAX_VALUE - 1;
 
       inputs[index] = value;
       return changed;
@@ -1053,14 +1050,14 @@ public abstract class CaseTest {
           i = SPECIAL.length;
 
         if (randomScale)
-          inputs[0] = Decimal.encode(inputs[0], randomScale(scaleBits), defaultValue, scaleBits);
+          inputs[0] = Decimal.valueOf(inputs[0], randomScale(inputs[0]), defaultValue);
 
         for (int j = 0; j < SPECIAL.length; ++j) {
           if (setInput(inputs, 1, SPECIAL[j]))
             j = SPECIAL.length;
 
           if (randomScale)
-            inputs[1] = Decimal.encode(inputs[1], randomScale(scaleBits), defaultValue, scaleBits);
+            inputs[1] = Decimal.valueOf(inputs[1], randomScale(inputs[1]), defaultValue);
 
           test(caseTest, label, epsilon, cases, surveys, inputs);
         }
@@ -1094,12 +1091,12 @@ public abstract class CaseTest {
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             setInput(inputs, 0, inputs[0]);
-            inputs[0] = Decimal.encode(inputs[0], randomScale(scaleBits), defaultValue, scaleBits);
+            inputs[0] = Decimal.valueOf(inputs[0], randomScale(inputs[0]), defaultValue);
             if (inputs[0] == defaultValue)
               throw new IllegalStateException();
 
             setInput(inputs, 1, inputs[1]);
-            inputs[1] = Decimal.encode(inputs[1], randomScale(scaleBits), defaultValue, scaleBits);
+            inputs[1] = Decimal.valueOf(inputs[1], randomScale(inputs[1]), defaultValue);
             if (inputs[0] == defaultValue)
               throw new IllegalStateException();
 
@@ -1128,18 +1125,24 @@ public abstract class CaseTest {
         final DecimalCase cse = (DecimalCase)cases[c];
         try {
           Object in1 = null, in2 = null;
-          long a = inputs[0];
-          Object a0 = a;
+          long al = inputs[0];
+          Object a0 = al;
+          float af = Float.NaN;
+          double ad = Double.NaN;
 
           if (!caseTest.initialized())
             caseTest.setScaleFactor(DecimalCase.class, 1);
 
           AuditReport.isInTest = true;
 
-          if (cse.aToA instanceof LongToLongFunction)
-            a = ((LongToLongFunction)cse.aToA).applyAsLong(a);
-          else if (cse.aToA instanceof LongFunction)
-            a0 = ((LongFunction)cse.aToA).apply(a);
+          if (cse.aToA instanceof LongFunction)
+            a0 = ((LongFunction)cse.aToA).apply(al);
+          else if (cse.aToA instanceof LongToLongFunction)
+            al = ((LongToLongFunction)cse.aToA).applyAsLong(al);
+          else if (cse.aToA instanceof LongToFloatFunction)
+            af = ((LongToFloatFunction)cse.aToA).applyAsFloat(al);
+          else if (cse.aToA instanceof LongToDoubleFunction)
+            ad = ((LongToDoubleFunction)cse.aToA).applyAsDouble(al);
           else if (cse.aToA != null)
             throw new UnsupportedOperationException(cse.aToA.getClass().getName());
 
@@ -1170,77 +1173,130 @@ public abstract class CaseTest {
           long overhead = 0;
           long time = System.nanoTime(); // Redundant, but necessary for try block
           try {
-            if (cse.test instanceof BiLongFunction) {
-              final BiLongFunction test = (BiLongFunction)cse.test;
-              in1 = a;
-              in2 = b;
-
-              overhead = 28;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.apply(a, b);
-            }
-            else if (cse.test instanceof BiLongToLongFunction) {
-              final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
-              in1 = a;
-              in2 = b;
-
-              overhead = 27;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.applyAsLong(a, b);
-            }
-            else if (cse.test instanceof ObjLongFunction) {
-              final ObjLongFunction test = (ObjLongFunction)cse.test;
+            if (cse.test instanceof ToLongFunction) {
+              final ToLongFunction test = (ToLongFunction)cse.test;
               in1 = CaseTest.clone(a0);
-              in2 = b;
 
-              overhead = 27;
+              overhead = 33;
               AuditReport.isInTest = true;
               time = System.nanoTime();
-              result = test.apply(a0, b);
+              final long res = test.applyAsLong(a0);
+              time = System.nanoTime() - time - overhead;
+              result = res;
             }
-            else if (cse.test instanceof LongFunction) {
-              final LongFunction test = (LongFunction)cse.test;
-              in1 = a;
+            else if (cse.test instanceof FloatToLongFunction) {
+              final FloatToLongFunction test = (FloatToLongFunction)cse.test;
+              in1 = af;
 
-              overhead = 28;
+              overhead = 33;
               AuditReport.isInTest = true;
               time = System.nanoTime();
-              result = test.apply(a);
+              final long res = test.applyAsLong(af);
+              time = System.nanoTime() - time - overhead;
+              result = res;
             }
-            else if (cse.test instanceof LongToLongFunction) {
-              final LongToLongFunction test = (LongToLongFunction)cse.test;
-              in1 = a;
+            else if (cse.test instanceof DoubleToLongFunction) {
+              final DoubleToLongFunction test = (DoubleToLongFunction)cse.test;
+              in1 = ad;
 
-              overhead = 28;
+              overhead = 33;
               AuditReport.isInTest = true;
               time = System.nanoTime();
-              result = test.applyAsLong(a);
-            }
-            else if (cse.test instanceof BiFunction) {
-              final BiFunction test = (BiFunction)cse.test;
-              in1 = CaseTest.clone(a0);
-              in2 = CaseTest.clone(b0);
-
-              overhead = 29;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.apply(a0, b0);
+              final long res = test.applyAsLong(ad);
+              time = System.nanoTime() - time - overhead;
+              result = res;
             }
             else {
-              final Function test = (Function)cse.test;
-              in1 = CaseTest.clone(a0);
+              if (cse.test instanceof FloatFunction) {
+                final FloatFunction test = (FloatFunction)cse.test;
+                in1 = af;
 
-              overhead = 29;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.apply(a0);
+                overhead = 33;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(af);
+              }
+              else if (cse.test instanceof DoubleFunction) {
+                final DoubleFunction test = (DoubleFunction)cse.test;
+                in1 = ad;
+
+                overhead = 33;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(ad);
+              }
+              else if (cse.test instanceof BiLongFunction) {
+                final BiLongFunction test = (BiLongFunction)cse.test;
+                in1 = al;
+                in2 = b;
+
+                overhead = 28;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(al, b);
+              }
+              else if (cse.test instanceof BiLongToLongFunction) {
+                final BiLongToLongFunction test = (BiLongToLongFunction)cse.test;
+                in1 = al;
+                in2 = b;
+
+                overhead = 27;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.applyAsLong(al, b);
+              }
+              else if (cse.test instanceof ObjLongFunction) {
+                final ObjLongFunction test = (ObjLongFunction)cse.test;
+                in1 = CaseTest.clone(a0);
+                in2 = b;
+
+                overhead = 27;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0, b);
+              }
+              else if (cse.test instanceof LongFunction) {
+                final LongFunction test = (LongFunction)cse.test;
+                in1 = al;
+
+                overhead = 28;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(al);
+              }
+              else if (cse.test instanceof LongToLongFunction) {
+                final LongToLongFunction test = (LongToLongFunction)cse.test;
+                in1 = al;
+
+                overhead = 28;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.applyAsLong(al);
+              }
+              else if (cse.test instanceof BiFunction) {
+                final BiFunction test = (BiFunction)cse.test;
+                in1 = CaseTest.clone(a0);
+                in2 = CaseTest.clone(b0);
+
+                overhead = 29;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0, b0);
+              }
+              else {
+                final Function test = (Function)cse.test;
+                in1 = CaseTest.clone(a0);
+
+                overhead = 29;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0);
+              }
+
+              time = System.nanoTime() - time - overhead;
             }
-
-            time = System.nanoTime() - time - overhead;
           }
-          catch (final ArithmeticException e) {
+          catch (final ArithmeticException | IllegalArgumentException e) {
             time = System.nanoTime() - time - overhead;
           }
 
@@ -1266,7 +1322,7 @@ public abstract class CaseTest {
     private final String[] inputs = readErrorFile(new String[2]);
     private boolean specialDone;
 
-    StringCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Function<R,O> out) {
+    StringCase(final S subject, final int variables, final Object aToA, final Object bToB, final Object test, final Object out) {
       super(subject, variables, aToA, bToB, test, out);
     }
 
@@ -1371,53 +1427,66 @@ public abstract class CaseTest {
           long overhead = 0;
           long time = System.nanoTime(); // Redundant, but necessary for try block
           try {
-            if (cse.test instanceof ObjIntFunction) {
-              final ObjIntFunction test = (ObjIntFunction)cse.test;
-              in1 = CaseTest.clone(a0);
-              in2 = b1;
-              if (b1 == Integer.MIN_VALUE)
-                throw new IllegalArgumentException();
-
-              overhead = 31;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.apply(a0, b1);
-            }
-            else if (cse.test instanceof ObjLongFunction) {
-              final ObjLongFunction test = (ObjLongFunction)cse.test;
-              in1 = CaseTest.clone(a0);
-              in2 = b2;
-              if (b2 == Long.MIN_VALUE)
-                throw new IllegalArgumentException();
-
-              overhead = 31;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.apply(a0, b2);
-            }
-            else if (cse.test instanceof BiFunction) {
-              final BiFunction test = (BiFunction)cse.test;
-              in1 = CaseTest.clone(a0);
-              in2 = CaseTest.clone(b0);
-
-              overhead = 36;
-              AuditReport.isInTest = true;
-              time = System.nanoTime();
-              result = test.apply(a0, b0);
-            }
-            else {
-              final Function test = (Function)cse.test;
+            if (cse.test instanceof ToLongFunction) {
+              final ToLongFunction test = (ToLongFunction)cse.test;
               in1 = CaseTest.clone(a0);
 
               overhead = 33;
               AuditReport.isInTest = true;
               time = System.nanoTime();
-              result = test.apply(a0);
+              final long res = test.applyAsLong(a0);
+              time = System.nanoTime() - time - overhead;
+              result = res;
             }
+            else {
+              if (cse.test instanceof ObjIntFunction) {
+                final ObjIntFunction test = (ObjIntFunction)cse.test;
+                in1 = CaseTest.clone(a0);
+                in2 = b1;
+                if (b1 == Integer.MIN_VALUE)
+                  throw new IllegalArgumentException();
 
-            time = System.nanoTime() - time - overhead;
+                overhead = 31;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0, b1);
+              }
+              else if (cse.test instanceof ObjLongFunction) {
+                final ObjLongFunction test = (ObjLongFunction)cse.test;
+                in1 = CaseTest.clone(a0);
+                in2 = b2;
+                if (b2 == Long.MIN_VALUE)
+                  throw new IllegalArgumentException();
+
+                overhead = 31;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0, b2);
+              }
+              else if (cse.test instanceof BiFunction) {
+                final BiFunction test = (BiFunction)cse.test;
+                in1 = CaseTest.clone(a0);
+                in2 = CaseTest.clone(b0);
+
+                overhead = 36;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0, b0);
+              }
+              else {
+                final Function test = (Function)cse.test;
+                in1 = CaseTest.clone(a0);
+
+                overhead = 33;
+                AuditReport.isInTest = true;
+                time = System.nanoTime();
+                result = test.apply(a0);
+              }
+
+              time = System.nanoTime() - time - overhead;
+            }
           }
-          catch (final ArithmeticException e) {
+          catch (final ArithmeticException | IllegalArgumentException e) {
             time = System.nanoTime() - time - overhead;
           }
 
@@ -1442,8 +1511,8 @@ public abstract class CaseTest {
     if (obj instanceof Decimal)
       return ((Decimal)obj).clone();
 
-    if (obj instanceof BigIntHuldra)
-      return ((BigIntHuldra)obj).clone();
+    if (obj instanceof org.huldra.math.BigInt)
+      return ((org.huldra.math.BigInt)obj).clone();
 
     if (obj instanceof int[])
       return ((int[])obj).clone();
@@ -1547,6 +1616,30 @@ public abstract class CaseTest {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final LongFunction<? extends B> bToB, final Function<? extends A,R> test, final Function<R,O> out) {
+    return new DecimalCase<>(subject, 1, aToA, bToB, test, out);
+  }
+
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToFloatFunction aToA, final FloatFunction<R> test, final Function<R,O> out) {
+    return new DecimalCase<>(subject, 1, aToA, null, test, out);
+  }
+
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToDoubleFunction aToA, final DoubleFunction<R> test, final Function<R,O> out) {
+    return new DecimalCase<>(subject, 1, aToA, null, test, out);
+  }
+
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ToLongFunction<? extends A> test, final LongFunction<O> out) {
+    return new DecimalCase<>(subject, 1, aToA, null, test, out);
+  }
+
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToFloatFunction aToA, final FloatToLongFunction test, final LongFunction<O> out) {
+    return new DecimalCase<>(subject, 1, aToA, null, test, out);
+  }
+
+  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToDoubleFunction aToA, final DoubleToLongFunction test, final LongFunction<O> out) {
+    return new DecimalCase<>(subject, 1, aToA, null, test, out);
+  }
+
   public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
@@ -1611,6 +1704,10 @@ public abstract class CaseTest {
     return new StringCase<>(subject, 1, null, null, test, out);
   }
 
+  public static <S,R,O>StringCase<S,String,String,R,O> s(final S subject, final ToLongFunction<String> test, final LongFunction<O> out) {
+    return new StringCase<>(subject, 1, null, null, test, out);
+  }
+
   public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToLongFunction<A,String> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 2, aToA, bToB, test, out);
   }
@@ -1627,7 +1724,7 @@ public abstract class CaseTest {
   public class Builder<O,S> {
     private final String label;
     private int skip = 1;
-    private BigDecimal epsilon = BigDecimal.ZERO;
+    private BigDecimal epsilon;
     private AuditReport auditReport;
 
     private Builder(final String label) {
@@ -1666,8 +1763,7 @@ public abstract class CaseTest {
     }
 
     @SafeVarargs
-    public final void withCases(final int scaleBits, final DecimalCase<S,?,?,?,O> ... cases) {
-      DecimalCase.scaleBitsLocal.set((byte)scaleBits);
+    public final void withCases(final DecimalCase<S,?,?,?,O> ... cases) {
       exec(label, skip, epsilon, auditReport, cases);
     }
   }
@@ -1722,6 +1818,14 @@ public abstract class CaseTest {
             final long val = (Long)obj;
             dig = prototype.precision(val) * Numbers.signum(val);
           }
+          else if (obj instanceof Float) {
+            final BigDecimal val = new BigDecimal((Float)obj);
+            dig = val.precision() * val.signum();
+          }
+          else if (obj instanceof Double) {
+            final BigDecimal val = new BigDecimal((Double)obj);
+            dig = val.precision() * val.signum();
+          }
           else if (obj instanceof BigInteger) {
             final BigInteger val = (BigInteger)obj;
             dig = Numbers.precision(val) * val.signum();
@@ -1738,8 +1842,8 @@ public abstract class CaseTest {
             final BigInt val = (BigInt)obj;
             dig = val.precision() * val.signum();
           }
-          else if (obj instanceof BigIntHuldra) {
-            final BigIntHuldra val = (BigIntHuldra)obj;
+          else if (obj instanceof org.huldra.math.BigInt) {
+            final org.huldra.math.BigInt val = (org.huldra.math.BigInt)obj;
             dig = val.precision() * val.signum();
           }
           else if (obj instanceof int[]) {

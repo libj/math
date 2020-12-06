@@ -23,24 +23,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 public class DecimalMultiplicationOperationTest extends DecimalOperationTest {
-  private static final BigDecimal[] epsilon = {
-    D("5E-16"),
-    D("5E-16"),
-    D("5E-16"),
-    D("1E-15"),
-    D("5E-16"),
-    D("5E-16"),
-    D("7E-16"),
-    D("5E-16"),
-    D("2E-15"),
-    D("2E-15"),
-    D("4E-15"),
-    D("1E-14"),
-    D("2E-14"),
-    D("4E-14"),
-    D("7E-14"),
-    D("2E-13")
-  };
+  private static final BigDecimal[] epsilon = {D("0")};
 
   private static final DecimalArithmeticOperation mul = new DecimalMultiplicativeOperation("mul", long.class, "%s * %s") {
     @Override
@@ -49,9 +32,9 @@ public class DecimalMultiplicationOperationTest extends DecimalOperationTest {
     }
 
     @Override
-    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = mul(d1, d2, defaultValue, scaleBits);
+      final long result = mul(d1, d2, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

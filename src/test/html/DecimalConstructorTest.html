@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DecimalConstructorTest</title>
+  <link rel="stylesheet" type="test/css" href="https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css">
+  <style>
+    html { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji; }
+    span, code, pre { font-family: Menlo, monospace; font-size: small; background-color: rgba(27,31,35,.05); mix-blend-mode: hard-light; }
+    code { padding: .2em .4em; }
+    pre { color: #EEE; background-color: #222; padding: 4px; }
+  </style>
+</head>
+<body>
+<h4>Constructor (<a href="src/test/java/org/libj/math/DecimalConstructorTest.java"><code>DecimalConstructorTest</code></a>)</h4>
+
+<p><strong>Summary</strong></p>
+
+<pre><code>
+[runtime performance]
+╔═════════════════╦════════════╦═════════╦══════╗
+║                 ║ <span style="color:cyan;">BigDecimal</span> ║ <span style="color:yellow;">Decimal</span> ║ <span style="color:lightgreen;">long</span> ║ 
+╠═════════════════╬════════════╬═════════╬══════╣
+║ valueOf(double) ║       <span style="font-weight:bolder;color:lightgreen;">+786</span> ║      <span style="font-weight:bolder;color:yellow;">+1</span> ║   <span style="font-weight:bolder;color:red;">+0</span> ║ 
+╚═════════════════╩════════════╩═════════╩══════╝
+[heap allocation]
+╔═════════════════╦═══════════════╦═══════════════╦═══════════════╗
+║                 ║  <span style="color:cyan;">BigDecimal</span>   ║    <span style="color:yellow;">Decimal</span>    ║     <span style="color:lightgreen;">long</span>      ║ 
+║                 ║ <span style="color:cyan;">    T │ int[]</span> ║ <span style="color:yellow;">    T │ int[]</span> ║ <span style="color:lightgreen;">    T │ int[]</span> ║ 
+╠═════════════════╬═══════╤═══════╬═══════╤═══════╬═══════╤═══════╣
+║ valueOf(double) ║    <span style="font-weight:bolder;color:white;">+0</span> │    <span style="font-weight:bolder;color:white;">+0</span> ║   <span style="font-weight:bolder;color:yellow;">+50</span> │    <span style="font-weight:bolder;color:lightgreen;">+∞</span> ║    <span style="font-weight:bolder;color:lightgreen;">+∞</span> │    <span style="font-weight:bolder;color:lightgreen;">+∞</span> ║ 
+╚═════════════════╩═══════╧═══════╩═══════╧═══════╩═══════╧═══════╝
+</code></pre>
+
+<h5><a name="valueofdouble"><code>valueOf(double)</code></a></h5>
+
+<pre><code>
+[runtime performance]
+valueOf(double)
+  1204984 in 6133ms
+╔════════╦═══════════╦════════╦════════════╦═════════╦══════╗
+║ length ║ precision ║ count  ║ <span style="color:cyan;">BigDecimal</span> ║ <span style="color:yellow;">Decimal</span> ║ <span style="color:lightgreen;">long</span> ║ 
+╠════════╬═══════════╬════════╬════════════╬═════════╬══════╣
+║     35 ║       -17 ║ 410852 ║        <span style="font-weight:bolder;color:lightgreen;">180</span> ║    <span style="font-weight:bolder;color:red;">1413</span> ║ <span style="font-weight:bolder;color:yellow;">1400</span> ║ 
+║     35 ║       -13 ║ 107410 ║         <span style="font-weight:bolder;color:lightgreen;">77</span> ║     <span style="font-weight:bolder;color:red;">943</span> ║  <span style="font-weight:bolder;color:yellow;">931</span> ║ 
+║     35 ║       -10 ║  80412 ║         <span style="font-weight:bolder;color:lightgreen;">85</span> ║     <span style="font-weight:bolder;color:red;">823</span> ║  <span style="font-weight:bolder;color:yellow;">822</span> ║ 
+║     34 ║        -6 ║   5664 ║         <span style="font-weight:bolder;color:lightgreen;">98</span> ║     <span style="font-weight:bolder;color:yellow;">728</span> ║  <span style="font-weight:bolder;color:red;">780</span> ║ 
+║        ║           ║        ║           <span style="font-weight:bolder;color:lightgreen;"></span> ║        <span style="font-weight:bolder;color:lightgreen;"></span> ║     <span style="font-weight:bolder;color:lightgreen;"></span> ║ 
+║     34 ║         0 ║   2160 ║         <span style="font-weight:bolder;color:lightgreen;">80</span> ║     <span style="font-weight:bolder;color:yellow;">570</span> ║  <span style="font-weight:bolder;color:red;">620</span> ║ 
+║     34 ║         3 ║   1576 ║         <span style="font-weight:bolder;color:lightgreen;">88</span> ║     <span style="font-weight:bolder;color:yellow;">630</span> ║  <span style="font-weight:bolder;color:red;">701</span> ║ 
+║     34 ║         6 ║  44880 ║         <span style="font-weight:bolder;color:lightgreen;">89</span> ║     <span style="font-weight:bolder;color:yellow;">775</span> ║  <span style="font-weight:bolder;color:red;">780</span> ║ 
+║     35 ║        10 ║ 111744 ║         <span style="font-weight:bolder;color:lightgreen;">82</span> ║     <span style="font-weight:bolder;color:red;">874</span> ║  <span style="font-weight:bolder;color:yellow;">860</span> ║ 
+║     35 ║        13 ║ 103848 ║         <span style="font-weight:bolder;color:lightgreen;">82</span> ║    <span style="font-weight:bolder;color:red;">1051</span> ║ <span style="font-weight:bolder;color:yellow;">1037</span> ║ 
+║     35 ║        17 ║ 335412 ║        <span style="font-weight:bolder;color:lightgreen;">191</span> ║    <span style="font-weight:bolder;color:red;">1409</span> ║ <span style="font-weight:bolder;color:yellow;">1390</span> ║ 
+║        ║           ║   <span style="font-weight:bolder;color:cyan;">sum:</span> ║       <span style="font-weight:bolder;color:lightgreen;">1052</span> ║    <span style="font-weight:bolder;color:yellow;">9216</span> ║ <span style="font-weight:bolder;color:red;">9321</span> ║ 
+║        ║           ║    <span style="font-weight:bolder;color:cyan;">+%:</span> ║       <span style="font-weight:bolder;color:lightgreen;">+786</span> ║      <span style="font-weight:bolder;color:yellow;">+1</span> ║   <span style="font-weight:bolder;color:red;">+0</span> ║ 
+╚════════╩═══════════╩════════╩════════════╩═════════╩══════╝
+
+<span style="color:cyan;">⣏</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠝</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠫</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠋</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:lightgreen;">⡽</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠻</span><span style="color:lightgreen;">⡉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠛</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⠭</span><span style="color:cyan;">⢍</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣉</span><span style="color:cyan;">⣹</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⡜</span>⠀⠀⠀⠀<span style="color:lightgreen;">⠘</span><span style="color:lightgreen;">⡄</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠬</span>⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠘</span><span style="color:lightgreen;">⡄</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⣈</span><span style="color:lightgreen;">⠁</span>⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠘</span><span style="color:yellow;">⣄</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⡐</span><span style="color:lightgreen;">⠄</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠐</span><span style="color:yellow;">⣂</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⡐</span><span style="color:lightgreen;">⡈</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠐</span><span style="color:lightgreen;">⠕</span><span style="color:yellow;">⢄</span><span style="color:yellow;">⡀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠔</span><span style="color:lightgreen;">⡐</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠈</span><span style="color:lightgreen;">⠑</span><span style="color:lightgreen;">⠬</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⣒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠤</span><span style="color:yellow;">⣀</span><span style="color:yellow;">⡀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⢀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠴</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠊</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠚</span><span style="color:lightgreen;">⠛</span><span style="color:lightgreen;">⠒</span><span style="color:lightgreen;">⠦</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⣄</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⣀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀<span style="color:lightgreen;">⢀</span><span style="color:yellow;">⡤</span><span style="color:yellow;">⠴</span><span style="color:lightgreen;">⠒</span><span style="color:yellow;">⠛</span><span style="color:lightgreen;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:yellow;">⠙</span><span style="color:lightgreen;">⠓</span><span style="color:yellow;">⠲</span><span style="color:lightgreen;">⠦</span><span style="color:yellow;">⣤</span><span style="color:lightgreen;">⣀</span><span style="color:lightgreen;">⡀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀<span style="color:lightgreen;">⢀</span><span style="color:yellow;">⡤</span><span style="color:yellow;">⠚</span><span style="color:lightgreen;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠈</span><span style="color:lightgreen;">⠉</span><span style="color:yellow;">⠛</span><span style="color:yellow;">⠲</span><span style="color:yellow;">⢤</span><span style="color:lightgreen;">⣄</span><span style="color:lightgreen;">⡀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀<span style="color:yellow;">⣠</span><span style="color:yellow;">⠖</span><span style="color:lightgreen;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠈</span><span style="color:yellow;">⠙</span><span style="color:yellow;">⠳</span><span style="color:yellow;">⢤</span><span style="color:lightgreen;">⣀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡷<span style="color:lightgreen;">⠊</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠈</span><span style="color:yellow;">⠙</span><span style="color:yellow;">⠲</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⠤</span>⢼</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⣇</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣸</span>
+
+[heap allocation]
+valueOf(double)
+  54764 in 1368ms
+╔════════╦═══════════╦═══════╦═══════════════╦═══════════════╦═══════════════╗
+║        ║           ║       ║  <span style="color:cyan;">BigDecimal</span>   ║    <span style="color:yellow;">Decimal</span>    ║     <span style="color:lightgreen;">long</span>      ║ 
+║ length ║ precision ║ count ║ <span style="color:cyan;">    T │ int[]</span> ║ <span style="color:yellow;">    T │ int[]</span> ║ <span style="color:lightgreen;">    T │ int[]</span> ║ 
+╠════════╬═══════════╬═══════╬═══════════════╬═══════════════╬═══════════════╣
+║     35 ║       -17 ║  9416 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     35 ║       -13 ║  5608 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     35 ║       -10 ║ 12716 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     34 ║        -6 ║  1892 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     34 ║        -3 ║    22 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     34 ║         0 ║  2222 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     34 ║         3 ║   598 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     34 ║         6 ║  8372 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     35 ║        10 ║  9996 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     35 ║        13 ║  2242 ║     <span style="font-weight:bolder;color:white;">3 │     0</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║     35 ║        17 ║  1680 ║     <span style="font-weight:bolder;color:white;">3 │     1</span> ║     <span style="font-weight:bolder;color:yellow;">2 │     0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0 │     0</span> ║ 
+║        ║           ║  <span style="font-weight:bolder;color:cyan;">sum:</span> ║    <span style="font-weight:bolder;color:white;">33</span> │     <span style="font-weight:bolder;color:white;">1</span> ║    <span style="font-weight:bolder;color:yellow;">22</span> │     <span style="font-weight:bolder;color:lightgreen;">0</span> ║     <span style="font-weight:bolder;color:lightgreen;">0</span> │     <span style="font-weight:bolder;color:lightgreen;">0</span> ║ 
+║        ║           ║   <span style="font-weight:bolder;color:cyan;">+%:</span> ║    <span style="font-weight:bolder;color:white;">+0</span> │    <span style="font-weight:bolder;color:white;">+0</span> ║   <span style="font-weight:bolder;color:yellow;">+50</span> │    <span style="font-weight:bolder;color:lightgreen;">+∞</span> ║    <span style="font-weight:bolder;color:lightgreen;">+∞</span> │    <span style="font-weight:bolder;color:lightgreen;">+∞</span> ║ 
+╚════════╩═══════════╩═══════╩═══════════════╩═══════════════╩═══════════════╝
+
+</code></pre>
+
+</body>
+</html>

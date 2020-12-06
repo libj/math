@@ -33,38 +33,33 @@ abstract class DecimalArithmeticOperation extends DecimalOperation<Long,BigDecim
   abstract BigDecimal epsilon(byte bits);
 
   @Override
-  BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final Long actual, final byte scaleBits, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
+  BigDecimal run(final BigDecimal bd1, final BigDecimal bd2, final BigDecimal expected, final Long actual, final long defaultValue, final BigDecimal[] errors, final boolean[] failures) {
     if (expected == null)
       return actual == defaultValue ? DEFAULT : BigDecimal.ONE;
 
     if (expected.signum() == 0)
-      return compare(0, actual, scaleBits) == 0 ? DEFAULT : BigDecimals.TWO;
+      return compare(0, actual) == 0 ? DEFAULT : BigDecimals.TWO;
 
-    final int valueBits = valueBits(scaleBits);
-    final BigInteger minValue = DecimalTranslationalOperationTest.minValue[valueBits];
-    final BigInteger maxValue = DecimalTranslationalOperationTest.maxValue[valueBits];
-    final int minScale = Decimal.minScale[scaleBits];
-    final int maxScale = Decimal.maxScale[scaleBits];
     BigInteger unscaled = expected.unscaledValue();
-    int scale = expected.scale();
+    int pscale = expected.scale() - expected.precision();
     int len;
     if (!lockScale()) {
       len = Numbers.precision(unscaled);
       if (len > 19) {
         final int negOffset = unscaled.signum() < 0 ? 1 : 0;
         unscaled = BigIntegers.intern(unscaled.toString().substring(negOffset, 19 + negOffset));
-        scale -= len - 19;
+        pscale -= len - 19;
       }
       else {
         final int maximizeScale = 20 - len;
         unscaled = unscaled.multiply(BigInteger.TEN.pow(maximizeScale));
-        scale += maximizeScale;
+        pscale += maximizeScale;
       }
 
-      // Turn the unscaled value to be highest precision available for the Decimal of the provided bits
+      // Turn the significand to be highest precision available for the Decimal of the provided bits
       while (unscaled.signum() < 0 ? unscaled.compareTo(minValue) < 0 : unscaled.compareTo(maxValue) > 0) {
         unscaled = BigIntegers.intern(unscaled.divide(BigInteger.TEN));
-        --scale;
+        --pscale;
       }
     }
 
@@ -73,12 +68,12 @@ abstract class DecimalArithmeticOperation extends DecimalOperation<Long,BigDecim
       expectDefaultValue = true;
     }
     else {
-      if (minScale <= scale && scale <= maxScale) {
+      if (Decimal.MIN_PSCALE <= pscale && pscale <= Decimal.MAX_PSCALE) {
         expectDefaultValue = false;
       }
       else {
         len = Numbers.precision(unscaled);
-        final int diffScale = scale - (scale < 0 ? minScale : maxScale);
+        final int diffScale = pscale - (pscale < 0 ? Decimal.MIN_PSCALE : Decimal.MAX_PSCALE);
         expectDefaultValue = diffScale < 0 || len - diffScale <= 0;
       }
     }
@@ -89,16 +84,16 @@ abstract class DecimalArithmeticOperation extends DecimalOperation<Long,BigDecim
     if (actual == defaultValue)
       return UNEXPECTED_DEFAULT;
 
-    final short s = scale(actual, scaleBits);
+    final short s = scale(actual);
     final BigDecimal expectedScaled = expected.setScale(s, RoundingMode.HALF_UP);
 
-    final BigDecimal result = toBigDecimal(actual, scaleBits);
+    final BigDecimal result = toBigDecimal(actual);
     final BigDecimal error = expectedScaled.subtract(result).abs().divide(expected, precision16);
-    errors[scaleBits] = errors[scaleBits] == null ? error : errors[scaleBits].max(error);
+    errors[0] = errors[0] == null ? error : errors[0].max(error);
 
-    final BigDecimal expectedError = epsilon(scaleBits);
+    final BigDecimal expectedError = epsilon((byte)0);
     final boolean pass = error.signum() == 0 || error.compareTo(expectedError) <= 0;
-    failures[scaleBits] |= !pass;
+    failures[0] |= !pass;
     return pass ? null : expectedError;
   }
 }

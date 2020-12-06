@@ -40,13 +40,10 @@ public class DecimalMultiplicationTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "`long` outperform `Decimal` and `BigDecimal` in heap allocation by avoiding heap allocation entirely for all operations.");
 
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("mul(" + scaleBits + ")").withSkip(skip(scaleBits)).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, (long a, long b) -> toBigDecimal(a).multiply(toBigDecimal(b)), o -> o),
-        d(Decimal.class, (long a, long b) -> toDecimal(a).mul(toDecimal(b)), o -> o),
-        d(long.class, (long a, long b) -> Decimal.mul(a, b, defaultValue, scaleBits), (long o) -> o == defaultValue ? null : o)
-      );
-    }
+    test("mul").withAuditReport(report).withCases(
+      d(BigDecimal.class, (long a, long b) -> toBigDecimal(a).multiply(toBigDecimal(b)), o -> o),
+      d(Decimal.class, (long a, long b) -> toDecimal(a).mul(toDecimal(b)), o -> o),
+      d(long.class, (long a, long b) -> Decimal.mul(a, b, defaultValue), (long o) -> o == defaultValue ? null : o)
+    );
   }
 }

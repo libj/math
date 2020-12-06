@@ -1,0 +1,27 @@
+/* Copyright (c) 2020 Seva Safris, LibJ
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * You should have received a copy of The MIT License (MIT) along with this
+ * program. If not, see <http://opensource.org/licenses/MIT/>.
+ */
+
+package org.libj.math;
+
+public abstract class FixedPointProxy extends FixedPoint {
+  private static final long serialVersionUID = -2554919823662009935L;
+
+  public static final long MIN_VALUE = FixedPoint.MIN_SIGNIFICAND;
+  public static final long MAX_VALUE = FixedPoint.MAX_SIGNIFICAND;
+
+  public static final short MIN_PSCALE = FixedPoint.MIN_PSCALE;
+  public static final short MAX_PSCALE = FixedPoint.MAX_PSCALE;
+}

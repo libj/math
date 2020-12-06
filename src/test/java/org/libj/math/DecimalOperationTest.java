@@ -50,27 +50,22 @@ public abstract class DecimalOperationTest {
   static final BigDecimal UNEXPECTED_DEFAULT = BigDecimal.valueOf(Long.MAX_VALUE);
   static final BigDecimal EXCEPTION = BigDecimal.valueOf(Long.MAX_VALUE);
 
-  private static final byte maxBits = Decimal.MAX_SCALE_BITS;
-
   static final Random random = new Random();
   static final int numTests = 10000;
   static final MathContext precision16 = MathContext.DECIMAL64;
   static final DecimalFormat expectedFormatter = new DecimalFormat("0E0");
   static final DecimalFormat epsilonFormatter = new DecimalFormat("0E0");
   public static final long[] pow2 = new long[Long.SIZE];
-  public static final BigInteger[] minValue = new BigInteger[Long.SIZE];
-  public static final BigInteger[] maxValue = new BigInteger[Long.SIZE];
+  public static final BigInteger minValue = BigInteger.valueOf(Decimal.MIN_SIGNIFICAND);
+  public static final BigInteger maxValue = BigInteger.valueOf(Decimal.MAX_SIGNIFICAND);
 
   private static final long[] preliminary = {0, 1, -1, 10, -10, 100, -100, Long.MAX_VALUE, Long.MIN_VALUE};
   private static final long boundedMin = -100000000;
   private static final long boundedMax = 100000000;
   private static final short boundedScale = 8;
-  private static final byte boundedBits = 9;
 
   private static final BigDecimal errorThreshold = new BigDecimal("1E-2");
-  private static final byte restrictScaleBits = -1;
 
-  private static byte testBits = -1;
   private static long testD1 = -1;
   private static long testD2 = -1;
 
@@ -78,11 +73,6 @@ public abstract class DecimalOperationTest {
   private static final File errorFile;
 
   static {
-    for (byte v = 0; v < minValue.length; ++v) {
-      minValue[v] = BigInteger.valueOf(Decimal.minValue(v));
-      maxValue[v] = BigInteger.valueOf(Decimal.maxValue(v));
-    }
-
     expectedFormatter.setRoundingMode(RoundingMode.FLOOR);
     expectedFormatter.setMinimumFractionDigits(18);
     expectedFormatter.setPositivePrefix("");
@@ -110,22 +100,21 @@ public abstract class DecimalOperationTest {
     try (final BufferedReader in = new BufferedReader(new FileReader(errorFile))) {
       testD1 = Long.parseLong(in.readLine());
       testD2 = Long.parseLong(in.readLine());
-      testBits = Byte.parseByte(in.readLine());
-      logVariables(testD1, testD2, testBits);
+      logVariables(testD1, testD2);
     }
     catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
-  private static void logVariables(final long d1, final long d2, final byte scaleBits) {
-    logger.info(c(Color.RED, "----------------------------------------\nd1: (value = " + d1 + "L, scale = " + scale(d1, scaleBits) + ") d2: (value = " + d2 + "L, scale = " + scale(d2, scaleBits) + ") scaleBits = " + scaleBits));
+  private static void logVariables(final long d1, final long d2) {
+    logger.info(c(Color.RED, "----------------------------------------\nd1: (significand = " + d1 + "L, scale = " + scale(d1) + ") d2: (significand = " + d2 + "L, scale = " + scale(d2) + ")"));
   }
 
-  private static void writeErrorFile(final long d1, final long d2, final byte scaleBits) {
+  private static void writeErrorFile(final long d1, final long d2) {
     try {
       errorPath.toFile().getParentFile().mkdirs();
-      Files.write(errorPath, (d1 + "\n" + d2 + "\n" + scaleBits).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+      Files.write(errorPath, (d1 + "\n" + d2).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
     catch (final IOException e) {
       throw new UncheckedIOException(e);
@@ -140,15 +129,17 @@ public abstract class DecimalOperationTest {
     return BigDecimals.intern(str);
   }
 
-  static long randomValue(final int maxValuePower) {
+  private static final byte maxValuePower = 52;
+
+  static long randomSignificand() {
     final long maxValue = pow2[maxValuePower];
     return (long)((Math.random() < 0.5 ? -1 : 1) * random.nextDouble() * maxValue);
   }
 
   static void test(final DecimalOperation<?,?> operation) {
     final long[] time = new long[2];
-    final boolean[] failures = new boolean[16];
-    final BigDecimal[] errors = new BigDecimal[16];
+    final boolean[] failures = new boolean[1];
+    final BigDecimal[] errors = new BigDecimal[1];
     int count = test(operation, true, time, errors, failures);
     count += test(operation, false, time, errors, failures);
     operation.print(count, time, errors, failures);
@@ -162,132 +153,119 @@ public abstract class DecimalOperationTest {
   @SuppressWarnings({"rawtypes", "unchecked"})
   private static int test(final DecimalOperation<?,?> operation, final boolean bounded, final long[] time, final BigDecimal[] errors, final boolean[] failures) {
     int count = 0;
-    byte fromBits = 0;
-    byte toBits = maxBits;
-    if (restrictScaleBits != -1) {
-      fromBits = restrictScaleBits;
-      toBits = restrictScaleBits;
-    }
-
     for (int i = 0; i < numTests; ++i) {
-      for (byte b = fromBits; b < toBits; ++b) {
-        final long defaultValue = random.nextLong();
-        final long d1;
-        final long d2;
-        final byte scaleBits;
-        if (testD1 != -1) {
-          scaleBits = testBits;
-          d1 = testD1;
-          d2 = testD2;
-        }
-        else if (bounded) {
-          scaleBits = boundedBits;
-          final short scale = (short)(random.nextDouble() * boundedScale * scaleBits % boundedScale);
-          d1 = operation.randomBounded(boundedMin, boundedMax, scale, scaleBits);
-          d2 = operation.randomBounded(boundedMin, boundedMax, scale, scaleBits);
-        }
-        else {
-          scaleBits = b;
-          if (i < preliminary.length) {
-            long v1 = preliminary[i];
-            long v2 = preliminary[i];
-            final short s1, s2;
-            if (v1 == Long.MAX_VALUE || v1 == Long.MIN_VALUE) {
-              s1 = 0;
-              s2 = 0;
-            }
-            else {
-              s1 = (short)(Math.random() * Decimal.maxScale(scaleBits));
-              v1 *= FastMath.longE10[(int)Math.min(random.nextDouble() * s1, FastMath.longE10.length - 1)];
-              s2 = (short)(Math.random() * Decimal.maxScale(scaleBits));
-              v2 *= FastMath.longE10[(int)Math.min(random.nextDouble() * s2, FastMath.longE10.length - 1)];
-            }
-
-            d1 = operation.randomBounded(v1, v1, s1, scaleBits);
-            d2 = operation.randomBounded(v2, v2, s2, scaleBits);
+      final long defaultValue = random.nextLong();
+      final long d1;
+      final long d2;
+      if (testD1 != -1) {
+        d1 = testD1;
+        d2 = testD2;
+      }
+      else if (bounded) {
+        final short scale = (short)(random.nextDouble() * boundedScale * 11 % boundedScale);
+        d1 = operation.randomBounded(boundedMin, boundedMax, scale);
+        d2 = operation.randomBounded(boundedMin, boundedMax, scale);
+      }
+      else {
+        if (i < preliminary.length) {
+          long significand1 = preliminary[i];
+          long significand2 = preliminary[i];
+          final short scale1, scale2;
+          if (significand1 == Long.MAX_VALUE || significand1 == Long.MIN_VALUE) {
+            scale1 = 0;
+            scale2 = 0;
           }
           else {
-            d1 = operation.randomEncoded(scaleBits);
-            d2 = operation.randomEncoded(scaleBits);
+            scale1 = (short)(Math.random() * Decimal.MAX_PSCALE);
+            significand1 *= FastMath.longE10[(int)Math.min(random.nextDouble() * scale1, FastMath.longE10.length - 1)];
+            scale2 = (short)(Math.random() * Decimal.MAX_PSCALE);
+            significand2 *= FastMath.longE10[(int)Math.min(random.nextDouble() * scale2, FastMath.longE10.length - 1)];
           }
-        }
 
-        final BigDecimal bd1 = toBigDecimal(d1, scaleBits);
-        final BigDecimal bd2 = toBigDecimal(d2, scaleBits);
-        final long v1 = value(d1, scaleBits);
-        final short s1 = scale(d1, scaleBits);
-        final long v2 = value(d2, scaleBits);
-        final short s2 = scale(d2, scaleBits);
-        Object actual = defaultValue;
-        Object expected = defaultValue;
-        BigDecimal error;
-        try {
-          actual = operation.test(d1, d2, bd1, bd2, scaleBits, defaultValue, time);
-          expected = operation.control(bd1, bd2, time);
-          error = ((DecimalOperation)operation).run(bd1, bd2, expected, actual, testBits != -1 ? testBits : scaleBits, defaultValue, errors, failures);
-
-          // FIXME: This is done to focus on the biggest errors first
-          if (errorThreshold != null && error != null && errors[scaleBits] != null && errors[scaleBits].compareTo(errorThreshold) < 0)
-            error = null;
+          d1 = operation.randomBounded(significand1, significand1, scale1);
+          d2 = operation.randomBounded(significand2, significand2, scale2);
         }
-        catch (final Exception e) {
-          e.printStackTrace();
-          error = EXCEPTION;
+        else {
+          d1 = operation.randomEncoded();
+          d2 = operation.randomEncoded();
         }
+      }
 
-        if (error == DEFAULT) {
-          clearErrorFile();
-          continue;
-        }
+      final BigDecimal bd1 = toBigDecimal(d1);
+      final BigDecimal bd2 = toBigDecimal(d2);
+      final long v1 = significand(d1);
+      final short s1 = scale(d1);
+      final long v2 = significand(d2);
+      final short s2 = scale(d2);
+      Object actual = defaultValue;
+      Object expected = defaultValue;
+      BigDecimal error;
+      try {
+        actual = operation.test(d1, d2, bd1, bd2, defaultValue, time);
+        expected = operation.control(bd1, bd2, time);
+        error = ((DecimalOperation)operation).run(bd1, bd2, expected, actual, defaultValue, errors, failures);
 
-        ++count;
-        if (error == null) {
-          clearErrorFile();
-        }
-        else if (TestAide.isInDebug()) {
-          for (int j = 0; j < 100; ++j) {
-            if (j == 0)
-              writeErrorFile(d1, d2, scaleBits);
+        // FIXME: This is done to focus on the biggest errors first
+        if (errorThreshold != null && error != null && errors[0] != null && errors[0].compareTo(errorThreshold) < 0)
+          error = null;
+      }
+      catch (final Exception e) {
+        e.printStackTrace();
+        error = EXCEPTION;
+      }
 
-            logVariables(d1, d2, scaleBits);
-            final String actu;
-            if (actual instanceof Long) {
-//              final short s = decodeScale(((Long)actual).longValue(), scaleBits);
+      if (error == DEFAULT) {
+        clearErrorFile();
+        continue;
+      }
+
+      ++count;
+      if (error == null) {
+        clearErrorFile();
+      }
+      else if (TestAide.isInDebug()) {
+        for (int j = 0; j < 100; ++j) {
+          if (j == 0)
+            writeErrorFile(d1, d2);
+
+          logVariables(d1, d2);
+          final String actu;
+          if (actual instanceof Long) {
+//              final short s = decodeScale(((Long)actual).longValue());
 //              expected = ((BigDecimal)expected).setScale(s, RoundingMode.HALF_UP);
-              actu = String.valueOf(((Long)actual).longValue() == defaultValue ? "err" : Decimal.toString((Long)actual, scaleBits));
-            }
-            else {
-              actu = String.valueOf(actual);
-            }
-
-            final String function = operation.toString(v1, s1, v2, s2);
-            final String expe = format(String.valueOf(expected));
-            final StringBuilder errorBuilder = new StringBuilder("{ε = ");
-            if (error == EXCEPTION) {
-              errorBuilder.append("EXCEPTION");
-            }
-            else if (error == EXPECTED_DEFAULT) {
-              errorBuilder.append("EXPECTED DEFAULT");
-            }
-            else if (error == UNEXPECTED_DEFAULT) {
-              errorBuilder.append("UNEXPECTED DEFAULT");
-            }
-            else {
-              final String actualError = c(Color.RED, epsilonFormatter.format(errors[scaleBits]));
-              final String expectedError = c(Color.GREEN, epsilonFormatter.format(error));
-              errorBuilder.append(actualError).append(" > ").append(expectedError);
-            }
-            errorBuilder.append('}');
-
-            logger.info(function + " = " + expe + "\n" + Strings.pad("= " + actu, LEFT, 3 + actu.length() + function.length()) + Strings.pad(errorBuilder.toString(), LEFT, 1 + errorBuilder.length() + Math.abs(expe.length() - actu.length())));
-            try {
-              actual = operation.test(d1, d2, bd1, bd2, scaleBits, defaultValue, time);
-            }
-            catch (final Throwable t) {
-              TestAide.printStackTrace(System.err, t);
-            }
-            ((DecimalOperation)operation).run(bd1, bd2, expected, actual, testBits != -1 ? testBits : scaleBits, defaultValue, errors, failures);
+            actu = String.valueOf(((Long)actual).longValue() == defaultValue ? "err" : Decimal.toString((Long)actual));
           }
+          else {
+            actu = String.valueOf(actual);
+          }
+
+          final String function = operation.toString(v1, s1, v2, s2);
+          final String expe = format(String.valueOf(expected));
+          final StringBuilder errorBuilder = new StringBuilder("{ε = ");
+          if (error == EXCEPTION) {
+            errorBuilder.append("EXCEPTION");
+          }
+          else if (error == EXPECTED_DEFAULT) {
+            errorBuilder.append("EXPECTED DEFAULT");
+          }
+          else if (error == UNEXPECTED_DEFAULT) {
+            errorBuilder.append("UNEXPECTED DEFAULT");
+          }
+          else {
+            final String actualError = c(Color.RED, epsilonFormatter.format(errors[0]));
+            final String expectedError = c(Color.GREEN, epsilonFormatter.format(error));
+            errorBuilder.append(actualError).append(" > ").append(expectedError);
+          }
+          errorBuilder.append('}');
+
+          logger.info(function + " = " + expe + "\n" + Strings.pad("= " + actu, LEFT, 3 + actu.length() + function.length()) + Strings.pad(errorBuilder.toString(), LEFT, 1 + errorBuilder.length() + Math.abs(expe.length() - actu.length())));
+          try {
+            actual = operation.test(d1, d2, bd1, bd2, defaultValue, time);
+          }
+          catch (final Throwable t) {
+            TestAide.printStackTrace(System.err, t);
+          }
+          ((DecimalOperation)operation).run(bd1, bd2, expected, actual, defaultValue, errors, failures);
         }
       }
     }

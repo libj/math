@@ -941,9 +941,81 @@ abstract class BigIntDivision extends BigIntMultiplication {
     val = rem0(val, div);
     len = val[0];
     if (len < 0)
-      val = addSub0(val, -len, false, div, true);
+      val = addSub0(val, -len, false, div, true, false);
 
     // _debugLenSig(val);
     return val;
+  }
+
+  /**
+   * Computes:
+   *
+   * <pre>
+   * q = (int)(t / s)
+   * t = 10 * (t % s)
+   * return q
+   * </pre>
+   *
+   * This is the iteration step of digit development for output. This assumes:
+   * <ol>
+   * <li>{@code s} has been normalized.</li>
+   * <li>{@code t} has been left-shifted accordingly.</li>
+   * <li>THe result {@code q}, can be expressed as an integer
+   * ({@code 0 <= q < 10}).</li>
+   * </ol>
+   *
+   * @param t The {@linkplain BigInt#val() value-encoded} dividend.
+   * @param s The {@linkplain BigInt#val() value-encoded} divisor.
+   * @return {@code q}
+   */
+  static int quoRemIteration(final int[] t, int[] s) {
+    final int lenT = t[0];
+    final int lenS = s[0];
+    // ensure that this and S have the same number of
+    // digits. If S is properly normalized and q < 10 then
+    // this must be so.
+    if (lenT < lenS) {
+      // val's value is significantly less than S, result of division is zero.
+      // just multiply val by 10.
+      mulInPlace(t, 10);
+      return 0;
+    }
+
+    if (lenT > lenS)
+      throw new IllegalArgumentException("disparate values");
+
+    // estimate q the obvious way. We will usually be
+    // right. If not, then we're only off by a little and
+    // will re-add.
+    long q = (t[lenT] & LONG_MASK) / (s[lenS] & LONG_MASK);
+    final long diff = multDiffMe(t, q, s);
+    if (diff != 0L) {
+      // q is too big.
+      // add S back in until val turns +. val should
+      // not be very many times!
+      long sum = 0L;
+      do {
+        for (int sIndex = 1, tIndex = 1; tIndex <= lenT; ++sIndex, ++tIndex) {
+          sum += (t[tIndex] & LONG_MASK) + (s[sIndex] & LONG_MASK);
+          t[tIndex] = (int)sum;
+          sum >>>= 32; // Signed or unsigned, answer is 0 or 1
+        }
+
+        // Originally the following line read
+        // "if ( sum !=0 && sum != -1 )"
+        // but that would be wrong, because of the
+        // treatment of the two values as entirely unsigned,
+        // it would be impossible for a carry-out to be interpreted
+        // as -1 -- it would have to be a single-bit carry-out, or +1.
+        q -= 1;
+      }
+      while (sum == 0L);
+    }
+
+    // finally, we can multiply val by 10.
+    // it cannot overflow, right, as the high-order word has
+    // at least 4 high-order zeros!
+    mulInPlace(t, 10);
+    return (int)q;
   }
 }

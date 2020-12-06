@@ -19,28 +19,12 @@ package org.libj.math;
 import static org.libj.math.Decimal.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.junit.Test;
 
 public class DecimalDivisionOperationTest extends DecimalOperationTest {
-  private static final BigDecimal[] epsilon = {
-    D("3E-16"),
-    D("3E-16"),
-    D("3E-16"),
-    D("3E-16"),
-    D("8E-13"),
-    D("7E-13"),
-    D("2E-13"),
-    D("4E-14"),
-    D("8E-15"),
-    D("1E-14"),
-    D("3E-15"),
-    D("5E-15"),
-    D("9E-15"),
-    D("2E-14"),
-    D("3E-14"),
-    D("5E-14")
-  };
+  private static final BigDecimal[] epsilon = {D("0")};
 
   private static final DecimalArithmeticOperation div = new DecimalMultiplicativeOperation("div", long.class, "%s / %s") {
     @Override
@@ -49,9 +33,9 @@ public class DecimalDivisionOperationTest extends DecimalOperationTest {
     }
 
     @Override
-    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final byte scaleBits, final long defaultValue, final long[] time) {
+    Long test(final long d1, final long d2, final BigDecimal bd1, final BigDecimal bd2, final long defaultValue, final long[] time) {
       long ts = System.nanoTime();
-      final long result = div(d1, d2, defaultValue, scaleBits);
+      final long result = div(d1, d2, RoundingMode.HALF_UP, defaultValue);
       ts = System.nanoTime() - ts;
       if (result != defaultValue)
         time[0] += ts;

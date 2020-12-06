@@ -36,14 +36,11 @@ public class DecimalAdditionTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Add `T` to `T`.");
 
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("add(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.add(toBigDecimal(b)), o -> o),
-        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.add(toDecimal(b)), o -> o),
-        d(long.class, (long a, long b) -> Decimal.add(a, b, defaultValue, scaleBits), (long o) -> o)
-      );
-    }
+    test("add").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.add(toBigDecimal(b)), o -> o),
+      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.add(toDecimal(b)), o -> o),
+      d(long.class, (long a, long b) -> Decimal.add(a, b, defaultValue), (long o) -> o == defaultValue ? null : o)
+    );
   }
 
   @Test
@@ -51,13 +48,10 @@ public class DecimalAdditionTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Subtract `T` from `T`.");
 
     final long defaultValue = random.nextLong();
-    for (byte i = Decimal.MIN_SCALE_BITS; i <= MAX_SCALE_BITS; ++i) {
-      final byte scaleBits = i;
-      test("sub(" + scaleBits + ")").withSkip(skip((byte)(scaleBits + 1))).withAuditReport(report).withCases(scaleBits,
-        d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.subtract(toBigDecimal(b)), o -> o),
-        d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.sub(toDecimal(b)), o -> o),
-        d(long.class, (long a, long b) -> Decimal.sub(a, b, defaultValue, scaleBits), (long o) -> o)
-      );
-    }
+    test("sub").withAuditReport(report).withCases(
+      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.subtract(toBigDecimal(b)), o -> o),
+      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.sub(toDecimal(b)), o -> o),
+      d(long.class, (long a, long b) -> Decimal.sub(a, b, defaultValue), (long o) -> o == defaultValue ? null : o)
+    );
   }
 }

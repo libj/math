@@ -67,7 +67,7 @@ public class CaseSummaryPrinter {
     return "∞".equals(group) ? Double.POSITIVE_INFINITY : Integer.valueOf(group);
   }
 
-  private static SummaryMap decompose(final File file, final SummaryMap map) throws IOException {
+  private static void decompose(final File file, final SummaryMap map) throws IOException {
    final String str = new String(Files.readAllBytes(file.toPath()));
     final Matcher matcher = prePattern.matcher(str);
     matcher.find();
@@ -76,7 +76,7 @@ public class CaseSummaryPrinter {
     int end = matcher.end();
     final String summary = str.substring(start, end);
     final Matcher lineMatcher = linePattern.matcher(summary);
-//    System.out.println("---- " + p.toString() + " ------------------------------------------------------------");
+//    System.out.println("---- " + summary.toString() + " ------------------------------------------------------------");
     OUT:
     while (lineMatcher.find()) {
       final Object[] values = new Object[3];
@@ -88,6 +88,9 @@ public class CaseSummaryPrinter {
       dataMatcher.find();
       end = dataMatcher.start();
       final String methodName = line.substring(start, end).trim();
+      if (methodName == null)
+        continue;
+
       for (int i = 0; i < 3; ++i) {
         if (!dataMatcher.find())
           continue OUT;
@@ -122,8 +125,6 @@ public class CaseSummaryPrinter {
 //      System.out.println(methodName + " -> " + Arrays.toString(values));
 //      System.out.println(methodName + " " + Arrays.toString(values));
     }
-
-    return map;
   }
 
   private static String toString(final Object obj) {
@@ -142,15 +143,16 @@ public class CaseSummaryPrinter {
       final Map.Entry<String,ArrayList<Object[]>> entry = iterator.next();
       final ArrayList<Object[]> list = entry.getValue();
       if (list.size() <= index)
-        return null;
+        continue;
 
       int i = -1;
       if (withKey)
         strings[++i][j] = entry.getKey();
 
-      strings[++i][j] = String.valueOf(toString(list.get(index)[0]));
-      strings[++i][j] = String.valueOf(toString(list.get(index)[1]));
-      strings[++i][j] = String.valueOf(toString(list.get(index)[2]));
+      final Object[] array = list.get(index);
+      strings[++i][j] = String.valueOf(toString(array[0]));
+      strings[++i][j] = String.valueOf(toString(array[1]));
+      strings[++i][j] = String.valueOf(toString(array[2]));
     }
 
     return strings;

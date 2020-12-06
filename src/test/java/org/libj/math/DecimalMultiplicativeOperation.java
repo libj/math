@@ -22,14 +22,8 @@ abstract class DecimalMultiplicativeOperation extends DecimalArithmeticOperation
   }
 
   @Override
-  int maxValuePower(final byte bits) {
-    // For multiply and divide, the maxValue should not be so big as to cause the result to overrun max/min value
-    return (byte)(bits == 6 ? 55 : bits == 5 ? 43 : bits == 4 ? 36 : bits == 3 ? 33 : bits == 2 ? 31 : 30);
-  }
-
-  @Override
-  short randomScale(final byte bits) {
-    final short scale = super.randomScale(bits);
+  short randomScale() {
+    final short scale = super.randomScale();
     final short abs = SafeMath.abs(scale);
     return (short)(abs < 4 ? scale : scale / 2);
   }

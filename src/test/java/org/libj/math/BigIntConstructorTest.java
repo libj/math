@@ -71,6 +71,24 @@ public class BigIntConstructorTest extends BigIntTest {
     );
   }
 
+  private static double strip(final double v, final String[] y) {
+    String str = String.valueOf(v);
+    str = str.replace(".", "").replace("E-", "E");
+    y[0] = str;
+    return Double.valueOf(str);
+  }
+
+  @Test
+  // FIXME: Create a test case for double
+  public void testDouble(final AuditReport report) {
+    final double[] x = new double[1];
+    final String[] y = new String[1];
+    test("<init>(double)").withAuditReport(report).withCases(
+      l(BigInteger.class, (long a) -> { x[0] = strip(random.nextDouble() * random.nextLong(), y); return y[0]; }, a -> new BigInteger(a), o -> o == null ? null : String.valueOf(o)),
+      l(int[].class, (long a) -> BigInt.valueOf(x[0]), o -> o == null ? null : BigInt.toString(o))
+    );
+  }
+
   @Test
   public void testString(final AuditReport report) {
     test("<init>(String)").withAuditReport(report).withCases(

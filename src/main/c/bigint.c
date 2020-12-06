@@ -18,7 +18,7 @@
 
 const jlong LONG_MASK = 0xFFFFFFFFL;
 const jint OFF = 1;
-const jint MAX_VALUE = 2147483647;
+const jint BIG_INT_MAX_VALUE = 2147483647;
 
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad(jint _x, jint *x, jint xlen, jint _y, jint *y, jint ylen, jint _z, jint *z) {
   jint i, j, k;
@@ -169,9 +169,9 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     const jint r = l_b + (tmp[y2offl_b] != 0 || tmp[y2offl_b2] != 0 ? 1 : 0);
     const jint tmpoffrr = tmpoff + r * 2, tmpoffbb = tmpoff + b2, tmpoffrrbb = tmpoffrr + b2;
     if (!parallel) {
-      karatsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, zlength, 0, r, MAX_VALUE, MAX_VALUE);
-      karatsuba(x, xoff, y, yoff, tmp, tmpoffrr, tmplen, zlength, off, b, MAX_VALUE, MAX_VALUE);
-      karatsuba(x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, zlength, off + b, l_b, MAX_VALUE, MAX_VALUE);
+      karatsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, zlength, 0, r, BIG_INT_MAX_VALUE, BIG_INT_MAX_VALUE);
+      karatsuba(x, xoff, y, yoff, tmp, tmpoffrr, tmplen, zlength, off, b, BIG_INT_MAX_VALUE, BIG_INT_MAX_VALUE);
+      karatsuba(x, xoff, y, yoff, tmp, tmpoffrrbb, tmplen, zlength, off + b, l_b, BIG_INT_MAX_VALUE, BIG_INT_MAX_VALUE);
     }
     else {
       KaratsubaArgs *args1 = (KaratsubaArgs*)malloc(sizeof(KaratsubaArgs));
@@ -328,33 +328,9 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
   z[zoff] |= x[xoff] & 1;
 }
 
-#ifdef CRITICAL_NATIVE
+#ifndef CRITICAL_NATIVE
 
-static JNINativeMethod criticalMethods[] = {
-  { "nativeKaratsuba", "([II[II[IIIIIIII)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeKaratsuba },
-  { "nativeMulQuad", "([II[II[I)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuad },
-  { "nativeMulQuadInPlace", "([II[III)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace },
-  { "nativeSquareKaratsuba", "([II[IIIZII)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba },
-  { "nativeSquareQuad", "([III[III)V", (void*)JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareQuad }
-};
-
-jint JNI_OnLoad(JavaVM* vm, void* reserved) {
-  JNIEnv* env;
-  if ((*vm)->GetEnv(vm, (void*)&env, JNI_VERSION_1_6) != JNI_OK)
-    return JNI_ERR;
-
-  jclass clazz = (*env)->FindClass(env, "org/libj/math/BigIntMultiplication");
-  if (!clazz)
-    return JNI_ERR;
-
-  jint ret = (*env)->RegisterNatives(env, clazz, criticalMethods, sizeof(criticalMethods) / sizeof(criticalMethods[0]));
-  (*env)->DeleteLocalRef(env, clazz);
-  return ret == 0 ? JNI_VERSION_1_6 : JNI_ERR;
-}
-
-#else
-
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuad(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jintArray zarr) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuad(JNIEnv *env, jclass clazz, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jintArray zarr) {
   jboolean zcopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *y = (jint*)(*env)->GetPrimitiveArrayCritical(env, yarr, NULL);
@@ -367,7 +343,7 @@ JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuad(JNI
   (*env)->ReleasePrimitiveArrayCritical(env, zarr, z, zcopy ? 0 : JNI_ABORT);
 }
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace(JNIEnv *env, jobject obj, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jint zlen) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuadInPlace(JNIEnv *env, jclass clazz, jintArray xarr, jint xlen, jintArray yarr, jint ylen, jint zlen) {
   jboolean ycopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *y = (jint*)(*env)->GetPrimitiveArrayCritical(env, yarr, &ycopy);
@@ -378,7 +354,7 @@ JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeMulQuadInPl
   (*env)->ReleasePrimitiveArrayCritical(env, yarr, y, ycopy ? 0 : JNI_ABORT);
 }
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint xoff, jintArray yarr, jint yoff, jintArray zarr, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThreshold, jint parallelThresholdZ) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(JNIEnv *env, jclass clazz, jintArray xarr, jint xoff, jintArray yarr, jint yoff, jintArray zarr, jint zoff, jint zlen, jint zlength, jint off, jint len, jint parallelThreshold, jint parallelThresholdZ) {
   jboolean zcopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *y = (jint*)(*env)->GetPrimitiveArrayCritical(env, yarr, NULL);
@@ -391,7 +367,7 @@ JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeKaratsuba(J
   (*env)->ReleasePrimitiveArrayCritical(env, zarr, z, zcopy ? 0 : JNI_ABORT);
 }
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(JNIEnv *env, jobject obj, jintArray xarr, jint len, jintArray zarr, jint zlen, jint zlength, jboolean yCopy, jint parallelThreshold, jint parallelThresholdZ) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(JNIEnv *env, jclass clazz, jintArray xarr, jint len, jintArray zarr, jint zlen, jint zlength, jboolean yCopy, jint parallelThreshold, jint parallelThresholdZ) {
   jboolean zcopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *z = (jint*)(*env)->GetPrimitiveArrayCritical(env, zarr, &zcopy);
@@ -402,7 +378,7 @@ JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareKarat
   (*env)->ReleasePrimitiveArrayCritical(env, zarr, z, zcopy ? 0 : JNI_ABORT);
 }
 
-JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareQuad(JNIEnv *env, jobject obj, jintArray xarr, jint xoff, jint xlen, jintArray zarr, jint zoff, jint zlen) {
+JNIEXPORT void JNICALL Java_org_libj_math_BigIntMultiplication_nativeSquareQuad(JNIEnv *env, jclass clazz, jintArray xarr, jint xoff, jint xlen, jintArray zarr, jint zoff, jint zlen) {
   jboolean zcopy;
   jint *x = (jint*)(*env)->GetPrimitiveArrayCritical(env, xarr, NULL);
   jint *z = (jint*)(*env)->GetPrimitiveArrayCritical(env, zarr, &zcopy);

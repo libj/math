@@ -29,6 +29,10 @@
 
 package org.libj.math;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+
 /**
  * An arbitrary-precision integer replacement for {@link java.math.BigInteger},
  * with the following differences:
@@ -56,7 +60,7 @@ package org.libj.math;
  *
  * @author Seva Safris
  */
-public class BigInt extends BigIntDivision implements Comparable<BigInt>, Cloneable {
+public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable {
   private static final long serialVersionUID = -4360183347203631370L;
 
   /**
@@ -121,7 +125,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @complexity O(1)
+   * @complexity O(n^2)
    */
   public BigInt(final byte[] mag, int off, int len, final boolean littleEndian) {
     val = assign(emptyVal, mag, off, len, littleEndian);
@@ -137,7 +141,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * @param littleEndian Whether the specified byte array is encoded in
    *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @complexity O(1)
+   * @complexity O(n^2)
    */
   public BigInt(final byte[] mag, final boolean littleEndian) {
     val = assign(emptyVal, mag, 0, mag.length, littleEndian);
@@ -204,7 +208,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Creates a {@link BigInt} from the provided number as a string.
    *
    * @param s The number as a string.
-   * @complexity O(1)
+   * @complexity O(n)
    */
   public BigInt(final String s) {
     val = assign(emptyVal, s);
@@ -214,7 +218,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    * Creates a {@link BigInt} from the provided number as a {@code char[]}.
    *
    * @param s The number as a string.
-   * @complexity O(1)
+   * @complexity O(n)
    */
   public BigInt(final char[] s) {
     val = assign(emptyVal, s);
@@ -234,6 +238,17 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    */
   public BigInt(final BigInt b) {
     val = b.val.clone();
+  }
+
+  /**
+   * Creates a {@link BigInt} with the
+   * magnitude of the provided {@link BigInteger}.
+   *
+   * @param b The {@link BigInteger}.
+   * @complexity O(n^2)
+   */
+  public BigInt(final BigInteger b) {
+    val = valueOf(b);
   }
 
   /**
@@ -768,6 +783,168 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
   }
 
   /**
+   * Set this {@link BigInt} to the value of its square root, rounded as per the
+   * provided {@link RoundingMode}.
+   *
+   * <pre>
+   * this = this<sup>1/2</sup>
+   * </pre>
+   *
+   * @param rm The {@link RoundingMode}.
+   * @return <code>this<sup>1/2</sup></code>, rounded as per the provided
+   *         {@link RoundingMode}.
+   * @complexity O(n^2) - O(n log n)
+   */
+  public BigInt sqrt(final RoundingMode rm) {
+    val = sqrt(val, rm);
+    return this;
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its square root, rounding down.
+   *
+   * <pre>
+   * this = this<sup>1/2</sup>
+   * </pre>
+   *
+   * @return <code>this<sup>1/2</sup></code>, rounded down.
+   * @complexity O(n^2) - O(n log n)
+   */
+  public BigInt sqrt() {
+    val = sqrt(val, RoundingMode.DOWN);
+    return this;
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its natural logarithm, rounded as
+   * per the provided {@link RoundingMode}.
+   *
+   * <pre>
+   * this = log(this)
+   * </pre>
+   *
+   * @param rm The {@link RoundingMode}.
+   * @return {@code log(this)}, rounded as per the provided
+   *         {@link RoundingMode}.
+   * @complexity O(1)
+   */
+  public int log(final RoundingMode rm) {
+    return log(val, rm);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its natural logarithm, rounded down.
+   *
+   * <pre>
+   * this = log(this)
+   * </pre>
+   *
+   * @return {@code log(this)}, rounded down.
+   * @complexity O(1)
+   */
+  public int log() {
+    return log(val, RoundingMode.DOWN);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its logarithm of base {@code base},
+   * rounded as per the provided {@link RoundingMode}.
+   *
+   * <pre>
+   * this = log<sub>base</sub>(this)
+   * </pre>
+   *
+   * @param base The base of the logarithm.
+   * @param rm The {@link RoundingMode}.
+   * @return <code>log<sub>base</sub>(this)</code>, rounded as per the provided
+   *         {@link RoundingMode}.
+   * @complexity O(1)
+   */
+  public int log(final double base, final RoundingMode rm) {
+    return log(val, base, rm);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its logarithm of base {@code base},
+   * rounded down.
+   *
+   * <pre>
+   * this = log<sub>base</sub>(this)
+   * </pre>
+   *
+   * @param base The base of the logarithm.
+   * @return <code>log<sub>base</sub>(this)</code>, rounded down.
+   * @complexity O(1)
+   */
+  public int log(final double base) {
+    return log(val, base, RoundingMode.DOWN);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its logarithm of base {@code 2},
+   * rounded as per the provided {@link RoundingMode}.
+   *
+   * <pre>
+   * this = log<sub>2</sub>(this)
+   * </pre>
+   *
+   * @param rm The {@link RoundingMode}.
+   * @return <code>log<sub>2</sub>(this)</code>, rounded as per the provided
+   *         {@link RoundingMode}.
+   * @complexity O(1)
+   */
+  public int log2(final RoundingMode rm) {
+    return log2(val, rm);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its logarithm of base {@code base},
+   * rounded down.
+   *
+   * <pre>
+   * this = log<sub>2</sub>(this)
+   * </pre>
+   *
+   * @return <code>log<sub>2</sub>(this)</code>, rounded down.
+   * @complexity O(1)
+   */
+  public int log2() {
+    return log2(val, RoundingMode.DOWN);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its logarithm of base {@code 2},
+   * rounded as per the provided {@link RoundingMode}.
+   *
+   * <pre>
+   * this = log<sub>10</sub>(this)
+   * </pre>
+   *
+   * @param rm The {@link RoundingMode}.
+   * @return <code>log<sub>10</sub>(this)</code>, rounded as per the provided
+   *         {@link RoundingMode}.
+   * @complexity O(1)
+   */
+  public int log10(final RoundingMode rm) {
+    return log10(val, rm);
+  }
+
+  /**
+   * Set this {@link BigInt} to the value of its logarithm of base {@code base},
+   * rounded down.
+   *
+   * <pre>
+   * this = log<sub>10</sub>(this)
+   * </pre>
+   *
+   * @return <code>log<sub>10</sub>(this)</code>, rounded down.
+   * @complexity O(1)
+   */
+  public int log10() {
+    return log10(val, RoundingMode.DOWN);
+  }
+
+  /**
    * Divides this {@link BigInt} by the provided <i>unsigned</i> {@code int}
    * divisor.
    *
@@ -1122,7 +1299,7 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    *         this {@link BigInt}, <i>excluding</i> a sign bit.
    * @complexity O(n)
    */
-  public int bitLength() {
+  public long bitLength() {
     return bitLength(val);
   }
 
@@ -1433,6 +1610,24 @@ public class BigInt extends BigIntDivision implements Comparable<BigInt>, Clonea
    */
   public byte[] toByteArray(final boolean littleEndian) {
     return toByteArray(val, littleEndian);
+  }
+
+  /**
+   * Returns a {@link BigInteger} representation of this {@link BigInt}.
+   *
+   * @return A {@link BigInteger} representation of this {@link BigInt}.
+   */
+  public BigInteger toBigInteger() {
+    return toBigInteger(val);
+  }
+
+  /**
+   * Returns a {@link BigDecimal} representation of this {@link BigInt}.
+   *
+   * @return A {@link BigDecimal} representation of this {@link BigInt}.
+   */
+  public BigDecimal toBigDecimal() {
+    return toBigDecimal(val);
   }
 
   /**

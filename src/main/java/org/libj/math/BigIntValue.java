@@ -29,18 +29,9 @@
 
 package org.libj.math;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.management.ManagementFactory;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
 import org.libj.lang.Numbers;
-import org.libj.lang.OperatingSystem;
 
 abstract class BigIntValue extends Number {
   private static final long serialVersionUID = -5274535682246497862L;
@@ -48,61 +39,15 @@ abstract class BigIntValue extends Number {
   static final int NATIVE_THRESHOLD;
 
   static {
-    final String noNativeProp = System.getProperty("org.libj.math.BigInt.noNative");
-    if (noNativeProp != null && !noNativeProp.equals("false")) {
+    final NativeMath.Mode mode = NativeMath.loadNative();
+    if (mode == NativeMath.Mode.JAVA)
       NATIVE_THRESHOLD = Integer.MAX_VALUE;
-    }
-    else {
-      final boolean useCritical = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-Xcomp") > 0;
-
-      final String fileName = "libmath" + (useCritical ? "c" : "j");
-      final String extension;
-      final OperatingSystem operatingSystem = OperatingSystem.get();
-      if (operatingSystem.isMac())
-        extension = ".dylib";
-      else if (operatingSystem.isUnix())
-        extension = ".so";
-      else if (operatingSystem.isWindows())
-        extension = ".dll";
-      else
-        throw new UnsupportedOperationException("Unsupported operating system: " + operatingSystem);
-
-      final URL url = BigIntValue.class.getResource("/" + fileName + extension);
-      if (url == null) {
-        NATIVE_THRESHOLD = Integer.MAX_VALUE;
-      }
-      else {
-        NATIVE_THRESHOLD = useCritical ? 0 : 15;
-        final File file;
-        try {
-          if (url.toString().startsWith("jar:file:")) {
-            final Path tempPath = Files.createTempFile(fileName, extension);
-            file = tempPath.toFile();
-            file.deleteOnExit();
-            try (final InputStream in = url.openStream()) {
-              Files.copy(in, tempPath, StandardCopyOption.REPLACE_EXISTING);
-            }
-          }
-          else if (url.toString().startsWith("file:")) {
-            file = new File(url.getPath());
-          }
-          else {
-            throw new ExceptionInInitializerError("Unsupported protocol: " + url);
-          }
-        }
-        catch (final IOException e) {
-          throw new ExceptionInInitializerError(e);
-        }
-
-        try {
-          System.load(file.getAbsolutePath());
-        }
-        catch (final UnsatisfiedLinkError e) {
-          e.printStackTrace();
-          System.err.println("Starting with JNI bindings disabled");
-        }
-      }
-    }
+    else if (mode == NativeMath.Mode.NATIVE)
+      NATIVE_THRESHOLD = 15;
+    else if (mode == NativeMath.Mode.CRITICAL)
+      NATIVE_THRESHOLD = 0;
+    else
+      throw new UnsupportedOperationException("Unsupported mode: " + mode);
   }
 
   /**
@@ -112,10 +57,11 @@ abstract class BigIntValue extends Number {
   public static final int MAX_VAL_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
 
   static final long LONG_MASK = 0xFFFFFFFFL;
+  static final int[] ZERO = {0};
   static final int[] emptyVal = {};
   static final int OFF = 1;
 
-  static final LocalArray threadLocal = new LocalArray(); // FIXME: Experimental
+  static final LocalArray threadLocal = new LocalArray();
 
   static final class LocalArray extends ThreadLocal<int[]> {
     private static final int INITIAL_SIZE = 17;
@@ -128,7 +74,7 @@ abstract class BigIntValue extends Number {
     int[] get(final int len) {
       int[] array = super.get();
       if (array.length < len)
-        set(array = alloc(len));
+        set(array = new int[len]);
 
       return array;
     }
@@ -141,8 +87,10 @@ abstract class BigIntValue extends Number {
    *
    * @param len The minimal length of the returned {@code int[]}.
    * @return A new {@code int[]} with a length that is at least {@code len}.
+   * @complexity O(1)
    */
   static int[] alloc(final int len) {
+//    System.err.println("alloc");
     return new int[32 + len];
   }
 
@@ -214,6 +162,52 @@ abstract class BigIntValue extends Number {
   }
 
   /**
+   * Trims the provided {@linkplain BigInt#val() value-encoded number} to the
+   * length of its value ({@code Math.abs(val[0])}). If the length of the
+   * provided array is less than or equal to the length of its value, the
+   * provided instance is returned; otherwise, a new {@code int[]} is created.
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to trim.
+   * @return A {@code int[]} with its length less than or equal to the length of
+   *         the provided {@linkplain BigInt#val() value-encoded number}. If the
+   *         length of the provided array is less than or equal to
+   *         {@code length}, the provided instance is returned; otherwise, a new
+   *         {@code int[]} is created.
+   * @complexity O(n)
+   */
+  public static int[] trim(final int[] val) {
+    return trim(val, Math.abs(val[0]));
+  }
+
+  /**
+   * Trims the provided {@linkplain BigInt#val() value-encoded number} to the
+   * given {@code len} (which is equal to {@code Math.abs(val[0])}. This is
+   * merely a shortcut function to avoid having to evaluate
+   * {@code Math.abs(val[0])} if it is known by the calling frame. If the length
+   * of the provided array is less than or equal to {@code len + 1}, the
+   * provided instance is returned; otherwise, a new {@code int[]} is created.
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number} to trim.
+   * @param len The number of limbs in the {@linkplain BigInt#val()
+   *          value-encoded number}.
+   * @return A {@code int[]} with its length less than or equal to
+   *         {@code len + 1}. If the length of the provided array is less than
+   *         or equal to {@code len + 1}, the provided instance is returned;
+   *         otherwise, a new {@code int[]} is created.
+   * @complexity O(n)
+   */
+  public static int[] trim(final int[] val, int len) {
+    ++len;
+    if (val.length <= len)
+      return val;
+
+    System.err.println("trim");
+    final int[] res = new int[len];
+    System.arraycopy(val, 0, res, 0, len);
+    return res;
+  }
+
+  /**
    * Assigns an {@code int} magnitude to the provided {@linkplain BigInt#val()
    * value-encoded number}.
    *
@@ -279,6 +273,10 @@ abstract class BigIntValue extends Number {
     val[1] = mag;
     // _debugLenSig(val);
     return val;
+  }
+
+  protected static int[] assignInPlace(final int[] val, final boolean sig, final int mag) {
+    return assignInPlace(val, sig ? 1 : -1, mag);
   }
 
   /**
@@ -396,10 +394,14 @@ abstract class BigIntValue extends Number {
    * @complexity O(n)
    */
   public static int[] assign(int[] val, final int[] src) {
-    final int len = Math.abs(val[0]);
+    final int len = Math.abs(src[0]);
     if (val.length <= len)
       val = alloc(len);
 
+    return assignInPlace(val, src, len);
+  }
+
+  static int[] assignInPlace(final int[] val, final int[] src, final int len) {
     System.arraycopy(src, 0, val, 0, len + 1);
     return val;
   }
@@ -426,7 +428,7 @@ abstract class BigIntValue extends Number {
    *         two's-complement binary representation of a
    *         {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a
    *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @complexity O(1)
+   * @complexity O(n^2)
    */
   public static int[] assign(final int[] val, final byte[] mag, final boolean littleEndian) {
     return assign(val, mag, 0, mag.length, littleEndian);
@@ -760,130 +762,6 @@ abstract class BigIntValue extends Number {
     }
 
     return toIndex;
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an {@code int}.
-   *
-   * @param mag The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an {@code int}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final int mag) {
-    return assign(emptyVal, mag);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an <i>unsigned</i> {@code int}.
-   *
-   * @param sig The sign of the magnitude.
-   * @param mag The magnitude (unsigned).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an <i>unsigned</i> {@code int}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final int sig, final int mag) {
-    return assign(emptyVal, sig, mag);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as a {@code long}.
-   *
-   * @param mag The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as a {@code long}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final long mag) {
-    return assign(emptyVal, mag);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an <i>unsigned</i> {@code long}.
-   *
-   * @param sig The sign of the magnitude.
-   * @param mag The magnitude (unsigned).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an <i>unsigned</i> {@code long}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final int sig, final long mag) {
-    return assign(emptyVal, sig, mag);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * magnitude of the provided byte array containing the two's-complement binary
-   * representation of a {@linkplain BigInt#val() value-encoded
-   * <code>int[]</code>}.
-   *
-   * @param mag The two's-complement binary representation of a
-   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @param off The start offset of the binary representation.
-   * @param len The number of bytes to use.
-   * @param littleEndian Whether the specified byte array is encoded in
-   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
-   *          ({@code false}).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided byte array containing the
-   *         two's-complement binary representation of a
-   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final byte[] mag, final int off, final int len, final boolean littleEndian) {
-    return assign(emptyVal, mag, off, len, littleEndian);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * magnitude of the provided byte array containing the two's-complement binary
-   * representation of a {@linkplain BigInt#val() value-encoded
-   * <code>int[]</code>}.
-   *
-   * @param mag The two's-complement binary representation of a
-   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @param littleEndian Whether the specified byte array is encoded in
-   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
-   *          ({@code false}).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided byte array containing the
-   *         two's-complement binary representation of a
-   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final byte[] mag, final boolean littleEndian) {
-    return assign(emptyVal, mag, 0, mag.length, littleEndian);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as a {@code char[]}.
-   *
-   * @param s The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided {@code long}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final char[] s) {
-    return assign(emptyVal, s);
-  }
-
-  /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as a {@code String}.
-   *
-   * @param s The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided {@code long}.
-   * @complexity O(1)
-   */
-  public static int[] valueOf(final String s) {
-    return assign(emptyVal, s);
   }
 
   /**
@@ -1537,7 +1415,7 @@ abstract class BigIntValue extends Number {
         --len;
 
       for (; tmp > 0; tmp /= 10)
-        chars[--top] += tmp % 10; // TODO: Optimize.
+        chars[--top] += tmp % 10; // TODO: Optimize
 
       if (len == 1 && mag[0] == 0)
         break;
@@ -1568,30 +1446,40 @@ abstract class BigIntValue extends Number {
    *         <em>excluding</em> a sign bit.
    * @complexity O(n)
    */
-  public static int bitLength(final int[] val) {
+  static long bitLength(final int[] val) {
     int len = val[0];
-    return len == 0 ? 0 : bitLength(val, len);
+    if (len == 0)
+      return 0;
+
+    if (len < 0) { len = -len; }
+    return len * 32L - Integer.numberOfLeadingZeros(val[len]);
   }
 
-  static int bitLengthPos(final int[] val, final int len) {
-    return ((len - 1) << 5) + bitLengthForInt(val[len]);
-  }
-
-  static int bitLengthNeg(final int[] val, int len) {
-    // Use magBitLength to temporarily hold val[len], and decrement len
-    int magBitLength = val[len--];
-    // Check if magnitude is a power of two
-    boolean pow2 = Integer.bitCount(magBitLength) == 1;
-    // Calculate the bit length of the magnitude (use magBitLength for its purpose)
-    magBitLength = (len << 5) + bitLengthForInt(magBitLength);
-    for (; pow2 && len >= 1; --len)
-      pow2 = val[len] == 0;
-
-    return pow2 ? magBitLength - 1 : magBitLength;
-  }
-
-  static int bitLength(final int[] val, final int len) {
-    return len > 0 ? bitLengthPos(val, len) : bitLengthNeg(val, -len);
+  /**
+   * Returns the number of bits in the minimal two's-complement representation
+   * of the provided {@linkplain BigInt#val() value-encoded number},
+   * <em>excluding</em> a sign bit. For positive numbers, this is equivalent to
+   * the number of bits in the ordinary binary representation. For zero this
+   * method returns {@code 0}.
+   *
+   * <pre>
+   * ceil(log2(val < 0 ? -val : val + 1))
+   * </pre>
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @param len The number of significant limbs in the number <b>(assumed to be
+   *          positive)</b>.
+   * @return Number of bits in the minimal two's-complement representation of
+   *         the provided {@linkplain BigInt#val() value-encoded number},
+   *         <em>excluding</em> a sign bit.
+   * @implNote This function returns a {@code long} result because the maximum
+   *           numbers of bits representable with a {@linkplain BigInt#val()
+   *           value-encoded number} is
+   *           <code>32 * {@link #MAX_VAL_LENGTH} = 2147483648</code>.
+   * @complexity O(1)
+   */
+  static long bitLength(final int[] val, final int len) {
+    return len == 0 ? 0 : len * 32L - Integer.numberOfLeadingZeros(val[len]);
   }
 
   /**
@@ -1607,6 +1495,8 @@ abstract class BigIntValue extends Number {
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return The index of the rightmost (lowest-order) one bit in the provided
    *         {@linkplain BigInt#val() value-encoded number}.
+   * @complexity O(n)
+   * @amortized O(1)
    */
   public static int getLowestSetBit(final int[] val) {
     if (val[0] == 0)
@@ -1623,6 +1513,7 @@ abstract class BigIntValue extends Number {
    *
    * @param n The integer whose bit length to return.
    * @return The bit length of the provided integer.
+   * @complexity O(1)
    */
   static int bitLengthForInt(final int n) {
     return Integer.SIZE - Integer.numberOfLeadingZeros(n);
@@ -1647,8 +1538,26 @@ abstract class BigIntValue extends Number {
     if (len == 1)
       return Numbers.precision(BigInt.longValue(val));
 
-    final int p = (int)(((1 + len * 32 - Integer.numberOfLeadingZeros(val[len])) * 646456993L) >>> 31);
+    final int p = (int)(((1L + len * 32L - Integer.numberOfLeadingZeros(val[len])) * 646456993L) >>> 31);
     return compareToAbs(val, FastMath.E10(p)) < 0 ? p : p + 1;
+  }
+
+  /**
+   * Returns the normalization bias of the provided {@linkplain BigInt#val()
+   * value-encoded number}. The normalization bias is a left shift such that
+   * after it the highest word of the value will have the 4 highest bits equal
+   * to zero: {@code (highestWord & 0xf0000000) == 0}, but the next bit should
+   * be 1 ({@code (highestWord & 0x08000000) != 0}).
+   * <p>
+   * This assumes: {@code val != 0}
+   *
+   * @param val The {@linkplain BigInt#val() value-encoded number}.
+   * @return The normalization bias of the provided {@linkplain BigInt#val()
+   *         value-encoded number}.
+   */
+  static int getNormalizationBias(final int[] val) {
+    final int zeros = Integer.numberOfLeadingZeros(val[Math.abs(val[0])]);
+    return zeros < 4 ? 28 + zeros : zeros - 4;
   }
 
   static void _debugLenSig(final int[] val) {

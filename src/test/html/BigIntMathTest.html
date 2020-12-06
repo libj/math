@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BigIntMathTest</title>
+  <link rel="stylesheet" type="test/css" href="https://raw.githubusercontent.com/sindresorhus/github-markdown-css/gh-pages/github-markdown.css">
+  <style>
+    html { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji; }
+    span, code, pre { font-family: Menlo, monospace; font-size: small; background-color: rgba(27,31,35,.05); mix-blend-mode: hard-light; }
+    code { padding: .2em .4em; }
+    pre { color: #EEE; background-color: #222; padding: 4px; }
+  </style>
+</head>
+<body>
+<h4>Math (<a href="src/test/java/org/libj/math/BigIntMathTest.java"><code>BigIntMathTest</code></a>)</h4>
+
+<p><strong>Summary</strong></p>
+
+<pre><code>
+[runtime performance]
+╔══════╦════════════╦════════╦═══════╗
+║      ║ <span style="color:cyan;">BigInteger</span> ║ <span style="color:yellow;">BigInt</span> ║ <span style="color:lightgreen;">int[]</span> ║ 
+╠══════╬════════════╬════════╬═══════╣
+║ sqrt ║         <span style="font-weight:bolder;color:white;">+0</span> ║   <span style="font-weight:bolder;color:yellow;">+300</span> ║  <span style="font-weight:bolder;color:lightgreen;">+372</span> ║ 
+╚══════╩════════════╩════════╩═══════╝
+</code></pre>
+
+<h5><a name="sqrt"><code>sqrt</code></a></h5>
+
+<p>Square root of <code>T</code></p>
+
+<pre><code>
+[runtime performance]
+sqrt
+  32690 in 582ms
+╔════════╦═══════════╦═══════╦════════════╦════════╦═══════╗
+║ length ║ precision ║ count ║ <span style="color:cyan;">BigInteger</span> ║ <span style="color:yellow;">BigInt</span> ║ <span style="color:lightgreen;">int[]</span> ║ 
+╠════════╬═══════════╬═══════╬════════════╬════════╬═══════╣
+║     47 ║      -128 ║  2603 ║       <span style="font-weight:bolder;color:white;">8517</span> ║     <span style="font-weight:bolder;color:yellow;">48</span> ║    <span style="font-weight:bolder;color:lightgreen;">24</span> ║ 
+║     44 ║      -102 ║  3413 ║       <span style="font-weight:bolder;color:white;">9083</span> ║     <span style="font-weight:bolder;color:yellow;">53</span> ║    <span style="font-weight:bolder;color:lightgreen;">31</span> ║ 
+║     41 ║       -76 ║  3202 ║       <span style="font-weight:bolder;color:white;">7638</span> ║     <span style="font-weight:bolder;color:yellow;">54</span> ║    <span style="font-weight:bolder;color:lightgreen;">35</span> ║ 
+║     39 ║       -51 ║  3138 ║       <span style="font-weight:bolder;color:white;">7055</span> ║     <span style="font-weight:bolder;color:yellow;">54</span> ║    <span style="font-weight:bolder;color:lightgreen;">35</span> ║ 
+║     36 ║       -25 ║  2214 ║       <span style="font-weight:bolder;color:white;">6953</span> ║     <span style="font-weight:bolder;color:yellow;">62</span> ║    <span style="font-weight:bolder;color:lightgreen;">41</span> ║ 
+║     34 ║         0 ║  2676 ║       <span style="font-weight:bolder;color:white;">3861</span> ║    <span style="font-weight:bolder;color:yellow;">296</span> ║   <span style="font-weight:bolder;color:lightgreen;">215</span> ║ 
+║     36 ║        25 ║  2252 ║       <span style="font-weight:bolder;color:white;">1689</span> ║   <span style="font-weight:bolder;color:red;">1759</span> ║  <span style="font-weight:bolder;color:lightgreen;">1365</span> ║ 
+║     39 ║        51 ║  3063 ║       <span style="font-weight:bolder;color:lightgreen;">2038</span> ║   <span style="font-weight:bolder;color:red;">2637</span> ║  <span style="font-weight:bolder;color:yellow;">2225</span> ║ 
+║     41 ║        76 ║  3489 ║       <span style="font-weight:bolder;color:white;">2407</span> ║   <span style="font-weight:bolder;color:red;">2562</span> ║  <span style="font-weight:bolder;color:lightgreen;">2173</span> ║ 
+║     44 ║       102 ║  2937 ║       <span style="font-weight:bolder;color:lightgreen;">2733</span> ║   <span style="font-weight:bolder;color:red;">3185</span> ║  <span style="font-weight:bolder;color:yellow;">2843</span> ║ 
+║     47 ║       128 ║  2603 ║       <span style="font-weight:bolder;color:lightgreen;">2353</span> ║   <span style="font-weight:bolder;color:red;">2867</span> ║  <span style="font-weight:bolder;color:yellow;">2514</span> ║ 
+║        ║           ║  <span style="font-weight:bolder;color:cyan;">sum:</span> ║      <span style="font-weight:bolder;color:white;">54327</span> ║  <span style="font-weight:bolder;color:yellow;">13577</span> ║ <span style="font-weight:bolder;color:lightgreen;">11501</span> ║ 
+║        ║           ║   <span style="font-weight:bolder;color:cyan;">+%:</span> ║         <span style="font-weight:bolder;color:white;">+0</span> ║   <span style="font-weight:bolder;color:yellow;">+300</span> ║  <span style="font-weight:bolder;color:lightgreen;">+372</span> ║ 
+╚════════╩═══════════╩═══════╩════════════╩════════╩═══════╝
+
+</span>⡏<span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:lightgreen;">⠉</span><span style="color:yellow;">⠛</span><span style="color:yellow;">⠻</span><span style="color:yellow;">⠿</span><span style="color:yellow;">⣭</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⣉</span><span style="color:lightgreen;">⡉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⠉</span>⢹</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠉</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠬</span><span style="color:yellow;">⣉</span><span style="color:cyan;">⣒</span><span style="color:cyan;">⣒</span><span style="color:cyan;">⣤</span><span style="color:lightgreen;">⣄</span><span style="color:lightgreen;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⡀</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⡠</span><span style="color:cyan;">⠊</span><span style="color:cyan;">⠁</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠑</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠤</span><span style="color:yellow;">⠤</span><span style="color:yellow;">⣈</span><span style="color:yellow;">⣉</span><span style="color:yellow;">⡉</span><span style="color:lightgreen;">⠒</span><span style="color:lightgreen;">⠒</span><span style="color:lightgreen;">⠚</span><span style="color:lightgreen;">⠋</span><span style="color:yellow;">⣉</span><span style="color:yellow;">⣙</span><span style="color:yellow;">⣛</span><span style="color:yellow;">⣛</span><span style="color:yellow;">⣫</span><span style="color:yellow;">⣭</span><span style="color:yellow;">⣭</span><span style="color:yellow;">⡶</span><span style="color:cyan;">⠶</span><span style="color:lightgreen;">⠦</span><span style="color:lightgreen;">⠤</span><span style="color:lightgreen;">⢤</span><span style="color:lightgreen;">⣤</span><span style="color:lightgreen;">⣤</span><span style="color:lightgreen;">⣤</span><span style="color:lightgreen;">⣤</span><span style="color:lightgreen;">⣒</span><span style="color:lightgreen;">⠶</span><span style="color:lightgreen;">⠶</span><span style="color:lightgreen;">⠶</span><span style="color:lightgreen;">⠮</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠭</span><span style="color:lightgreen;">⠭</span>⢽</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⢀</span><span style="color:cyan;">⠌</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠈</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span>⠀⠀⠀⠀⠀⠀⠀<span style="color:yellow;">⠈</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠑</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠒</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span><span style="color:yellow;">⠉</span>⢹</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⡠</span><span style="color:cyan;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⢀</span><span style="color:cyan;">⠌</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⢀</span><span style="color:cyan;">⠔</span><span style="color:cyan;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⡠</span><span style="color:cyan;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⡠</span><span style="color:cyan;">⠊</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⢀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⠤</span><span style="color:cyan;">⠊</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⢀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⠤</span><span style="color:cyan;">⠤</span><span style="color:cyan;">⠒</span><span style="color:cyan;">⠒</span><span style="color:cyan;">⠊</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡧<span style="color:cyan;">⠤</span><span style="color:cyan;">⠤</span><span style="color:cyan;">⢄</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span>⠀<span style="color:cyan;">⣀</span><span style="color:cyan;">⣀</span><span style="color:cyan;">⡠</span><span style="color:cyan;">⠤</span><span style="color:cyan;">⠒</span><span style="color:cyan;">⠉</span><span style="color:cyan;">⠁</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀<span style="color:cyan;">⠉</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⡇</span>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</span>⢸</span>
+</span>⣇</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣀</span>⣸</span>
+
+</code></pre>
+
+</body>
+</html>

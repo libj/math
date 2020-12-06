@@ -561,9 +561,9 @@ public final class SafeMath {
    *         infinity) that is greater than or equal to the argument and is
    *         equal to a mathematical integer.
    */
-//  public static Decimal ceil(final Decimal a) {
-//    return a.setScale((short)0, RoundingMode.CEILING);
-//  }
+  public static Decimal ceil(final Decimal a) {
+    return a.setScale((short)0, RoundingMode.CEILING);
+  }
 
   /**
    * Returns the smallest (closest to negative infinity) {@link BigDecimal}
@@ -789,9 +789,9 @@ public final class SafeMath {
    *         positive infinity) that is less than or equal to the argument and
    *         is equal to a mathematical integer.
    */
-//  public static Decimal floor(final Decimal a) {
-//    return a.setScale((short)0, RoundingMode.FLOOR);
-//  }
+  public static Decimal floor(final Decimal a) {
+    return a.setScale((short)0, RoundingMode.FLOOR);
+  }
 
   /**
    * Returns the largest (closest to positive infinity) {@link BigDecimal} value
@@ -1039,54 +1039,53 @@ public final class SafeMath {
    * @throws IllegalArgumentException If scale is negative.
    */
   public static float round(float a, final RoundingMode rm) {
-    final int c = (int)a;
-    switch (rm) {
-      case UNNECESSARY:
-        if (c != a)
-          return Float.NaN;
+    final int b = (int)a;
+    if (rm == RoundingMode.HALF_UP) {
+      if (b == a)
+        return a;
 
-      case DOWN:
-        return c;
-
-      case FLOOR:
-        return a > 0 || c == a ? c : c - 1;
-
-      case UP:
-        return c == a ? c : a < 0 ? c - 1 : c + 1;
-
-      case CEILING:
-        return a < 0 || c == a ? c : c + 1;
-
-      case HALF_DOWN:
-        if (c == a)
-          return a;
-
-        a -= c;
-        return a < -.5 ? c - 1 : a > .5 ? c + 1 : c;
-
-      case HALF_UP:
-        if (c == a)
-          return a;
-
-        a -= c;
-        return a <= -.5 ? c - 1 : a >= .5 ? c + 1 : c;
-
-      case HALF_EVEN:
-        if (c == a)
-          return a;
-
-        a -= c;
-        if (a == -.5)
-          return c % 2 == 0 ? c : c - 1;
-
-        if (a == .5)
-          return c % 2 == 0 ? c : c + 1;
-
-        return a < -.5 ? c - 1 : a > .5 ? c + 1 : c;
-
-      default:
-        throw new AssertionError();
+      a -= b;
+      return a <= -.5 ? b - 1 : a >= .5 ? b + 1 : b;
     }
+
+    if (rm == RoundingMode.DOWN)
+      return b;
+
+    if (rm == RoundingMode.FLOOR)
+      return a > 0 || b == a ? b : b - 1;
+
+    if (rm == RoundingMode.UP)
+      return b == a ? b : a < 0 ? b - 1 : b + 1;
+
+    if (rm == RoundingMode.CEILING)
+      return a < 0 || b == a ? b : b + 1;
+
+    if (rm == RoundingMode.HALF_DOWN) {
+      if (b == a)
+        return a;
+
+      a -= b;
+      return a < -.5 ? b - 1 : a > .5 ? b + 1 : b;
+    }
+
+    if (rm == RoundingMode.HALF_EVEN) {
+      if (b == a)
+        return a;
+
+      a -= b;
+      if (a == -.5)
+        return b % 2 == 0 ? b : b - 1;
+
+      if (a == .5)
+        return b % 2 == 0 ? b : b + 1;
+
+      return a < -.5 ? b - 1 : a > .5 ? b + 1 : b;
+    }
+
+    if ((rm == RoundingMode.UNNECESSARY || rm == null) && b != a)
+      return Float.NaN;
+
+    return b;
   }
 
   /**
@@ -1132,7 +1131,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If scale is negative.
    */
   public static float round(final float a, final int scale) {
-    return round(a, scale, RoundingMode.HALF_UP);
+    return round(a, scale, null);
   }
 
   /**
@@ -1147,53 +1146,52 @@ public final class SafeMath {
    */
   public static double round(double a, final RoundingMode rm) {
     final long c = (long)a;
-    switch (rm) {
-      case UNNECESSARY:
-        if (c != a)
-          return Double.NaN;
+    if (rm == RoundingMode.HALF_UP) {
+      if (c == a)
+        return a;
 
-      case DOWN:
-        return c;
-
-      case FLOOR:
-        return a > 0 || c == a ? c : c - 1;
-
-      case UP:
-        return c == a ? c : a < 0 ? c - 1 : c + 1;
-
-      case CEILING:
-        return a < 0 || c == a ? c : c + 1;
-
-      case HALF_DOWN:
-        if (c == a)
-          return a;
-
-        a -= c;
-        return a < -.5 ? c - 1 : a > .5 ? c + 1 : c;
-
-      case HALF_UP:
-        if (c == a)
-          return a;
-
-        a -= c;
-        return a <= -.5 ? c - 1 : a >= .5 ? c + 1 : c;
-
-      case HALF_EVEN:
-        if (c == a)
-          return a;
-
-        a -= c;
-        if (a == -.5)
-          return c % 2 == 0 ? c : c - 1;
-
-        if (a == .5)
-          return c % 2 == 0 ? c : c + 1;
-
-        return a < -.5 ? c - 1 : a > .5 ? c + 1 : c;
-
-      default:
-        throw new AssertionError();
+      a -= c;
+      return a <= -.5 ? c - 1 : a >= .5 ? c + 1 : c;
     }
+
+    if (rm == RoundingMode.DOWN)
+      return c;
+
+    if (rm == RoundingMode.FLOOR)
+      return a > 0 || c == a ? c : c - 1;
+
+    if (rm == RoundingMode.UP)
+      return c == a ? c : a < 0 ? c - 1 : c + 1;
+
+    if (rm == RoundingMode.CEILING)
+      return a < 0 || c == a ? c : c + 1;
+
+    if (rm == RoundingMode.HALF_DOWN) {
+      if (c == a)
+        return a;
+
+      a -= c;
+      return a < -.5 ? c - 1 : a > .5 ? c + 1 : c;
+    }
+
+    if (rm == RoundingMode.HALF_EVEN) {
+      if (c == a)
+        return a;
+
+      a -= c;
+      if (a == -.5)
+        return c % 2 == 0 ? c : c - 1;
+
+      if (a == .5)
+        return c % 2 == 0 ? c : c + 1;
+
+      return a < -.5 ? c - 1 : a > .5 ? c + 1 : c;
+    }
+
+    if ((rm == RoundingMode.UNNECESSARY || rm == null) && c != a)
+      return Double.NaN;
+
+    return c;
   }
 
   /**
@@ -1239,7 +1237,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If scale is negative.
    */
   public static double round(final double a, final int scale) {
-    return round(a, scale, RoundingMode.HALF_UP);
+    return round(a, scale, null);
   }
 
   /**
@@ -1309,12 +1307,12 @@ public final class SafeMath {
    * @throws IllegalArgumentException If scale is negative.
    * @throws NullPointerException If {@code a} is null.
    */
-//  public static Decimal round(final Decimal a, final short scale) {
-//    if (scale < 0)
-//      throw new IllegalArgumentException("scale < 0: " + scale);
-//
-//    return a.setScale(scale, RoundingMode.HALF_UP);
-//  }
+  public static Decimal round(final Decimal a, final short scale) {
+    if (scale < 0)
+      throw new IllegalArgumentException("scale < 0: " + scale);
+
+    return a.setScale(scale, RoundingMode.HALF_UP);
+  }
 
   /**
    * Returns the closest {@link BigDecimal} to the argument, with ties after

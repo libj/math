@@ -52,8 +52,8 @@ public class BigIntBitwiseTest extends BigIntTest {
 
     test("bitLength()").withAuditReport(report).withCases(
       s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.bitLength(), Integer::valueOf),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.bitLength(), Integer::valueOf),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.bitLength(a), Integer::valueOf)
+      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.bitLength(), Long::valueOf),
+      s(int[].class, this::scaledVal, (int[] a) -> BigInt.bitLength(a), Long::valueOf)
     );
   }
 

@@ -16,6 +16,7 @@
 
 package org.libj.math;
 
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -59,21 +60,21 @@ public abstract class BigIntTest extends NumericCaseTest {
     if (!initialized())
       setScaleFactor(IntCase.class, defaultScaleFactor);
 
-    return shoudlScale ? new BigInteger(stringScale(String.valueOf(a))) : BigInteger.valueOf(a);
+    return shouldScale[0] ? new BigInteger(stringScale(String.valueOf(a))) : BigInteger.valueOf(a);
   }
 
   public BigInteger scaledBigInteger(final long a) {
     if (!initialized())
       setScaleFactor(LongCase.class, defaultScaleFactor);
 
-    return shoudlScale ? new BigInteger(stringScale(String.valueOf(a))) : BigInteger.valueOf(a);
+    return shouldScale[0] ? new BigInteger(stringScale(String.valueOf(a))) : BigInteger.valueOf(a);
   }
 
   public BigInteger scaledBigInteger(final String a, final int factor) {
     if (!initialized())
       setScaleFactor(StringCase.class, factor);
 
-    return new BigInteger(shoudlScale ? stringScale(a, factor) : a);
+    return new BigInteger(shouldScale[0] ? stringScale(a, factor) : a);
   }
 
   public BigInteger scaledBigInteger(final String a) {
@@ -85,7 +86,7 @@ public abstract class BigIntTest extends NumericCaseTest {
       setScaleFactor(IntCase.class, defaultScaleFactor);
 
     final int[] val = newMag(2);
-    return shoudlScale ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
+    return shouldScale[0] ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
   }
 
   public int[] scaledVal(final long a) {
@@ -93,7 +94,7 @@ public abstract class BigIntTest extends NumericCaseTest {
       setScaleFactor(LongCase.class, defaultScaleFactor);
 
     final int[] val = newMag(3);
-    return shoudlScale ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
+    return shouldScale[0] ? BigInt.assign(val, stringScale(String.valueOf(a))) : BigInt.assign(val, a);
   }
 
   public int[] scaledVal(final String a, final int factor) {
@@ -102,7 +103,7 @@ public abstract class BigIntTest extends NumericCaseTest {
 
     int[] val = BigInt.valueOf(a);
     val = newMag(val.length * factor);
-    return shoudlScale ? BigInt.assign(val, stringScale(a, factor)) : BigInt.assign(val, a);
+    return shouldScale[0] ? BigInt.assign(val, stringScale(a, factor)) : BigInt.assign(val, a);
   }
 
   public int[] scaledVal(final String a) {
@@ -125,43 +126,43 @@ public abstract class BigIntTest extends NumericCaseTest {
     return new BigInt(scaledVal(a, factor));
   }
 
-  public BigIntHuldra scaledBigIntHuldra(final int a) {
+  public org.huldra.math.BigInt scaledBigIntHuldra(final int a) {
     if (!initialized())
       setScaleFactor(IntCase.class, defaultScaleFactor);
 
-    final BigIntHuldra v = newBigIntHuldra();
-    return shoudlScale ? v.assign(stringScale(String.valueOf(a))) : v.assign(a);
+    final org.huldra.math.BigInt v = newBigIntHuldra();
+    return shouldScale[0] ? v.assign(stringScale(String.valueOf(a))) : v.assign(a);
   }
 
-  public BigIntHuldra scaledBigIntHuldra(final long a) {
+  public org.huldra.math.BigInt scaledBigIntHuldra(final long a) {
     if (!initialized())
       setScaleFactor(LongCase.class, defaultScaleFactor);
 
-    final BigIntHuldra v = newBigIntHuldra();
-    return shoudlScale ? v.assign(stringScale(String.valueOf(a))) : v.assign(a);
+    final org.huldra.math.BigInt v = newBigIntHuldra();
+    return shouldScale[0] ? v.assign(stringScale(String.valueOf(a))) : v.assign(a);
   }
 
-  public BigIntHuldra scaledBigIntHuldra(final String a, final int factor) {
+  public org.huldra.math.BigInt scaledBigIntHuldra(final String a, final int factor) {
     if (!initialized())
       setScaleFactor(StringCase.class, factor);
 
-    final BigIntHuldra v = newBigIntHuldra();
-    return shoudlScale ? v.assign(stringScale(String.valueOf(a), factor)) : v.assign(a);
+    final org.huldra.math.BigInt v = newBigIntHuldra();
+    return shouldScale[0] ? v.assign(stringScale(String.valueOf(a), factor)) : v.assign(a);
   }
 
-  public BigIntHuldra scaledBigIntHuldra(final String a) {
+  public org.huldra.math.BigInt scaledBigIntHuldra(final String a) {
     return scaledBigIntHuldra(a, defaultScaleFactor);
   }
 
-  private static BigIntHuldra newBigIntHuldra() {
-    return new BigIntHuldra(newMag(0));
+  private static org.huldra.math.BigInt newBigIntHuldra() {
+    return new org.huldra.math.BigInt(newMag(0));
   }
 
   public String scaledString(final String a, final int factor) {
     if (!initialized())
       setScaleFactor(StringCase.class, factor);
 
-    return shoudlScale ? stringScale(a, factor) : a;
+    return shouldScale[0] ? stringScale(a, factor) : a;
   }
 
   private static int[] newMag(final int size) {
@@ -189,6 +190,30 @@ public abstract class BigIntTest extends NumericCaseTest {
     val[0] = length;
     for (int i = 1; i <= length; ++i)
       val[i] = random.nextInt();
+
+    return val;
+  }
+
+  static BigInteger newMaxBigInteger(final int byteLength) {
+    final int[] mag = new int[byteLength];
+    for (int i = 0; i < mag.length; ++i)
+      mag[i] = -1;
+
+    try {
+      final Constructor<BigInteger> c = BigInteger.class.getDeclaredConstructor(int[].class, int.class);
+      c.setAccessible(true);
+      return c.newInstance(mag, 1);
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  static int[] newMaxValue(final int byteLength) {
+    final int[] val = new int[byteLength + 1];
+    val[0] = val.length - 1;
+    for (int i = 1; i < val.length; ++i)
+      val[i] = -1;
 
     return val;
   }

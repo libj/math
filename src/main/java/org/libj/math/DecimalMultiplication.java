@@ -23,53 +23,49 @@ abstract class DecimalMultiplication extends FixedPoint {
 
   /**
    * Returns the product of {@code v1 * v2}. If the result overflows
-   * {@code long}, or is outside the range of {@code minValue} and
-   * {@code maxValue}, this method returns {@code 0}.
+   * {@code long}, or is outside the range of {@code MIN_VALUE} and
+   * {@code MAX_VALUE}, this method returns {@code 0}.
    *
    * @param v1 The multiplier.
    * @param v2 The multiplicand.
-   * @param minValue The minimum value lower than which is considered an
-   *          underflow.
-   * @param maxValue The maximum value higher than which is considered an
-   *          overflow.
    * @return the product of {@code v1 * v2}. If the result overflows
-   *         {@code long}, or is outside the range of {@code minValue} and
-   *         {@code maxValue}, this method returns {@code 0}.
+   *         {@code long}, or is outside the range of {@code MIN_VALUE} and
+   *         {@code MAX_VALUE}, this method returns {@code 0}.
    */
-  private static long mulNonZero(final long v1, final long v2, final long minValue, final long maxValue) {
+  private static long mulNonZero(final long v1, final long v2) {
     final long product = v1 * v2;
     final long av1 = Math.abs(v1);
     final long av2 = Math.abs(v2);
-    if (((av1 | av2) >>> 31 == 0 || v2 == 0 || product / v2 == v1) && (v1 < 0 == v2 < 0 ? product <= maxValue : minValue <= product))
+    if (((av1 | av2) >>> 31 == 0 || v2 == 0 || product / v2 == v1) && (v1 < 0 == v2 < 0 ? product <= MAX_SIGNIFICAND : MIN_SIGNIFICAND <= product))
       return product;
 
     return 0;
   }
 
-  static boolean mul0(long v1, short s1, long v2, short s2, final long minValue, final long maxValue, final short minScale, final short maxScale, final Decimal result) {
-    // If v1 has trailing zeroes, remove them first.
-    final byte z1 = Numbers.trailingZeroes(v1);
+  static boolean mul0(long significand1, short scale1, long significand2, short scale2, final Decimal result) {
+    // If significand1 has trailing zeroes, remove them first.
+    final byte z1 = Numbers.trailingZeroes(significand1);
     if (z1 > 0) {
-      v1 /= FastMath.longE10[z1];
-      s1 -= z1;
+      significand1 /= FastMath.longE10[z1];
+      scale1 -= z1;
     }
 
     // If v2 has trailing zeroes, remove them first.
-    final byte z2 = Numbers.trailingZeroes(v2);
+    final byte z2 = Numbers.trailingZeroes(significand2);
     if (z2 > 0) {
-      v2 /= FastMath.longE10[z2];
-      s2 -= z2;
+      significand2 /= FastMath.longE10[z2];
+      scale2 -= z2;
     }
 
-    int s = s1 + s2;
+    int s = scale1 + scale2;
 
     // Check if we can do simple multiplication
-    long v = mulNonZero(v1, v2, minValue, maxValue);
+    long v = mulNonZero(significand1, significand2);
     if (v == 0) {
-      final int[] val = BigInt.assignInPlace(Decimal.buf1.get(), v1);
-      BigInt.mulInPlace(val, v2);
+      final int[] val = BigInt.assignInPlace(Decimal.buf1.get(), significand1);
+      BigInt.mulInPlace(val, significand2);
       final int[] val2 = BigInt.copyInPlace(val, Math.abs(val[0]) + 1, Decimal.buf2.get());
-      final long dp = BigInt.longValue(BigInt.div(val2, maxValue));
+      final long dp = BigInt.longValue(BigInt.div(val2, MAX_SIGNIFICAND));
       if (dp == 0) {
         v = BigInt.longValue(val);
       }
@@ -92,6 +88,6 @@ abstract class DecimalMultiplication extends FixedPoint {
       }
     }
 
-    return checkScale(v, s, minValue, minScale, maxScale, result);
+    return checkScale(v, Numbers.precision(v), s, result);
   }
 }
