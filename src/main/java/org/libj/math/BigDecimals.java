@@ -17,6 +17,7 @@
 package org.libj.math;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -81,6 +82,42 @@ public final class BigDecimals {
   public static BigDecimal intern(final BigDecimal n) {
     final BigDecimal instance = instances.putIfAbsent(n.toString(), n);
     return instance != null ? instance : n;
+  }
+
+  /**
+   * Returns a {@link BigDecimal} whose scale is the specified value, and whose
+   * unscaled value is determined by multiplying or dividing the provided
+   * {@link BigDecimal}'s unscaled value by the appropriate power of ten to
+   * maintain its overall value.
+   * <p>
+   * This method differentiates itself from
+   * {@link BigDecimal#setScale(int,RoundingMode)} in the way the given
+   * {@link RoundingMode} is applied. For {@code newScale} values that require
+   * rounding, unlike in {@link BigDecimal#setScale(int,RoundingMode)}, this
+   * method first scales the provided {@link BigDecimal} to
+   * {@code newScale + 1}, rounding down. It thereafter performs scales the
+   * resulting {@link BigDecimal} to the specified {@code newScale} with the
+   * given {@link RoundingMode}.
+   * <p>
+   * This behavior ensures that only the last decimal value affects the
+   * rounding, so as to align in behavior with most other analogous algorithms.
+   *
+   * @param v The {@link BigDecimal}.
+   * @param newScale Scale of the {@code BigDecimal} value to be returned.
+   * @param rm The {@link RoundingMode}.
+   * @return A {@link BigDecimal} whose scale is the specified value, and whose
+   *         unscaled value is determined by multiplying or dividing the
+   *         provided {@link BigDecimal}'s unscaled value by the appropriate
+   *         power of ten to maintain its overall value.
+   */
+  public static BigDecimal setScale(BigDecimal v, final int newScale, final RoundingMode rm) {
+    if (v.scale() <= newScale + 1)
+      return v.setScale(newScale, rm);
+
+    if (rm != RoundingMode.UNNECESSARY)
+      v = v.setScale(newScale + 1, RoundingMode.DOWN);
+
+    return v.setScale(newScale, rm);
   }
 
   private BigDecimals() {
