@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.junit.Test;
+import org.libj.lang.BigDecimals;
 
 public class DecimalTranslationalOperationTest extends DecimalOperationTest {
   private static final DecimalArithmeticOperation abs = new DecimalTranslationalOperation("abs", long.class, "| %s |") {

@@ -31,6 +31,8 @@ package org.libj.math;
 
 import java.math.RoundingMode;
 
+import org.libj.lang.Constants;
+
 abstract class BigIntMath extends BigIntDivision {
   private static final long serialVersionUID = 8389568864770712429L;
 

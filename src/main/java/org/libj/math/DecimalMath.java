@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import org.libj.lang.Constants;
 import org.libj.lang.Numbers;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
