@@ -27,6 +27,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.junit.Test;
+import org.libj.lang.BigDecimals;
 import org.libj.test.TestAide;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -1584,11 +1585,11 @@ public class SafeMathITest {
   public void testRoundBigDecimal() {
     for (int j = 0; j < 3; ++j) {
       final int s = j;
-      test(0, BigDecimal.class, n -> SafeMath.round(n, s), n -> n.setScale(s, RoundingMode.HALF_UP));
-      test(1, BigDecimal.class, n -> SafeMath.round(n, s), n -> n.setScale(s, RoundingMode.HALF_UP));
-      test(-1, BigDecimal.class, n -> SafeMath.round(n, s), n -> n.setScale(s, RoundingMode.HALF_UP));
+      test(0, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
+      test(1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
+      test(-1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
       for (int i = 0; i < numTests; ++i)
-        test(d0() * 10, BigDecimal.class, n -> SafeMath.round(n, s), n -> n.setScale(s, RoundingMode.HALF_UP));
+        test(d0() * 10, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
     }
   }
 
