@@ -1489,7 +1489,7 @@ abstract class BigIntValue extends Number {
    * no one bits.
    *
    * <pre>
-   * val == 0 ? -1 : log2(val & -val)
+   * val == 0 ? -1 : log2(val &amp; -val)
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.

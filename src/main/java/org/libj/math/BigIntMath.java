@@ -144,9 +144,9 @@ abstract class BigIntMath extends BigIntDivision {
    * Computes the square root of the provided {@linkplain BigInt#val()
    * value-encoded number}, rounded by {@link RoundingMode#DOWN}.
    *
-   * <pre>
-   * val = ⌊val<sup>1/2</sup>⌋
-   * </pre>
+   * <blockquote>
+   * <code>val = ⌊val<sup>1/2</sup>⌋</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @implNote The implementation is based on the material in Henry S. Warren,
@@ -164,9 +164,9 @@ abstract class BigIntMath extends BigIntDivision {
    * Computes the square root of the provided {@linkplain BigInt#val()
    * value-encoded number}, rounded by the given {@link RoundingMode}.
    *
-   * <pre>
-   * val = |val<sup>1/2</sup>|
-   * </pre>
+   * <blockquote>
+   * <code>val = |val<sup>1/2</sup>|</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
@@ -325,9 +325,9 @@ abstract class BigIntMath extends BigIntDivision {
    * Computes the base 10 logarithm of the provided {@linkplain BigInt#val()
    * value-encoded number}, rounded by the given {@link RoundingMode#DOWN}.
    *
-   * <pre>
-   * val = ⌊log<sub>10</sub>(val)⌋
-   * </pre>
+   * <blockquote>
+   * <code>val = ⌊log<sub>10</sub>(val)⌋</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return The integer value of the log base 10 of the provided
@@ -343,9 +343,9 @@ abstract class BigIntMath extends BigIntDivision {
    * Computes the base 10 logarithm of the provided {@linkplain BigInt#val()
    * value-encoded number}, rounded by the given {@link RoundingMode}.
    *
-   * <pre>
-   * val = |log<sub>10</sub>(val)|
-   * </pre>
+   * <blockquote>
+   * <code>val = |log<sub>10</sub>(val)|</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
@@ -374,9 +374,9 @@ abstract class BigIntMath extends BigIntDivision {
    * Computes the base 2 logarithm of the provided {@linkplain BigInt#val()
    * value-encoded number}, rounded by the given {@link RoundingMode#DOWN}.
    *
-   * <pre>
-   * val = ⌊log<sub>2</sub>(val)⌋
-   * </pre>
+   * <blockquote>
+   * <code>val = ⌊log<sub>2</sub>(val)⌋</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return The integer value of the log base 2 of the provided
@@ -392,9 +392,9 @@ abstract class BigIntMath extends BigIntDivision {
    * Computes the base 2 logarithm of the provided {@linkplain BigInt#val()
    * value-encoded number}, rounded by the given {@link RoundingMode}.
    *
-   * <pre>
-   * val = |log<sub>2</sub>(val)|
-   * </pre>
+   * <blockquote>
+   * <code>val = |log<sub>2</sub>(val)|</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
@@ -458,9 +458,9 @@ abstract class BigIntMath extends BigIntDivision {
    * {@linkplain BigInt#val() value-encoded number}, rounded by the given
    * {@link RoundingMode#DOWN}.
    *
-   * <pre>
-   * val = ⌊log<sub>b</sub>(val)⌋
-   * </pre>
+   * <blockquote>
+   * <code>val = ⌊log<sub>b</sub>(val)⌋</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param b The base of the logarithm function.
@@ -478,9 +478,9 @@ abstract class BigIntMath extends BigIntDivision {
    * {@linkplain BigInt#val() value-encoded number}, rounded by the given
    * {@link RoundingMode}.
    *
-   * <pre>
-   * val = log<sub>b</sub>(val)
-   * </pre>
+   * <blockquote>
+   * <code>val = log<sub>b</sub>(val)</code>
+   * </blockquote>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param b The base of the logarithm function.

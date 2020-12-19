@@ -36,7 +36,7 @@ public class SplineInterpolator {
    * assuming the control points are monotonic (Y is non-decreasing or
    * non-increasing) then the interpolated values will also be monotonic. This
    * function uses the <a href=
-   * "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson<a/>
+   * "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a>
    * method for computing the spline parameters.
    *
    * @param x The {@code x} component of the control points, strictly

@@ -1585,11 +1585,11 @@ public class SafeMathITest {
   public void testRoundBigDecimal() {
     for (int j = 0; j < 3; ++j) {
       final int s = j;
-      test(0, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
-      test(1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
-      test(-1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
+      test(0, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
+      test(1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
+      test(-1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
       for (int i = 0; i < numTests; ++i)
-        test(d0() * 10, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.DOWN));
+        test(d0() * 10, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
     }
   }
 

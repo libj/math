@@ -1034,7 +1034,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * {@code false}.
    *
    * <pre>
-   * result = d1 < d2
+   * result = d1 &lt; d2
    * </pre>
    *
    * @param dec1 The first argument (encoded with
@@ -1054,7 +1054,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * {@code false}.
    *
    * <pre>
-   * result = d1 < d2
+   * result = d1 &lt; d2
    * </pre>
    *
    * @param dec1 The first argument (encoded with
@@ -1074,7 +1074,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * {@code false}.
    *
    * <pre>
-   * result = d1 < d2
+   * result = d1 &lt; d2
    * </pre>
    *
    * @param dec1 The first argument (encoded with
@@ -1094,7 +1094,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * {@code false}.
    *
    * <pre>
-   * result = d1 < d2
+   * result = d1 &lt; d2
    * </pre>
    *
    * @param dec1 The first argument (encoded with

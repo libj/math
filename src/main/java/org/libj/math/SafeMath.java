@@ -1116,24 +1116,24 @@ public final class SafeMath {
 
   /**
    * Returns the rounded value of the specified {@code float} based on the
-   * rounding policy of {@link RoundingMode#DOWN} with ties at the given
+   * rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
    * {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
    * <pre>
-   * SafeMath.round(a, scale, RoundingMode.DOWN)
+   * SafeMath.round(a, scale, RoundingMode.HALF_UP)
    * </pre>
    *
    * @param a A floating-point value to be rounded to the scaled float.
    * @param scale The number of digits after the decimal at which to round.
    * @return The rounded value of the specified {@code float} based on the
-   *         rounding policy of {@link RoundingMode#DOWN} with ties at the
+   *         rounding policy of {@link RoundingMode#HALF_UP} with ties at the
    *         given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static float round(final float a, final int scale) {
-    return round(a, scale, RoundingMode.DOWN);
+    return round(a, scale, RoundingMode.HALF_UP);
   }
 
   /**
@@ -1222,24 +1222,24 @@ public final class SafeMath {
 
   /**
    * Returns the rounded value of the specified {@code double} based on the
-   * rounding policy of {@link RoundingMode#DOWN} with ties at the given
+   * rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
    * {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
    * <pre>
-   * SafeMath.round(a, scale, RoundingMode.DOWN)
+   * SafeMath.round(a, scale, RoundingMode.HALF_UP)
    * </pre>
    *
    * @param a A floating-point value to be rounded to the scaled double.
    * @param scale The number of digits after the decimal at which to round.
    * @return The rounded value of the specified {@code double} based on the
-   *         rounding policy of {@link RoundingMode#DOWN} with ties at the
+   *         rounding policy of {@link RoundingMode#HALF_UP} with ties at the
    *         given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static double round(final double a, final int scale) {
-    return round(a, scale, RoundingMode.DOWN);
+    return round(a, scale, RoundingMode.HALF_UP);
   }
 
   /**
@@ -1320,23 +1320,23 @@ public final class SafeMath {
 
   /**
    * Returns the provided {@link Decimal} based on the rounding policy of
-   * {@link RoundingMode#DOWN} with ties at the given {@code scale}.
+   * {@link RoundingMode#HALF_UP} with ties at the given {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
    * <pre>
-   * SafeMath.round(a, scale, RoundingMode.DOWN)
+   * SafeMath.round(a, scale, RoundingMode.HALF_UP)
    * </pre>
    *
    * @param a The {@link Decimal} value to be rounded.
    * @param scale The number of digits after the decimal at which to round.
    * @return The provided {@link Decimal} based on the rounding policy of
-   *         {@link RoundingMode#DOWN} with ties at the given {@code scale}.
+   *         {@link RoundingMode#HALF_UP} with ties at the given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    * @throws NullPointerException If {@code a} is null.
    */
   public static Decimal round(final Decimal a, final short scale) {
-    return round(a, scale, RoundingMode.DOWN);
+    return round(a, scale, RoundingMode.HALF_UP);
   }
 
   /**
@@ -1361,20 +1361,20 @@ public final class SafeMath {
 
   /**
    * Returns the closest {@link BigDecimal} to the argument, based on the
-   * rounding policy of {@link RoundingMode#DOWN} with ties at the given
+   * rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
    * {@code scale}.
    *
    * @param a A {@link BigDecimal} value to be rounded to the scaled
    *          {@link BigDecimal}.
    * @param scale The number of digits after the decimal at which to round.
    * @return The closest {@link BigDecimal} to the argument, based on the
-   *         rounding policy of {@link RoundingMode#DOWN} with ties at the given
+   *         rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
    *         {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    * @throws NullPointerException If {@code a} is null.
    */
   public static BigDecimal round(final BigDecimal a, final int scale) {
-    return round(a, scale, RoundingMode.DOWN);
+    return round(a, scale, RoundingMode.HALF_UP);
   }
 
   /**

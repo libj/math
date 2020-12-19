@@ -1129,9 +1129,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * Returns the provided {@linkplain BigInt#val() value-encoded number} raised
    * to the power of the given exponent.
    *
-   * <pre>
-   * val = val<sup>exp</sup>
-   * </pre>
+   * <blockquote>
+   * <code>val = val<sup>exp</sup></code>
+   * </blockquote>
    *
    * This method returns {@code 0} in the following situations:
    * <ol>

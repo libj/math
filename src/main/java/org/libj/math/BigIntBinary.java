@@ -70,7 +70,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * negative, in which case this method performs a left shift.
    *
    * <pre>
-   * val = val >> num
+   * val = val &gt;&gt; num
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -172,7 +172,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * negative, in which case this method performs a right shift.
    *
    * <pre>
-   * val = val << num
+   * val = val &lt;&lt; num
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -296,7 +296,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * Computes:
    *
    * <pre>
-   * val | (1 << n)
+   * val | (1 &lt;&lt; n)
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
@@ -336,7 +336,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * value-encoded number}.
    *
    * <pre>
-   * val = val | (1 << n)
+   * val = val | (1 &lt;&lt; n)
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -411,7 +411,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * value-encoded number}.
    *
    * <pre>
-   * val = val & ~(1 << n)
+   * val = val &amp; ~(1 &lt;&lt; n)
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -505,7 +505,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * value-encoded number}.
    *
    * <pre>
-   * val = val ^ (1 << n)
+   * val = val ^ (1 &lt;&lt; n)
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -603,7 +603,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * value-encoded number}.
    *
    * <pre>
-   * val = val & mask
+   * val = val &amp; mask
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
@@ -1167,7 +1167,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * value-encoded number}.
    *
    * <pre>
-   * val = val & ~mask
+   * val = val &amp; ~mask
    * </pre>
    *
    * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if

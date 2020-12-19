@@ -120,9 +120,9 @@ public final class DecimalMath {
    * Calculates the square root of the provided {@code dec} with the specified
    * {@link RoundingMode}.
    *
-   * <pre>
-   * dec<sup>1/2</sup>
-   * </pre>
+   * <blockquote>
+   * <code>dec<sup>1/2</sup></code>
+   * </blockquote>
    *
    * @param dec The decimal (encoded with
    *          {@link Decimal#valueOf(long,int,long)}).
@@ -143,10 +143,10 @@ public final class DecimalMath {
    * (rounded down), or {@code null} if the result cannot be represented in
    * {@link Decimal} encoding.
    *
-   * <pre>
-   * dec<sup>1/2</sup>
-   * </pre>
-   * <p>
+   * <blockquote>
+   * <code>dec<sup>1/2</sup></code>
+   * </blockquote>
+   *
    * Calling this method is the equivalent of:
    *
    * <pre>
@@ -167,9 +167,9 @@ public final class DecimalMath {
    * with the specified {@link RoundingMode}, or {@code null} if the result
    * cannot be represented in {@link Decimal} encoding.
    *
-   * <pre>
-   * dec<sup>1/2</sup>
-   * </pre>
+   * <blockquote>
+   * <code>dec<sup>1/2</sup></code>
+   * </blockquote>
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
@@ -284,9 +284,9 @@ public final class DecimalMath {
    * Calculates the logarithm of base {@code b} of the provided {@code dec} with
    * the specified {@link RoundingMode}.
    *
-   * <pre>
-   * log<sub>base</sub>(dec)
-   * </pre>
+   * <blockquote>
+   * <code>log<sub>base</sub>(dec)</code>
+   * </blockquote>
    *
    * @param dec The decimal (encoded with
    *          {@link Decimal#valueOf(long,int,long)}).
@@ -352,9 +352,9 @@ public final class DecimalMath {
    * Calculates the logarithm base 2 of the provided {@code dec} with the
    * specified {@link RoundingMode}.
    *
-   * <pre>
-   * log<sub>2</sub>(dec)
-   * </pre>
+   * <blockquote>
+   * <code>log<sub>2</sub>(dec)</code>
+   * </blockquote>
    *
    * @param dec The decimal (encoded with
    *          {@link Decimal#valueOf(long,int,long)}).
@@ -375,9 +375,9 @@ public final class DecimalMath {
    * 2 with the specified {@link RoundingMode}, or {@code null} if the result
    * cannot be represented in {@link Decimal} encoding.
    *
-   * <pre>
-   * log<sub>2</sub>(dec)
-   * </pre>
+   * <blockquote>
+   * <code>log<sub>2</sub>(dec)</code>
+   * </blockquote>
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
@@ -394,10 +394,10 @@ public final class DecimalMath {
    * 2 (rounded down), or {@code null} if the result cannot be represented in
    * {@link Decimal} encoding.
    *
-   * <pre>
-   * log<sub>2</sub>(dec)
-   * </pre>
-   * <p>
+   * <blockquote>
+   * <code>log<sub>2</sub>(dec)</code>
+   * </blockquote>
+   *
    * Calling this method is the equivalent of:
    *
    * <pre>
@@ -417,9 +417,9 @@ public final class DecimalMath {
    * Calculates the logarithm base 10 of the provided {@code dec} with the
    * specified {@link RoundingMode}.
    *
-   * <pre>
-   * log<sub>10</sub>(dec)
-   * </pre>
+   * <blockquote>
+   * <code>log<sub>10</sub>(dec)</code>
+   * </blockquote>
    *
    * @param dec The decimal (encoded with
    *          {@link Decimal#valueOf(long,int,long)}).
@@ -440,9 +440,9 @@ public final class DecimalMath {
    * 10 with the specified {@link RoundingMode}, or {@code null} if the result
    * cannot be represented in {@link Decimal} encoding.
    *
-   * <pre>
-   * log<sub>10</sub>(dec)
-   * </pre>
+   * <blockquote>
+   * <code>log<sub>10</sub>(dec)</code>
+   * </blockquote>
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
@@ -459,10 +459,10 @@ public final class DecimalMath {
    * 10 (rounded down), or {@code null} if the result cannot be represented in
    * {@link Decimal} encoding.
    *
-   * <pre>
-   * log<sub>10</sub>(dec)
-   * </pre>
-   * <p>
+   * <blockquote>
+   * <code>log<sub>10</sub>(dec)</code>
+   * </blockquote>
+   *
    * Calling this method is the equivalent of:
    *
    * <pre>
@@ -1050,9 +1050,9 @@ public final class DecimalMath {
    * Calculates the value of the provided {@code decX} raised to the provided
    * power {@link Decimal} {@code powY} and specified {@link RoundingMode}.
    *
-   * <pre>
-   * decX = decX<sup>decY</sup>
-   * </pre>
+   * <blockquote>
+   * <code>decX = decX<sup>decY</sup></code>
+   * </blockquote>
    *
    * @param decX The base.
    * @param decY The power.
@@ -1073,9 +1073,9 @@ public final class DecimalMath {
    * {@link RoundingMode}, or {@code null} if the result cannot be represented
    * in {@link Decimal} encoding.
    *
-   * <pre>
-   * decX = decX<sup>decY</sup>
-   * </pre>
+   * <blockquote>
+   * <code>decX = decX<sup>decY</sup></code>
+   * </blockquote>
    *
    * @param decX The base {@link Decimal}.
    * @param decY The power {@link Decimal}.
@@ -1096,10 +1096,10 @@ public final class DecimalMath {
    * {@code null} if the result cannot be represented in {@link Decimal}
    * encoding.
    *
-   * <pre>
-   * decX = decX<sup>decY</sup>
-   * </pre>
-   * <p>
+   * <blockquote>
+   * <code>decX = decX<sup>decY</sup></code>
+   * </blockquote>
+   *
    * Calling this method is the equivalent of:
    *
    * <pre>
@@ -1120,9 +1120,9 @@ public final class DecimalMath {
   /**
    * Calculates the natural exponent of the provided {@code dec} and specified {@link RoundingMode}.
    *
-   * <pre>
-   * <i>e</i><sup>dec</sup>
-   * </pre>
+   * <blockquote>
+   * <code><i>e</i><sup>dec</sup></code>
+   * </blockquote>
    *
    * @param dec The power.
    * @param rm The {@link RoundingMode}.
@@ -1142,9 +1142,9 @@ public final class DecimalMath {
    * and specified {@link RoundingMode}, or {@code null} if the result cannot be
    * represented in {@link Decimal} encoding.
    *
-   * <pre>
-   * dec = <i>e</i><sup>dec</sup>
-   * </pre>
+   * <blockquote>
+   * <code><i>e</i><sup>dec</sup></code>
+   * </blockquote>
    *
    * @param dec The power {@link Decimal}.
    * @param rm The {@link RoundingMode}.
@@ -1164,10 +1164,10 @@ public final class DecimalMath {
    * (rounded down), or {@code null} if the result cannot be represented in
    * {@link Decimal} encoding.
    *
-   * <pre>
-   * dec = <i>e</i><sup>dec</sup>
-   * </pre>
-   * <p>
+   * <blockquote>
+   * <code><i>e</i><sup>dec</sup></code>
+   * </blockquote>
+   *
    * Calling this method is the equivalent of:
    *
    * <pre>

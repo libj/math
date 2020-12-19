@@ -52,7 +52,7 @@ public final class FastMath {
    * Return <code>10<sup>n</sup></code>, as a {@code double}, expanding the
    * underlying {@link #doubleE10} array if necessary.
    *
-   * @param n The power of ten to be returned (>= 0).
+   * @param n The power of ten to be returned (&gt;= 0).
    * @return A {@linkplain BigInt#val() value-encoded number} with the value
    *         (10<sup>n</sup>).
    * @throws ArrayIndexOutOfBoundsException If {@code n} is negative.
@@ -100,7 +100,7 @@ public final class FastMath {
    * value-encoded number}, expanding the underlying {@link #bigIntE10} array if
    * necessary.
    *
-   * @param n The power of ten to be returned (>= 0).
+   * @param n The power of ten to be returned (&gt;= 0).
    * @return A {@linkplain BigInt#val() value-encoded number} with the value
    *         (10<sup>n</sup>).
    * @throws ArrayIndexOutOfBoundsException If {@code n} is negative.
