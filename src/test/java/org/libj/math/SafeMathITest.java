@@ -1712,6 +1712,52 @@ public class SafeMathITest {
   }
 
   @Test
+  public void testToDegreesDouble() {
+    test(0, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
+    test(1, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
+    test(-1, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
+    for (int i = 0; i < numTests; ++i)
+      test(d0(), double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
+  }
+
+  @Test
+  public void testToDegreesBigInteger() {
+    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
+    for (int i = 0; i < numTests; ++i)
+      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
+  }
+
+  @Test
+  public void testToDegreesBigDecimal() {
+    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
+    for (int i = 0; i < numTests; ++i)
+      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc).setScale(9, RoundingMode.DOWN), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc).setScale(9, RoundingMode.DOWN));
+  }
+
+  @Test
+  public void testToRadiansDouble() {
+    test(0, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
+    test(1, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
+    test(-1, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
+    for (int i = 0; i < numTests; ++i)
+      test(d0(), double.class, SafeMath::toRadians, n -> Math.toRadians(n));
+  }
+
+  @Test
+  public void testToRadiansBigInteger() {
+    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
+    for (int i = 0; i < numTests; ++i)
+      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
+  }
+
+  @Test
+  public void testToRadiansBigDecimal() {
+    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
+    for (int i = 0; i < numTests; ++i)
+      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc).setScale(11, RoundingMode.DOWN), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc).setScale(11, RoundingMode.DOWN));
+  }
+
+  @Test
   public void testTanDouble() {
     test(0, double.class, SafeMath::tan, n -> Math.tan(n));
     test(1, double.class, SafeMath::tan, n -> Math.tan(n));

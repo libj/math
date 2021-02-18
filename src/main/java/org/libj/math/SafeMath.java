@@ -1590,6 +1590,104 @@ public final class SafeMath {
   }
 
   /**
+   * Converts an angle measured in radians to an approximately equivalent angle
+   * measured in degrees. The conversion from radians to degrees is generally
+   * inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to
+   * exactly equal {@code 0.0}.
+   *
+   * @param a The angle, in radians.
+   * @return The angle, converted to degrees.
+   */
+  public static double toDegrees(final double a) {
+    return StrictMath.toDegrees(a);
+  }
+
+  /**
+   * Converts an angle measured in radians to an approximately equivalent angle
+   * measured in degrees. The conversion from radians to degrees is generally
+   * inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to
+   * exactly equal {@code 0.0}.
+   *
+   * @param a The angle, in radians.
+   * @param mc The {@link MathContext} used for the result.
+   * @return The angle, converted to degrees.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
+   */
+  public static BigDecimal toDegrees(final BigDecimal a, final MathContext mc) {
+    // FIXME: 180 / PI should be cached based on mc
+    return a.multiply(BigDecimal.valueOf(180), mc).divide(BigDecimals.PI, mc);
+  }
+
+  /**
+   * Converts an angle measured in radians to an approximately equivalent angle
+   * measured in degrees. The conversion from radians to degrees is generally
+   * inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to
+   * exactly equal {@code 0.0}.
+   *
+   * @param a The angle, in radians.
+   * @param mc The {@link MathContext} used for the result.
+   * @return The angle, converted to degrees.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
+   */
+  public static BigDecimal toDegrees(final BigInteger a, final MathContext mc) {
+    // FIXME: 180 / PI should be cached based on mc
+    return new BigDecimal(a.multiply(BigInteger.valueOf(180)), mc).divide(BigDecimals.PI, mc);
+  }
+
+  /**
+   * Converts an angle measured in degrees to an approximately equivalent angle
+   * measured in radians. The conversion from degrees to radians is generally
+   * inexact.
+   *
+   * @param a The angle, in degrees.
+   * @return The angle, converted to radians.
+   */
+  public static double toRadians(final double a) {
+    return StrictMath.toRadians(a);
+  }
+
+  /**
+   * Converts an angle measured in degrees to an approximately equivalent angle
+   * measured in radians. The conversion from degrees to radians is generally
+   * inexact.
+   *
+   * @param a The angle, in degrees.
+   * @param mc The {@link MathContext} used for the result.
+   * @return The angle, converted to radians.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
+   */
+  public static BigDecimal toRadians(final BigDecimal a, final MathContext mc) {
+    // FIXME: PI / 180 should be cached based on mc
+    return a.divide(BigDecimal.valueOf(180), mc).multiply(BigDecimals.PI, mc);
+  }
+
+  /**
+   * Converts an angle measured in degrees to an approximately equivalent angle
+   * measured in radians. The conversion from degrees to radians is generally
+   * inexact.
+   *
+   * @param a The angle, in degrees.
+   * @param mc The {@link MathContext} used for the result.
+   * @return The angle, converted to radians.
+   * @throws UnsupportedOperationException If the {@link MathContext} has
+   *           unlimited precision.
+   * @throws NullPointerException If the specified value or {@link MathContext}
+   *           is null.
+   */
+  public static BigDecimal toRadians(final BigInteger a, final MathContext mc) {
+    return toRadians(new BigDecimal(a), mc);
+  }
+
+  /**
    * Returns the trigonometric tangent of an angle.
    * <p>
    * Special cases:
