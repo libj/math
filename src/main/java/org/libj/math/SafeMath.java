@@ -3391,6 +3391,870 @@ public final class SafeMath {
     return a < b ? a : b;
   }
 
+  /**
+   * Returns the larger of two {@link Byte} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte max(final Byte a, final Byte b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Byte} and a {@link Short}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Short}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short max(final Byte a, final Short b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Byte} and an {@link Integer}.
+   *
+   * @param a A {@link Byte}.
+   * @param b An {@link Integer}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer max(final Byte a, final Integer b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Byte} and a {@link Long}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Long}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Byte a, final Long b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Byte} and a {@link Float}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Float}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Byte a, final Float b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Byte} and a {@link Double}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Double}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Byte a, final Double b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Short} and a {@link Byte}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Byte}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short max(final Short a, final Byte b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@link Short} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short max(final Short a, final Short b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Short} and an {@link Integer}.
+   *
+   * @param a A {@link Short}.
+   * @param b An {@link Integer}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer max(final Short a, final Integer b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Short} and a {@link Long}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Long}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Short a, final Long b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Short} and a {@link Float}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Float}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Short a, final Float b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Short} and a {@link Double}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Double}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Short a, final Double b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@link Integer} and an {@link Byte}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Byte}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer max(final Integer a, final Byte b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@link Integer} and a {@link Short}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Short}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer max(final Integer a, final Short b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@link Integer} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer max(final Integer a, final Integer b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@link Integer} and a {@link Long}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Long}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Integer a, final Long b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@link Integer} and a {@link Float}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Float}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Integer a, final Float b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of an {@link Integer} and a {@link Double}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Double}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Integer a, final Double b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Long} and a {@link Byte}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Byte}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Long a, final Byte b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Long} and a {@link Short}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Short}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Long a, final Short b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Long} and an {@link Integer}.
+   *
+   * @param a A {@link Long}.
+   * @param b An {@link Integer}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Long a, final Integer b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@link Long} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long max(final Long a, final Long b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Long} and a {@link Float}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Float}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Long a, final Float b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Long} and a {@link Double}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Double}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Long a, final Double b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Float} and a {@link Byte}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Byte}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Float a, final Byte b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Float} and a {@link Short}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Short}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Float a, final Short b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Float} and an {@link Integer}.
+   *
+   * @param a A {@link Float}.
+   * @param b An {@link Integer}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Float a, final Integer b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Float} and a {@link Long}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Long}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Float a, final Long b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@link Float} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float max(final Float a, final Float b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Float} and a {@link Double}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Double}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Float a, final Double b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Double} and a {@link Byte}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Byte}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Double a, final Byte b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Double} and a {@link Short}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Short}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Double a, final Short b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Double} and an {@link Integer}.
+   *
+   * @param a A {@link Double}.
+   * @param b An {@link Integer}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Double a, final Integer b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Double} and a {@link Long}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Long}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Double a, final Long b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of a {@link Double} and a {@link Float}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Float}.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Double a, final Float b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@link Double} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double max(final Double a, final Double b) {
+    return a == null || b == null ? null : a > b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link Byte} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Byte a, final Byte b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Byte} and a {@link Short}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Short}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Byte a, final Short b) {
+    return a == null || b == null ? null : a <= b ? a : b.byteValue();
+  }
+
+  /**
+   * Returns the smaller of a {@link Byte} and an {@link Integer}.
+   *
+   * @param a A {@link Byte}.
+   * @param b An {@link Integer}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Byte a, final Integer b) {
+    return a == null || b == null ? null : a <= b ? a : b.byteValue();
+  }
+
+  /**
+   * Returns the smaller of a {@link Byte} and a {@link Long}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Long}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Byte a, final Long b) {
+    return a == null || b == null ? null : a <= b ? a : b.byteValue();
+  }
+
+  /**
+   * Returns the smaller of a {@link Byte} and a {@link Float}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Float}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Byte a, final Float b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Byte} and a {@link Double}.
+   *
+   * @param a A {@link Byte}.
+   * @param b A {@link Double}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Byte a, final Double b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Short} and a {@link Byte}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Byte}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Short a, final Byte b) {
+    return a == null || b == null ? null : a < b ? a.byteValue() : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link Short} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short min(final Short a, final Short b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Short} and an {@link Integer}.
+   *
+   * @param a A {@link Short}.
+   * @param b An {@link Integer}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short min(final Short a, final Integer b) {
+    return a == null || b == null ? null : a <= b ? a : b.shortValue();
+  }
+
+  /**
+   * Returns the smaller of a {@link Short} and a {@link Long}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Long}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short min(final Short a, final Long b) {
+    return a == null || b == null ? null : a <= b ? a : b.shortValue();
+  }
+
+  /**
+   * Returns the smaller of a {@link Short} and a {@link Float}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Float}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Short a, final Float b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Short} and a {@link Double}.
+   *
+   * @param a A {@link Short}.
+   * @param b A {@link Double}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Short a, final Double b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of an {@link Integer} and an {@link Byte}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Byte}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Integer a, final Byte b) {
+    return a == null || b == null ? null : a < b ? a.byteValue() : b;
+  }
+
+  /**
+   * Returns the smaller of an {@link Integer} and a {@link Short}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Short}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short min(final Integer a, final Short b) {
+    return a == null || b == null ? null : a < b ? a.shortValue() : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link Integer} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer min(final Integer a, final Integer b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of an {@link Integer} and a {@link Long}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Long}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer min(final Integer a, final Long b) {
+    return a == null || b == null ? null : a <= b ? a : b.intValue();
+  }
+
+  /**
+   * Returns the smaller of an {@link Integer} and a {@link Float}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Float}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Integer a, final Float b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of an {@link Integer} and a {@link Double}.
+   *
+   * @param a An {@link Integer}.
+   * @param b A {@link Double}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Integer a, final Double b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Long} and a {@link Byte}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Byte}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Byte min(final Long a, final Byte b) {
+    return a == null || b == null ? null : a < b ? a.byteValue() : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Long} and a {@link Short}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Short}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Short min(final Long a, final Short b) {
+    return a == null || b == null ? null : a < b ? a.shortValue() : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Long} and an {@link Integer}.
+   *
+   * @param a A {@link Long}.
+   * @param b An {@link Integer}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Integer min(final Long a, final Integer b) {
+    return a == null || b == null ? null : a < b ? a.intValue() : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link Long} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Long min(final Long a, final Long b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Long} and a {@link Float}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Float}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Long a, final Float b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Long} and a {@link Double}.
+   *
+   * @param a A {@link Long}.
+   * @param b A {@link Double}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Long a, final Double b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Float} and a {@link Byte}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Byte}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Float a, final Byte b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Float} and a {@link Short}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Short}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Float a, final Short b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Float} and an {@link Integer}.
+   *
+   * @param a A {@link Float}.
+   * @param b An {@link Integer}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Float a, final Integer b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Float} and a {@link Long}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Long}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Float a, final Long b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link Float} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Float min(final Float a, final Float b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Float} and a {@link Double}.
+   *
+   * @param a A {@link Float}.
+   * @param b A {@link Double}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Float a, final Double b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Double} and a {@link Byte}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Byte}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Double a, final Byte b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Double} and a {@link Short}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Short}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Double a, final Short b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Double} and an {@link Integer}.
+   *
+   * @param a A {@link Double}.
+   * @param b An {@link Integer}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Double a, final Integer b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Double} and a {@link Long}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Long}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Double a, final Long b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of a {@link Double} and a {@link Float}.
+   *
+   * @param a A {@link Double}.
+   * @param b A {@link Float}.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Double a, final Float b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link Double} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
+   *         {@code a} or {@code b} is null.
+   */
+  public static Double min(final Double a, final Double b) {
+    return a == null || b == null ? null : a < b ? a : b;
+  }
+
   private SafeMath() {
   }
 }
