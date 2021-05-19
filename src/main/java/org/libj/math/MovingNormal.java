@@ -42,7 +42,7 @@ public class MovingNormal {
    * @throws NullPointerException If {@code values} is null.
    */
   public void normalize(final int fromIndex, final int toIndex, final double ... values) {
-    Assertions.assertRange(fromIndex, toIndex, values.length);
+    Assertions.assertRange("fromIndex", fromIndex, "toIndex", toIndex, "values.length", values.length);
 
     for (int i = fromIndex; i < toIndex; ++i, ++count) {
       sum += values[i];
