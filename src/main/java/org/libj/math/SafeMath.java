@@ -683,6 +683,99 @@ public final class SafeMath {
   }
 
   /**
+   * Returns a {@code byte} valued factorial of {@code n}.
+   *
+   * @implNote This function is designed to allow to overflow for the purpose of
+   *           efficiency. If the result is expected to be greater than
+   *           {@link Byte#MAX_VALUE}, then use {@link #factorial(short)}.
+   * @param n The number of which to calculate the factorial.
+   * @return A {@code byte} valued factorial of {@code n}, or {@code null} if
+   *         {@code n} is negative.
+   */
+  public static byte factorial(final byte n) {
+    byte r = 1;
+    for (byte i = 1; i <= n; ++i)
+      r *= i;
+
+    return r;
+  }
+
+  /**
+   * Returns a {@code short} valued factorial of {@code n}.
+   *
+   * @implNote This function is designed to allow to overflow for the purpose of
+   *           efficiency. If the result is expected to be greater than
+   *           {@link Short#MAX_VALUE}, then use {@link #factorial(int)}.
+   * @param n The number of which to calculate the factorial.
+   * @return A {@code short} valued factorial of {@code n}, or {@code null} if
+   *         {@code n} is negative.
+   */
+  public static short factorial(final short n) {
+    short r = 1;
+    for (short i = 1; i <= n; ++i)
+      r *= i;
+
+    return r;
+  }
+
+  /**
+   * Returns a {@code int} valued factorial of {@code n}.
+   *
+   * @implNote This function is designed to allow to overflow for the purpose of
+   *           efficiency. If the result is expected to be greater than
+   *           {@link Integer#MAX_VALUE}, then use {@link #factorial(long)}.
+   * @param n The number of which to calculate the factorial.
+   * @return A {@code int} valued factorial of {@code n}, or {@code null} if
+   *         {@code n} is negative.
+   */
+  public static int factorial(final int n) {
+    int r = 1;
+    for (int i = 1; i <= n; ++i)
+      r *= i;
+
+    return r;
+  }
+
+  /**
+   * Returns a {@code long} valued factorial of {@code n}.
+   *
+   * @implNote This function is designed to allow to overflow for the purpose of
+   *           efficiency. If the result is expected to be greater than
+   *           {@link Long#MAX_VALUE}, then use {@link #factorial(BigInt)}.
+   * @param n The number of which to calculate the factorial.
+   * @return A {@code long} valued factorial of {@code n}, or {@code null} if
+   *         {@code n} is negative.
+   */
+  public static long factorial(final long n) {
+    long r = 1;
+    for (long i = 1; i <= n; ++i)
+      r *= i;
+
+    return r;
+  }
+
+  /**
+   * Returns a {@link BigInt} valued factorial of {@code n}.
+   *
+   * @param n The number of which to calculate the factorial.
+   * @return A {@link BigInt} valued factorial of {@code n}, or {@code null} if
+   *         {@code n} is negative.
+   */
+  public static BigInt factorial(final BigInt n) {
+    if (n.signum() < 0)
+      return null;
+
+    if (n.isZero())
+      return n;
+
+    n.assign(1);
+    for (int i = 1; i <= n.intValue(); ++i)
+      n.mul(i);
+
+    return n;
+  }
+
+  /**
    * Returns the largest (closest to positive infinity) {@code byte} value that
    * is less than or equal to the argument and is equal to a mathematical
    * integer.
