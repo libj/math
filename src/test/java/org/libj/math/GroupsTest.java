@@ -21,21 +21,22 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.libj.lang.ObjectUtil;
 
 public class GroupsTest {
-  private static String print(final int[][] a) {
+  private static String toString(final int[][] a) {
     final StringBuilder builder = new StringBuilder();
     for (int i = 0; i < a.length; ++i) {
       if (i > 0)
         builder.append(",\n");
 
-      builder.append(print(a[i]));
+      builder.append(toString(a[i]));
     }
 
     return builder.toString();
   }
 
-  private static String print(final int[] a) {
+  private static String toString(final int[] a) {
     final StringBuilder builder = new StringBuilder();
     final String line = Arrays.toString(a);
     builder.append(line);
@@ -170,9 +171,12 @@ public class GroupsTest {
   @Test
   public void testPermute55() {
     final int[][] a = Groups.permute(5, 5);
-    assertEquals(print(p55) + " != " + print(a), p55.length, a.length);
+    assertEquals(toString(p55) + " != " + toString(a), p55.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(p55[i]) + " != " + print(a[i]), p55[i], a[i]);
+      assertArrayEquals(toString(p55[i]) + " != " + toString(a[i]), p55[i], a[i]);
+
+    final String[][] b = Groups.permute(5, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] p54 = {
@@ -300,10 +304,13 @@ public class GroupsTest {
 
   @Test
   public void testPermute54() {
-    final int[][] a = Groups.permute(5, 4);
-    assertEquals(print(p54) + " != " + print(a), p54.length, a.length);
+    final int[][] a = Groups.permute(4, 5);
+    assertEquals(toString(p54) + " != " + toString(a), p54.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(p54[i]) + " != " + print(a[i]), p54[i], a[i]);
+      assertArrayEquals(toString(p54[i]) + " != " + toString(a[i]), p54[i], a[i]);
+
+    final String[][] b = Groups.permute(4, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] p53 = {
@@ -371,10 +378,13 @@ public class GroupsTest {
 
   @Test
   public void testPermute53() {
-    final int[][] a = Groups.permute(5, 3);
-    assertEquals(print(p53) + " != " + print(a), p53.length, a.length);
+    final int[][] a = Groups.permute(3, 5);
+    assertEquals(toString(p53) + " != " + toString(a), p53.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(p53[i]) + " != " + print(a[i]), p53[i], a[i]);
+      assertArrayEquals(toString(p53[i]) + " != " + toString(a[i]), p53[i], a[i]);
+
+    final String[][] b = Groups.permute(3, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] p52 = {
@@ -402,10 +412,13 @@ public class GroupsTest {
 
   @Test
   public void testPermute52() {
-    final int[][] a = Groups.permute(5, 2);
-    assertEquals(print(p52) + " != " + print(a), p52.length, a.length);
+    final int[][] a = Groups.permute(2, 5);
+    assertEquals(toString(p52) + " != " + toString(a), p52.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(p52[i]) + " != " + print(a[i]), p52[i], a[i]);
+      assertArrayEquals(toString(p52[i]) + " != " + toString(a[i]), p52[i], a[i]);
+
+    final String[][] b = Groups.permute(2, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] p51 = {
@@ -418,10 +431,13 @@ public class GroupsTest {
 
   @Test
   public void testPermute51() {
-    final int[][] a = Groups.permute(5, 1);
-    assertEquals(print(p51) + " != " + print(a), p51.length, a.length);
+    final int[][] a = Groups.permute(1, 5);
+    assertEquals(toString(p51) + " != " + toString(a), p51.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(p51[i]) + " != " + print(a[i]), p51[i], a[i]);
+      assertArrayEquals(toString(p51[i]) + " != " + toString(a[i]), p51[i], a[i]);
+
+    final String[][] b = Groups.permute(1, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] c55 = {
@@ -431,9 +447,12 @@ public class GroupsTest {
   @Test
   public void testCombine55() {
     final int[][] a = Groups.combine(5, 5);
-    assertEquals(print(c55) + " != " + print(a), c55.length, a.length);
+    assertEquals(toString(c55) + " != " + toString(a), c55.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(c55[i]) + " != " + print(a[i]), c55[i], a[i]);
+      assertArrayEquals(toString(c55[i]) + " != " + toString(a[i]), c55[i], a[i]);
+
+    final String[][] b = Groups.combine(5, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] c54 = {
@@ -446,10 +465,13 @@ public class GroupsTest {
 
   @Test
   public void testCombine54() {
-    final int[][] a = Groups.combine(5, 4);
-    assertEquals(print(c54) + " != " + print(a), c54.length, a.length);
+    final int[][] a = Groups.combine(4, 5);
+    assertEquals(toString(c54) + " != " + toString(a), c54.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(c54[i]) + " != " + print(a[i]), c54[i], a[i]);
+      assertArrayEquals(toString(c54[i]) + " != " + toString(a[i]), c54[i], a[i]);
+
+    final String[][] b = Groups.combine(4, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] c53 = {
@@ -467,10 +489,13 @@ public class GroupsTest {
 
   @Test
   public void testCombine53() {
-    final int[][] a = Groups.combine(5, 3);
-    assertEquals(print(c53) + " != " + print(a), c53.length, a.length);
+    final int[][] a = Groups.combine(3, 5);
+    assertEquals(toString(c53) + " != " + toString(a), c53.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(c53[i]) + " != " + print(a[i]), c53[i], a[i]);
+      assertArrayEquals(toString(c53[i]) + " != " + toString(a[i]), c53[i], a[i]);
+
+    final String[][] b = Groups.combine(3, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] c52 = {
@@ -488,10 +513,13 @@ public class GroupsTest {
 
   @Test
   public void testCombine52() {
-    final int[][] a = Groups.combine(5, 2);
-    assertEquals(print(c52) + " != " + print(a), c52.length, a.length);
+    final int[][] a = Groups.combine(2, 5);
+    assertEquals(toString(c52) + " != " + toString(a), c52.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(c52[i]) + " != " + print(a[i]), c52[i], a[i]);
+      assertArrayEquals(toString(c52[i]) + " != " + toString(a[i]), c52[i], a[i]);
+
+    final String[][] b = Groups.combine(2, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 
   private static final int[][] c51 = {
@@ -504,9 +532,12 @@ public class GroupsTest {
 
   @Test
   public void testCombine51() {
-    final int[][] a = Groups.combine(5, 1);
-    assertEquals(print(c51) + " != " + print(a), c51.length, a.length);
+    final int[][] a = Groups.combine(1, 5);
+    assertEquals(toString(c51) + " != " + toString(a), c51.length, a.length);
     for (int i = 0; i < a.length; ++i)
-      assertArrayEquals(print(c51[i]) + " != " + print(a[i]), c51[i], a[i]);
+      assertArrayEquals(toString(c51[i]) + " != " + toString(a[i]), c51[i], a[i]);
+
+    final String[][] b = Groups.combine(1, "0", "1", "2", "3", "4");
+    assertEquals(ObjectUtil.toString(a), ObjectUtil.toString(b));
   }
 }
