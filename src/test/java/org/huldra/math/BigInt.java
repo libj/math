@@ -1440,7 +1440,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
       }
 
       z[n] = (int)carry;
-      for (int i = 1; i < n; i++) {
+      for (int i = 1; i < n; ++i) {
         xi = x[off + i] & mask;
         carry = 0;
         for (int j = 0; j < n; j++) {
@@ -1459,7 +1459,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
       final int[] x2 = new int[n - b + 1];
       long carry = 0;
-      for (int i = 0; i < b; i++) {
+      for (int i = 0; i < b; ++i) {
         carry = (x[off + b + i] & mask) + (x[off + i] & mask) + carry;
         x2[i] = (int)carry;
         carry >>>= 32;
@@ -1473,7 +1473,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
       final int[] y2 = new int[n - b + 1];
       carry = 0;
-      for (int i = 0; i < b; i++) {
+      for (int i = 0; i < b; ++i) {
         carry = (y[off + b + i] & mask) + (y[off + i] & mask) + carry;
         y2[i] = (int)carry;
         carry >>>= 32;
@@ -1494,19 +1494,19 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
       // Add z1
       carry = 0;
       int i = 0;
-      for (; i < 2 * b; i++) {
+      for (; i < 2 * b; ++i) {
         carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) - (z0[i] & mask) + carry;
         z[i + b] = (int)carry;
         carry >>= 32;
       }
 
-      for (; i < 2 * (n - b); i++) {
+      for (; i < 2 * (n - b); ++i) {
         carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) + carry;
         z[i + b] = (int)carry;
         carry >>= 32;
       }
 
-      for (; i < z1.length; i++) {
+      for (; i < z1.length; ++i) {
         carry = (z[i + b] & mask) + (z1[i] & mask) + carry;
         z[i + b] = (int)carry;
         carry >>= 32;
