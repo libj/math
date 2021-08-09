@@ -16,6 +16,8 @@
 
 package org.libj.math;
 
+import org.libj.lang.Assertions;
+
 /**
  * A mutable {@link Number} that represents the
  * <a href="https://en.wikipedia.org/wiki/Moving_average">moving average</a>
@@ -31,7 +33,7 @@ public class MovingAverage extends Number {
    * Creates a {@link MovingAverage} with the specified initial values.
    *
    * @param values The initial values.
-   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If {@code values} is null.
    */
   public MovingAverage(final double ... values) {
     add(values);
@@ -56,9 +58,10 @@ public class MovingAverage extends Number {
    * Add the specified values to this instance, and adjust the moving average.
    *
    * @param values The values to add.
-   * @throws NullPointerException If {@code values} is null.
+   * @throws IllegalArgumentException If {@code values} is null.
    */
   public void add(final double ... values) {
+    Assertions.assertNotNull(values);
     for (final double value : values)
       average += (value - average) / ++count;
   }

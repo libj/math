@@ -78,9 +78,9 @@ public class StatMathTest {
   public void testRmsByte() {
     try {
       StatMath.rms((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -99,9 +99,9 @@ public class StatMathTest {
   public void testRmsShort() {
     try {
       StatMath.rms((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -120,9 +120,9 @@ public class StatMathTest {
   public void testRmsInt() {
     try {
       StatMath.rms((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -141,9 +141,9 @@ public class StatMathTest {
   public void testRmsLong() {
     try {
       StatMath.rms((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -162,9 +162,9 @@ public class StatMathTest {
   public void testRmsFloat() {
     try {
       StatMath.rms((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -183,9 +183,9 @@ public class StatMathTest {
   public void testRmsDouble() {
     try {
       StatMath.rms((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -204,9 +204,9 @@ public class StatMathTest {
   public void testMinByte() {
     try {
       StatMath.min((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -225,9 +225,9 @@ public class StatMathTest {
   public void testMinShort() {
     try {
       StatMath.min((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -246,9 +246,9 @@ public class StatMathTest {
   public void testMinInt() {
     try {
       StatMath.min((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -267,9 +267,9 @@ public class StatMathTest {
   public void testMinLong() {
     try {
       StatMath.min((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -288,9 +288,9 @@ public class StatMathTest {
   public void testMinFloat() {
     try {
       StatMath.min((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -309,9 +309,9 @@ public class StatMathTest {
   public void testMinDouble() {
     try {
       StatMath.min((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -330,9 +330,9 @@ public class StatMathTest {
   public void testMaxByte() {
     try {
       StatMath.max((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -351,9 +351,9 @@ public class StatMathTest {
   public void testMaxShort() {
     try {
       StatMath.max((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -372,9 +372,9 @@ public class StatMathTest {
   public void testMaxInt() {
     try {
       StatMath.max((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -393,9 +393,9 @@ public class StatMathTest {
   public void testMaxLong() {
     try {
       StatMath.max((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -414,9 +414,9 @@ public class StatMathTest {
   public void testMaxFloat() {
     try {
       StatMath.max((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -435,9 +435,9 @@ public class StatMathTest {
   public void testMaxDouble() {
     try {
       StatMath.max((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -456,9 +456,9 @@ public class StatMathTest {
   public void testAvgByte() {
     try {
       StatMath.avg((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new byte[0])));
@@ -471,9 +471,9 @@ public class StatMathTest {
   public void testAvgShort() {
     try {
       StatMath.avg((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new short[0])));
@@ -486,9 +486,9 @@ public class StatMathTest {
   public void testAvgInt() {
     try {
       StatMath.avg((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new int[0])));
@@ -501,9 +501,9 @@ public class StatMathTest {
   public void testAvgLong() {
     try {
       StatMath.avg((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new long[0])));
@@ -516,9 +516,9 @@ public class StatMathTest {
   public void testAvgFloat() {
     try {
       StatMath.avg((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new float[0])));
@@ -531,9 +531,9 @@ public class StatMathTest {
   public void testAvgDouble() {
     try {
       StatMath.avg((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new double[0])));
@@ -546,9 +546,9 @@ public class StatMathTest {
   public void testSumByte() {
     try {
       StatMath.sum((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -567,9 +567,9 @@ public class StatMathTest {
   public void testSumShort() {
     try {
       StatMath.sum((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -588,9 +588,9 @@ public class StatMathTest {
   public void testSumInt() {
     try {
       StatMath.sum((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -609,9 +609,9 @@ public class StatMathTest {
   public void testSumLong() {
     try {
       StatMath.sum((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -630,9 +630,9 @@ public class StatMathTest {
   public void testSumFloat() {
     try {
       StatMath.sum((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -651,9 +651,9 @@ public class StatMathTest {
   public void testSumDouble() {
     try {
       StatMath.sum((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -672,9 +672,9 @@ public class StatMathTest {
   public void testStdDevByte() {
     try {
       StatMath.stdDev((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -693,9 +693,9 @@ public class StatMathTest {
   public void testStdDevShort() {
     try {
       StatMath.stdDev((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -714,9 +714,9 @@ public class StatMathTest {
   public void testStdDevInt() {
     try {
       StatMath.stdDev((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -735,9 +735,9 @@ public class StatMathTest {
   public void testStdDevLong() {
     try {
       StatMath.stdDev((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -756,9 +756,9 @@ public class StatMathTest {
   public void testStdDevFloat() {
     try {
       StatMath.stdDev((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -777,9 +777,9 @@ public class StatMathTest {
   public void testStdDevDouble() {
     try {
       StatMath.stdDev((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     try {
@@ -798,9 +798,9 @@ public class StatMathTest {
   public void testNormalizeByte() {
     try {
       StatMath.normalize((byte[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     for (int i = 0; i < 1000; ++i) {
@@ -812,9 +812,9 @@ public class StatMathTest {
   public void testNormalizeShort() {
     try {
       StatMath.normalize((short[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     for (int i = 0; i < 1000; ++i) {
@@ -826,9 +826,9 @@ public class StatMathTest {
   public void testNormalizeInt() {
     try {
       StatMath.normalize((int[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     for (int i = 0; i < 1000; ++i) {
@@ -840,9 +840,9 @@ public class StatMathTest {
   public void testNormalizeLong() {
     try {
       StatMath.normalize((long[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     for (int i = 0; i < 1000; ++i) {
@@ -854,9 +854,9 @@ public class StatMathTest {
   public void testNormalizeFloat() {
     try {
       StatMath.normalize((float[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     for (int i = 0; i < 1000; ++i) {
@@ -868,9 +868,9 @@ public class StatMathTest {
   public void testNormalizeDouble() {
     try {
       StatMath.normalize((double[])null);
-      fail("Expected NullPointerException");
+      fail("Expected IllegalArgumentException");
     }
-    catch (final NullPointerException e) {
+    catch (final IllegalArgumentException e) {
     }
 
     for (int i = 0; i < 1000; ++i) {

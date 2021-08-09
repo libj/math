@@ -18,6 +18,7 @@ package org.libj.math;
 
 import static org.libj.lang.Strings.Align.*;
 import static org.libj.math.Decimal.*;
+import static org.libj.math.FixedPoint.*;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -16,6 +16,8 @@
 
 package org.libj.math;
 
+import org.libj.lang.Assertions;
+
 /**
  * Performs spline interpolation given a set of control points.
  */
@@ -44,12 +46,12 @@ public class SplineInterpolator {
    * @param y The {@code y} component of the control points.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from
    *         the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} have different
-   *           lengths or fewer than 2 values.
-   * @throws NullPointerException If {@code x} or {@code y} is null.
+   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if
+   *           {@code x} or {@code y} have different lengths or fewer than 2
+   *           values.
    */
   public static SplineInterpolator createMonotoneCubicSpline(final float[] x, final float[] y) {
-    if (x.length != y.length || x.length < 2)
+    if (Assertions.assertNotNull(x).length != Assertions.assertNotNull(y).length || x.length < 2)
       throw new IllegalArgumentException("Arrays must be of equal length greater than or equal to two");
 
     final int n = x.length;
