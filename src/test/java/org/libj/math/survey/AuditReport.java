@@ -291,13 +291,12 @@ public class AuditReport {
   }
 
   static String mdToHtml(final String str, final Map<String,String> links) {
-    final char[] chars = str.toCharArray();
     char ch0, ch1 = Character.MAX_VALUE;
     final StringBuilder builder = new StringBuilder();
     boolean code = false;
     int a = -1;
-    for (int i = 0; i < chars.length; ++i, ch1 = ch0) {
-      ch0 = chars[i];
+    for (int i = 0, len = str.length(); i < len; ++i, ch1 = ch0) {
+      ch0 = str.charAt(i);
       if (ch0 == '`') {
         builder.append(code ? "</code>" : "<code>");
         code = !code;
