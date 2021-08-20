@@ -77,16 +77,6 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.libj</groupId>
-      <artifactId>lang</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.obermuhlner</groupId>
-      <artifactId>big-math</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.openjax.xml</groupId>
       <artifactId>api</artifactId>
       <version>0.9.5-SNAPSHOT</version>
@@ -145,6 +135,18 @@
       <artifactId>guava</artifactId>
       <version>30.0-jre</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.libj</groupId>
+      <artifactId>lang</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.obermuhlner</groupId>
+      <artifactId>big-math</artifactId>
+      <version>2.3.0</version>
     </dependency>
   </dependencies>
 </project>
