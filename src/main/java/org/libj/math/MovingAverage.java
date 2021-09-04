@@ -27,7 +27,7 @@ public class MovingAverage extends Number {
   private static final long serialVersionUID = 1631326433117019519L;
 
   private double average;
-  private long count;
+  protected long count;
 
   /**
    * Creates a {@link MovingAverage} with the specified initial values.
@@ -55,15 +55,29 @@ public class MovingAverage extends Number {
   }
 
   /**
+   * Add the specified {@code value} to this instance, and adjust the moving
+   * average.
+   *
+   * @param value The value to add.
+   * @return {@code this} instance.
+   */
+  public MovingAverage add(final double value) {
+    average += (value - average) / ++count;
+    return this;
+  }
+
+  /**
    * Add the specified values to this instance, and adjust the moving average.
    *
    * @param values The values to add.
+   * @return {@code this} instance.
    * @throws IllegalArgumentException If {@code values} is null.
    */
-  public void add(final double ... values) {
-    Assertions.assertNotNull(values);
-    for (final double value : values)
-      average += (value - average) / ++count;
+  public MovingAverage add(final double ... values) {
+    for (final double value : Assertions.assertNotNull(values))
+      add(value);
+
+    return this;
   }
 
   /**
