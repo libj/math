@@ -101,10 +101,8 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   /**
    * Creates a {@link BigInt} from the provided {@linkplain #val() value-encoded
    * number}.
-   * <p>
-   * <i><b>Note:</b> The provided array will be used used as-is and not
-   * copied.</i>
    *
+   * @implNote The provided array will be used used as-is and not copied.
    * @param val The {@linkplain #val() value-encoded number}.
    * @complexity O(1)
    */
@@ -225,12 +223,11 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
 
   /**
    * Creates a {@link BigInt} from the provided {@link BigInt}.
-   * <p>
-   * <i><b>Note:</b> This is a <i>copy constructor</i> that sets the
-   * {@linkplain #val() value-encoded number} of this {@link BigInt} to a
-   * <b>clone</b> of the {@linkplain #val() value-encoded number} of the
-   * provided {@link BigInt}.</i>
    *
+   * @implNote This is a <i>copy constructor</i> that sets the
+   *           {@linkplain #val() value-encoded number} of this {@link BigInt}
+   *           to a <b>clone</b> of the {@linkplain #val() value-encoded number}
+   *           of the provided {@link BigInt}.
    * @param b The {@link BigInt}.
    * @complexity O(n)
    * @see #clone()
@@ -270,13 +267,12 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   /**
    * Assigns the specified {@linkplain #val() value-encoded number} to this
    * {@link BigInt}.
-   * <p>
-   * <i><b>Note:</b> The provided array will be copied.</i>
    *
    * <pre>
    * this = val
    * </pre>
    *
+   * @implNote The provided array will be copied.
    * @param val The {@linkplain #val() value-encoded number}.
    * @return {@code this}
    * @complexity O(1)
@@ -1215,14 +1211,13 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   /**
    * Divides this {@link BigInt} by the specified {@code int} divisor and sets
    * the modulus as the value of this {@link BigInt}.
-   * <p>
-   * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
-   * always returns a <i>non-negative</i> result.</i>
    *
    * <pre>
    * this = this % div
    * </pre>
    *
+   * @implNote This method differs from {@link #rem(BigInt)} in that it always
+   *           returns a <i>non-negative</i> result.
    * @param div The {@link BigInt} divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -1235,14 +1230,13 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   /**
    * Divides this {@link BigInt} by the specified {@code long} divisor and sets
    * the modulus as the value of this {@link BigInt}.
-   * <p>
-   * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
-   * always returns a <i>non-negative</i> result.</i>
    *
    * <pre>
    * this = this % div
    * </pre>
    *
+   * @implNote This method differs from {@link #rem(BigInt)} in that it always
+   *           returns a <i>non-negative</i> result.
    * @param div The {@link BigInt} divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -1255,14 +1249,13 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   /**
    * Divides this {@link BigInt} by the specified {@link BigInt} divisor and
    * sets the modulus as the value of this {@link BigInt}.
-   * <p>
-   * <i><b>Note:</b> This method differs from {@link #rem(BigInt)} in that it
-   * always returns a <i>non-negative</i> result.</i>
    *
    * <pre>
    * this = this % div
    * </pre>
    *
+   * @implNote This method differs from {@link #rem(BigInt)} in that it always
+   *           returns a <i>non-negative</i> result.
    * @param div The {@link BigInt} divisor.
    * @return {@code this}
    * @complexity O(n^2)
@@ -1504,10 +1497,9 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
    * </pre>
    *
    * The identity {@code -val = ~val + 1} holds.
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @return {@code this}
    * @complexity O(n)
    */

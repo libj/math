@@ -203,10 +203,10 @@ abstract class FixedPoint extends Number {
   /**
    * Returns the number of bits of precision required for the representation of
    * the specified value.
-   * <p>
-   * <b>Note:</b> It is assumed the specified value is positive, as the
-   * {@link Long#numberOfLeadingZeros(long)} returns 0 for all negative values.
    *
+   * @implNote It is assumed the specified value is positive, as the
+   *           {@link Long#numberOfLeadingZeros(long)} returns 0 for all
+   *           negative values.
    * @param v The value for which to return the number of bits of precision.
    * @return The number of bits of precision required for the representation of
    *         the specified value.

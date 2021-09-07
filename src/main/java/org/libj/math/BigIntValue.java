@@ -136,11 +136,10 @@ abstract class BigIntValue extends Number {
    * Assigns the content of {@code copyLength} number of elements of the
    * specified source array to the provided target array, ensuring the length of
    * the target array is at least {@code arrayLength}.
-   * <p>
-   * <i><b>Note:</b> The returned array may be a {@code new int[]} instance if
-   * the length of the provided target array not sufficient to satisfy the
-   * required {@code arrayLength}.</i>
    *
+   * @implNote The returned array may be a {@code new int[]} instance if the
+   *           length of the provided target array not sufficient to satisfy the
+   *           required {@code arrayLength}.
    * @param source The source array.
    * @param target The target array.
    * @param copyLength The number of elements to copy from source to target.
@@ -215,9 +214,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mag The magnitude.
    * @return The result of assigning an {@code int} magnitude to the provided
@@ -231,10 +229,9 @@ abstract class BigIntValue extends Number {
   /**
    * Assigns an <i>unsigned</i> {@code int} magnitude to the provided
    * {@linkplain BigInt#val() value-encoded number}.
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code int}.
    * @param mag The magnitude (unsigned).
@@ -254,8 +251,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
+   * @implNote The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code int}.
@@ -287,8 +284,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
+   * @implNote The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mag The magnitude.
@@ -312,8 +309,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
+   * @implNote The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code long}.
@@ -334,8 +331,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
+   * @implNote The returned number may be a {@code new int[]} instance if
+   * the assignment requires a larger array.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code long}.
@@ -378,14 +375,13 @@ abstract class BigIntValue extends Number {
    * Assigns the specified {@linkplain BigInt#val() value-encoded number}
    * {@code val} to the contents of {@linkplain BigInt#val() value-encoded
    * number} {@code src}.
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
    *
    * <pre>
    * this = val
    * </pre>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number} to receive
    *          the contents of {@code src}.
    * @param src The {@linkplain BigInt#val() value-encoded number} to provide
@@ -415,9 +411,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param mag The two's-complement binary representation of a
    *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
@@ -443,9 +438,8 @@ abstract class BigIntValue extends Number {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param mag The two's-complement binary representation of a
    *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
@@ -642,9 +636,8 @@ abstract class BigIntValue extends Number {
    * val = s
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param s The number as a string.
    * @return The result of assigning the specified number as a string to the
@@ -664,9 +657,8 @@ abstract class BigIntValue extends Number {
    * val = s
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param s The number as a {@code char[]}.
    * @return The result of assigning the specified number as a {@code char[]} to
@@ -793,10 +785,9 @@ abstract class BigIntValue extends Number {
 
   /**
    * Sets the provided {@linkplain BigInt#val() value-encoded number} to zero.
-   * <p>
-   * <i><b>Note:</b> The returned array will be a {@code new int[]} instance if
-   * the length of the provided array is zero.</i>
    *
+   * @implNote The returned array will be a {@code new int[]} instance if the
+   *           length of the provided array is zero.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return The provided {@linkplain BigInt#val() value-encoded number} set to
    *         zero.
@@ -1466,16 +1457,16 @@ abstract class BigIntValue extends Number {
    * ceil(log2(val < 0 ? -val : val + 1))
    * </pre>
    *
+   * @implNote This function returns a {@code long} result because the maximum
+   *           numbers of bits representable with a {@linkplain BigInt#val()
+   *           value-encoded number} is
+   *           <code>32 * {@link #MAX_VAL_LENGTH} = 2147483648</code>.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The number of significant limbs in the number <b>(assumed to be
    *          positive)</b>.
    * @return Number of bits in the minimal two's-complement representation of
    *         the provided {@linkplain BigInt#val() value-encoded number},
    *         <em>excluding</em> a sign bit.
-   * @implNote This function returns a {@code long} result because the maximum
-   *           numbers of bits representable with a {@linkplain BigInt#val()
-   *           value-encoded number} is
-   *           <code>32 * {@link #MAX_VAL_LENGTH} = 2147483648</code>.
    * @complexity O(1)
    */
   static long bitLength(final int[] val, final int len) {

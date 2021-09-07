@@ -100,9 +100,8 @@ abstract class BigIntPrimitive extends BigIntBinary {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param mag The {@code double} value to assign.
    * @param rm The {@link RoundingMode}.
@@ -131,9 +130,8 @@ abstract class BigIntPrimitive extends BigIntBinary {
    * val = mag
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the assignment requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param mag The {@code double} value to assign.
    * @return The result of assigning the specified {@code double} value to the

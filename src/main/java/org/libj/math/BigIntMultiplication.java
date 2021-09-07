@@ -203,9 +203,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, and returns one of
    * {@code -1}, {@code 0}, or {@code 1} if {@code val} is less than, equal to,
    * or greater than <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, respectively.
-   * <p>
-   * <i><b>Note:</b> This function assumes {@code val} is positive.</i>
    *
+   * @implNote This function assumes {@code val} is positive.
    * @param val The {@linkplain BigInt#val() value-encoded number} to compare.
    * @param p5 The exponent of the power-of-five factor.
    * @param p2 The exponent of the power-of-two factor.
@@ -252,10 +251,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
   /**
    * Returns the provided {@linkplain BigInt#val() value-encoded number}
    * multiplied by <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
-   * <p>
-   * <i><b>Note:</b> This function assumes the provided array is big enough for
-   * the operation to be performed in place.</i>
    *
+   * @implNote This function assumes the provided array is big enough for the
+   *           operation to be performed in place.
    * @param val The {@linkplain BigInt#val() value-encoded number} to multiply.
    * @param p5 The exponent of the power-of-five factor.
    * @param p2 The exponent of the power-of-two factor.
@@ -280,10 +278,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
   /**
    * Returns the provided {@linkplain BigInt#val() value-encoded number} set to
    * the numerical value of <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
-   * <p>
-   * <i><b>Note:</b> This function assumes the provided array is big enough for
-   * the operation to be performed in place.</i>
    *
+   * @implNote This function assumes the provided array is big enough for the
+   *           operation to be performed in place.
    * @param val The {@linkplain BigInt#val() value-encoded number} to be set.
    * @param p5 The exponent of 5.
    * @param p2 The exponent of 2.
@@ -307,10 +304,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
   /**
    * Returns the provided {@linkplain BigInt#val() value-encoded number} set to
    * the numerical value of <code>2<sup>p2</sup></code>.
-   * <p>
-   * <i><b>Note:</b> This function assumes the provided array is big enough for
-   * the operation to be performed in place.</i>
    *
+   * @implNote This function assumes the provided array is big enough for the
+   *           operation to be performed in place.
    * @param val The {@linkplain BigInt#val() value-encoded number} to be set.
    * @param p2 The exponent of 2.
    * @return the provided {@linkplain BigInt#val() value-encoded number} set to
@@ -365,10 +361,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the multiplication of the provided number by the specified multiplier
-   * requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           multiplication of the provided number by the specified multiplier
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The multiplier.
    * @return The result of the multiplication of the provided number by the
@@ -387,10 +382,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the multiplication of the provided number by the specified multiplier
-   * requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           multiplication of the provided number by the specified multiplier
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param sig The sign of the unsigned {@code int} multiplier.
    * @param mul The multiplier (unsigned).
@@ -428,10 +422,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the multiplication of the provided number by the specified multiplier
-   * requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           multiplication of the provided number by the specified multiplier
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The multiplier.
    * @return The result of the multiplication of the provided number by the
@@ -454,10 +447,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the multiplication of the provided number by the specified multiplier
-   * requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           multiplication of the provided number by the specified multiplier
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param sig The sign of the unsigned {@code long} multiplier.
    * @param mul The multiplier (unsigned).
@@ -516,10 +508,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> This method assumes that the length of the provided
-   * magnitude array will accommodate for the result of the multiplication,
-   * which may at most require 1 free limb.</i>
-   *
+   * @implNote This method assumes that the length of the provided magnitude
+   *           array will accommodate for the result of the multiplication,
+   *           which may at most require 1 free limb.
    * @param mag The multiplicand (little-endian).
    * @param off The offset of the first limb of the multiplicand.
    * @param len The number of limbs of the multiplicand.
@@ -549,10 +540,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> This method assumes that the length of the provided
-   * magnitude array will accommodate for the result of the multiplication,
-   * which may at most require 2 free limbs.</i>
-   *
+   * @implNote This method assumes that the length of the provided magnitude
+   *           array will accommodate for the result of the multiplication,
+   *           which may at most require 2 free limbs.
    * @param mag The multiplicand (little-endian).
    * @param off The offset of the first limb of the multiplicand.
    * @param len The number of limbs of the multiplicand.
@@ -594,10 +584,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the multiplication of the provided number by the specified multiplier
-   * requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           multiplication of the provided number by the specified multiplier
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The {@linkplain BigInt#val() value-encoded multiplier}.
    * @return The result of the multiplication of the provided
@@ -1139,10 +1128,9 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * <li>If the length of the resulting value array is greater than the
    * {@link BigInt#MAX_VAL_LENGTH}.</li>
    * </ol>
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the operation results in a number that requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           operation results in a number that requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number} to raise to
    *          the power of the given {@code exponent}.
    * @param exp The exponent to which {@code val} is to be raised.

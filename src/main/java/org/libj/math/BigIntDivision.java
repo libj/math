@@ -480,9 +480,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * val = val / div
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the operation requires a larger array for the computation.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           operation requires a larger array for the computation.
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The divisor.
    * @return The provided {@linkplain BigInt#val() value-encoded dividend},
@@ -538,9 +537,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * return rem
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the operation requires a larger array for the computation.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           operation requires a larger array for the computation.
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The {@linkplain BigInt#val() value-encoded divisor}.
    * @return The remainder resulting from the division of the provided
@@ -803,9 +801,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * val = val % div
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the operation requires a larger array for the computation.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           operation requires a larger array for the computation.
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The {@linkplain BigInt#val() value-encoded divisor}.
    * @return The dividend array with its value replaced by the remainder
@@ -857,9 +854,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * val = val % div
    * </pre>
    *
-   * <i><b>Note:</b> This method differs from {@link #rem(int[],int)} in that it
-   * always returns a <i>non-negative</i> result.</i>
-   *
+   * @implNote This method differs from {@link #rem(int[],int)} in that it
+   *           always returns a <i>non-negative</i> result.
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The {@code int} divisor.
    * @return The modulus resulting from the division of the provided
@@ -888,9 +884,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * val = val % div
    * </pre>
    *
-   * <i><b>Note:</b> This method differs from {@link #rem(int[],long)} in that
-   * it always returns a <i>non-negative</i> result.</i>
-   *
+   * @implNote This method differs from {@link #rem(int[],long)} in that it
+   *           always returns a <i>non-negative</i> result.
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The {@code long} divisor.
    * @return The modulus resulting from the division of the provided
@@ -919,12 +914,10 @@ abstract class BigIntDivision extends BigIntMultiplication {
    * val = val % div
    * </pre>
    *
-   * <i><b>Note:</b> This method differs from {@link #rem(int[],int[])} in that
-   * it always returns a <i>non-negative</i> result.</i>
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the operation requires a larger array for the computation.</i>
-   *
+   * @implNote This method differs from {@link #rem(int[],int[])} in that it
+   *           always returns a <i>non-negative</i> result.
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           operation requires a larger array for the computation.
    * @param val The {@linkplain BigInt#val() value-encoded dividend}.
    * @param div The {@linkplain BigInt#val() value-encoded divisor}.
    * @return The dividend array with its value replaced by the modulus resulting

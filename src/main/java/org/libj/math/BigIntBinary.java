@@ -73,9 +73,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val &gt;&gt; num
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the shift requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the shift requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
    * @return The result of shifting the provided {@linkplain BigInt#val()
@@ -175,9 +174,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val &lt;&lt; num
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the shift requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the shift requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
    * @return The result of shifting the provided {@linkplain BigInt#val()
@@ -251,10 +249,9 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by
    * the specified number of bits (less than 32) starting at the given offset
    * ({@code off}).
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the shift requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the shift requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number} to shift.
    * @param off The limb at which to start shifting.
    * @param len The number of limbs of the number to shift.
@@ -339,9 +336,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val | (1 &lt;&lt; n)
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to set.
    * @return The result of setting the specified bit in the provided
@@ -414,9 +410,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val &amp; ~(1 &lt;&lt; n)
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to clear.
    * @return The result of clearing the specified bit in the provided
@@ -508,9 +503,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val ^ (1 &lt;&lt; n)
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to flip.
    * @return The result of flipping the specified bit in the provided
@@ -606,9 +600,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val &amp; mask
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "and".
    * @return The result of the bitwise "and" of the specified
@@ -795,9 +788,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val | mask
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "or".
    * @return The result of the bitwise "or" of the specified
@@ -950,9 +942,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val ^ mask
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "xor".
    * @return The result of the bitwise "xor" of the specified
@@ -1170,9 +1161,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * val = val &amp; ~mask
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "and-not".
    * @return The result of the bitwise "and-not" of the specified value-encoded
@@ -1309,10 +1299,9 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * </pre>
    *
    * The identity {@code -val = ~val + 1} holds.
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the number resulting from the operation requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           number resulting from the operation requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @return The result of the bitwise "not" of the provided
    *         {@linkplain BigInt#val() value-encoded number}.

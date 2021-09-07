@@ -40,10 +40,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val + add
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified {@code int} requires a
-   * larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase of the provided addend by the specified {@code int}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The amount to add.
    * @return The result of the addition of the specified amount to the provided
@@ -65,10 +64,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val - sub
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified {@code int} requires
-   * a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           decrease of the provided minuend by the specified {@code int}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The subtrahend.
    * @return The result of the subtraction of the specified amount from the
@@ -87,10 +85,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val + add
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified {@code int} requires a
-   * larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase of the provided addend by the specified {@code int}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param sig The sign of the unsigned {@code int} to add.
    * @param add The amount to add (unsigned).
@@ -154,10 +151,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val - sub
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified {@code int} requires
-   * a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           decrease of the provided minuend by the specified {@code int}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sig The sign of the unsigned {@code int} to subtract.
    * @param sub The subtrahend (unsigned).
@@ -217,10 +213,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val + add
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified {@code long} requires
-   * a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase of the provided addend by the specified {@code long}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The amount to add.
    * @return The result of the addition of the specified amount to the provided
@@ -243,10 +238,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val - sub
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified {@code long} requires
-   * a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           decrease of the provided minuend by the specified {@code long}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The subtrahend.
    * @return The result of the subtraction of the specified amount from the
@@ -265,10 +259,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val + add
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified {@code long} requires
-   * a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase of the provided addend by the specified {@code long}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param sig The sign of the unsigned {@code long} to add.
    * @param add The amount to add (unsigned).
@@ -318,10 +311,9 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val - sub
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified {@code long} requires
-   * a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           decrease of the provided minuend by the specified {@code long}
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sig The sign of the unsigned {@code long} to subtract.
    * @param sub The subtrahend (unsigned).
@@ -366,11 +358,10 @@ abstract class BigIntAddition extends BigIntPrimitive {
   /**
    * Adds (or subtracts) an unsigned {@code long} to (or from) the provided
    * {@linkplain BigInt#val() value-encoded addend}.
-   * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase (or decrease) of the provided addend (or minuend) by the
-   * specified {@code long} requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase (or decrease) of the provided addend (or minuend) by the
+   *           specified {@code long} requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
@@ -457,10 +448,10 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val + add
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified
-   * {@linkplain BigInt#val() value-encoded number} requires a larger array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase of the provided addend by the specified
+   *           {@linkplain BigInt#val() value-encoded number} requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded addend}.
    * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @return The result of the addition of the specified
@@ -484,11 +475,10 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * val = val - sub
    * </pre>
    *
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the decrease of the provided minuend by the specified
-   * {@linkplain BigInt#val() value-encoded subtrahend} requires a larger
-   * array.</i>
-   *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           decrease of the provided minuend by the specified
+   *           {@linkplain BigInt#val() value-encoded subtrahend} requires a
+   *           larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The {@linkplain BigInt#val() value-encoded subtrahend}.
    * @return The result of the subtraction of the specified
@@ -509,10 +499,11 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * from) the provided {@linkplain BigInt#val() value-encoded addend} (or
    * minuend).
    * <p>
-   * <i><b>Note:</b> The returned number may be a {@code new int[]} instance if
-   * the increase of the provided addend by the specified
-   * {@linkplain BigInt#val() value-encoded number} requires a larger array.</i>
    *
+   * @implNote The returned number may be a {@code new int[]} instance if the
+   *           increase of the provided addend by the specified
+   *           {@linkplain BigInt#val() value-encoded number} requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded addend} (or minuend).
    * @param add The {@linkplain BigInt#val() value-encoded amount} to add.
    * @param addOrSub {@code true} to add, or {@code false} to subtract.
