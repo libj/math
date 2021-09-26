@@ -16,9 +16,9 @@
 
 package org.libj.math;
 
-import java.math.BigInteger;
+import static org.libj.lang.Assertions.*;
 
-import org.libj.lang.Assertions;
+import java.math.BigInteger;
 
 /**
  * Utility that supplements functions in {@link Math}, providing implementations
@@ -33,7 +33,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double rms(final byte ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double rms = 0d;
@@ -51,7 +51,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double rms(final short ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double rms = 0d;
@@ -69,7 +69,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double rms(final int ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double rms = 0d;
@@ -87,7 +87,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double rms(final long ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double rms = 0d;
@@ -105,7 +105,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double rms(final float ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double rms = 0d;
@@ -123,7 +123,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double rms(final double ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double rms = 0d;
@@ -141,7 +141,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static byte min(final byte ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     byte min = values[0];
@@ -160,7 +160,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static short min(final short ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     short min = values[0];
@@ -179,7 +179,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static int min(final int ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     int min = values[0];
@@ -198,7 +198,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static long min(final long ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     long min = values[0];
@@ -217,7 +217,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static float min(final float ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     float min = values[0];
@@ -236,7 +236,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double min(final double ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double min = values[0];
@@ -255,7 +255,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static byte max(final byte ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     byte max = values[0];
@@ -274,7 +274,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static short max(final short ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     short max = values[0];
@@ -293,7 +293,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static int max(final int ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     int max = values[0];
@@ -312,7 +312,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static long max(final long ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     long max = values[0];
@@ -331,7 +331,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static float max(final float ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     float max = values[0];
@@ -350,7 +350,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double max(final double ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values.length == 0");
 
     double max = values[0];
@@ -454,7 +454,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static double avg(final byte ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       return Double.NaN;
 
     return sum(values) / (double)values.length;
@@ -469,7 +469,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static double avg(final short ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       return Double.NaN;
 
     return sum(values) / (double)values.length;
@@ -484,7 +484,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static double avg(final int ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       return Double.NaN;
 
     return sum(values) / (double)values.length;
@@ -499,7 +499,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static double avg(final long ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       return Double.NaN;
 
     return sum(values) / (double)values.length;
@@ -514,7 +514,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static double avg(final float ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       return Double.NaN;
 
     return sum(values) / (double)values.length;
@@ -529,7 +529,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static double avg(final double ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       return Double.NaN;
 
     return sum(values) / values.length;
@@ -549,10 +549,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final byte[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0 || fromIndex == toIndex)
+    if (assertNotNull(values).length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -570,10 +570,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final short[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0 || fromIndex == toIndex)
+    if (assertNotNull(values).length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -591,10 +591,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final int[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0 || fromIndex == toIndex)
+    if (assertNotNull(values).length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -612,10 +612,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final long[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0 || fromIndex == toIndex)
+    if (assertNotNull(values).length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -633,10 +633,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final float[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0 || fromIndex == toIndex)
+    if (assertNotNull(values).length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (double)(toIndex - fromIndex);
   }
 
@@ -654,10 +654,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double avg(final double[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0 || fromIndex == toIndex)
+    if (assertNotNull(values).length == 0 || fromIndex == toIndex)
       return Double.NaN;
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
     return sum(values, fromIndex, toIndex) / (toIndex - fromIndex);
   }
 
@@ -669,7 +669,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static int sum(final byte ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     int sum = 0;
@@ -687,7 +687,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static int sum(final short ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     int sum = 0;
@@ -705,7 +705,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static long sum(final int ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     long sum = 0;
@@ -723,7 +723,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static long sum(final long ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     long sum = 0;
@@ -741,7 +741,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static float sum(final float ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     float sum = 0;
@@ -759,7 +759,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double sum(final double ... values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     double sum = 0;
@@ -783,10 +783,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static int sum(final byte[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -809,10 +809,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static int sum(final short[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -835,10 +835,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static int sum(final int[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -861,10 +861,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static long sum(final long[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
 
     long sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -887,10 +887,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static float sum(final float[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
 
     float sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -913,10 +913,10 @@ public final class StatMath {
    *           ({@code fromIndex < 0 || values.length < toIndex}).
    */
   public static double sum(final double[] values, final int fromIndex, final int toIndex) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
-    Assertions.assertRangeArray(fromIndex, toIndex, values.length);
+    assertRangeArray(fromIndex, toIndex, values.length);
 
     int sum = 0;
     for (int i = fromIndex; i < toIndex; ++i)
@@ -936,7 +936,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static int sum(final short[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     int sum = 0;
@@ -957,7 +957,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static int sum(final int[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     int sum = 0;
@@ -978,7 +978,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static long sum(final long[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     long sum = 0;
@@ -999,7 +999,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static float sum(final float[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     float sum = 0;
@@ -1020,7 +1020,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double sum(final double[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     double sum = 0;
@@ -1038,7 +1038,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final byte[] values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values) / values.length;
@@ -1057,7 +1057,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final short[] values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values) / values.length;
@@ -1076,7 +1076,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final int[] values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values) / values.length;
@@ -1095,7 +1095,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final long[] values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values) / values.length;
@@ -1114,7 +1114,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final float[] values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values) / values.length;
@@ -1133,7 +1133,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final double[] values) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values) / values.length;
@@ -1155,7 +1155,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final short[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values, dimension) / values.length;
@@ -1177,7 +1177,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final int[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values, dimension) / values.length;
@@ -1199,7 +1199,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final long[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values, dimension) / values.length;
@@ -1221,7 +1221,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final float[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values, dimension) / values.length;
@@ -1243,7 +1243,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null or empty.
    */
   public static double stdDev(final double[][] values, final int dimension) {
-    if (Assertions.assertNotNull(values).length == 0)
+    if (assertNotNull(values).length == 0)
       throw new IllegalArgumentException("values is empty");
 
     final double u = sum(values, dimension) / values.length;
@@ -1261,7 +1261,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static void normalize(final byte[] values) {
-    if (Assertions.assertNotNull(values).length <= 1)
+    if (assertNotNull(values).length <= 1)
       return;
 
     double sumLinear = 0d;
@@ -1288,7 +1288,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static void normalize(final short[] values) {
-    if (Assertions.assertNotNull(values).length <= 1)
+    if (assertNotNull(values).length <= 1)
       return;
 
     double sumLinear = 0d;
@@ -1315,7 +1315,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static void normalize(final int[] values) {
-    if (Assertions.assertNotNull(values).length <= 1)
+    if (assertNotNull(values).length <= 1)
       return;
 
     double sumLinear = 0d;
@@ -1342,7 +1342,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static void normalize(final long[] values) {
-    if (Assertions.assertNotNull(values).length <= 1)
+    if (assertNotNull(values).length <= 1)
       return;
 
     double sumLinear = 0d;
@@ -1369,7 +1369,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static void normalize(final float[] values) {
-    if (Assertions.assertNotNull(values).length <= 1)
+    if (assertNotNull(values).length <= 1)
       return;
 
     double sumLinear = 0d;
@@ -1396,7 +1396,7 @@ public final class StatMath {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public static void normalize(final double[] values) {
-    if (Assertions.assertNotNull(values).length <= 1)
+    if (assertNotNull(values).length <= 1)
       return;
 
     double sumLinear = 0d;

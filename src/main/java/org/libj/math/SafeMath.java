@@ -16,12 +16,13 @@
 
 package org.libj.math;
 
+import static org.libj.lang.Assertions.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import org.libj.lang.Assertions;
 import org.libj.lang.BigDecimals;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -138,7 +139,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} is null.
    */
   public static BigDecimal abs(final BigDecimal a) {
-    return Assertions.assertNotNull(a).abs();
+    return assertNotNull(a).abs();
   }
 
   /**
@@ -172,7 +173,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal acos(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.acos(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.acos(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -191,7 +192,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal acos(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.acos(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.acos(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -233,7 +234,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal asin(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.asin(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.asin(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -256,7 +257,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal asin(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.asin(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.asin(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -296,7 +297,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal atan(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.atan(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.atan(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -318,7 +319,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal atan(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.atan(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.atan(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -429,7 +430,7 @@ public final class SafeMath {
    *           null.
    */
   public static BigDecimal atan2(final BigDecimal y, final BigDecimal x, final MathContext mc) {
-    return BigDecimalMath.atan2(Assertions.assertNotNull(y), Assertions.assertNotNull(x), Assertions.assertNotNull(mc));
+    return BigDecimalMath.atan2(assertNotNull(y), assertNotNull(x), assertNotNull(mc));
   }
 
   /**
@@ -609,7 +610,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal cos(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.cos(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.cos(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -623,7 +624,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal cos(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.cos(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.cos(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -662,7 +663,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal exp(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.exp(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.exp(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -680,7 +681,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal exp(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.exp(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.exp(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -1049,7 +1050,7 @@ public final class SafeMath {
    *           {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigDecimal b, final MathContext mc) {
-    return BigDecimalMath.pow(Assertions.assertNotNull(a), Assertions.assertNotNull(b), Assertions.assertNotNull(mc));
+    return BigDecimalMath.pow(assertNotNull(a), assertNotNull(b), assertNotNull(mc));
   }
 
   /**
@@ -1073,7 +1074,7 @@ public final class SafeMath {
    *           null.
    */
   public static BigDecimal pow(final BigInteger a, final BigDecimal b, final MathContext mc) {
-    return BigDecimalMath.pow(new BigDecimal(a), Assertions.assertNotNull(b), Assertions.assertNotNull(mc));
+    return BigDecimalMath.pow(new BigDecimal(a), assertNotNull(b), assertNotNull(mc));
   }
 
   /**
@@ -1097,7 +1098,7 @@ public final class SafeMath {
    *           {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigInteger b, final MathContext mc) {
-    return BigDecimalMath.pow(Assertions.assertNotNull(a), new BigDecimal(b), Assertions.assertNotNull(mc));
+    return BigDecimalMath.pow(assertNotNull(a), new BigDecimal(b), assertNotNull(mc));
   }
 
   /**
@@ -1121,7 +1122,7 @@ public final class SafeMath {
    *           null.
    */
   public static BigInteger pow(final BigInteger a, final BigInteger b, final MathContext mc) {
-    return BigDecimalMath.pow(new BigDecimal(Assertions.assertNotNull(a)), new BigDecimal(Assertions.assertNotNull(b)), Assertions.assertNotNull(mc)).toBigInteger();
+    return BigDecimalMath.pow(new BigDecimal(assertNotNull(a)), new BigDecimal(assertNotNull(b)), assertNotNull(mc)).toBigInteger();
   }
 
   /**
@@ -1409,7 +1410,7 @@ public final class SafeMath {
     if (scale < 0)
       throw new IllegalArgumentException("scale < 0: " + scale);
 
-    return Assertions.assertNotNull(a).setScale(scale, rm);
+    return assertNotNull(a).setScale(scale, rm);
   }
 
   /**
@@ -1610,7 +1611,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sin(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.sin(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.sin(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -1624,7 +1625,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sin(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.sin(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.sin(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -1663,7 +1664,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal sqrt(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.sqrt(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.sqrt(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -1679,7 +1680,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal sqrt(final BigInteger a, final MathContext mc) {
-    return sqrt(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return sqrt(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -1777,7 +1778,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal toRadians(final BigInteger a, final MathContext mc) {
-    return toRadians(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return toRadians(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -1809,7 +1810,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal tan(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.tan(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.tan(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -1823,7 +1824,7 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal tan(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.tan(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.tan(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -2287,9 +2288,9 @@ public final class SafeMath {
    *           null.
    */
   public static BigDecimal log(final BigInteger b, final BigInteger a, final MathContext mc) {
-    Assertions.assertNotNull(a);
-    Assertions.assertNotNull(b);
-    Assertions.assertNotNull(mc);
+    assertNotNull(a);
+    assertNotNull(b);
+    assertNotNull(mc);
     return BigDecimalMath.log(new BigDecimal(a), mc).divide(BigDecimalMath.log(new BigDecimal(b), mc), mc);
   }
 
@@ -2322,9 +2323,9 @@ public final class SafeMath {
    *           null.
    */
   public static BigDecimal log(final BigInteger b, final BigDecimal a, final MathContext mc) {
-    Assertions.assertNotNull(a);
-    Assertions.assertNotNull(b);
-    Assertions.assertNotNull(mc);
+    assertNotNull(a);
+    assertNotNull(b);
+    assertNotNull(mc);
     return BigDecimalMath.log(a, mc).divide(BigDecimalMath.log(new BigDecimal(b), mc), mc);
   }
 
@@ -2357,9 +2358,9 @@ public final class SafeMath {
    *           null.
    */
   public static BigDecimal log(final BigDecimal b, final BigInteger a, final MathContext mc) {
-    Assertions.assertNotNull(a);
-    Assertions.assertNotNull(b);
-    Assertions.assertNotNull(mc);
+    assertNotNull(a);
+    assertNotNull(b);
+    assertNotNull(mc);
     return BigDecimalMath.log(new BigDecimal(a), mc).divide(BigDecimalMath.log(b, mc), mc);
   }
 
@@ -2392,9 +2393,9 @@ public final class SafeMath {
    *           null.
    */
   public static BigDecimal log(final BigDecimal b, final BigDecimal a, final MathContext mc) {
-    Assertions.assertNotNull(a);
-    Assertions.assertNotNull(b);
-    Assertions.assertNotNull(mc);
+    assertNotNull(a);
+    assertNotNull(b);
+    assertNotNull(mc);
     return BigDecimalMath.log(a, mc).divide(BigDecimalMath.log(b, mc), mc);
   }
 
@@ -2466,7 +2467,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal log(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.log(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.log(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -2493,7 +2494,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal log(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.log(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.log(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -2569,7 +2570,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal log10(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.log10(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.log10(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -2597,7 +2598,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal log10(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.log10(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.log10(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
@@ -2672,7 +2673,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal log2(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.log2(new BigDecimal(Assertions.assertNotNull(a)), Assertions.assertNotNull(mc));
+    return BigDecimalMath.log2(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
@@ -2699,7 +2700,7 @@ public final class SafeMath {
    *           is null.
    */
   public static BigDecimal log2(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.log2(Assertions.assertNotNull(a), Assertions.assertNotNull(mc));
+    return BigDecimalMath.log2(assertNotNull(a), assertNotNull(mc));
   }
 
   /**

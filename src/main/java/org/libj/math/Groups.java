@@ -16,9 +16,9 @@
 
 package org.libj.math;
 
-import java.lang.reflect.Array;
+import static org.libj.lang.Assertions.*;
 
-import org.libj.lang.Assertions;
+import java.lang.reflect.Array;
 
 /**
  * Utility class providing functions related to
@@ -167,7 +167,7 @@ public final class Groups {
   @SafeVarargs
   @SuppressWarnings("unchecked")
   public static <T>T[][] combine(final int k, final T ... elements) {
-    if (Assertions.assertNotNull(elements).length < k)
+    if (assertNotNull(elements).length < k)
       throw new ArithmeticException("elements.length (" + elements.length + ") is less than k (" + k + ")");
 
     final long size = SafeMath.factorial((long)elements.length) / (SafeMath.factorial((long)k) * SafeMath.factorial((long)(elements.length - k)));
@@ -252,9 +252,9 @@ public final class Groups {
    */
   @SuppressWarnings("unchecked")
   public static <T>T[][] permute(final T[][] a) {
-    int total = Assertions.assertNotNull(a)[0].length;
+    int total = assertNotNull(a)[0].length;
     for (int i = 1; i < a.length; ++i)
-      total *= Assertions.assertNotNull(a[i]).length;
+      total *= assertNotNull(a[i]).length;
 
     final Class<?> componentType1 = a.getClass().getComponentType();
     final T[][] combinations = (T[][])Array.newInstance(componentType1, total);

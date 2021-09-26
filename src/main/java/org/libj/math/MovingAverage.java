@@ -16,7 +16,7 @@
 
 package org.libj.math;
 
-import org.libj.lang.Assertions;
+import static org.libj.lang.Assertions.*;
 
 /**
  * A mutable {@link Number} that represents the
@@ -72,7 +72,7 @@ public class MovingAverage extends Number {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public MovingAverage add(final double ... values) {
-    for (final double value : Assertions.assertNotNull(values))
+    for (final double value : assertNotNull(values))
       add(value);
 
     return this;

@@ -16,7 +16,7 @@
 
 package org.libj.math;
 
-import org.libj.lang.Assertions;
+import static org.libj.lang.Assertions.*;
 
 /**
  * A mutable class that represents the moving normal algorithm.
@@ -42,8 +42,8 @@ public class MovingNormal {
    * @throws IllegalArgumentException If {@code values} is null.
    */
   public void normalize(final int fromIndex, final int toIndex, final double ... values) {
-    Assertions.assertNotNull(values);
-    Assertions.assertRange("fromIndex", fromIndex, "toIndex", toIndex, "values.length", values.length);
+    assertNotNull(values);
+    assertRange("fromIndex", fromIndex, "toIndex", toIndex, "values.length", values.length);
 
     for (int i = fromIndex; i < toIndex; ++i, ++count) {
       sum += values[i];

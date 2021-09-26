@@ -16,7 +16,7 @@
 
 package org.libj.math;
 
-import org.libj.lang.Assertions;
+import static org.libj.lang.Assertions.*;
 
 /**
  * A mutable {@link Number} that represents the
@@ -51,7 +51,7 @@ public class SlidingWindowAverage extends MovingAverage {
    *           value.
    */
   public SlidingWindowAverage(final int windowSize) {
-    this.samples = new double[Assertions.assertPositive(windowSize)];
+    this.samples = new double[assertPositive(windowSize)];
   }
 
   /**
