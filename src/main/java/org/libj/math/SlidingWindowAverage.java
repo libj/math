@@ -24,8 +24,6 @@ import org.libj.lang.Assertions;
  * algorithm with sliding window.
  */
 public class SlidingWindowAverage extends MovingAverage {
-  private static final long serialVersionUID = -2727156410200819678L;
-
   private double total;
 
   private final double[] samples;

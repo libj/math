@@ -61,8 +61,6 @@ import java.math.RoundingMode;
  * @author Seva Safris
  */
 public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable {
-  private static final long serialVersionUID = -4360183347203631370L;
-
   /**
    * The {@linkplain #val() value-encoded number}.
    *

@@ -19,8 +19,6 @@ package org.libj.math;
 import org.libj.lang.Numbers;
 
 abstract class DecimalMultiplication extends FixedPoint {
-  private static final long serialVersionUID = -6383926671393192287L;
-
   /**
    * Returns the product of {@code v1 * v2}. If the result overflows
    * {@code long}, or is outside the range of {@code MIN_VALUE} and

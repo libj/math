@@ -21,8 +21,6 @@ import java.lang.reflect.Method;
 import java.math.BigInteger;
 
 abstract class BigIntegerMultiplication extends BigIntMultiplication {
-  private static final long serialVersionUID = 877413432467388241L;
-
   /**
    * The threshold value for using 3-way Toom-Cook multiplication.
    * If the number of ints in each mag array is greater than the

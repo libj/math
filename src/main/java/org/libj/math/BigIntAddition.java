@@ -30,8 +30,6 @@
 package org.libj.math;
 
 abstract class BigIntAddition extends BigIntPrimitive {
-  private static final long serialVersionUID = 2873086066678372875L;
-
   /**
    * Adds an {@code int} to the provided {@linkplain BigInt#val() value-encoded
    * addend}.

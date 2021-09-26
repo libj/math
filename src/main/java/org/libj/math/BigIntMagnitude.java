@@ -30,8 +30,6 @@
 package org.libj.math;
 
 abstract class BigIntMagnitude extends BigIntValue {
-  private static final long serialVersionUID = 734086338662551150L;
-
   /**
    * Increases the magnitude of the provided number by the specified amount.
    *

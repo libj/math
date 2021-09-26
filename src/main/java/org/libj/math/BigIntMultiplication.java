@@ -32,8 +32,6 @@ package org.libj.math;
 import java.util.Arrays;
 
 abstract class BigIntMultiplication extends BigIntAddition {
-  private static final long serialVersionUID = -4907342078241892616L;
-
   // For debugging
 //  public static boolean record = true;
 //  public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};

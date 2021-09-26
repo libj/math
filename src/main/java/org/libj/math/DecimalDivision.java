@@ -21,7 +21,6 @@ import java.math.RoundingMode;
 import org.libj.lang.Numbers;
 
 abstract class DecimalDivision extends FixedPoint {
-  private static final long serialVersionUID = 2875665225793357664L;
   private static final byte maxE10 = (byte)(FastMath.longE10.length - 1);
 
   static boolean div0(long significand1, int scale1, long significand2, int scale2, final Decimal result, final RoundingMode rm) {

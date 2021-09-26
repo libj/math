@@ -24,8 +24,6 @@ import org.libj.lang.Assertions;
  * algorithm.
  */
 public class MovingAverage extends Number {
-  private static final long serialVersionUID = 1631326433117019519L;
-
   private double average;
   protected long count;
 

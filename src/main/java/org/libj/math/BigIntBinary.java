@@ -33,8 +33,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 abstract class BigIntBinary extends BigIntMagnitude {
-  private static final long serialVersionUID = 6584645376198040730L;
-
   /**
    * Returns the number of bits in the two's complement representation of the
    * provided {@linkplain BigInt#val() value-encoded number} that differ from

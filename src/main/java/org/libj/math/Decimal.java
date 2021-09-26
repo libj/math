@@ -39,8 +39,6 @@ import org.libj.lang.Numbers;
  * </ul>
  */
 public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneable {
-  private static final long serialVersionUID = 3129168059597869867L;
-
   /**
    * Returns the absolute value of the argument (encoded with
    * {@link Decimal#valueOf(long,int,long)}.

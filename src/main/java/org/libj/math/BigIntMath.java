@@ -34,8 +34,6 @@ import java.math.RoundingMode;
 import org.libj.lang.Constants;
 
 abstract class BigIntMath extends BigIntDivision {
-  private static final long serialVersionUID = 8389568864770712429L;
-
   /**
    * Returns the square root of the specified {@code int}, rounded with the
    * provided {@link RoundingMode}; or {@code -1} if {@code x <= 0} or

@@ -34,8 +34,6 @@ import java.util.Arrays;
 import org.libj.lang.Numbers;
 
 abstract class BigIntValue extends Number {
-  private static final long serialVersionUID = -5274535682246497862L;
-
   static final int NATIVE_THRESHOLD;
 
   static {

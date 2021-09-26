@@ -19,8 +19,6 @@ package org.libj.math;
 import org.libj.lang.Numbers;
 
 abstract class DecimalAddition extends FixedPoint {
-  private static final long serialVersionUID = 2903111300785124642L;
-
   static Decimal add0(final Decimal dec, final long significand2, final short scale2) {
     if (significand2 == 0)
       return dec;

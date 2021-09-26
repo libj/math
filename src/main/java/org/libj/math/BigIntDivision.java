@@ -30,8 +30,6 @@
 package org.libj.math;
 
 abstract class BigIntDivision extends BigIntMultiplication {
-  private static final long serialVersionUID = -4156041218135948540L;
-
   /**
    * Divides the provided {@linkplain BigInt#val() value-encoded dividend} by
    * the specified <i>unsigned</i> {@code int} divisor.

@@ -43,8 +43,6 @@ public class CaseSummaryPrinter {
   private static final Pattern headingPattern = Pattern.compile(">([^<]+)<");
 
   private static class SummaryMap extends LinkedHashMap<String,ArrayList<Object[]>> {
-    private static final long serialVersionUID = 8003693767129511272L;
-
     @Override
     @SuppressWarnings("unlikely-arg-type")
     public ArrayList<Object[]> get(final Object key) {

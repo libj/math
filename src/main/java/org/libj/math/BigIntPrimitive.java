@@ -33,8 +33,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 
 abstract class BigIntPrimitive extends BigIntBinary {
-  private static final long serialVersionUID = -5153696493319539095L;
-
   private static final double MIN_LONG_AS_DOUBLE = -0x1p63;
 
   /* We cannot store Long.MAX_VALUE as a double without losing precision.

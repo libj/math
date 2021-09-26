@@ -17,8 +17,6 @@
 package org.libj.math;
 
 public abstract class FixedPointProxy extends FixedPoint {
-  private static final long serialVersionUID = -2554919823662009935L;
-
   public static final long MIN_VALUE = FixedPoint.MIN_SIGNIFICAND;
   public static final long MAX_VALUE = FixedPoint.MAX_SIGNIFICAND;
 

@@ -21,8 +21,6 @@ import java.math.RoundingMode;
 import org.libj.lang.Numbers;
 
 abstract class FixedPoint extends Number {
-  private static final long serialVersionUID = -2783163338875335475L;
-
   static final byte SCALE_BITS = 9;
   private static final byte VALUE_BITS = 63 - SCALE_BITS;
   private static final byte LONG_SHORT_SCALE_SHIFT = 63 - Short.SIZE;
