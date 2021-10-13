@@ -1072,6 +1072,54 @@ public class SafeMathITest {
   }
 
   @Test
+  public void testMaxBigInteger() {
+    try {
+      SafeMath.max(null, BigInteger.ZERO);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    try {
+      SafeMath.max(BigInteger.ZERO, null);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    assertTrue(SafeMath.max(BigInteger.ZERO, BigInteger.ZERO).compareTo(BigInteger.ZERO) == 0);
+    assertTrue(SafeMath.max(BigInteger.ONE, BigInteger.ONE).compareTo(BigInteger.ONE) == 0);
+    assertTrue(SafeMath.max(BigInteger.ONE.negate(), BigInteger.ONE.negate()).compareTo(BigInteger.ONE.negate()) == 0);
+    for (int i = 0; i < numTests; ++i) {
+      final long n1 = random.nextLong();
+      final long n2 = random.nextLong();
+      assertTrue(SafeMath.max(BigInteger.valueOf(n1), BigInteger.valueOf(n2)).compareTo(BigInteger.valueOf(Math.max(n1, n2))) == 0);
+    }
+  }
+
+  @Test
+  public void testMaxBigDecimal() {
+    try {
+      SafeMath.max(null, BigDecimal.ZERO);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    try {
+      SafeMath.max(BigDecimal.ZERO, null);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    assertTrue(SafeMath.max(BigDecimal.ZERO, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) == 0);
+    assertTrue(SafeMath.max(BigDecimal.ONE, BigDecimal.ONE).compareTo(BigDecimal.ONE) == 0);
+    assertTrue(SafeMath.max(BigDecimal.ONE.negate(), BigDecimal.ONE.negate()).compareTo(BigDecimal.ONE.negate()) == 0);
+    for (int i = 0; i < numTests; ++i) {
+      final double n1 = random.nextDouble();
+      final double n2 = random.nextDouble();
+      assertTrue(SafeMath.max(BigDecimal.valueOf(n1), BigDecimal.valueOf(n2)).compareTo(BigDecimal.valueOf(Math.max(n1, n2))) == 0);
+    }
+  }
+
+  @Test
   public void testMinByteByte() {
     test(0, 0, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
@@ -1393,6 +1441,54 @@ public class SafeMathITest {
     test(-1, -1, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     for (int i = 0; i < numTests; ++i)
       test(d0() * 10, d0() * 10, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
+  }
+
+  @Test
+  public void testMinBigInteger() {
+    try {
+      SafeMath.min(null, BigInteger.ZERO);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    try {
+      SafeMath.min(BigInteger.ZERO, null);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    assertTrue(SafeMath.min(BigInteger.ZERO, BigInteger.ZERO).compareTo(BigInteger.ZERO) == 0);
+    assertTrue(SafeMath.min(BigInteger.ONE, BigInteger.ONE).compareTo(BigInteger.ONE) == 0);
+    assertTrue(SafeMath.min(BigInteger.ONE.negate(), BigInteger.ONE.negate()).compareTo(BigInteger.ONE.negate()) == 0);
+    for (int i = 0; i < numTests; ++i) {
+      final long n1 = random.nextLong();
+      final long n2 = random.nextLong();
+      assertTrue(SafeMath.min(BigInteger.valueOf(n1), BigInteger.valueOf(n2)).compareTo(BigInteger.valueOf(Math.min(n1, n2))) == 0);
+    }
+  }
+
+  @Test
+  public void testMinBigDecimal() {
+    try {
+      SafeMath.min(null, BigDecimal.ZERO);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    try {
+      SafeMath.min(BigDecimal.ZERO, null);
+      fail("Expected NullPointerException");
+    }
+    catch (final NullPointerException e) {
+    }
+    assertTrue(SafeMath.min(BigDecimal.ZERO, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) == 0);
+    assertTrue(SafeMath.min(BigDecimal.ONE, BigDecimal.ONE).compareTo(BigDecimal.ONE) == 0);
+    assertTrue(SafeMath.min(BigDecimal.ONE.negate(), BigDecimal.ONE.negate()).compareTo(BigDecimal.ONE.negate()) == 0);
+    for (int i = 0; i < numTests; ++i) {
+      final double n1 = random.nextDouble();
+      final double n2 = random.nextDouble();
+      assertTrue(SafeMath.min(BigDecimal.valueOf(n1), BigDecimal.valueOf(n2)).compareTo(BigDecimal.valueOf(Math.min(n1, n2))) == 0);
+    }
   }
 
   @Test

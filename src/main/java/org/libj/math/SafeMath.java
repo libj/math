@@ -27,6 +27,8 @@ import org.libj.lang.BigDecimals;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 
+// FIXME: Add Assertions.*
+
 /**
  * Utility that supplements functions in {@link Math} by providing compiler-safe
  * implementations for common math functions. Compiler-safe methods are those
@@ -3928,6 +3930,28 @@ public final class SafeMath {
   }
 
   /**
+   * Returns the larger of two {@link BigInteger} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static BigInteger max(final BigInteger a, final BigInteger b) {
+    return a.compareTo(b) > 0 ? a : b;
+  }
+
+  /**
+   * Returns the larger of two {@link BigDecimal} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The larger of {@code a} and {@code b}.
+   */
+  public static BigDecimal max(final BigDecimal a, final BigDecimal b) {
+    return a.compareTo(b) > 0 ? a : b;
+  }
+
+  /**
    * Returns the smaller of two {@link Byte} values.
    *
    * @param a The first value.
@@ -4357,6 +4381,28 @@ public final class SafeMath {
    */
   public static Double min(final Double a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link BigInteger} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static BigInteger min(final BigInteger a, final BigInteger b) {
+    return a.compareTo(b) < 0 ? a : b;
+  }
+
+  /**
+   * Returns the smaller of two {@link BigDecimal} values.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The smaller of {@code a} and {@code b}.
+   */
+  public static BigDecimal min(final BigDecimal a, final BigDecimal b) {
+    return a.compareTo(b) < 0 ? a : b;
   }
 
   private SafeMath() {
