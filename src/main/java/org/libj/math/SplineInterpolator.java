@@ -24,12 +24,13 @@ import org.libj.util.primitive.DoubleList;
 
 /**
  * Performs spline interpolation given a set of control points.
+ *
  * @param <C> The type parameter of the coordinate object.
  */
 public class SplineInterpolator<C> {
-  public interface Adapter<T> {
-    double get(T data, int d, int i);
-    int size(T data);
+  public interface Adapter<C> {
+    double get(C data, int d, int i);
+    int size(C data);
   }
 
   private static final Adapter<float[][]> FLOAT_ARRAY = new Adapter<float[][]>() {
@@ -159,7 +160,7 @@ public class SplineInterpolator<C> {
 //   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
 //   *           fewer than 2 values.
 //   */
-//  public static <T>SplineInterpolator<?> createMonotoneCubicSpline(final T[] xy, final Adapter<T> y) {
+//  public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C[] xy, final Adapter<C> y) {
 //    return createMonotoneCubicSpline(xy, y);
 //  }
 
@@ -170,14 +171,14 @@ public class SplineInterpolator<C> {
    * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
    * parameters.
    *
-   * @param <T> The type parameter of the coordinate object.
+   * @param <C> The type parameter of the coordinate object.
    * @param xy The control points, strictly increasing.
    * @param adapter The {@link Adapter} for conversion of {@code xy} control points of type {@code &lt;T&gt;} to {@code double}.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
    * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
    *           fewer than 2 values.
    */
-  public static <T>SplineInterpolator<T> createMonotoneCubicSpline(final T xy, final Adapter<T> adapter) {
+  public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C xy, final Adapter<C> adapter) {
     assertNotNull(xy);
     final int n = adapter.size(xy), n1 = n - 1, n2 = n - 2;
     if (adapter.size(xy) < 2)
