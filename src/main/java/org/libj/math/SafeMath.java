@@ -30,9 +30,8 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 // FIXME: Add Assertions.*
 
 /**
- * Utility that supplements functions in {@link Math} by providing compiler-safe
- * implementations for common math functions. Compiler-safe methods are those
- * that are linked directly by the compiler based on exact argument match.
+ * Utility that supplements functions in {@link Math} by providing compiler-safe implementations for common math functions.
+ * Compiler-safe methods are those that are linked directly by the compiler based on exact argument match.
  */
 public final class SafeMath {
   /**
@@ -76,14 +75,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the absolute value of a {@code float} value. If the argument is not
-   * negative, the argument is returned. If the argument is negative, the
-   * negation of the argument is returned.
+   * Returns the absolute value of a {@code float} value. If the argument is not negative, the argument is returned. If the argument
+   * is negative, the negation of the argument is returned.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is positive zero or negative zero, the result is
-   * positive zero.</li>
+   * <li>If the argument is positive zero or negative zero, the result is positive zero.</li>
    * <li>If the argument is infinite, the result is positive infinity.</li>
    * <li>If the argument is {@code NaN}, the result is {@code NaN}.</li>
    * </ul>
@@ -99,14 +96,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the absolute value of a {@code double} value. If the argument is
-   * not negative, the argument is returned. If the argument is negative, the
-   * negation of the argument is returned.
+   * Returns the absolute value of a {@code double} value. If the argument is not negative, the argument is returned. If the
+   * argument is negative, the negation of the argument is returned.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is positive zero or negative zero, the result is
-   * positive zero.</li>
+   * <li>If the argument is positive zero or negative zero, the result is positive zero.</li>
    * <li>If the argument is infinite, the result is positive infinity.</li>
    * <li>If the argument is {@code NaN}, the result is {@code NaN}.</li>
    * </ul>
@@ -132,12 +127,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns a {@link BigDecimal} whose value is the absolute value of this
-   * {@link BigDecimal}, and whose scale is {@code this.scale()}.
+   * Returns a {@link BigDecimal} whose value is the absolute value of this {@link BigDecimal}, and whose scale is
+   * {@code this.scale()}.
    *
    * @param a The argument whose absolute value is to be determined.
-   * @return A {@link BigDecimal} whose value is the absolute value of this
-   *         {@link BigDecimal}, and whose scale is {@code this.scale()}.
+   * @return A {@link BigDecimal} whose value is the absolute value of this {@link BigDecimal}, and whose scale is
+   *         {@code this.scale()}.
    * @throws IllegalArgumentException If {@code a} is null.
    */
   public static BigDecimal abs(final BigDecimal a) {
@@ -145,11 +140,9 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc cosine of a value; the returned angle is in the range
-   * {@code 0.0} through <i>pi</i>. Special case:
+   * Returns the arc cosine of a value; the returned angle is in the range {@code 0.0} through <i>pi</i>. Special case:
    * <ul>
-   * <li>If the argument is {@code NaN} or its absolute value is greater than
-   * {@code 1}, then the result is {@code NaN}.</li>
+   * <li>If the argument is {@code NaN} or its absolute value is greater than {@code 1}, then the result is {@code NaN}.</li>
    * </ul>
    *
    * @param a The value, whose arc cosine is to be returned.
@@ -160,18 +153,15 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc cosine of a value; the returned angle is in the range
-   * {@code 0.0} through <i>pi</i>. Special case:
+   * Returns the arc cosine of a value; the returned angle is in the range {@code 0.0} through <i>pi</i>. Special case:
    * <ul>
-   * <li>If the argument is {@code NaN} or its absolute value is greater than
-   * {@code 1}, then the result is {@code NaN}.</li>
+   * <li>If the argument is {@code NaN} or its absolute value is greater than {@code 1}, then the result is {@code NaN}.</li>
    * </ul>
    *
    * @param a The value, whose arc cosine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc cosine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal acos(final BigDecimal a, final MathContext mc) {
@@ -179,18 +169,15 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc cosine of a value; the returned angle is in the range
-   * {@code 0.0} through <i>pi</i>. Special case:
+   * Returns the arc cosine of a value; the returned angle is in the range {@code 0.0} through <i>pi</i>. Special case:
    * <ul>
-   * <li>If the argument is {@code NaN} or its absolute value is greater than
-   * {@code 1}, then the result is {@code NaN}.</li>
+   * <li>If the argument is {@code NaN} or its absolute value is greater than {@code 1}, then the result is {@code NaN}.</li>
    * </ul>
    *
    * @param a The value, whose arc cosine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc cosine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal acos(final BigInteger a, final MathContext mc) {
@@ -198,15 +185,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc sine of a value; the returned angle is in the range
-   * -<i>pi</i>/2 through <i>pi</i>/2.
+   * Returns the arc sine of a value; the returned angle is in the range -<i>pi</i>/2 through <i>pi</i>/2.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or its absolute value is greater than
-   * {@code 1}, then the result is {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is {@code NaN} or its absolute value is greater than {@code 1}, then the result is {@code NaN}.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc sine is to be returned.
@@ -217,22 +201,18 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc sine of a value; the returned angle is in the range
-   * -<i>pi</i>/2 through <i>pi</i>/2.
+   * Returns the arc sine of a value; the returned angle is in the range -<i>pi</i>/2 through <i>pi</i>/2.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or its absolute value is greater than
-   * {@code 1}, then the result is {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is {@code NaN} or its absolute value is greater than {@code 1}, then the result is {@code NaN}.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc sine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc sine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal asin(final BigDecimal a, final MathContext mc) {
@@ -240,22 +220,18 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc sine of a value; the returned angle is in the range
-   * -<i>pi</i>/2 through <i>pi</i>/2.
+   * Returns the arc sine of a value; the returned angle is in the range -<i>pi</i>/2 through <i>pi</i>/2.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or its absolute value is greater than
-   * {@code 1}, then the result is {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is {@code NaN} or its absolute value is greater than {@code 1}, then the result is {@code NaN}.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc sine is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc sine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal asin(final BigInteger a, final MathContext mc) {
@@ -263,14 +239,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc tangent of a value; the returned angle is in the range
-   * -<i>pi</i>/2 through <i>pi</i>/2.
+   * Returns the arc tangent of a value; the returned angle is in the range -<i>pi</i>/2 through <i>pi</i>/2.
    * <p>
    * Special cases:
    * <ul>
    * <li>If the argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc tangent is to be returned.
@@ -281,21 +255,18 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc tangent of a value; the returned angle is in the range
-   * -<i>pi</i>/2 through <i>pi</i>/2.
+   * Returns the arc tangent of a value; the returned angle is in the range -<i>pi</i>/2 through <i>pi</i>/2.
    * <p>
    * Special cases:
    * <ul>
    * <li>If the argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc tangent is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc tangent of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal atan(final BigDecimal a, final MathContext mc) {
@@ -303,21 +274,18 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the arc tangent of a value; the returned angle is in the range
-   * -<i>pi</i>/2 through <i>pi</i>/2.
+   * Returns the arc tangent of a value; the returned angle is in the range -<i>pi</i>/2 through <i>pi</i>/2.
    * <p>
    * Special cases:
    * <ul>
    * <li>If the argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a The value, whose arc tangent is to be returned.
    * @param mc The {@link MathContext} used for the result.
    * @return The arc tangent of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal atan(final BigInteger a, final MathContext mc) {
@@ -325,124 +293,88 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the angle <i>theta</i> from the conversion of rectangular
-   * coordinates ({@code x}, {@code y}) to polar coordinates (r, <i>theta</i>).
-   * This method computes the phase <i>theta</i> by computing an arc tangent of
-   * {@code y/x} in the range of -<i>pi</i> to <i>pi</i>.
+   * Returns the angle <i>theta</i> from the conversion of rectangular coordinates ({@code x}, {@code y}) to polar coordinates (r,
+   * <i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent of {@code y/x} in the range of
+   * -<i>pi</i> to <i>pi</i>.
    * <p>
    * Special cases:
    * <ul>
    * <li>If either argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the first argument is positive zero and the second argument is
-   * positive, or the first argument is positive and finite and the second
-   * argument is positive infinity, then the result is positive zero.</li>
-   * <li>If the first argument is negative zero and the second argument is
-   * positive, or the first argument is negative and finite and the second
-   * argument is positive infinity, then the result is negative zero.</li>
-   * <li>If the first argument is positive zero and the second argument is
-   * negative, or the first argument is positive and finite and the second
-   * argument is negative infinity, then the result is the {@code double} value
-   * closest to <i>pi</i>.</li>
-   * <li>If the first argument is negative zero and the second argument is
-   * negative, or the first argument is negative and finite and the second
-   * argument is negative infinity, then the result is the {@code double} value
-   * closest to -<i>pi</i>.</li>
-   * <li>If the first argument is positive and the second argument is positive
-   * zero or negative zero, or the first argument is positive infinity and the
-   * second argument is finite, then the result is the {@code double} value
-   * closest to <i>pi</i>/2.</li>
-   * <li>If the first argument is negative and the second argument is positive
-   * zero or negative zero, or the first argument is negative infinity and the
-   * second argument is finite, then the result is the {@code double} value
-   * closest to -<i>pi</i>/2.</li>
-   * <li>If both arguments are positive infinity, then the result is the
-   * {@code double} value closest to <i>pi</i>/4.</li>
-   * <li>If the first argument is positive infinity and the second argument is
-   * negative infinity, then the result is the {@code double} value closest to
-   * 3*<i>pi</i>/4.</li>
-   * <li>If the first argument is negative infinity and the second argument is
-   * positive infinity, then the result is the {@code double} value closest to
-   * -<i>pi</i>/4.</li>
-   * <li>If both arguments are negative infinity, then the result is the
-   * {@code double} value closest to -3*<i>pi</i>/4.
+   * <li>If the first argument is positive zero and the second argument is positive, or the first argument is positive and finite
+   * and the second argument is positive infinity, then the result is positive zero.</li>
+   * <li>If the first argument is negative zero and the second argument is positive, or the first argument is negative and finite
+   * and the second argument is positive infinity, then the result is negative zero.</li>
+   * <li>If the first argument is positive zero and the second argument is negative, or the first argument is positive and finite
+   * and the second argument is negative infinity, then the result is the {@code double} value closest to <i>pi</i>.</li>
+   * <li>If the first argument is negative zero and the second argument is negative, or the first argument is negative and finite
+   * and the second argument is negative infinity, then the result is the {@code double} value closest to -<i>pi</i>.</li>
+   * <li>If the first argument is positive and the second argument is positive zero or negative zero, or the first argument is
+   * positive infinity and the second argument is finite, then the result is the {@code double} value closest to <i>pi</i>/2.</li>
+   * <li>If the first argument is negative and the second argument is positive zero or negative zero, or the first argument is
+   * negative infinity and the second argument is finite, then the result is the {@code double} value closest to -<i>pi</i>/2.</li>
+   * <li>If both arguments are positive infinity, then the result is the {@code double} value closest to <i>pi</i>/4.</li>
+   * <li>If the first argument is positive infinity and the second argument is negative infinity, then the result is the
+   * {@code double} value closest to 3*<i>pi</i>/4.</li>
+   * <li>If the first argument is negative infinity and the second argument is positive infinity, then the result is the
+   * {@code double} value closest to -<i>pi</i>/4.</li>
+   * <li>If both arguments are negative infinity, then the result is the {@code double} value closest to -3*<i>pi</i>/4.
    * </ul>
    *
    * @param y The ordinate coordinate.
    * @param x The abscissa coordinate.
-   * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in
-   *         polar coordinates that corresponds to the point (<i>x</i>,
-   *         <i>y</i>) in Cartesian coordinates.
+   * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in polar coordinates that corresponds to the point
+   *         (<i>x</i>, <i>y</i>) in Cartesian coordinates.
    */
   public static double atan2(final double y, final double x) {
     return StrictMath.atan2(y, x);
   }
 
   /**
-   * Returns the angle <i>theta</i> from the conversion of rectangular
-   * coordinates ({@code x}, {@code y}) to polar coordinates (r, <i>theta</i>).
-   * This method computes the phase <i>theta</i> by computing an arc tangent of
-   * {@code y/x} in the range of -<i>pi</i> to <i>pi</i>.
+   * Returns the angle <i>theta</i> from the conversion of rectangular coordinates ({@code x}, {@code y}) to polar coordinates (r,
+   * <i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent of {@code y/x} in the range of
+   * -<i>pi</i> to <i>pi</i>.
    * <p>
    * Special cases:
    * <ul>
    * <li>If either argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the first argument is positive zero and the second argument is
-   * positive, or the first argument is positive and finite and the second
-   * argument is positive infinity, then the result is positive zero.</li>
-   * <li>If the first argument is negative zero and the second argument is
-   * positive, or the first argument is negative and finite and the second
-   * argument is positive infinity, then the result is negative zero.</li>
-   * <li>If the first argument is positive zero and the second argument is
-   * negative, or the first argument is positive and finite and the second
-   * argument is negative infinity, then the result is the {@code double} value
-   * closest to <i>pi</i>.</li>
-   * <li>If the first argument is negative zero and the second argument is
-   * negative, or the first argument is negative and finite and the second
-   * argument is negative infinity, then the result is the {@code double} value
-   * closest to -<i>pi</i>.</li>
-   * <li>If the first argument is positive and the second argument is positive
-   * zero or negative zero, or the first argument is positive infinity and the
-   * second argument is finite, then the result is the {@code double} value
-   * closest to <i>pi</i>/2.</li>
-   * <li>If the first argument is negative and the second argument is positive
-   * zero or negative zero, or the first argument is negative infinity and the
-   * second argument is finite, then the result is the {@code double} value
-   * closest to -<i>pi</i>/2.</li>
-   * <li>If both arguments are positive infinity, then the result is the
-   * {@code double} value closest to <i>pi</i>/4.</li>
-   * <li>If the first argument is positive infinity and the second argument is
-   * negative infinity, then the result is the {@code double} value closest to
-   * 3*<i>pi</i>/4.</li>
-   * <li>If the first argument is negative infinity and the second argument is
-   * positive infinity, then the result is the {@code double} value closest to
-   * -<i>pi</i>/4.</li>
-   * <li>If both arguments are negative infinity, then the result is the
-   * {@code double} value closest to -3*<i>pi</i>/4.</li>
+   * <li>If the first argument is positive zero and the second argument is positive, or the first argument is positive and finite
+   * and the second argument is positive infinity, then the result is positive zero.</li>
+   * <li>If the first argument is negative zero and the second argument is positive, or the first argument is negative and finite
+   * and the second argument is positive infinity, then the result is negative zero.</li>
+   * <li>If the first argument is positive zero and the second argument is negative, or the first argument is positive and finite
+   * and the second argument is negative infinity, then the result is the {@code double} value closest to <i>pi</i>.</li>
+   * <li>If the first argument is negative zero and the second argument is negative, or the first argument is negative and finite
+   * and the second argument is negative infinity, then the result is the {@code double} value closest to -<i>pi</i>.</li>
+   * <li>If the first argument is positive and the second argument is positive zero or negative zero, or the first argument is
+   * positive infinity and the second argument is finite, then the result is the {@code double} value closest to <i>pi</i>/2.</li>
+   * <li>If the first argument is negative and the second argument is positive zero or negative zero, or the first argument is
+   * negative infinity and the second argument is finite, then the result is the {@code double} value closest to -<i>pi</i>/2.</li>
+   * <li>If both arguments are positive infinity, then the result is the {@code double} value closest to <i>pi</i>/4.</li>
+   * <li>If the first argument is positive infinity and the second argument is negative infinity, then the result is the
+   * {@code double} value closest to 3*<i>pi</i>/4.</li>
+   * <li>If the first argument is negative infinity and the second argument is positive infinity, then the result is the
+   * {@code double} value closest to -<i>pi</i>/4.</li>
+   * <li>If both arguments are negative infinity, then the result is the {@code double} value closest to -3*<i>pi</i>/4.</li>
    * </ul>
    *
    * @param y The ordinate coordinate.
    * @param x The abscissa coordinate.
    * @param mc The {@link MathContext} used for the result.
-   * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in
-   *         polar coordinates that corresponds to the point (<i>x</i>,
-   *         <i>y</i>) in Cartesian coordinates.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code y}, {@code x}, or {@code mc} is
-   *           null.
+   * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in polar coordinates that corresponds to the point
+   *         (<i>x</i>, <i>y</i>) in Cartesian coordinates.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code y}, {@code x}, or {@code mc} is null.
    */
   public static BigDecimal atan2(final BigDecimal y, final BigDecimal x, final MathContext mc) {
     return BigDecimalMath.atan2(assertNotNull(y), assertNotNull(x), assertNotNull(mc));
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code byte} value that
-   * is greater than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the smallest (closest to negative infinity) {@code byte} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) byte value that is
-   *         greater than or equal to the argument and is equal to a
+   * @return The smallest (closest to negative infinity) byte value that is greater than or equal to the argument and is equal to a
    *         mathematical integer.
    */
   public static byte ceil(final byte a) {
@@ -450,13 +382,11 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code short} value
-   * that is greater than or equal to the argument and is equal to a
-   * mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@code short} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) short value that is
-   *         greater than or equal to the argument and is equal to a
+   * @return The smallest (closest to negative infinity) short value that is greater than or equal to the argument and is equal to a
    *         mathematical integer.
    */
   public static short ceil(final short a) {
@@ -464,13 +394,11 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code int} value that
-   * is greater than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the smallest (closest to negative infinity) {@code int} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) int value that is
-   *         greater than or equal to the argument and is equal to a
+   * @return The smallest (closest to negative infinity) int value that is greater than or equal to the argument and is equal to a
    *         mathematical integer.
    */
   public static int ceil(final int a) {
@@ -478,13 +406,11 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code long} value that
-   * is greater than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the smallest (closest to negative infinity) {@code long} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) long value that is
-   *         greater than or equal to the argument and is equal to a
+   * @return The smallest (closest to negative infinity) long value that is greater than or equal to the argument and is equal to a
    *         mathematical integer.
    */
   public static long ceil(final long a) {
@@ -492,94 +418,78 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code double} value
-   * that is greater than or equal to the argument and is equal to a
-   * mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@code double} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.</li>
-   * <li>If the argument is {@code NaN} or an infinity or positive zero or
-   * negative zero, then the result is the same as the argument.</li>
-   * <li>If the argument value is less than zero but greater than -1.0, then the
-   * result is negative zero.</li>
+   * <li>If the argument value is already equal to a mathematical integer, then the result is the same as the argument.</li>
+   * <li>If the argument is {@code NaN} or an infinity or positive zero or negative zero, then the result is the same as the
+   * argument.</li>
+   * <li>If the argument value is less than zero but greater than -1.0, then the result is negative zero.</li>
    * </ul>
-   * Note that the value of {@code StrictMath.ceil(x)} is exactly the value of
-   * {@code -StrictMath.floor(-x)}.
+   * Note that the value of {@code StrictMath.ceil(x)} is exactly the value of {@code -StrictMath.floor(-x)}.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) floating-point value
-   *         that is greater than or equal to the argument and is equal to a
-   *         mathematical integer.
+   * @return The smallest (closest to negative infinity) floating-point value that is greater than or equal to the argument and is
+   *         equal to a mathematical integer.
    */
   public static float ceil(final float a) {
     return (float)StrictMath.ceil(a);
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code double} value
-   * that is greater than or equal to the argument and is equal to a
-   * mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@code double} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.</li>
-   * <li>If the argument is {@code NaN} or an infinity or positive zero or
-   * negative zero, then the result is the same as the argument.</li>
-   * <li>If the argument value is less than zero but greater than -1.0, then the
-   * result is negative zero.</li>
+   * <li>If the argument value is already equal to a mathematical integer, then the result is the same as the argument.</li>
+   * <li>If the argument is {@code NaN} or an infinity or positive zero or negative zero, then the result is the same as the
+   * argument.</li>
+   * <li>If the argument value is less than zero but greater than -1.0, then the result is negative zero.</li>
    * </ul>
-   * Note that the value of {@code StrictMath.ceil(x)} is exactly the value of
-   * {@code -StrictMath.floor(-x)}.
+   * Note that the value of {@code StrictMath.ceil(x)} is exactly the value of {@code -StrictMath.floor(-x)}.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) floating-point value
-   *         that is greater than or equal to the argument and is equal to a
-   *         mathematical integer.
+   * @return The smallest (closest to negative infinity) floating-point value that is greater than or equal to the argument and is
+   *         equal to a mathematical integer.
    */
   public static double ceil(final double a) {
     return StrictMath.ceil(a);
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@link BigInteger}
-   * value that is greater than or equal to the argument and is equal to a
-   * mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@link BigInteger} value that is greater than or equal to the argument and
+   * is equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) BigInteger value that
-   *         is greater than or equal to the argument and is equal to a
-   *         mathematical integer.
+   * @return The smallest (closest to negative infinity) BigInteger value that is greater than or equal to the argument and is equal
+   *         to a mathematical integer.
    */
   public static BigInteger ceil(final BigInteger a) {
     return a;
   }
 
   /**
-   * Returns the {@link Decimal} set to the smallest value (closest to negative
-   * infinity) that is greater than or equal to the argument and is equal to a
-   * mathematical integer.
+   * Returns the {@link Decimal} set to the smallest value (closest to negative infinity) that is greater than or equal to the
+   * argument and is equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The {@link Decimal} set to the smallest value (closest to negative
-   *         infinity) that is greater than or equal to the argument and is
-   *         equal to a mathematical integer.
+   * @return The {@link Decimal} set to the smallest value (closest to negative infinity) that is greater than or equal to the
+   *         argument and is equal to a mathematical integer.
    */
   public static Decimal ceil(final Decimal a) {
     return a.setScale((short)0, RoundingMode.CEILING);
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@link BigDecimal}
-   * value that is greater than or equal to the argument and is equal to a
-   * mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@link BigDecimal} value that is greater than or equal to the argument and
+   * is equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The smallest (closest to negative infinity) BigDecimal value that
-   *         is greater than or equal to the argument and is equal to a
-   *         mathematical integer.
+   * @return The smallest (closest to negative infinity) BigDecimal value that is greater than or equal to the argument and is equal
+   *         to a mathematical integer.
    */
   public static BigDecimal ceil(final BigDecimal a) {
     return a.setScale(0, RoundingMode.CEILING);
@@ -590,8 +500,7 @@ public final class SafeMath {
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or an infinity, then the result is
-   * {@code NaN}.</li>
+   * <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.</li>
    * </ul>
    *
    * @param a An angle, in radians.
@@ -607,8 +516,7 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The cosine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal cos(final BigDecimal a, final MathContext mc) {
@@ -621,8 +529,7 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The cosine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal cos(final BigInteger a, final MathContext mc) {
@@ -630,38 +537,31 @@ public final class SafeMath {
   }
 
   /**
-   * Returns Euler's number <i>e</i> raised to the power of a {@code double}
-   * value.
+   * Returns Euler's number <i>e</i> raised to the power of a {@code double} value.
    * <p>
    * Special cases:
    * <ul>
    * <li>If the argument is {@code NaN}, the result is {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is negative infinity, then the result is positive
-   * zero.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is negative infinity, then the result is positive zero.</li>
    * </ul>
    *
    * @param a The exponent to raise <i>e</i> to.
-   * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base
-   *         of the natural logarithms.
+   * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base of the natural logarithms.
    */
   public static double exp(final double a) {
     return StrictMath.exp(a);
   }
 
   /**
-   * Returns Euler's number <i>e</i> raised to the power of a {@link BigDecimal}
-   * value.
+   * Returns Euler's number <i>e</i> raised to the power of a {@link BigDecimal} value.
    * <p>
    * Special cases:
    *
    * @param a The exponent to raise <i>e</i> to.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base
-   *         of the natural logarithms.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base of the natural logarithms.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal exp(final BigDecimal a, final MathContext mc) {
@@ -669,17 +569,14 @@ public final class SafeMath {
   }
 
   /**
-   * Returns Euler's number <i>e</i> raised to the power of a {@link BigInteger}
-   * value.
+   * Returns Euler's number <i>e</i> raised to the power of a {@link BigInteger} value.
    * <p>
    * Special cases:
    *
    * @param a The exponent to raise <i>e</i> to.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base
-   *         of the natural logarithms.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base of the natural logarithms.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal exp(final BigInteger a, final MathContext mc) {
@@ -689,16 +586,14 @@ public final class SafeMath {
   /**
    * Returns a {@code byte} valued factorial of {@code n}.
    *
-   * @implNote This function is designed to allow to overflow for the purpose of
-   *           efficiency. If the result is expected to be greater than
-   *           {@link Byte#MAX_VALUE}, then use {@link #factorial(short)}.
+   * @implNote This function is designed to allow to overflow for the purpose of efficiency. If the result is expected to be greater
+   *           than {@link Byte#MAX_VALUE}, then use {@link #factorial(short)}.
    * @param n The number of which to calculate the factorial.
-   * @return A {@code byte} valued factorial of {@code n}, or {@code null} if
-   *         {@code n} is negative.
+   * @return A {@code byte} valued factorial of {@code n}, or {@code null} if {@code n} is negative.
    */
   public static byte factorial(final byte n) {
     byte r = 1;
-    for (byte i = 1; i <= n; ++i)
+    for (byte i = 1; i <= n; ++i) // [N]
       r *= i;
 
     return r;
@@ -707,16 +602,14 @@ public final class SafeMath {
   /**
    * Returns a {@code short} valued factorial of {@code n}.
    *
-   * @implNote This function is designed to allow to overflow for the purpose of
-   *           efficiency. If the result is expected to be greater than
-   *           {@link Short#MAX_VALUE}, then use {@link #factorial(int)}.
+   * @implNote This function is designed to allow to overflow for the purpose of efficiency. If the result is expected to be greater
+   *           than {@link Short#MAX_VALUE}, then use {@link #factorial(int)}.
    * @param n The number of which to calculate the factorial.
-   * @return A {@code short} valued factorial of {@code n}, or {@code null} if
-   *         {@code n} is negative.
+   * @return A {@code short} valued factorial of {@code n}, or {@code null} if {@code n} is negative.
    */
   public static short factorial(final short n) {
     short r = 1;
-    for (short i = 1; i <= n; ++i)
+    for (short i = 1; i <= n; ++i) // [N]
       r *= i;
 
     return r;
@@ -725,16 +618,14 @@ public final class SafeMath {
   /**
    * Returns a {@code int} valued factorial of {@code n}.
    *
-   * @implNote This function is designed to allow to overflow for the purpose of
-   *           efficiency. If the result is expected to be greater than
-   *           {@link Integer#MAX_VALUE}, then use {@link #factorial(long)}.
+   * @implNote This function is designed to allow to overflow for the purpose of efficiency. If the result is expected to be greater
+   *           than {@link Integer#MAX_VALUE}, then use {@link #factorial(long)}.
    * @param n The number of which to calculate the factorial.
-   * @return A {@code int} valued factorial of {@code n}, or {@code null} if
-   *         {@code n} is negative.
+   * @return A {@code int} valued factorial of {@code n}, or {@code null} if {@code n} is negative.
    */
   public static int factorial(final int n) {
     int r = 1;
-    for (int i = 1; i <= n; ++i)
+    for (int i = 1; i <= n; ++i) // [N]
       r *= i;
 
     return r;
@@ -743,16 +634,14 @@ public final class SafeMath {
   /**
    * Returns a {@code long} valued factorial of {@code n}.
    *
-   * @implNote This function is designed to allow to overflow for the purpose of
-   *           efficiency. If the result is expected to be greater than
-   *           {@link Long#MAX_VALUE}, then use {@link #factorial(BigInt)}.
+   * @implNote This function is designed to allow to overflow for the purpose of efficiency. If the result is expected to be greater
+   *           than {@link Long#MAX_VALUE}, then use {@link #factorial(BigInt)}.
    * @param n The number of which to calculate the factorial.
-   * @return A {@code long} valued factorial of {@code n}, or {@code null} if
-   *         {@code n} is negative.
+   * @return A {@code long} valued factorial of {@code n}, or {@code null} if {@code n} is negative.
    */
   public static long factorial(final long n) {
     long r = 1;
-    for (long i = 1; i <= n; ++i)
+    for (long i = 1; i <= n; ++i) // [N]
       r *= i;
 
     return r;
@@ -762,8 +651,7 @@ public final class SafeMath {
    * Returns a {@link BigInt} valued factorial of {@code n}.
    *
    * @param n The number of which to calculate the factorial.
-   * @return A {@link BigInt} valued factorial of {@code n}, or {@code null} if
-   *         {@code n} is negative.
+   * @return A {@link BigInt} valued factorial of {@code n}, or {@code null} if {@code n} is negative.
    */
   public static BigInt factorial(final BigInt n) {
     if (n.signum() < 0)
@@ -773,255 +661,208 @@ public final class SafeMath {
       return n;
 
     n.assign(1);
-    for (int i = 1; i <= n.intValue(); ++i)
+    for (int i = 1, i$ = n.intValue(); i <= i$; ++i) // [N]
       n.mul(i);
 
     return n;
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code byte} value that
-   * is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@code byte} value that is less than or equal to the argument and is equal
+   * to a mathematical integer.
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) byte value that less
-   *         than or equal to the argument and is equal to a mathematical
-   *         integer.
+   * @return The largest (closest to positive infinity) byte value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static byte floor(final byte a) {
     return a;
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code short} value that
-   * is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@code short} value that is less than or equal to the argument and is equal
+   * to a mathematical integer.
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) short value that less
-   *         than or equal to the argument and is equal to a mathematical
-   *         integer.
+   * @return The largest (closest to positive infinity) short value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static short floor(final short a) {
     return a;
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code int} value that
-   * is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@code int} value that is less than or equal to the argument and is equal to
+   * a mathematical integer.
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) int value that less than
-   *         or equal to the argument and is equal to a mathematical integer.
+   * @return The largest (closest to positive infinity) int value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static int floor(final int a) {
     return a;
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code long} value that
-   * is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@code long} value that is less than or equal to the argument and is equal
+   * to a mathematical integer.
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) long value that less
-   *         than or equal to the argument and is equal to a mathematical
-   *         integer.
+   * @return The largest (closest to positive infinity) long value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static long floor(final long a) {
     return a;
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code double} value
-   * that is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@code double} value that is less than or equal to the argument and is equal
+   * to a mathematical integer.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.</li>
-   * <li>If the argument is {@code NaN} or an infinity or positive zero or
-   * negative zero, then the result is the same as the argument.</li>
+   * <li>If the argument value is already equal to a mathematical integer, then the result is the same as the argument.</li>
+   * <li>If the argument is {@code NaN} or an infinity or positive zero or negative zero, then the result is the same as the
+   * argument.</li>
    * </ul>
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) floating-point value
-   *         that less than or equal to the argument and is equal to a
-   *         mathematical integer.
+   * @return The largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to
+   *         a mathematical integer.
    */
   public static float floor(final float a) {
     return (float)StrictMath.floor(a);
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code double} value
-   * that is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@code double} value that is less than or equal to the argument and is equal
+   * to a mathematical integer.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument value is already equal to a mathematical integer, then
-   * the result is the same as the argument.</li>
-   * <li>If the argument is {@code NaN} or an infinity or positive zero or
-   * negative zero, then the result is the same as the argument.</li>
+   * <li>If the argument value is already equal to a mathematical integer, then the result is the same as the argument.</li>
+   * <li>If the argument is {@code NaN} or an infinity or positive zero or negative zero, then the result is the same as the
+   * argument.</li>
    * </ul>
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) floating-point value
-   *         that less than or equal to the argument and is equal to a
-   *         mathematical integer.
+   * @return The largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to
+   *         a mathematical integer.
    */
   public static double floor(final double a) {
     return StrictMath.floor(a);
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the largest value (closest to
-   * positive infinity) that is less than or equal to the argument and is equal
-   * to a mathematical integer.
+   * Returns the provided {@link Decimal} set to the largest value (closest to positive infinity) that is less than or equal to the
+   * argument and is equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The provided {@link Decimal} set to the largest value (closest to
-   *         positive infinity) that is less than or equal to the argument and
-   *         is equal to a mathematical integer.
+   * @return The provided {@link Decimal} set to the largest value (closest to positive infinity) that is less than or equal to the
+   *         argument and is equal to a mathematical integer.
    */
   public static Decimal floor(final Decimal a) {
     return a.setScale((short)0, RoundingMode.FLOOR);
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@link BigDecimal} value
-   * that is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@link BigDecimal} value that is less than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) BigDecimal value that
-   *         less than or equal to the argument and is equal to a mathematical
-   *         integer.
+   * @return The largest (closest to positive infinity) BigDecimal value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static BigDecimal floor(final BigDecimal a) {
     return a.setScale(0, RoundingMode.FLOOR);
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@link BigInteger} value
-   * that is less than or equal to the argument and is equal to a mathematical
-   * integer.
+   * Returns the largest (closest to positive infinity) {@link BigInteger} value that is less than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) BigInteger value that
-   *         less than or equal to the argument and is equal to a mathematical
-   *         integer.
+   * @return The largest (closest to positive infinity) BigInteger value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static BigInteger floor(final BigInteger a) {
     return a;
   }
 
   /**
-   * Returns the value of the first argument raised to the power of the second
-   * argument.
+   * Returns the value of the first argument raised to the power of the second argument.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the second argument is positive or negative zero, then the result is
-   * 1.0.</li>
-   * <li>If the second argument is {@code 1.0}, then the result is the same as
-   * the first argument.</li>
-   * <li>If the second argument is {@code NaN}, then the result is
+   * <li>If the second argument is positive or negative zero, then the result is 1.0.</li>
+   * <li>If the second argument is {@code 1.0}, then the result is the same as the first argument.</li>
+   * <li>If the second argument is {@code NaN}, then the result is {@code NaN}.</li>
+   * <li>If the first argument is {@code NaN} and the second argument is nonzero, then the result is {@code NaN}.</li>
+   * <li>If
+   * <ul>
+   * <li>the absolute value of the first argument is greater than {@code 1} and the second argument is positive infinity, or</li>
+   * <li>the absolute value of the first argument is less than {@code 1} and the second argument is negative infinity,</li>
+   * </ul>
+   * then the result is positive infinity.</li>
+   * <li>If
+   * <ul>
+   * <li>the absolute value of the first argument is greater than {@code 1} and the second argument is negative infinity, or</li>
+   * <li>the absolute value of the first argument is less than {@code 1} and the second argument is positive infinity,</li>
+   * </ul>
+   * then the result is positive zero.</li>
+   * <li>If the absolute value of the first argument equals {@code 1} and the second argument is infinite, then the result is
    * {@code NaN}.</li>
-   * <li>If the first argument is {@code NaN} and the second argument is
-   * nonzero, then the result is {@code NaN}.</li>
    * <li>If
    * <ul>
-   * <li>the absolute value of the first argument is greater than {@code 1} and
-   * the second argument is positive infinity, or</li>
-   * <li>the absolute value of the first argument is less than {@code 1} and the
-   * second argument is negative infinity,</li>
+   * <li>the first argument is positive zero and the second argument is greater than zero, or</li>
+   * <li>the first argument is positive infinity and the second argument is less than zero,</li>
+   * </ul>
+   * then the result is positive zero.</li>
+   * <li>If
+   * <ul>
+   * <li>the first argument is positive zero and the second argument is less than zero, or</li>
+   * <li>the first argument is positive infinity and the second argument is greater than zero,</li>
    * </ul>
    * then the result is positive infinity.</li>
    * <li>If
    * <ul>
-   * <li>the absolute value of the first argument is greater than {@code 1} and
-   * the second argument is negative infinity, or</li>
-   * <li>the absolute value of the first argument is less than {@code 1} and the
-   * second argument is positive infinity,</li>
-   * </ul>
-   * then the result is positive zero.</li>
-   * <li>If the absolute value of the first argument equals {@code 1} and the
-   * second argument is infinite, then the result is {@code NaN}.</li>
-   * <li>If
-   * <ul>
-   * <li>the first argument is positive zero and the second argument is greater
-   * than zero, or</li>
-   * <li>the first argument is positive infinity and the second argument is less
-   * than zero,</li>
+   * <li>the first argument is negative zero and the second argument is greater than zero but not a finite odd integer, or</li>
+   * <li>the first argument is negative infinity and the second argument is less than zero but not a finite odd integer,</li>
    * </ul>
    * then the result is positive zero.</li>
    * <li>If
    * <ul>
-   * <li>the first argument is positive zero and the second argument is less
-   * than zero, or</li>
-   * <li>the first argument is positive infinity and the second argument is
-   * greater than zero,</li>
-   * </ul>
-   * then the result is positive infinity.</li>
-   * <li>If
-   * <ul>
-   * <li>the first argument is negative zero and the second argument is greater
-   * than zero but not a finite odd integer, or</li>
-   * <li>the first argument is negative infinity and the second argument is less
-   * than zero but not a finite odd integer,</li>
-   * </ul>
-   * then the result is positive zero.</li>
-   * <li>If
-   * <ul>
-   * <li>the first argument is negative zero and the second argument is a
-   * positive finite odd integer, or</li>
-   * <li>the first argument is negative infinity and the second argument is a
-   * negative finite odd integer,</li>
+   * <li>the first argument is negative zero and the second argument is a positive finite odd integer, or</li>
+   * <li>the first argument is negative infinity and the second argument is a negative finite odd integer,</li>
    * </ul>
    * then the result is negative zero.</li>
    * <li>If
    * <ul>
-   * <li>the first argument is negative zero and the second argument is less
-   * than zero but not a finite odd integer, or</li>
-   * <li>the first argument is negative infinity and the second argument is
-   * greater than zero but not a finite odd integer,</li>
+   * <li>the first argument is negative zero and the second argument is less than zero but not a finite odd integer, or</li>
+   * <li>the first argument is negative infinity and the second argument is greater than zero but not a finite odd integer,</li>
    * </ul>
    * then the result is positive infinity.</li>
    * <li>If
    * <ul>
-   * <li>the first argument is negative zero and the second argument is a
-   * negative finite odd integer, or</li>
-   * <li>the first argument is negative infinity and the second argument is a
-   * positive finite odd integer,</li>
+   * <li>the first argument is negative zero and the second argument is a negative finite odd integer, or</li>
+   * <li>the first argument is negative infinity and the second argument is a positive finite odd integer,</li>
    * </ul>
    * then the result is negative infinity.</li>
    * <li>If the first argument is finite and less than zero
    * <ul>
-   * <li>if the second argument is a finite even integer, the result is equal to
-   * the result of raising the absolute value of the first argument to the power
-   * of the second argument</li>
-   * <li>if the second argument is a finite odd integer, the result is equal to
-   * the negative of the result of raising the absolute value of the first
-   * argument to the power of the second argument</li>
-   * <li>if the second argument is finite and not an integer, then the result is
-   * {@code NaN}.</li>
+   * <li>if the second argument is a finite even integer, the result is equal to the result of raising the absolute value of the
+   * first argument to the power of the second argument</li>
+   * <li>if the second argument is a finite odd integer, the result is equal to the negative of the result of raising the absolute
+   * value of the first argument to the power of the second argument</li>
+   * <li>if the second argument is finite and not an integer, then the result is {@code NaN}.</li>
    * </ul>
-   * <li>If both arguments are integers, then the result is exactly equal to the
-   * mathematical result of raising the first argument to the power of the
-   * second argument if that result can in fact be represented exactly as a
-   * {@code double} value.</li>
+   * <li>If both arguments are integers, then the result is exactly equal to the mathematical result of raising the first argument
+   * to the power of the second argument if that result can in fact be represented exactly as a {@code double} value.</li>
    * </ul>
    * <p>
-   * (In the foregoing descriptions, a floating-point value is considered to be
-   * an integer if and only if it is finite and a fixed point of the method
-   * {@link #ceil} or, equivalently, a fixed point of the method {@link #floor}.
-   * A value is a fixed point of a one-argument method if and only if the result
-   * of applying the method to the value is equal to the value.)
+   * (In the foregoing descriptions, a floating-point value is considered to be an integer if and only if it is finite and a fixed
+   * point of the method {@link #ceil} or, equivalently, a fixed point of the method {@link #floor}. A value is a fixed point of a
+   * one-argument method if and only if the result of applying the method to the value is equal to the value.)
    *
    * @param a The base.
    * @param b The exponent.
@@ -1032,109 +873,87 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the value of the first argument raised to the power of the second
-   * argument.
+   * Returns the value of the first argument raised to the power of the second argument.
    *
    * @param a The base.
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
-   * @throws ArithmeticException If {@code b} is negative and the result is
-   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
-   *           or {@code mc.precision == 0} and the quotient has a
-   *           non-terminating decimal expansion.
-   * @throws ArithmeticException If the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
-   *           operation would require rounding.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or
-   *           {@link MathContext} is null.
+   * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
+   *           expansion.
+   * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
+   *           require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigDecimal b, final MathContext mc) {
     return BigDecimalMath.pow(assertNotNull(a), assertNotNull(b), assertNotNull(mc));
   }
 
   /**
-   * Returns the value of the first argument raised to the power of the second
-   * argument.
+   * Returns the value of the first argument raised to the power of the second argument.
    *
    * @param a The base.
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
-   * @throws ArithmeticException If {@code b} is negative and the result is
-   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
-   *           or {@code mc.precision == 0} and the quotient has a
-   *           non-terminating decimal expansion.
-   * @throws ArithmeticException If the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
-   *           operation would require rounding.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc}is
-   *           null.
+   * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
+   *           expansion.
+   * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
+   *           require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc}is null.
    */
   public static BigDecimal pow(final BigInteger a, final BigDecimal b, final MathContext mc) {
     return BigDecimalMath.pow(new BigDecimal(a), assertNotNull(b), assertNotNull(mc));
   }
 
   /**
-   * Returns the value of the first argument raised to the power of the second
-   * argument.
+   * Returns the value of the first argument raised to the power of the second argument.
    *
    * @param a The base.
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
-   * @throws ArithmeticException If {@code b} is negative and the result is
-   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
-   *           or {@code mc.precision == 0} and the quotient has a
-   *           non-terminating decimal expansion.
-   * @throws ArithmeticException If the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
-   *           operation would require rounding.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or
-   *           {@link MathContext} is null.
+   * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
+   *           expansion.
+   * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
+   *           require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@link MathContext} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigInteger b, final MathContext mc) {
     return BigDecimalMath.pow(assertNotNull(a), new BigDecimal(b), assertNotNull(mc));
   }
 
   /**
-   * Returns the value of the first argument raised to the power of the second
-   * argument.
+   * Returns the value of the first argument raised to the power of the second argument.
    *
    * @param a The base.
    * @param b The exponent.
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
-   * @throws ArithmeticException If {@code b} is negative and the result is
-   *           inexact but the rounding mode is {@link RoundingMode#UNNECESSARY}
-   *           or {@code mc.precision == 0} and the quotient has a
-   *           non-terminating decimal expansion.
-   * @throws ArithmeticException If the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal}
-   *           operation would require rounding.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is
-   *           null.
+   * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
+   *           expansion.
+   * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
+   *           require rounding.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigInteger pow(final BigInteger a, final BigInteger b, final MathContext mc) {
     return BigDecimalMath.pow(new BigDecimal(assertNotNull(a)), new BigDecimal(assertNotNull(b)), assertNotNull(mc)).toBigInteger();
   }
 
   /**
-   * Returns the rounded value of the specified {@code float} based on the
-   * rounding policy of the provided {@link RoundingMode}.
+   * Returns the rounded value of the specified {@code float} based on the rounding policy of the provided {@link RoundingMode}.
    *
    * @param a A floating-point value to be rounded to the scaled {@code float}.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@code float} based on the
-   *         rounding policy of the provided {@link RoundingMode}.
+   * @return The rounded value of the specified {@code float} based on the rounding policy of the provided {@link RoundingMode}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static float round(float a, final RoundingMode rm) {
@@ -1188,16 +1007,14 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code float} based on the
-   * rounding policy of the provided {@link RoundingMode} with ties at the given
-   * {@code scale}.
+   * Returns the rounded value of the specified {@code float} based on the rounding policy of the provided {@link RoundingMode} with
+   * ties at the given {@code scale}.
    *
    * @param a A floating-point value to be rounded to the scaled float.
    * @param scale The number of digits after the decimal at which to round.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@code float} based on the
-   *         rounding policy of the provided {@link RoundingMode} with ties at
-   *         the given {@code scale}.
+   * @return The rounded value of the specified {@code float} based on the rounding policy of the provided {@link RoundingMode} with
+   *         ties at the given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static float round(final float a, final int scale, final RoundingMode rm) {
@@ -1212,9 +1029,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code float} based on the
-   * rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
-   * {@code scale}.
+   * Returns the rounded value of the specified {@code float} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
+   * at the given {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -1224,9 +1040,8 @@ public final class SafeMath {
    *
    * @param a A floating-point value to be rounded to the scaled float.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The rounded value of the specified {@code float} based on the
-   *         rounding policy of {@link RoundingMode#HALF_UP} with ties at the
-   *         given {@code scale}.
+   * @return The rounded value of the specified {@code float} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
+   *         at the given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static float round(final float a, final int scale) {
@@ -1234,13 +1049,11 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code double} based on the
-   * rounding policy of the provided {@link RoundingMode}.
+   * Returns the rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}.
    *
    * @param a A floating-point value to be rounded to the scaled {@code double}.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@code double} based on the
-   *         rounding policy of the provided {@link RoundingMode}.
+   * @return The rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static double round(double a, final RoundingMode rm) {
@@ -1294,16 +1107,14 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code double} based on the
-   * rounding policy of the provided {@link RoundingMode} with ties at the given
-   * {@code scale}.
+   * Returns the rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}
+   * with ties at the given {@code scale}.
    *
    * @param a A floating-point value to be rounded to the scaled double.
    * @param scale The number of digits after the decimal at which to round.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@code double} based on the
-   *         rounding policy of the provided {@link RoundingMode} with ties at
-   *         the given {@code scale}.
+   * @return The rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}
+   *         with ties at the given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static double round(final double a, final int scale, final RoundingMode rm) {
@@ -1318,9 +1129,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code double} based on the
-   * rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
-   * {@code scale}.
+   * Returns the rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with
+   * ties at the given {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -1330,9 +1140,8 @@ public final class SafeMath {
    *
    * @param a A floating-point value to be rounded to the scaled double.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The rounded value of the specified {@code double} based on the
-   *         rounding policy of {@link RoundingMode#HALF_UP} with ties at the
-   *         given {@code scale}.
+   * @return The rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with
+   *         ties at the given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static double round(final double a, final int scale) {
@@ -1340,13 +1149,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@code byte} to the argument, with ties after
-   * {@code scale} digits after the decimal rounding to positive infinity.
+   * Returns the closest {@code byte} to the argument, with ties after {@code scale} digits after the decimal rounding to positive
+   * infinity.
    *
    * @param a A byte value to be rounded to the scaled byte.
    * @param scale Ignored for byte type.
-   * @return The value of the argument rounded to the nearest {@code byte} value
-   *         at {@code scale}.
+   * @return The value of the argument rounded to the nearest {@code byte} value at {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static byte round(final byte a, final int scale) {
@@ -1354,13 +1162,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@code short} to the argument, with ties after
-   * {@code scale} digits after the decimal rounding to positive infinity.
+   * Returns the closest {@code short} to the argument, with ties after {@code scale} digits after the decimal rounding to positive
+   * infinity.
    *
    * @param a A short value to be rounded to the scaled short.
    * @param scale Ignored for short type.
-   * @return The value of the argument rounded to the nearest {@code short}
-   *         value at {@code scale}.
+   * @return The value of the argument rounded to the nearest {@code short} value at {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static short round(final short a, final int scale) {
@@ -1368,13 +1175,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@code int} to the argument, with ties after
-   * {@code scale} digits after the decimal rounding to positive infinity.
+   * Returns the closest {@code int} to the argument, with ties after {@code scale} digits after the decimal rounding to positive
+   * infinity.
    *
    * @param a A int value to be rounded to the scaled int.
    * @param scale Ignored for int type.
-   * @return The value of the argument rounded to the nearest {@code int} value
-   *         at {@code scale}.
+   * @return The value of the argument rounded to the nearest {@code int} value at {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static int round(final int a, final int scale) {
@@ -1382,13 +1188,12 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@code long} to the argument, with ties after
-   * {@code scale} digits after the decimal rounding to positive infinity.
+   * Returns the closest {@code long} to the argument, with ties after {@code scale} digits after the decimal rounding to positive
+   * infinity.
    *
    * @param a A long value to be rounded to the scaled long.
    * @param scale Ignored for long type.
-   * @return The value of the argument rounded to the nearest {@code long} value
-   *         at {@code scale}.
+   * @return The value of the argument rounded to the nearest {@code long} value at {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static long round(final long a, final int scale) {
@@ -1396,16 +1201,14 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@link Decimal} based on the
-   * rounding policy of the provided {@link RoundingMode} with ties at the given
-   * {@code scale}.
+   * Returns the rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode}
+   * with ties at the given {@code scale}.
    *
    * @param a The {@link Decimal} value to be rounded.
    * @param scale The number of digits after the decimal at which to round.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@link Decimal} based on the
-   *         rounding policy of the provided {@link RoundingMode} with ties at
-   *         the given {@code scale}.
+   * @return The rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode}
+   *         with ties at the given {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static Decimal round(final Decimal a, final short scale, final RoundingMode rm) {
@@ -1416,8 +1219,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} based on the rounding policy of
-   * {@link RoundingMode#HALF_UP} with ties at the given {@code scale}.
+   * Returns the provided {@link Decimal} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
+   * {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -1427,28 +1230,24 @@ public final class SafeMath {
    *
    * @param a The {@link Decimal} value to be rounded.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The provided {@link Decimal} based on the rounding policy of
-   *         {@link RoundingMode#HALF_UP} with ties at the given {@code scale}.
-   * @throws IllegalArgumentException If {@code a} is null, or if scale is
-   *           negative.
+   * @return The provided {@link Decimal} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
+   *         {@code scale}.
+   * @throws IllegalArgumentException If {@code a} is null, or if scale is negative.
    */
   public static Decimal round(final Decimal a, final short scale) {
     return round(a, scale, RoundingMode.HALF_UP);
   }
 
   /**
-   * Returns the rounded value of the specified {@link BigDecimal} based on the
-   * rounding policy of the provided {@link RoundingMode} with ties at the given
-   * {@code scale}.
+   * Returns the rounded value of the specified {@link BigDecimal} based on the rounding policy of the provided {@link RoundingMode}
+   * with ties at the given {@code scale}.
    *
    * @param a The {@link BigDecimal} value to be rounded.
    * @param scale The number of digits after the decimal at which to round.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@link BigDecimal} based on the
-   *         rounding policy of the provided {@link RoundingMode} with ties at
-   *         the given {@code scale}.
-   * @throws IllegalArgumentException If {@code a} is null, or if scale is
-   *           negative.
+   * @return The rounded value of the specified {@link BigDecimal} based on the rounding policy of the provided {@link RoundingMode}
+   *         with ties at the given {@code scale}.
+   * @throws IllegalArgumentException If {@code a} is null, or if scale is negative.
    */
   public static BigDecimal round(final BigDecimal a, final int scale, final RoundingMode rm) {
     if (scale < 0)
@@ -1458,31 +1257,26 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@link BigDecimal} to the argument, based on the
-   * rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
-   * {@code scale}.
+   * Returns the closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
+   * at the given {@code scale}.
    *
-   * @param a A {@link BigDecimal} value to be rounded to the scaled
-   *          {@link BigDecimal}.
+   * @param a A {@link BigDecimal} value to be rounded to the scaled {@link BigDecimal}.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The closest {@link BigDecimal} to the argument, based on the
-   *         rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
-   *         {@code scale}.
-   * @throws IllegalArgumentException If {@code a} is null, or if scale is
-   *           negative.
+   * @return The closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
+   *         at the given {@code scale}.
+   * @throws IllegalArgumentException If {@code a} is null, or if scale is negative.
    */
   public static BigDecimal round(final BigDecimal a, final int scale) {
     return round(a, scale, RoundingMode.HALF_UP);
   }
 
   /**
-   * Returns the closest {@link BigInteger} to the argument, with ties after
-   * {@code scale} digits after the decimal rounding to positive infinity.
+   * Returns the closest {@link BigInteger} to the argument, with ties after {@code scale} digits after the decimal rounding to
+   * positive infinity.
    *
    * @param a A BigInteger value to be rounded to the scaled BigInteger.
    * @param scale Ignored for BigInteger type.
-   * @return The value of the argument rounded to the nearest {@link BigInteger}
-   *         value at {@code scale}.
+   * @return The value of the argument rounded to the nearest {@link BigInteger} value at {@code scale}.
    * @throws IllegalArgumentException If scale is negative.
    */
   public static BigInteger round(final BigInteger a, final int scale) {
@@ -1493,9 +1287,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument; zero if the argument is zero,
-   * 1 if the argument is greater than zero, -1 if the argument is less than
-   * zero.
+   * Returns the signum function of the argument; zero if the argument is zero, 1 if the argument is greater than zero, -1 if the
+   * argument is less than zero.
    *
    * @param a The byte value whose signum is to be returned
    * @return The signum function of the argument.
@@ -1505,9 +1298,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument; zero if the argument is zero,
-   * 1 if the argument is greater than zero, -1 if the argument is less than
-   * zero.
+   * Returns the signum function of the argument; zero if the argument is zero, 1 if the argument is greater than zero, -1 if the
+   * argument is less than zero.
    *
    * @param a The short value whose signum is to be returned
    * @return The signum function of the argument.
@@ -1517,9 +1309,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument; zero if the argument is zero,
-   * 1 if the argument is greater than zero, -1 if the argument is less than
-   * zero.
+   * Returns the signum function of the argument; zero if the argument is zero, 1 if the argument is greater than zero, -1 if the
+   * argument is less than zero.
    *
    * @param a The int value whose signum is to be returned.
    * @return The signum function of the argument.
@@ -1529,9 +1320,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument; zero if the argument is zero,
-   * 1 if the argument is greater than zero, -1 if the argument is less than
-   * zero.
+   * Returns the signum function of the argument; zero if the argument is zero, 1 if the argument is greater than zero, -1 if the
+   * argument is less than zero.
    *
    * @param a The long value whose signum is to be returned
    * @return The signum function of the argument.
@@ -1541,9 +1331,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument; zero if the argument is zero,
-   * 1 if the argument is greater than zero, -1 if the argument is less than
-   * zero.
+   * Returns the signum function of the argument; zero if the argument is zero, 1 if the argument is greater than zero, -1 if the
+   * argument is less than zero.
    *
    * @param a The floating-point value whose signum is to be returned
    * @return The signum function of the argument.
@@ -1553,9 +1342,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the signum function of the argument; zero if the argument is zero,
-   * 1 if the argument is greater than zero, -1 if the argument is less than
-   * zero.
+   * Returns the signum function of the argument; zero if the argument is zero, 1 if the argument is greater than zero, -1 if the
+   * argument is less than zero.
    *
    * @param a The floating-point value whose signum is to be returned
    * @return The signum function of the argument.
@@ -1589,10 +1377,8 @@ public final class SafeMath {
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or an infinity, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a An angle, in radians.
@@ -1608,8 +1394,7 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The sine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sin(final BigDecimal a, final MathContext mc) {
@@ -1622,8 +1407,7 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The sine of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sin(final BigInteger a, final MathContext mc) {
@@ -1631,20 +1415,15 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the correctly rounded positive square root of a {@code double}
-   * value.
+   * Returns the correctly rounded positive square root of a {@code double} value.
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * the same as the argument.</li>
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is the same as the argument.</li>
    * </ul>
-   * Otherwise, the result is the {@code double} value closest to the true
-   * mathematical square root of the argument value.
+   * Otherwise, the result is the {@code double} value closest to the true mathematical square root of the argument value.
    *
    * @param a The value.
    * @return The positive square root of {@code a}.
@@ -1654,42 +1433,38 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the correctly rounded positive square root of a {@link BigDecimal}
-   * value.
+   * Returns the correctly rounded positive square root of a {@link BigDecimal} value.
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
    * @return The positive square root of {@code a}.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sqrt(final BigDecimal a, final MathContext mc) {
+    assertNotNull(a);
+    assertNotNull(mc);
     return BigDecimalMath.sqrt(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
-   * Returns the correctly rounded positive square root of a {@link BigInteger}
-   * value.
+   * Returns the correctly rounded positive square root of a {@link BigInteger} value.
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
    * @return The positive square root of {@code a}.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sqrt(final BigInteger a, final MathContext mc) {
+    assertNotNull(a);
+    assertNotNull(mc);
     return sqrt(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
-   * Converts an angle measured in radians to an approximately equivalent angle
-   * measured in degrees. The conversion from radians to degrees is generally
-   * inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to
-   * exactly equal {@code 0.0}.
+   * Converts an angle measured in radians to an approximately equivalent angle measured in degrees. The conversion from radians to
+   * degrees is generally inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to exactly equal {@code 0.0}.
    *
    * @param a The angle, in radians.
    * @return The angle, converted to degrees.
@@ -1699,47 +1474,42 @@ public final class SafeMath {
   }
 
   /**
-   * Converts an angle measured in radians to an approximately equivalent angle
-   * measured in degrees. The conversion from radians to degrees is generally
-   * inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to
-   * exactly equal {@code 0.0}.
+   * Converts an angle measured in radians to an approximately equivalent angle measured in degrees. The conversion from radians to
+   * degrees is generally inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to exactly equal {@code 0.0}.
    *
    * @param a The angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to degrees.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toDegrees(final BigDecimal a, final MathContext mc) {
+    assertNotNull(a);
+    assertNotNull(mc);
     // FIXME: 180 / PI should be cached based on mc
     return a.multiply(BigDecimal.valueOf(180), mc).divide(BigDecimals.PI, mc);
   }
 
   /**
-   * Converts an angle measured in radians to an approximately equivalent angle
-   * measured in degrees. The conversion from radians to degrees is generally
-   * inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to
-   * exactly equal {@code 0.0}.
+   * Converts an angle measured in radians to an approximately equivalent angle measured in degrees. The conversion from radians to
+   * degrees is generally inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to exactly equal {@code 0.0}.
    *
    * @param a The angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to degrees.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toDegrees(final BigInteger a, final MathContext mc) {
+    assertNotNull(a);
+    assertNotNull(mc);
     // FIXME: 180 / PI should be cached based on mc
     return new BigDecimal(a.multiply(BigInteger.valueOf(180)), mc).divide(BigDecimals.PI, mc);
   }
 
   /**
-   * Converts an angle measured in degrees to an approximately equivalent angle
-   * measured in radians. The conversion from degrees to radians is generally
-   * inexact.
+   * Converts an angle measured in degrees to an approximately equivalent angle measured in radians. The conversion from degrees to
+   * radians is generally inexact.
    *
    * @param a The angle, in degrees.
    * @return The angle, converted to radians.
@@ -1749,35 +1519,31 @@ public final class SafeMath {
   }
 
   /**
-   * Converts an angle measured in degrees to an approximately equivalent angle
-   * measured in radians. The conversion from degrees to radians is generally
-   * inexact.
+   * Converts an angle measured in degrees to an approximately equivalent angle measured in radians. The conversion from degrees to
+   * radians is generally inexact.
    *
    * @param a The angle, in degrees.
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to radians.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toRadians(final BigDecimal a, final MathContext mc) {
+    assertNotNull(a);
+    assertNotNull(mc);
     // FIXME: PI / 180 should be cached based on mc
     return a.divide(BigDecimal.valueOf(180), mc).multiply(BigDecimals.PI, mc);
   }
 
   /**
-   * Converts an angle measured in degrees to an approximately equivalent angle
-   * measured in radians. The conversion from degrees to radians is generally
-   * inexact.
+   * Converts an angle measured in degrees to an approximately equivalent angle measured in radians. The conversion from degrees to
+   * radians is generally inexact.
    *
    * @param a The angle, in degrees.
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to radians.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toRadians(final BigInteger a, final MathContext mc) {
     return toRadians(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
@@ -1788,10 +1554,8 @@ public final class SafeMath {
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or an infinity, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is zero, then the result is a zero with the same sign
-   * as the argument.</li>
+   * <li>If the argument is {@code NaN} or an infinity, then the result is {@code NaN}.</li>
+   * <li>If the argument is zero, then the result is a zero with the same sign as the argument.</li>
    * </ul>
    *
    * @param a An angle, in radians.
@@ -1807,8 +1571,7 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The tangent of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal tan(final BigDecimal a, final MathContext mc) {
@@ -1821,8 +1584,7 @@ public final class SafeMath {
    * @param a An angle, in radians.
    * @param mc The {@link MathContext} used for the result.
    * @return The tangent of the argument.
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
    * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal tan(final BigInteger a, final MathContext mc) {
@@ -1830,464 +1592,377 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final int b, final int a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final long b, final int a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final float b, final int a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final double b, final int a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final int b, final long a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final long b, final long a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final float b, final long a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final double b, final long a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final int b, final float a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final long b, final float a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final float b, final float a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final double b, final float a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final int b, final double a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final long b, final double a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final float b, final double a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    */
   public static double log(final double b, final double a) {
     return b < 0 || a < 0 || b == 0 && a == 0 || b == 1 && a == 1 ? Double.NaN : StrictMath.log(a) / StrictMath.log(b);
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is
-   *           null.
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigInteger b, final BigInteger a, final MathContext mc) {
     assertNotNull(a);
@@ -2297,32 +1972,25 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is
-   *           null.
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigInteger b, final BigDecimal a, final MathContext mc) {
     assertNotNull(a);
@@ -2332,32 +2000,25 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is
-   *           null.
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigDecimal b, final BigInteger a, final MathContext mc) {
     assertNotNull(a);
@@ -2367,32 +2028,25 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   * of {@code a}).
+   * Returns the value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If {@code b} or {@code a} is less than zero, then the result is
-   * NaN.</li>
-   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result
-   * is {@code NaN}.</li>
+   * <li>If {@code b} or {@code a} is less than zero, then the result is NaN.</li>
+   * <li>If {@code b} and {@code a} are {@code 0} or {@code 1}, then the result is {@code NaN}.</li>
    * <li>If {@code a} is {@code 0}, then the result is negative infinity.</li>
    * <li>If {@code b} is {@code 1}, then the result is positive infinity.</li>
    * <li>If {@code b} is equal to {@code a}, then the result is {@code 1}.</li>
    * </ul>
    * <p>
-   * The computed result must be within 1 ulp of the exact result. Results must
-   * be semi-monotonic.
+   * The computed result must be within 1 ulp of the exact result. Results must be semi-monotonic.
    *
    * @param b The base.
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b}
-   *         of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is
-   *           null.
+   * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigDecimal b, final BigDecimal a, final MathContext mc) {
     assertNotNull(a);
@@ -2402,146 +2056,110 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   * logarithm of {@code a}).
+   * Returns the value <code>log<sub>e</sub>(a)</code> (i.e. the natural logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
    * </ul>
    *
    * @param a The value.
-   * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   *         logarithm of {@code a}).
+   * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural logarithm of {@code a}).
    */
   public static double log(final float a) {
     return StrictMath.log(a);
   }
 
   /**
-   * Returns the value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   * logarithm of {@code a}).
+   * Returns the value <code>log<sub>e</sub>(a)</code> (i.e. the natural logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
    * </ul>
    *
    * @param a The value.
-   * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural
-   *         logarithm of {@code a}).
+   * @return The value <code>log<sub>e</sub>(a)</code> (i.e. the natural logarithm of {@code a}).
    */
   public static double log(final double a) {
     return StrictMath.log(a);
   }
 
   /**
-   * Returns value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm
-   * of {@code a}).
+   * Returns value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
    * </ul>
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>e</sub>(a)</code>, (i.e. the natural
-   *         logarithm of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @return The value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.log(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
-   * Returns the value <code>log<sub>e</sub>(a)</code>, (i.e. the natural
-   * logarithm of {@code a})
+   * Returns the value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm of {@code a})
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
    * </ul>
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>e</sub>(a)</code>, (i.e. the natural
-   *         logarithm of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @return The value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.log(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
-   * Returns the value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   * {@code 10} logarithm of {@code a}).
+   * Returns the value <code>log<sub>10</sub>(a)</code> (i.e. the base {@code 10} logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
-   * @return The value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   *         {@code 10} logarithm of {@code a}).
+   * @return The value <code>log<sub>10</sub>(a)</code> (i.e. the base {@code 10} logarithm of {@code a}).
    */
   public static double log10(final float a) {
     return StrictMath.log10(a);
   }
 
   /**
-   * Returns the value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   * {@code 10} logarithm of {@code a}).
+   * Returns the value <code>log<sub>10</sub>(a)</code> (i.e. the base {@code 10} logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
-   * @return The value <code>log<sub>10</sub>(a)</code> (i.e. the base
-   *         {@code 10} logarithm of {@code a}).
+   * @return The value <code>log<sub>10</sub>(a)</code> (i.e. the base {@code 10} logarithm of {@code a}).
    */
   public static double log10(final double a) {
     return StrictMath.log10(a);
@@ -2552,24 +2170,17 @@ public final class SafeMath {
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>10</sub>(a)</code>, (i.e. the base
-   *         {@code 10} logarithm of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @return The value <code>log<sub>10</sub>(a)</code>, (i.e. the base {@code 10} logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log10(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.log10(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
@@ -2580,126 +2191,91 @@ public final class SafeMath {
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 10}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>10</sub>(a)</code>, (i.e. the base
-   *         {@code 10} logarithm of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @return The value <code>log<sub>10</sub>(a)</code>, (i.e. the base {@code 10} logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log10(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.log10(assertNotNull(a), assertNotNull(mc));
   }
 
   /**
-   * Returns the value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   * logarithm of {@code a}).
+   * Returns the value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2} logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
-   * @return The value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   *         logarithm of {@code a}).
+   * @return The value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2} logarithm of {@code a}).
    */
   public static double log2(final float a) {
     return StrictMath.log(a) / StrictMath.log(2);
   }
 
   /**
-   * Returns the value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   * logarithm of {@code a}).
+   * Returns the value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2} logarithm of {@code a}).
    * <p>
    * Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
-   * @return The value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2}
-   *         logarithm of {@code a}).
+   * @return The value <code>log<sub>2</sub>(a)</code> (i.e. the base {@code 2} logarithm of {@code a}).
    */
   public static double log2(final double a) {
     return StrictMath.log(a) / StrictMath.log(2);
   }
 
   /**
-   * Returns the base {@code 2} logarithm of a {@link BigDecimal} value. Special
-   * cases:
+   * Returns the base {@code 2} logarithm of a {@link BigDecimal} value. Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>2</sub>(a)</code>, (i.e. the base {@code 2}
-   *         logarithm of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @return The value <code>log<sub>2</sub>(a)</code>, (i.e. the base {@code 2} logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log2(final BigInteger a, final MathContext mc) {
     return BigDecimalMath.log2(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
   }
 
   /**
-   * Returns the base {@code 2} logarithm of a {@link BigDecimal} value. Special
-   * cases:
+   * Returns the base {@code 2} logarithm of a {@link BigDecimal} value. Special cases:
    * <ul>
-   * <li>If the argument is {@code NaN} or less than zero, then the result is
-   * {@code NaN}.</li>
-   * <li>If the argument is positive infinity, then the result is positive
-   * infinity.</li>
-   * <li>If the argument is positive zero or negative zero, then the result is
-   * negative infinity.</li>
-   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer
-   * <i>n</i>, then the result is <i>n</i>.
+   * <li>If the argument is {@code NaN} or less than zero, then the result is {@code NaN}.</li>
+   * <li>If the argument is positive infinity, then the result is positive infinity.</li>
+   * <li>If the argument is positive zero or negative zero, then the result is negative infinity.</li>
+   * <li>If the argument is equal to {@code 2}<sup><i>n</i></sup> for integer <i>n</i>, then the result is <i>n</i>.
    * </ul>
    *
    * @param a The value.
    * @param mc The {@link MathContext} used for the result.
-   * @return The value <code>log<sub>2</sub>(a)</code>, (i.e. the base {@code 2}
-   *         logarithm of {@code a}).
-   * @throws UnsupportedOperationException If the {@link MathContext} has
-   *           unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc}
-   *           is null.
+   * @return The value <code>log<sub>2</sub>(a)</code>, (i.e. the base {@code 2} logarithm of {@code a}).
+   * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
+   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log2(final BigDecimal a, final MathContext mc) {
     return BigDecimalMath.log2(assertNotNull(a), assertNotNull(mc));
@@ -3502,8 +3078,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte max(final Byte a, final Byte b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3514,8 +3089,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Short}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short max(final Byte a, final Short b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3526,8 +3100,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b An {@link Integer}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer max(final Byte a, final Integer b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3538,8 +3111,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Long}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Byte a, final Long b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3550,8 +3122,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Float}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Byte a, final Float b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3562,8 +3133,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Double}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Byte a, final Double b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3574,8 +3144,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Byte}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short max(final Short a, final Byte b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3586,8 +3155,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short max(final Short a, final Short b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3598,8 +3166,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b An {@link Integer}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer max(final Short a, final Integer b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3610,8 +3177,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Long}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Short a, final Long b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3622,8 +3188,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Float}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Short a, final Float b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3634,8 +3199,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Double}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Short a, final Double b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3646,8 +3210,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Byte}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer max(final Integer a, final Byte b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3658,8 +3221,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Short}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer max(final Integer a, final Short b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3670,8 +3232,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer max(final Integer a, final Integer b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3682,8 +3243,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Long}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Integer a, final Long b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3694,8 +3254,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Float}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Integer a, final Float b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3706,8 +3265,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Double}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Integer a, final Double b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3718,8 +3276,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Byte}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Long a, final Byte b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3730,8 +3287,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Short}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Long a, final Short b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3742,8 +3298,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b An {@link Integer}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Long a, final Integer b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3754,8 +3309,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long max(final Long a, final Long b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3766,8 +3320,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Float}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Long a, final Float b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3778,8 +3331,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Double}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Long a, final Double b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3790,8 +3342,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Byte}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Float a, final Byte b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3802,8 +3353,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Short}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Float a, final Short b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3814,8 +3364,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b An {@link Integer}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Float a, final Integer b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3826,8 +3375,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Long}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Float a, final Long b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3838,8 +3386,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float max(final Float a, final Float b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3850,8 +3397,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Double}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Float a, final Double b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3862,8 +3408,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Byte}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Double a, final Byte b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3874,8 +3419,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Short}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Double a, final Short b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3886,8 +3430,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b An {@link Integer}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Double a, final Integer b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3898,8 +3441,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Long}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Double a, final Long b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3910,8 +3452,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Float}.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Double a, final Float b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3922,8 +3463,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The larger of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The larger of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double max(final Double a, final Double b) {
     return a == null || b == null ? null : a > b ? a : b;
@@ -3956,8 +3496,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Byte a, final Byte b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -3968,8 +3507,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Short}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Byte a, final Short b) {
     return a == null || b == null ? null : a <= b ? a : b.byteValue();
@@ -3980,8 +3518,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b An {@link Integer}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Byte a, final Integer b) {
     return a == null || b == null ? null : a <= b ? a : b.byteValue();
@@ -3992,8 +3529,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Long}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Byte a, final Long b) {
     return a == null || b == null ? null : a <= b ? a : b.byteValue();
@@ -4004,8 +3540,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Float}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Byte a, final Float b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4016,8 +3551,7 @@ public final class SafeMath {
    *
    * @param a A {@link Byte}.
    * @param b A {@link Double}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Byte a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4028,8 +3562,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Byte}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Short a, final Byte b) {
     return a == null || b == null ? null : a < b ? a.byteValue() : b;
@@ -4040,8 +3573,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short min(final Short a, final Short b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4052,8 +3584,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b An {@link Integer}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short min(final Short a, final Integer b) {
     return a == null || b == null ? null : a <= b ? a : b.shortValue();
@@ -4064,8 +3595,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Long}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short min(final Short a, final Long b) {
     return a == null || b == null ? null : a <= b ? a : b.shortValue();
@@ -4076,8 +3606,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Float}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Short a, final Float b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4088,8 +3617,7 @@ public final class SafeMath {
    *
    * @param a A {@link Short}.
    * @param b A {@link Double}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Short a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4100,8 +3628,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Byte}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Integer a, final Byte b) {
     return a == null || b == null ? null : a < b ? a.byteValue() : b;
@@ -4112,8 +3639,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Short}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short min(final Integer a, final Short b) {
     return a == null || b == null ? null : a < b ? a.shortValue() : b;
@@ -4124,8 +3650,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer min(final Integer a, final Integer b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4136,8 +3661,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Long}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer min(final Integer a, final Long b) {
     return a == null || b == null ? null : a <= b ? a : b.intValue();
@@ -4148,8 +3672,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Float}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Integer a, final Float b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4160,8 +3683,7 @@ public final class SafeMath {
    *
    * @param a An {@link Integer}.
    * @param b A {@link Double}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Integer a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4172,8 +3694,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Byte}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Byte min(final Long a, final Byte b) {
     return a == null || b == null ? null : a < b ? a.byteValue() : b;
@@ -4184,8 +3705,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Short}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Short min(final Long a, final Short b) {
     return a == null || b == null ? null : a < b ? a.shortValue() : b;
@@ -4196,8 +3716,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b An {@link Integer}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Integer min(final Long a, final Integer b) {
     return a == null || b == null ? null : a < b ? a.intValue() : b;
@@ -4208,8 +3727,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Long min(final Long a, final Long b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4220,8 +3738,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Float}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Long a, final Float b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4232,8 +3749,7 @@ public final class SafeMath {
    *
    * @param a A {@link Long}.
    * @param b A {@link Double}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Long a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4244,8 +3760,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Byte}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Float a, final Byte b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4256,8 +3771,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Short}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Float a, final Short b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4268,8 +3782,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b An {@link Integer}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Float a, final Integer b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4280,8 +3793,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Long}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Float a, final Long b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4292,8 +3804,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Float min(final Float a, final Float b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4304,8 +3815,7 @@ public final class SafeMath {
    *
    * @param a A {@link Float}.
    * @param b A {@link Double}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Float a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4316,8 +3826,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Byte}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Double a, final Byte b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4328,8 +3837,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Short}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Double a, final Short b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4340,8 +3848,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b An {@link Integer}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Double a, final Integer b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4352,8 +3859,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Long}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Double a, final Long b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4364,8 +3870,7 @@ public final class SafeMath {
    *
    * @param a A {@link Double}.
    * @param b A {@link Float}.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Double a, final Float b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4376,8 +3881,7 @@ public final class SafeMath {
    *
    * @param a The first value.
    * @param b The second value.
-   * @return The smaller of {@code a} and {@code b}, or {@code null} if either
-   *         {@code a} or {@code b} is null.
+   * @return The smaller of {@code a} and {@code b}, or {@code null} if either {@code a} or {@code b} is null.
    */
   public static Double min(final Double a, final Double b) {
     return a == null || b == null ? null : a < b ? a : b;
@@ -4403,6 +3907,150 @@ public final class SafeMath {
    */
   public static BigDecimal min(final BigDecimal a, final BigDecimal b) {
     return a.compareTo(b) < 0 ? a : b;
+  }
+
+  /**
+   * Returns the greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
+   * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
+   */
+  public static byte gcd(byte a, byte b) {
+    assertNotNegative(a, "a must be positive: %d", a);
+    assertNotNegative(b, "b must be positive: %d", b);
+
+    if (a == 0)
+      return b;
+
+    if (b == 0)
+      return a;
+
+    final int a2 = Integer.numberOfTrailingZeros(a);
+    a >>= a2;
+
+    final int b2 = Integer.numberOfTrailingZeros(b);
+    b >>= b2;
+
+    while (a != b) {
+      a -= b;
+      final int minDeltaOrZero = a & (a >> (Byte.SIZE - 1));
+      a -= minDeltaOrZero << 1;
+      b += minDeltaOrZero;
+      a >>= Integer.numberOfTrailingZeros(a);
+    }
+
+    return a <<= (a2 < b2 ? a2 : b2);
+  }
+
+  /**
+   * Returns the greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
+   * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
+   */
+  public static short gcd(short a, short b) {
+    assertNotNegative(a, "a must be positive: %d", a);
+    assertNotNegative(b, "b must be positive: %d", b);
+
+    if (a == 0)
+      return b;
+
+    if (b == 0)
+      return a;
+
+    final int a2 = Integer.numberOfTrailingZeros(a);
+    a >>= a2;
+
+    final int b2 = Integer.numberOfTrailingZeros(b);
+    b >>= b2;
+
+    while (a != b) {
+      a -= b;
+      final int minDeltaOrZero = a & (a >> (Short.SIZE - 1));
+      a -= minDeltaOrZero << 1;
+      b += minDeltaOrZero;
+      a >>= Integer.numberOfTrailingZeros(a);
+    }
+
+    return a <<= (a2 < b2 ? a2 : b2);
+  }
+
+  /**
+   * Returns the greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
+   * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
+   */
+  public static int gcd(int a, int b) {
+    assertNotNegative(a, "a must be positive: %d", a);
+    assertNotNegative(b, "b must be positive: %d", b);
+
+    if (a == 0)
+      return b;
+
+    if (b == 0)
+      return a;
+
+    final int a2 = Integer.numberOfTrailingZeros(a);
+    a >>= a2;
+
+    final int b2 = Integer.numberOfTrailingZeros(b);
+    b >>= b2;
+
+    while (a != b) {
+      a -= b;
+      final int minDeltaOrZero = a & (a >> (Integer.SIZE - 1));
+      a -= minDeltaOrZero << 1;
+      b += minDeltaOrZero;
+      a >>= Integer.numberOfTrailingZeros(a);
+    }
+
+    return a << Math.min(a2, b2);
+  }
+
+  /**
+   * Returns the greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   *
+   * @param a The first value.
+   * @param b The second value.
+   * @return The greatest common divisor of {@code a} and {@code b}, or {@code 0} if {@code a == 0 && b == 0}.
+   * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
+   * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
+   */
+  public static long gcd(long a, long b) {
+    assertNotNegative(a, "a must be positive: %d", a);
+    assertNotNegative(b, "b must be positive: %d", b);
+
+    if (a == 0)
+      return b;
+
+    if (b == 0)
+      return a;
+
+    final int a2 = Long.numberOfTrailingZeros(a);
+    a >>= a2;
+
+    final int b2 = Long.numberOfTrailingZeros(b);
+    b >>= b2;
+
+    while (a != b) {
+      a -= b;
+      final long minDeltaOrZero = a & (a >> (Long.SIZE - 1L));
+      a -= minDeltaOrZero << 1;
+      b += minDeltaOrZero;
+      a >>= Long.numberOfTrailingZeros(a);
+    }
+
+    return a << Math.min(a2, b2);
   }
 
   private SafeMath() {

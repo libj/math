@@ -28,7 +28,7 @@ public class StatMathTest {
 
   private static byte[] randomBytes(final int len) {
     final byte[] bytes = new byte[len];
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len; ++i) // [N]
       bytes[i] = (byte)random.nextInt();
 
     return bytes;
@@ -36,7 +36,7 @@ public class StatMathTest {
 
   private static short[] randomShorts(final int len) {
     final short[] shorts = new short[len];
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len; ++i) // [N]
       shorts[i] = (short)random.nextInt();
 
     return shorts;
@@ -44,7 +44,7 @@ public class StatMathTest {
 
   private static int[] randomInts(final int len) {
     final int[] ints = new int[len];
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len; ++i) // [N]
       ints[i] = random.nextInt();
 
     return ints;
@@ -52,7 +52,7 @@ public class StatMathTest {
 
   private static long[] randomLongs(final int len) {
     final long[] longs = new long[len];
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len; ++i) // [N]
       longs[i] = random.nextLong();
 
     return longs;
@@ -60,7 +60,7 @@ public class StatMathTest {
 
   private static float[] randomFloats(final int len) {
     final float[] floats = new float[len];
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len; ++i) // [N]
       floats[i] = random.nextFloat();
 
     return floats;
@@ -68,7 +68,7 @@ public class StatMathTest {
 
   private static double[] randomDoubles(final int len) {
     final double[] doubles = new double[len];
-    for (int i = 0; i < len; ++i)
+    for (int i = 0; i < len; ++i) // [N]
       doubles[i] = random.nextDouble();
 
     return doubles;
@@ -90,7 +90,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.rms(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -111,7 +111,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.rms(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -132,7 +132,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.rms(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -153,7 +153,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.rms(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -174,7 +174,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.rms(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -195,7 +195,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.rms(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -216,7 +216,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.min(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -237,7 +237,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.min(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -258,7 +258,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.min(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -279,7 +279,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.min(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -300,7 +300,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.min(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -321,7 +321,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.min(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -342,7 +342,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.max(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -363,7 +363,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.max(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -384,7 +384,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.max(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -405,7 +405,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.max(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -426,7 +426,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.max(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -447,7 +447,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.max(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -462,7 +462,7 @@ public class StatMathTest {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new byte[0])));
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.avg(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -477,7 +477,7 @@ public class StatMathTest {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new short[0])));
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.avg(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -492,7 +492,7 @@ public class StatMathTest {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new int[0])));
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.avg(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -507,7 +507,7 @@ public class StatMathTest {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new long[0])));
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.avg(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -522,7 +522,7 @@ public class StatMathTest {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new float[0])));
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.avg(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -537,7 +537,7 @@ public class StatMathTest {
     }
 
     assertTrue(Double.isNaN(StatMath.avg(new double[0])));
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.avg(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -558,7 +558,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.sum(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -579,7 +579,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.sum(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -600,7 +600,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.sum(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -621,7 +621,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.sum(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -642,7 +642,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.sum(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -663,7 +663,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.sum(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -684,7 +684,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.stdDev(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -705,7 +705,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.stdDev(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -726,7 +726,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.stdDev(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -747,7 +747,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.stdDev(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -768,7 +768,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.stdDev(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -789,7 +789,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.stdDev(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -803,7 +803,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.normalize(randomBytes(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -817,7 +817,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.normalize(randomShorts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -831,7 +831,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.normalize(randomInts(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -845,7 +845,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.normalize(randomLongs(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -859,7 +859,7 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.normalize(randomFloats(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
@@ -873,49 +873,49 @@ public class StatMathTest {
     catch (final IllegalArgumentException e) {
     }
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.normalize(randomDoubles(1 + Math.abs(random.nextInt() % arrayLen)));
     }
   }
 
   @Test
   public void testThresholdByte() {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.threshold((byte)random.nextInt(), (byte)random.nextInt(), (byte)random.nextInt());
     }
   }
 
   @Test
   public void testThresholdShort() {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.threshold((short)random.nextInt(), (short)random.nextInt(), (short)random.nextInt());
     }
   }
 
   @Test
   public void testThresholdInt() {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.threshold(random.nextInt(), random.nextInt(), random.nextInt());
     }
   }
 
   @Test
   public void testThresholdLong() {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.threshold(random.nextLong(), random.nextLong(), random.nextLong());
     }
   }
 
   @Test
   public void testThresholdFloat() {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.threshold(random.nextFloat(), random.nextFloat(), random.nextFloat());
     }
   }
 
   @Test
   public void testThresholdDouble() {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) { // [N]
       StatMath.threshold(random.nextDouble(), random.nextDouble(), random.nextDouble());
     }
   }

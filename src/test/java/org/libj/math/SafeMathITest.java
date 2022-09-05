@@ -124,7 +124,7 @@ public class SafeMathITest {
     test(0, short.class, SafeMath::abs, n -> (short)Math.abs(n));
     test(1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
     test(-1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, short.class, SafeMath::abs, n -> (short)Math.abs(n));
   }
 
@@ -133,7 +133,7 @@ public class SafeMathITest {
     test(0, short.class, SafeMath::abs, n -> (short)Math.abs(n));
     test(1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
     test(-1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, short.class, SafeMath::abs, n -> (short)Math.abs(n));
   }
 
@@ -142,7 +142,7 @@ public class SafeMathITest {
     test(0, int.class, SafeMath::abs, n -> Math.abs(n));
     test(1, int.class, SafeMath::abs, n -> Math.abs(n));
     test(-1, int.class, SafeMath::abs, n -> Math.abs(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, int.class, SafeMath::abs, n -> Math.abs(n));
   }
 
@@ -151,7 +151,7 @@ public class SafeMathITest {
     test(0, long.class, SafeMath::abs, n -> Math.abs(n));
     test(1, long.class, SafeMath::abs, n -> Math.abs(n));
     test(-1, long.class, SafeMath::abs, n -> Math.abs(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, long.class, SafeMath::abs, n -> Math.abs(n));
   }
 
@@ -160,7 +160,7 @@ public class SafeMathITest {
     test(0, float.class, SafeMath::abs, n -> Math.abs(n));
     test(1, float.class, SafeMath::abs, n -> Math.abs(n));
     test(-1, float.class, SafeMath::abs, n -> Math.abs(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, float.class, SafeMath::abs, n -> Math.abs(n));
   }
 
@@ -169,7 +169,7 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::abs, n -> Math.abs(n));
     test(1, double.class, SafeMath::abs, n -> Math.abs(n));
     test(-1, double.class, SafeMath::abs, n -> Math.abs(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, double.class, SafeMath::abs, n -> Math.abs(n));
   }
 
@@ -178,7 +178,7 @@ public class SafeMathITest {
     test(0, BigInteger.class, SafeMath::abs, n -> n.abs());
     test(1, BigInteger.class, SafeMath::abs, n -> n.abs());
     test(-1, BigInteger.class, SafeMath::abs, n -> n.abs());
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigInteger.class, SafeMath::abs, n -> n.abs());
   }
 
@@ -187,7 +187,7 @@ public class SafeMathITest {
     test(0, BigDecimal.class, SafeMath::abs, n -> n.abs());
     test(1, BigDecimal.class, SafeMath::abs, n -> n.abs());
     test(-1, BigDecimal.class, SafeMath::abs, n -> n.abs());
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigDecimal.class, SafeMath::abs, n -> n.abs());
   }
 
@@ -196,21 +196,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::acos, n -> Math.acos(n));
     test(1, double.class, SafeMath::acos, n -> Math.acos(n));
     test(-1, double.class, SafeMath::acos, n -> Math.acos(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::acos, n -> Math.acos(n));
   }
 
   @Test
   public void testAcosBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(new BigDecimal(n), mc));
   }
 
   @Test
   public void testAcosBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(n, mc));
   }
 
@@ -219,21 +219,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::asin, n -> Math.asin(n));
     test(1, double.class, SafeMath::asin, n -> Math.asin(n));
     test(-1, double.class, SafeMath::asin, n -> Math.asin(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::asin, n -> Math.asin(n));
   }
 
   @Test
   public void testAsinBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(new BigDecimal(n), mc));
   }
 
   @Test
   public void testAsinBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(n, mc));
   }
 
@@ -242,21 +242,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::atan, n -> Math.atan(n));
     test(1, double.class, SafeMath::atan, n -> Math.atan(n));
     test(-1, double.class, SafeMath::atan, n -> Math.atan(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::atan, n -> Math.atan(n));
   }
 
   @Test
   public void testAtanBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(new BigDecimal(n), mc));
   }
 
   @Test
   public void testAtanBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(n, mc));
   }
 
@@ -265,7 +265,7 @@ public class SafeMathITest {
     test(0, 0, double.class, double.class, double.class, (n1,n2) -> SafeMath.atan2(n1, n2), (n1,n2) -> Math.atan2(n1, n2));
     test(1, 1, double.class, double.class, double.class, (n1,n2) -> SafeMath.atan2(n1, n2), (n1,n2) -> Math.atan2(n1, n2));
     test(-1, -1, double.class, double.class, double.class, (n1,n2) -> SafeMath.atan2(n1, n2), (n1,n2) -> Math.atan2(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), double.class, double.class, double.class, (n1,n2) -> SafeMath.atan2(n1, n2), (n1,n2) -> Math.atan2(n1, n2));
   }
 
@@ -273,7 +273,7 @@ public class SafeMathITest {
   public void testAtan2BigDecimal() {
     test(1, 1, BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.atan2(n1, n2, mc), (n1,n2) -> BigDecimalMath.atan2(n1, n2, mc));
     test(-1, -1, BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.atan2(n1, n2, mc), (n1,n2) -> BigDecimalMath.atan2(n1, n2, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.atan2(n1, n2, mc), (n1,n2) -> BigDecimalMath.atan2(n1, n2, mc));
   }
 
@@ -282,7 +282,7 @@ public class SafeMathITest {
     test(0, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
     test(1, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
     test(-1, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
   }
 
@@ -291,7 +291,7 @@ public class SafeMathITest {
     test(0, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
     test(1, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
     test(-1, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
   }
 
@@ -300,7 +300,7 @@ public class SafeMathITest {
     test(0, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
     test(1, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
     test(-1, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
   }
 
@@ -309,7 +309,7 @@ public class SafeMathITest {
     test(0, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
     test(1, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
     test(-1, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
   }
 
@@ -318,7 +318,7 @@ public class SafeMathITest {
     test(0, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
     test(1, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
     test(-1, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
   }
 
@@ -327,7 +327,7 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::ceil, n -> Math.ceil(n));
     test(1, double.class, SafeMath::ceil, n -> Math.ceil(n));
     test(-1, double.class, SafeMath::ceil, n -> Math.ceil(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, double.class, SafeMath::ceil, n -> Math.ceil(n));
   }
 
@@ -336,7 +336,7 @@ public class SafeMathITest {
     test(0, BigInteger.class, SafeMath::ceil, n -> n);
     test(1, BigInteger.class, SafeMath::ceil, n -> n);
     test(-1, BigInteger.class, SafeMath::ceil, n -> n);
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigInteger.class, SafeMath::ceil, n -> n);
   }
 
@@ -345,7 +345,7 @@ public class SafeMathITest {
     test(0, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
     test(1, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
     test(-1, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
   }
 
@@ -354,7 +354,7 @@ public class SafeMathITest {
     test(0, long.class, double.class, SafeMath::cos, n -> Math.cos(n));
     test(1, long.class, double.class, SafeMath::cos, n -> Math.cos(n));
     test(-1, long.class, double.class, SafeMath::cos, n -> Math.cos(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), long.class, double.class, SafeMath::cos, n -> Math.cos(n));
   }
 
@@ -363,21 +363,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::cos, n -> Math.cos(n));
     test(1, double.class, SafeMath::cos, n -> Math.cos(n));
     test(-1, double.class, SafeMath::cos, n -> Math.cos(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::cos, n -> Math.cos(n));
   }
 
   @Test
   public void testCosBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(new BigDecimal(n), mc));
   }
 
   @Test
   public void testCosBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(n, mc));
   }
 
@@ -386,21 +386,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::exp, n -> Math.exp(n));
     test(1, double.class, SafeMath::exp, n -> Math.exp(n));
     test(-1, double.class, SafeMath::exp, n -> Math.exp(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::exp, n -> Math.exp(n));
   }
 
   @Test
   public void testExpBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(new BigDecimal(n), mc));
   }
 
   @Test
   public void testExpBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(n, mc));
   }
 
@@ -409,7 +409,7 @@ public class SafeMathITest {
     test(0, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
     test(1, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
     test(-1, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
   }
 
@@ -418,7 +418,7 @@ public class SafeMathITest {
     test(0, short.class, SafeMath::floor, n -> (short)Math.floor(n));
     test(1, short.class, SafeMath::floor, n -> (short)Math.floor(n));
     test(-1, short.class, SafeMath::floor, n -> (short)Math.floor(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, short.class, SafeMath::floor, n -> (short)Math.floor(n));
   }
 
@@ -427,7 +427,7 @@ public class SafeMathITest {
     test(0, int.class, SafeMath::floor, n -> (int)Math.floor(n));
     test(1, int.class, SafeMath::floor, n -> (int)Math.floor(n));
     test(-1, int.class, SafeMath::floor, n -> (int)Math.floor(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, int.class, SafeMath::floor, n -> (int)Math.floor(n));
   }
 
@@ -436,7 +436,7 @@ public class SafeMathITest {
     test(0, long.class, SafeMath::floor, n -> (long)Math.floor(n));
     test(1, long.class, SafeMath::floor, n -> (long)Math.floor(n));
     test(-1, long.class, SafeMath::floor, n -> (long)Math.floor(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, long.class, SafeMath::floor, n -> (long)Math.floor(n));
   }
 
@@ -445,7 +445,7 @@ public class SafeMathITest {
     test(0, float.class, SafeMath::floor, n -> (float)Math.floor(n));
     test(1, float.class, SafeMath::floor, n -> (float)Math.floor(n));
     test(-1, float.class, SafeMath::floor, n -> (float)Math.floor(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, float.class, SafeMath::floor, n -> (float)Math.floor(n));
   }
 
@@ -454,7 +454,7 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::floor, n -> Math.floor(n));
     test(1, double.class, SafeMath::floor, n -> Math.floor(n));
     test(-1, double.class, SafeMath::floor, n -> Math.floor(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, double.class, SafeMath::floor, n -> Math.floor(n));
   }
 
@@ -463,7 +463,7 @@ public class SafeMathITest {
     test(0, BigInteger.class, SafeMath::floor, n -> n);
     test(1, BigInteger.class, SafeMath::floor, n -> n);
     test(-1, BigInteger.class, SafeMath::floor, n -> n);
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigInteger.class, SafeMath::floor, n -> n);
   }
 
@@ -472,7 +472,7 @@ public class SafeMathITest {
     test(0, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
     test(1, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
     test(-1, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
   }
 
@@ -481,21 +481,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::log, n -> Math.log(n));
     test(1, double.class, SafeMath::log, n -> Math.log(n));
     test(-1, double.class, SafeMath::log, n -> Math.log(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::log, n -> Math.log(n));
   }
 
   @Test
   public void testLogBigInteger() {
     test(1, BigInteger.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), BigInteger.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(new BigDecimal(n), mc));
   }
 
   @Test
   public void testLogBigDecimal() {
     test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(n, mc));
   }
 
@@ -504,7 +504,7 @@ public class SafeMathITest {
     test(0, 0, float.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, float.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, float.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), float.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -513,7 +513,7 @@ public class SafeMathITest {
     test(0, 0, float.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, float.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, float.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), float.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -522,7 +522,7 @@ public class SafeMathITest {
     test(0, 0, float.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, float.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, float.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), float.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -531,7 +531,7 @@ public class SafeMathITest {
     test(0, 0, float.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, float.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, float.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), float.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -540,7 +540,7 @@ public class SafeMathITest {
     test(0, 0, double.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, double.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, double.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), double.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -549,7 +549,7 @@ public class SafeMathITest {
     test(0, 0, double.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, double.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, double.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), double.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -558,7 +558,7 @@ public class SafeMathITest {
     test(0, 0, double.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, double.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, double.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), double.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -567,7 +567,7 @@ public class SafeMathITest {
     test(0, 0, double.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, double.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, double.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), double.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -576,7 +576,7 @@ public class SafeMathITest {
     test(0, 0, int.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, int.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, int.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), int.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -585,7 +585,7 @@ public class SafeMathITest {
     test(0, 0, int.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, int.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, int.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), int.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -594,7 +594,7 @@ public class SafeMathITest {
     test(0, 0, int.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, int.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, int.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), int.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -603,7 +603,7 @@ public class SafeMathITest {
     test(0, 0, int.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, int.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, int.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), int.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -612,7 +612,7 @@ public class SafeMathITest {
     test(0, 0, long.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, long.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, long.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), long.class, float.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -621,7 +621,7 @@ public class SafeMathITest {
     test(0, 0, long.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, long.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, long.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), long.class, double.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -630,7 +630,7 @@ public class SafeMathITest {
     test(0, 0, long.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, long.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, long.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), long.class, int.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
@@ -639,28 +639,28 @@ public class SafeMathITest {
     test(0, 0, long.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(1, 1, long.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
     test(-1, -1, long.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), long.class, long.class, double.class, (n1,n2) -> SafeMath.log(n1, n2), (n1,n2) -> Math.log(n2) / Math.log(n1));
   }
 
   @Test
   public void testLogBigDecimalBigInteger() {
     test(1, 1, BigDecimal.class, BigInteger.class, BigDecimal.class, (n1,n2) -> SafeMath.log(n1, n2, mc), (n1,n2) -> BigDecimalMath.log(new BigDecimal(n2), mc).divide(BigDecimalMath.log(n1, mc), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), Math.abs(d10()), BigDecimal.class, BigInteger.class, BigDecimal.class, (n1,n2) -> SafeMath.log(n1, n2, mc), (n1,n2) -> BigDecimalMath.log(new BigDecimal(n2), mc).divide(BigDecimalMath.log(n1, mc), mc));
   }
 
   @Test
   public void testLogBigIntegerBigDecimal() {
     test(1, 1, BigInteger.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.log(n1, n2, mc), (n1,n2) -> BigDecimalMath.log(n2, mc).divide(BigDecimalMath.log(new BigDecimal(n1), mc), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), Math.abs(d10()), BigInteger.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.log(n1, n2, mc), (n1,n2) -> BigDecimalMath.log(n2, mc).divide(BigDecimalMath.log(new BigDecimal(n1), mc), mc));
   }
 
   @Test
   public void testLogBigDecimalBigDecimal() {
     test(1, 1, BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.log(n1, n2, mc), (n1,n2) -> BigDecimalMath.log(n2, mc).divide(BigDecimalMath.log(n1, mc), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), Math.abs(d10()), BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.log(n1, n2, mc), (n1,n2) -> BigDecimalMath.log(n2, mc).divide(BigDecimalMath.log(n1, mc), mc));
   }
 
@@ -669,35 +669,35 @@ public class SafeMathITest {
     test(0, 0, double.class, double.class, double.class, (n1,n2) -> SafeMath.pow(n1, n2), (n1,n2) -> Math.pow(n1, n2));
     test(1, 1, double.class, double.class, double.class, (n1,n2) -> SafeMath.pow(n1, n2), (n1,n2) -> Math.pow(n1, n2));
     test(-1, -1, double.class, double.class, double.class, (n1,n2) -> SafeMath.pow(n1, n2), (n1,n2) -> Math.pow(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), d0(), double.class, double.class, double.class, (n1,n2) -> SafeMath.pow(n1, n2), (n1,n2) -> Math.pow(n1, n2));
   }
 
   @Test
   public void testPowBigIntegerBigInteger() {
     test(0, 0, BigInteger.class, BigInteger.class, BigInteger.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(new BigDecimal(n1), new BigDecimal(n2), mc).toBigInteger());
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), d0(), BigInteger.class, BigInteger.class, BigInteger.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(new BigDecimal(n1), new BigDecimal(n2), mc).toBigInteger());
   }
 
   @Test
   public void testPowBigDecimalBigInteger() {
     test(0, 0, BigDecimal.class, BigInteger.class, BigDecimal.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(n1, new BigDecimal(n2), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test1(d0(), d0(), BigDecimal.class, BigInteger.class, BigDecimal.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(n1, new BigDecimal(n2), mc));
   }
 
   @Test
   public void testPowBigIntegerBigDecimal() {
     test(0, 0, BigInteger.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(new BigDecimal(n1), n2, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), Math.abs(d0()), BigInteger.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(new BigDecimal(n1), n2, mc));
   }
 
   @Test
   public void testPowBigDecimalBigDecimal() {
     test(0, 0, BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(n1, n2, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), Math.abs(d0()), BigDecimal.class, BigDecimal.class, BigDecimal.class, (n1,n2) -> SafeMath.pow(n1, n2, mc), (n1,n2) -> BigDecimalMath.pow(n1, n2, mc));
   }
 
@@ -706,21 +706,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::log10, n -> Math.log10(n));
     test(1, double.class, SafeMath::log10, n -> Math.log10(n));
     test(-1, double.class, SafeMath::log10, n -> Math.log10(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::log10, n -> Math.log10(n));
   }
 
   @Test
   public void testLog10BigInteger() {
     test(1, BigInteger.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), BigInteger.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(new BigDecimal(n), mc));
   }
 
   @Test
   public void testLog10BigDecimal() {
     test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(n, mc));
   }
 
@@ -729,21 +729,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
     test(1, double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
     test(-1, double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
   }
 
   @Test
   public void testLog2BigInteger() {
     test(1, BigInteger.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), BigInteger.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(new BigDecimal(n), mc));
   }
 
   @Test
   public void testLog2BigDecimal() {
     test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(n, mc));
   }
 
@@ -752,7 +752,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
     test(1, 1, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
     test(-1, -1, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, byte.class, byte.class, SafeMath::max, (n1,n2) -> (byte)Math.max(n1, n2));
   }
 
@@ -761,7 +761,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
     test(1, 1, byte.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
     test(-1, -1, byte.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
   }
 
@@ -770,7 +770,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(1, 1, byte.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(-1, -1, byte.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
   }
 
@@ -779,7 +779,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, byte.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, byte.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -788,7 +788,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, byte.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, byte.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -797,7 +797,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, byte.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, byte.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -806,7 +806,7 @@ public class SafeMathITest {
     test(0, 0, short.class, byte.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
     test(1, 1, short.class, byte.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
     test(-1, -1, short.class, byte.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, byte.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
   }
 
@@ -815,7 +815,7 @@ public class SafeMathITest {
     test(0, 0, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
     test(1, 1, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
     test(-1, -1, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, short.class, short.class, SafeMath::max, (n1,n2) -> (short)Math.max(n1, n2));
   }
 
@@ -824,7 +824,7 @@ public class SafeMathITest {
     test(0, 0, short.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(1, 1, short.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(-1, -1, short.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
   }
 
@@ -833,7 +833,7 @@ public class SafeMathITest {
     test(0, 0, short.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, short.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, short.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (long i = 0; i < numTests; ++i)
+    for (long i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -842,7 +842,7 @@ public class SafeMathITest {
     test(0, 0, short.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, short.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, short.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (float i = 0; i < numTests; ++i)
+    for (float i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -851,7 +851,7 @@ public class SafeMathITest {
     test(0, 0, short.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, short.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, short.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (double i = 0; i < numTests; ++i)
+    for (double i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -860,7 +860,7 @@ public class SafeMathITest {
     test(0, 0, int.class, byte.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(1, 1, int.class, byte.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(-1, -1, int.class, byte.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, byte.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
   }
 
@@ -869,7 +869,7 @@ public class SafeMathITest {
     test(0, 0, int.class, short.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(1, 1, int.class, short.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(-1, -1, int.class, short.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, short.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
   }
 
@@ -878,7 +878,7 @@ public class SafeMathITest {
     test(0, 0, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(1, 1, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
     test(-1, -1, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, int.class, int.class, SafeMath::max, (n1,n2) -> (int)Math.max(n1, n2));
   }
 
@@ -887,7 +887,7 @@ public class SafeMathITest {
     test(0, 0, int.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, int.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, int.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -896,7 +896,7 @@ public class SafeMathITest {
     test(0, 0, int.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, int.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, int.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -905,7 +905,7 @@ public class SafeMathITest {
     test(0, 0, int.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, int.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, int.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -914,7 +914,7 @@ public class SafeMathITest {
     test(0, 0, long.class, byte.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, long.class, byte.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, long.class, byte.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, byte.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -923,7 +923,7 @@ public class SafeMathITest {
     test(0, 0, long.class, short.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, long.class, short.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, long.class, short.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, short.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -932,7 +932,7 @@ public class SafeMathITest {
     test(0, 0, long.class, int.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, long.class, int.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, long.class, int.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, int.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -941,7 +941,7 @@ public class SafeMathITest {
     test(0, 0, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(1, 1, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
     test(-1, -1, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, long.class, long.class, SafeMath::max, (n1,n2) -> (long)Math.max(n1, n2));
   }
 
@@ -950,7 +950,7 @@ public class SafeMathITest {
     test(0, 0, long.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, long.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, long.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (float i = 0; i < numTests; ++i)
+    for (float i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -959,7 +959,7 @@ public class SafeMathITest {
     test(0, 0, long.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, long.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, long.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (double i = 0; i < numTests; ++i)
+    for (double i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -968,7 +968,7 @@ public class SafeMathITest {
     test(0, 0, float.class, byte.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, float.class, byte.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, float.class, byte.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, byte.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -977,7 +977,7 @@ public class SafeMathITest {
     test(0, 0, float.class, short.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, float.class, short.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, float.class, short.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, short.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -986,7 +986,7 @@ public class SafeMathITest {
     test(0, 0, float.class, int.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, float.class, int.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, float.class, int.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, int.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -995,7 +995,7 @@ public class SafeMathITest {
     test(0, 0, float.class, long.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, float.class, long.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, float.class, long.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (long i = 0; i < numTests; ++i)
+    for (long i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, long.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1004,7 +1004,7 @@ public class SafeMathITest {
     test(0, 0, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, float.class, float.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1013,7 +1013,7 @@ public class SafeMathITest {
     test(0, 0, float.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, float.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, float.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (double i = 0; i < numTests; ++i)
+    for (double i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1022,7 +1022,7 @@ public class SafeMathITest {
     test(0, 0, double.class, byte.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, double.class, byte.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, double.class, byte.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, byte.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1031,7 +1031,7 @@ public class SafeMathITest {
     test(0, 0, double.class, short.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, double.class, short.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, double.class, short.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, short.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1040,7 +1040,7 @@ public class SafeMathITest {
     test(0, 0, double.class, int.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, double.class, int.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, double.class, int.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, int.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1049,7 +1049,7 @@ public class SafeMathITest {
     test(0, 0, double.class, long.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, double.class, long.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, double.class, long.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (long i = 0; i < numTests; ++i)
+    for (long i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, long.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1058,7 +1058,7 @@ public class SafeMathITest {
     test(0, 0, double.class, float.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, double.class, float.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, double.class, float.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (float i = 0; i < numTests; ++i)
+    for (float i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, float.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1067,7 +1067,7 @@ public class SafeMathITest {
     test(0, 0, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(1, 1, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
     test(-1, -1, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, double.class, double.class, SafeMath::max, (n1,n2) -> Math.max(n1, n2));
   }
 
@@ -1088,7 +1088,7 @@ public class SafeMathITest {
     assertTrue(SafeMath.max(BigInteger.ZERO, BigInteger.ZERO).compareTo(BigInteger.ZERO) == 0);
     assertTrue(SafeMath.max(BigInteger.ONE, BigInteger.ONE).compareTo(BigInteger.ONE) == 0);
     assertTrue(SafeMath.max(BigInteger.ONE.negate(), BigInteger.ONE.negate()).compareTo(BigInteger.ONE.negate()) == 0);
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final long n1 = random.nextLong();
       final long n2 = random.nextLong();
       assertTrue(SafeMath.max(BigInteger.valueOf(n1), BigInteger.valueOf(n2)).compareTo(BigInteger.valueOf(Math.max(n1, n2))) == 0);
@@ -1112,7 +1112,7 @@ public class SafeMathITest {
     assertTrue(SafeMath.max(BigDecimal.ZERO, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) == 0);
     assertTrue(SafeMath.max(BigDecimal.ONE, BigDecimal.ONE).compareTo(BigDecimal.ONE) == 0);
     assertTrue(SafeMath.max(BigDecimal.ONE.negate(), BigDecimal.ONE.negate()).compareTo(BigDecimal.ONE.negate()) == 0);
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final double n1 = random.nextDouble();
       final double n2 = random.nextDouble();
       assertTrue(SafeMath.max(BigDecimal.valueOf(n1), BigDecimal.valueOf(n2)).compareTo(BigDecimal.valueOf(Math.max(n1, n2))) == 0);
@@ -1124,7 +1124,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1133,7 +1133,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, short.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, byte.class, short.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, byte.class, short.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, short.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1142,7 +1142,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, int.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, byte.class, int.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, byte.class, int.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, int.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1151,7 +1151,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, long.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, byte.class, long.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, byte.class, long.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, long.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1160,7 +1160,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, byte.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, byte.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1169,7 +1169,7 @@ public class SafeMathITest {
     test(0, 0, byte.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, byte.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, byte.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, byte.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1178,7 +1178,7 @@ public class SafeMathITest {
     test(0, 0, short.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, short.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, short.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1187,7 +1187,7 @@ public class SafeMathITest {
     test(0, 0, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(1, 1, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(-1, -1, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
   }
 
@@ -1196,7 +1196,7 @@ public class SafeMathITest {
     test(0, 0, short.class, int.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(1, 1, short.class, int.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(-1, -1, short.class, int.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, int.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
   }
 
@@ -1205,7 +1205,7 @@ public class SafeMathITest {
     test(0, 0, short.class, long.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(1, 1, short.class, long.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(-1, -1, short.class, long.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
-    for (long i = 0; i < numTests; ++i)
+    for (long i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, long.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
   }
 
@@ -1214,7 +1214,7 @@ public class SafeMathITest {
     test(0, 0, short.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, short.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, short.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (float i = 0; i < numTests; ++i)
+    for (float i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1223,7 +1223,7 @@ public class SafeMathITest {
     test(0, 0, short.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, short.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, short.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (double i = 0; i < numTests; ++i)
+    for (double i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, short.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1232,7 +1232,7 @@ public class SafeMathITest {
     test(0, 0, int.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, int.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, int.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1241,7 +1241,7 @@ public class SafeMathITest {
     test(0, 0, int.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(1, 1, int.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(-1, -1, int.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
   }
 
@@ -1250,7 +1250,7 @@ public class SafeMathITest {
     test(0, 0, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
     test(1, 1, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
     test(-1, -1, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
   }
 
@@ -1259,7 +1259,7 @@ public class SafeMathITest {
     test(0, 0, int.class, long.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
     test(1, 1, int.class, long.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
     test(-1, -1, int.class, long.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, long.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
   }
 
@@ -1268,7 +1268,7 @@ public class SafeMathITest {
     test(0, 0, int.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, int.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, int.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1277,7 +1277,7 @@ public class SafeMathITest {
     test(0, 0, int.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, int.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, int.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, int.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1286,7 +1286,7 @@ public class SafeMathITest {
     test(0, 0, long.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(1, 1, long.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
     test(-1, -1, long.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, byte.class, byte.class, SafeMath::min, (n1,n2) -> (byte)Math.min(n1, n2));
   }
 
@@ -1295,7 +1295,7 @@ public class SafeMathITest {
     test(0, 0, long.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(1, 1, long.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
     test(-1, -1, long.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, short.class, short.class, SafeMath::min, (n1,n2) -> (short)Math.min(n1, n2));
   }
 
@@ -1304,7 +1304,7 @@ public class SafeMathITest {
     test(0, 0, long.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
     test(1, 1, long.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
     test(-1, -1, long.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, int.class, int.class, SafeMath::min, (n1,n2) -> (int)Math.min(n1, n2));
   }
 
@@ -1313,7 +1313,7 @@ public class SafeMathITest {
     test(0, 0, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
     test(1, 1, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
     test(-1, -1, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, long.class, long.class, SafeMath::min, (n1,n2) -> (long)Math.min(n1, n2));
   }
 
@@ -1322,7 +1322,7 @@ public class SafeMathITest {
     test(0, 0, long.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, long.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, long.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (float i = 0; i < numTests; ++i)
+    for (float i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1331,7 +1331,7 @@ public class SafeMathITest {
     test(0, 0, long.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, long.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, long.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (double i = 0; i < numTests; ++i)
+    for (double i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, long.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1340,7 +1340,7 @@ public class SafeMathITest {
     test(0, 0, float.class, byte.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, float.class, byte.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, float.class, byte.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, byte.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1349,7 +1349,7 @@ public class SafeMathITest {
     test(0, 0, float.class, short.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, float.class, short.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, float.class, short.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, short.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1358,7 +1358,7 @@ public class SafeMathITest {
     test(0, 0, float.class, int.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, float.class, int.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, float.class, int.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, int.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1367,7 +1367,7 @@ public class SafeMathITest {
     test(0, 0, float.class, long.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, float.class, long.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, float.class, long.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (long i = 0; i < numTests; ++i)
+    for (long i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, long.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1376,7 +1376,7 @@ public class SafeMathITest {
     test(0, 0, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, float.class, float.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1385,7 +1385,7 @@ public class SafeMathITest {
     test(0, 0, float.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, float.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, float.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (double i = 0; i < numTests; ++i)
+    for (double i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, float.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1394,7 +1394,7 @@ public class SafeMathITest {
     test(0, 0, double.class, byte.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, double.class, byte.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, double.class, byte.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, byte.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1403,7 +1403,7 @@ public class SafeMathITest {
     test(0, 0, double.class, short.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, double.class, short.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, double.class, short.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, short.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1412,7 +1412,7 @@ public class SafeMathITest {
     test(0, 0, double.class, int.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, double.class, int.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, double.class, int.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, int.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1421,7 +1421,7 @@ public class SafeMathITest {
     test(0, 0, double.class, long.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, double.class, long.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, double.class, long.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (long i = 0; i < numTests; ++i)
+    for (long i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, long.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1430,7 +1430,7 @@ public class SafeMathITest {
     test(0, 0, double.class, float.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, double.class, float.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, double.class, float.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (float i = 0; i < numTests; ++i)
+    for (float i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, float.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1439,7 +1439,7 @@ public class SafeMathITest {
     test(0, 0, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(1, 1, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
     test(-1, -1, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, d0() * 10, double.class, double.class, double.class, SafeMath::min, (n1,n2) -> Math.min(n1, n2));
   }
 
@@ -1460,7 +1460,7 @@ public class SafeMathITest {
     assertTrue(SafeMath.min(BigInteger.ZERO, BigInteger.ZERO).compareTo(BigInteger.ZERO) == 0);
     assertTrue(SafeMath.min(BigInteger.ONE, BigInteger.ONE).compareTo(BigInteger.ONE) == 0);
     assertTrue(SafeMath.min(BigInteger.ONE.negate(), BigInteger.ONE.negate()).compareTo(BigInteger.ONE.negate()) == 0);
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final long n1 = random.nextLong();
       final long n2 = random.nextLong();
       assertTrue(SafeMath.min(BigInteger.valueOf(n1), BigInteger.valueOf(n2)).compareTo(BigInteger.valueOf(Math.min(n1, n2))) == 0);
@@ -1484,7 +1484,7 @@ public class SafeMathITest {
     assertTrue(SafeMath.min(BigDecimal.ZERO, BigDecimal.ZERO).compareTo(BigDecimal.ZERO) == 0);
     assertTrue(SafeMath.min(BigDecimal.ONE, BigDecimal.ONE).compareTo(BigDecimal.ONE) == 0);
     assertTrue(SafeMath.min(BigDecimal.ONE.negate(), BigDecimal.ONE.negate()).compareTo(BigDecimal.ONE.negate()) == 0);
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final double n1 = random.nextDouble();
       final double n2 = random.nextDouble();
       assertTrue(SafeMath.min(BigDecimal.valueOf(n1), BigDecimal.valueOf(n2)).compareTo(BigDecimal.valueOf(Math.min(n1, n2))) == 0);
@@ -1493,71 +1493,71 @@ public class SafeMathITest {
 
   @Test
   public void testRoundByte() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, byte.class, n -> SafeMath.round(n, s), n -> n);
       test(1, byte.class, n -> SafeMath.round(n, s), n -> n);
       test(-1, byte.class, n -> SafeMath.round(n, s), n -> n);
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, byte.class, n -> SafeMath.round(n, s), n -> n);
     }
   }
 
   @Test
   public void testRoundShort() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, short.class, n -> SafeMath.round(n, s), n -> n);
       test(1, short.class, n -> SafeMath.round(n, s), n -> n);
       test(-1, short.class, n -> SafeMath.round(n, s), n -> n);
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, short.class, n -> SafeMath.round(n, s), n -> n);
     }
   }
 
   @Test
   public void testRoundInt() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, int.class, n -> SafeMath.round(n, s), n -> n);
       test(1, int.class, n -> SafeMath.round(n, s), n -> n);
       test(-1, int.class, n -> SafeMath.round(n, s), n -> n);
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, int.class, n -> SafeMath.round(n, s), n -> n);
     }
   }
 
   @Test
   public void testRoundLong() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, long.class, n -> SafeMath.round(n, s), n -> n);
       test(1, long.class, n -> SafeMath.round(n, s), n -> n);
       test(-1, long.class, n -> SafeMath.round(n, s), n -> n);
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, long.class, n -> SafeMath.round(n, s), n -> n);
     }
   }
 
   @Test
   public void testRoundFloat() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
       test(1, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
       test(-1, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
     }
   }
 
   private static void testRoundFloatScale(final RoundingMode rm) {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
       test(1, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
       test(-1, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
     }
   }
@@ -1604,23 +1604,23 @@ public class SafeMathITest {
 
   @Test
   public void testRoundDouble() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
       test(1, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
       test(-1, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
     }
   }
 
   private static void testRoundDoubleScale(final RoundingMode rm) {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
       test(1, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
       test(-1, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
     }
   }
@@ -1667,24 +1667,24 @@ public class SafeMathITest {
 
   @Test
   public void testRoundBigInteger() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
       test(1, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
       test(-1, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
     }
   }
 
   @Test
   public void testRoundBigDecimal() {
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
       test(0, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
       test(1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
       test(-1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
-      for (int i = 0; i < numTests; ++i)
+      for (int i = 0; i < numTests; ++i) // [N]
         test(d0() * 10, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
     }
   }
@@ -1694,7 +1694,7 @@ public class SafeMathITest {
     test(0, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(1, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(-1, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
   }
 
@@ -1703,7 +1703,7 @@ public class SafeMathITest {
     test(0, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(1, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(-1, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
   }
 
@@ -1712,7 +1712,7 @@ public class SafeMathITest {
     test(0, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(1, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(-1, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
   }
 
@@ -1721,7 +1721,7 @@ public class SafeMathITest {
     test(0, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(1, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(-1, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
   }
 
@@ -1730,7 +1730,7 @@ public class SafeMathITest {
     test(0, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(1, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(-1, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
   }
 
@@ -1739,7 +1739,7 @@ public class SafeMathITest {
     test(0, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(1, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
     test(-1, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
   }
 
@@ -1748,7 +1748,7 @@ public class SafeMathITest {
     test(0, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
     test(1, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
     test(-1, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
   }
 
@@ -1757,7 +1757,7 @@ public class SafeMathITest {
     test(0, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
     test(1, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
     test(-1, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0() * 10, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
   }
 
@@ -1766,21 +1766,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::sin, n -> Math.sin(n));
     test(1, double.class, SafeMath::sin, n -> Math.sin(n));
     test(-1, double.class, SafeMath::sin, n -> Math.sin(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::sin, n -> Math.sin(n));
   }
 
   @Test
   public void testSinBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(new BigDecimal(n), mc));
   }
 
   @Test
   public void testSinBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(n, mc));
   }
 
@@ -1789,21 +1789,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::sqrt, n -> Math.sqrt(n));
     test(1, double.class, SafeMath::sqrt, n -> Math.sqrt(n));
     test(-1, double.class, SafeMath::sqrt, n -> Math.sqrt(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::sqrt, n -> Math.sqrt(n));
   }
 
   @Test
   public void testSqrtBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(new BigDecimal(n), mc));
   }
 
   @Test
   public void testSqrtBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(n, mc));
   }
 
@@ -1812,21 +1812,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
     test(1, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
     test(-1, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
   }
 
   @Test
   public void testToDegreesBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
   }
 
   @Test
   public void testToDegreesBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc).setScale(9, RoundingMode.DOWN), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc).setScale(9, RoundingMode.DOWN));
   }
 
@@ -1835,21 +1835,21 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
     test(1, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
     test(-1, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::toRadians, n -> Math.toRadians(n));
   }
 
   @Test
   public void testToRadiansBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
   }
 
   @Test
   public void testToRadiansBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc).setScale(11, RoundingMode.DOWN), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc).setScale(11, RoundingMode.DOWN));
   }
 
@@ -1858,33 +1858,33 @@ public class SafeMathITest {
     test(0, double.class, SafeMath::tan, n -> Math.tan(n));
     test(1, double.class, SafeMath::tan, n -> Math.tan(n));
     test(-1, double.class, SafeMath::tan, n -> Math.tan(n));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), double.class, SafeMath::tan, n -> Math.tan(n));
   }
 
   @Test
   public void testTanBigInteger() {
     test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(new BigDecimal(n), mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(new BigDecimal(n), mc));
   }
 
   @Test
   public void testTanBigDecimal() {
     test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(n, mc));
-    for (int i = 0; i < numTests; ++i)
+    for (int i = 0; i < numTests; ++i) // [N]
       test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(n, mc));
   }
 
   private static void testRoundFloat(final RoundingMode rm) {
-    for (int i = 0; i < numTests * 100; ++i) {
+    for (int i = 0; i < numTests * 100; ++i) { // [N]
       float v = i < 100 ? (i + 0.5f) * (random.nextBoolean() ? -1 : 1) : random.nextFloat();
       float r1 = 0, r2 = 0;
       final float delta = Math.ulp(v);
       int j = 0;
       do {
         if (j > 0) {
-          if (TestAide.isInDebug())
+          if (TestAide.isInDebug(true))
             // TODO: Place breakpoint here to debug...
             System.console();
           else
@@ -1947,14 +1947,14 @@ public class SafeMathITest {
   }
 
   private static void testRoundDouble(final RoundingMode rm) {
-    for (int i = 0; i < numTests * 100; ++i) {
+    for (int i = 0; i < numTests * 100; ++i) { // [N]
       double v = i < 100 ? (i + 0.5d) * (random.nextBoolean() ? -1 : 1) : random.nextFloat();
       double r1 = 0, r2 = 0;
       final double delta = Math.ulp(v);
       int j = 0;
       do {
         if (j > 0) {
-          if (TestAide.isInDebug())
+          if (TestAide.isInDebug(true))
             // TODO: Place breakpoint here to debug...
             System.err.println(r1 + " != " + r2);
           else
@@ -2014,5 +2014,97 @@ public class SafeMathITest {
   @Test
   public void testRoundDoubleUnnecessary() {
     testRoundDouble(RoundingMode.UNNECESSARY);
+  }
+
+  @Test
+  public void testGcdByte() {
+    try {
+      SafeMath.gcd((byte)-1, (byte)0);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+    try {
+      SafeMath.gcd((byte)0, (byte)-1);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+
+    for (int i = 0; i < 1000000; ++i) { // [N]
+      final byte a = (byte)Math.abs(random.nextInt(Byte.MAX_VALUE + 1));
+      final byte b = (byte)Math.abs(random.nextInt(Byte.MAX_VALUE + 1));
+      final BigInteger gcd = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
+      assertEquals(gcd.byteValue(), SafeMath.gcd(a, b));
+    }
+  }
+
+  @Test
+  public void testGcdShort() {
+    try {
+      SafeMath.gcd((short)-1, (short)0);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+    try {
+      SafeMath.gcd((short)0, (short)-1);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+
+    for (int i = 0; i < 1000000; ++i) { // [N]
+      final short a = (short)Math.abs(random.nextInt(Short.MAX_VALUE + 1));
+      final short b = (short)Math.abs(random.nextInt(Short.MAX_VALUE + 1));
+      final BigInteger gcd = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
+      assertEquals(gcd.shortValue(), SafeMath.gcd(a, b));
+    }
+  }
+
+  @Test
+  public void testGcdInt() {
+    try {
+      SafeMath.gcd(-1, 0);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+    try {
+      SafeMath.gcd(0, -1);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+
+    for (int i = 0; i < 1000000; ++i) { // [N]
+      final int a = Math.abs(random.nextInt());
+      final int b = Math.abs(random.nextInt());
+      final BigInteger gcd = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
+      assertEquals(gcd.intValue(), SafeMath.gcd(a, b));
+    }
+  }
+
+  @Test
+  public void testGcdLong() {
+    try {
+      SafeMath.gcd(-1L, 0L);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+    try {
+      SafeMath.gcd(0L, -1L);
+      fail("Expected IllegalArgumentException");
+    }
+    catch (final IllegalArgumentException e) {
+    }
+
+    for (int i = 0; i < 1000000; ++i) { // [N]
+      final long a = Math.abs(random.nextLong());
+      final long b = Math.abs(random.nextLong());
+      final BigInteger gcd = BigInteger.valueOf(a).gcd(BigInteger.valueOf(b));
+      assertEquals(gcd.longValue(), SafeMath.gcd(a, b));
+    }
   }
 }

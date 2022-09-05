@@ -22,8 +22,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
- * Provides some mathematical operations on {@code BigDecimal} and
- * {@code BigInteger}. Static methods.
+ * Provides some mathematical operations on {@code BigDecimal} and {@code BigInteger}. Static methods.
  */
 class BigMath {
   private static final double LOG_2 = Math.log(2.0);
@@ -40,8 +39,7 @@ class BigMath {
    *
    * @param val The {@link BigInteger}.
    * @param rm The {@link RoundingMode}.
-   * @return Natural logarithm, as in {@link java.lang.Math#log(double)}, or
-   *         {@code NaN} if the argument is negative, or
+   * @return Natural logarithm, as in {@link java.lang.Math#log(double)}, or {@code NaN} if the argument is negative, or
    *         {@code NEGATIVE_INFINITY} if the argument is zero.
    */
   public static double logBigInteger(BigInteger val, final RoundingMode rm) {
@@ -62,8 +60,7 @@ class BigMath {
    *
    * @param val The {@link BigDecimal}.
    * @param rm The {@link RoundingMode}.
-   * @return Natural logarithm, as in {@link java.lang.Math#log(double)}, or
-   *         {@code NaN} if the argument is negative, or
+   * @return Natural logarithm, as in {@link java.lang.Math#log(double)}, or {@code NaN} if the argument is negative, or
    */
   public static double logBigDecimal(final BigDecimal val, final RoundingMode rm) {
     if (val.signum() < 1)
@@ -77,13 +74,10 @@ class BigMath {
   }
 
   /**
-   * Computes the exponential function, returning a {@link BigDecimal}
-   * (precision ~ 16).
+   * Computes the exponential function, returning a {@link BigDecimal} (precision ~ 16).
    *
-   * @param exponent Any finite value (infinite or {@code NaN} throws
-   *          {@code IllegalArgumentException}).
-   * @return The value of <i>e</i> raised to the given {@code exponent}, as in
-   *         {@link java.lang.Math#exp(double)}.
+   * @param exponent Any finite value (infinite or {@code NaN} throws {@code IllegalArgumentException}).
+   * @return The value of <i>e</i> raised to the given {@code exponent}, as in {@link java.lang.Math#exp(double)}.
    */
   public static BigDecimal expBig(double exponent) {
     if (!Double.isFinite(exponent))
@@ -112,18 +106,15 @@ class BigMath {
   }
 
   /**
-   * Same as {@link java.lang.Math#pow(double,double)} but returns a
-   * {@link BigDecimal} (precision ~ 16).
+   * Same as {@link java.lang.Math#pow(double,double)} but returns a {@link BigDecimal} (precision ~ 16).
    * <p>
    * Works even for outputs that fall outside the {@code double} range.
    * <p>
-   * The only limitation is that {@code b * log(a)} cannot exceed the
-   * {@code double} range.
+   * The only limitation is that {@code b * log(a)} cannot exceed the {@code double} range.
    *
    * @param base The non-negative base.
    * @param exp The finite exponent.
-   * @return Returns the value of {@code base} raised to the power of
-   *         {@code exp}.
+   * @return Returns the value of {@code base} raised to the power of {@code exp}.
    */
   public static BigDecimal powBig(final double base, final double exp) {
     if (!(Double.isFinite(base) && Double.isFinite(exp)))

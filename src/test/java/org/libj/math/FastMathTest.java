@@ -25,7 +25,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testLog2Int() {
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final int n = Math.abs(random.nextInt());
       assertEquals(String.valueOf(n), (byte)(Math.log(n) / Math.log(2)), FastMath.log2(n));
     }
@@ -33,7 +33,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testLog2Long() {
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final long n = Math.abs(random.nextLong());
       assertEquals(String.valueOf(n), (byte)(Math.log(n) / Math.log(2)), FastMath.log2(n));
     }
@@ -41,7 +41,7 @@ public class FastMathTest extends BigIntTest {
 
   @Test
   public void testE10() {
-    for (byte i = 0; i < 19; ++i)
+    for (byte i = 0; i < 19; ++i) // [N]
       assertEquals((long)Math.pow(10, i), FastMath.longE10[i]);
   }
 

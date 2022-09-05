@@ -19,19 +19,16 @@ package org.libj.math;
 import java.util.Arrays;
 
 /**
- * Alternative functions supplementing those in {@link java.lang.Math} that
- * offer higher performance algorithms.
+ * Alternative functions supplementing those in {@link java.lang.Math} that offer higher performance algorithms.
  */
 public final class FastMath {
   /**
-   * The values of <code>10<sup>n</sup></code> as a {@code long} for {@code n}
-   * between {@code 0} and {@code 9}.
+   * The values of <code>10<sup>n</sup></code> as a {@code long} for {@code n} between {@code 0} and {@code 9}.
    */
   public static final int[] intE10 = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 
   /**
-   * The values of <code>10<sup>n</sup></code> as a {@code long} for {@code n}
-   * between {@code 0} and {@code 18}.
+   * The values of <code>10<sup>n</sup></code> as a {@code long} for {@code n} between {@code 0} and {@code 18}.
    */
   public static final long[] longE10 = {1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L, 10000000000L, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 1000000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L};
 
@@ -49,12 +46,10 @@ public final class FastMath {
   }
 
   /**
-   * Return <code>10<sup>n</sup></code>, as a {@code double}, expanding the
-   * underlying {@link #doubleE10} array if necessary.
+   * Return <code>10<sup>n</sup></code>, as a {@code double}, expanding the underlying {@link #doubleE10} array if necessary.
    *
    * @param n The power of ten to be returned (&gt;= 0).
-   * @return A {@linkplain BigInt#val() value-encoded number} with the value
-   *         (10<sup>n</sup>).
+   * @return A {@linkplain BigInt#val() value-encoded number} with the value (10<sup>n</sup>).
    * @throws ArrayIndexOutOfBoundsException If {@code n} is negative.
    */
   public static double doubleE10(final int n) {
@@ -81,7 +76,7 @@ public final class FastMath {
         }
 
         pows = Arrays.copyOf(pows, newLen);
-        for (; curLen < newLen; ++curLen)
+        for (; curLen < newLen; ++curLen) // [A]
           pows[curLen] = StrictMath.pow(10, curLen);
 
         // Based on the following facts:
@@ -96,13 +91,11 @@ public final class FastMath {
   }
 
   /**
-   * Return <code>10<sup>n</sup></code>, as a {@linkplain BigInt#val()
-   * value-encoded number}, expanding the underlying {@link #bigIntE10} array if
-   * necessary.
+   * Return <code>10<sup>n</sup></code>, as a {@linkplain BigInt#val() value-encoded number}, expanding the underlying
+   * {@link #bigIntE10} array if necessary.
    *
    * @param n The power of ten to be returned (&gt;= 0).
-   * @return A {@linkplain BigInt#val() value-encoded number} with the value
-   *         (10<sup>n</sup>).
+   * @return A {@linkplain BigInt#val() value-encoded number} with the value (10<sup>n</sup>).
    * @throws ArrayIndexOutOfBoundsException If {@code n} is negative.
    */
   public static int[] E10(final int n) {
@@ -127,7 +120,7 @@ public final class FastMath {
 
         int[] val;
         pows = Arrays.copyOf(pows, newLen);
-        for (int len; curLen < newLen; ++curLen) {
+        for (int len; curLen < newLen; ++curLen) { // [A]
           val = pows[curLen - 1];
           len = val[0];
           val = len + 2 >= val.length ? BigInt.reallocExact(val, len + 1, len + 2) : val.clone();
@@ -146,39 +139,34 @@ public final class FastMath {
   }
 
   /**
-   * Returns the base 2 logarithm of positive {@code int} values, and {@code 0}
-   * for negative values.
+   * Returns the base 2 logarithm of positive {@code int} values, and {@code 0} for negative values.
    * <p>
-   * This method differentiates itself from {@link java.lang.Math#log(double)}
-   * with a high performance algorithm specific to {@code int} arguments.
+   * This method differentiates itself from {@link java.lang.Math#log(double)} with a high performance algorithm specific to
+   * {@code int} arguments.
    *
    * @param n The value.
-   * @return The base 2 logarithm of positive {@code int} values, and {@code 0}
-   *         for negative values.
+   * @return The base 2 logarithm of positive {@code int} values, and {@code 0} for negative values.
    */
   public static byte log2(final int n) {
     return n <= 0 ? 0 : (byte)(31 - Integer.numberOfLeadingZeros(n - 1));
   }
 
   /**
-   * Returns the base 2 logarithm of positive {@code long} values, and {@code 0}
-   * for negative values.
+   * Returns the base 2 logarithm of positive {@code long} values, and {@code 0} for negative values.
    * <p>
-   * This method differentiates itself from {@link java.lang.Math#log(double)}
-   * with a high performance algorithm specific to {@code long} arguments.
+   * This method differentiates itself from {@link java.lang.Math#log(double)} with a high performance algorithm specific to
+   * {@code long} arguments.
    *
    * @param n The value.
-   * @return The base 2 logarithm of positive {@code long} values, and {@code 0}
-   *         for negative values.
+   * @return The base 2 logarithm of positive {@code long} values, and {@code 0} for negative values.
    */
   public static byte log2(final long n) {
     return n <= 0 ? 0 : (byte)(63 - Long.numberOfLeadingZeros(n - 1));
   }
 
   /**
-   * Divides the {@code dividend} (unsigned) by {@code divisor} (unsigned), and
-   * sets the quotient in {@code result[0]} and {@code remainder} in
-   * {@code result[1]}.
+   * Divides the {@code dividend} (unsigned) by {@code divisor} (unsigned), and sets the quotient in {@code result[0]} and
+   * {@code remainder} in {@code result[1]}.
    *
    * @param dividend The dividend (unsigned).
    * @param divisor The divisor (unsigned)
@@ -234,13 +222,11 @@ public final class FastMath {
   }
 
   /**
-   * Returns the remainder of {@code dividend} (unsigned) divided by
-   * {@code divisor} (unsigned).
+   * Returns the remainder of {@code dividend} (unsigned) divided by {@code divisor} (unsigned).
    *
    * @param dividend The dividend (unsigned).
    * @param divisor The divisor (unsigned)
-   * @return The remainder or {@code dividend} (unsigned) divided by
-   *         {@code divisor} (unsigned).
+   * @return The remainder or {@code dividend} (unsigned) divided by {@code divisor} (unsigned).
    * @throws ArithmeticException If {@code divisor} is 0.
    */
   public static long remainderUnsigned(final long dividend, final long divisor) {
