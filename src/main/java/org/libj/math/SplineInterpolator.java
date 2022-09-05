@@ -18,125 +18,262 @@ package org.libj.math;
 
 import static org.libj.lang.Assertions.*;
 
+import java.util.List;
+
+import org.libj.util.primitive.DoubleList;
+
 /**
  * Performs spline interpolation given a set of control points.
+ * @param <C> The type parameter of the coordinate object.
  */
-public class SplineInterpolator {
-  private final float[] _x;
-  private final float[] _y;
-  private final float[] _m;
+public class SplineInterpolator<C> {
+  public interface Adapter<T> {
+    double get(T data, int d, int i);
+    int size(T data);
+  }
 
-  private SplineInterpolator(final float[] x, final float[] y, final float[] m) {
-    _x = x;
-    _y = y;
-    _m = m;
+  private static final Adapter<float[][]> FLOAT_ARRAY = new Adapter<float[][]>() {
+    @Override
+    public double get(final float[][] data, final int d, final int i) {
+      return data[d][i];
+    }
+
+    @Override
+    public int size(final float[][] data) {
+      return data[0].length;
+    }
+  };
+  private static final Adapter<double[][]> DOUBLE_ARRAY = new Adapter<double[][]>() {
+    @Override
+    public double get(final double[][] data, final int d, final int i) {
+      return data[d][i];
+    }
+
+    @Override
+    public int size(final double[][] data) {
+      return data[0].length;
+    }
+  };
+  private static final Adapter<DoubleList[]> DOUBLE_LIST = new Adapter<DoubleList[]>() {
+    @Override
+    public double get(final DoubleList[] data, final int d, final int i) {
+      return data[d].get(i);
+    }
+
+    @Override
+    public int size(final DoubleList[] data) {
+      return data[0].size();
+    }
+  };
+  private static final Adapter<List<Double>[]> LIST_DOUBLE = new Adapter<List<Double>[]>() {
+    @Override
+    public double get(final List<Double>[] data, final int d, final int i) {
+      return data[d].get(i);
+    }
+
+    @Override
+    public int size(final List<Double>[] data) {
+      return data[0].size();
+    }
+  };
+
+  /**
+   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+   * values will also be monotonic. This function uses the
+   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+   * parameters.
+   *
+   * @param x The {@code x} component of the control points, strictly increasing.
+   * @param y The {@code y} component of the control points.
+   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
+   *           fewer than 2 values.
+   */
+  public static SplineInterpolator<?> createMonotoneCubicSpline(final float[] x, final float[] y) {
+    return createMonotoneCubicSpline(new float[][] {x, y}, FLOAT_ARRAY);
   }
 
   /**
-   * Creates a monotone cubic spline from a given set of control points. The
-   * spline is guaranteed to pass through each control point exactly. Moreover,
-   * assuming the control points are monotonic (Y is non-decreasing or
-   * non-increasing) then the interpolated values will also be monotonic. This
-   * function uses the <a href=
-   * "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a>
-   * method for computing the spline parameters.
+   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+   * values will also be monotonic. This function uses the
+   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+   * parameters.
    *
-   * @param x The {@code x} component of the control points, strictly
-   *          increasing.
+   * @param x The {@code x} component of the control points, strictly increasing.
    * @param y The {@code y} component of the control points.
-   * @return A new {@link SplineInterpolator} of a monotone cubic spline from
-   *         the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if
-   *           {@code x} or {@code y} have different lengths or fewer than 2
-   *           values.
+   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
+   *           fewer than 2 values.
    */
-  public static SplineInterpolator createMonotoneCubicSpline(final float[] x, final float[] y) {
-    if (assertNotNull(x).length != assertNotNull(y).length || x.length < 2)
+  public static SplineInterpolator<?> createMonotoneCubicSpline(final double[] x, final double[] y) {
+    return createMonotoneCubicSpline(new double[][] {x, y}, DOUBLE_ARRAY);
+  }
+
+  /**
+   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+   * values will also be monotonic. This function uses the
+   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+   * parameters.
+   *
+   * @param x The {@code x} component of the control points, strictly increasing.
+   * @param y The {@code y} component of the control points.
+   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
+   *           fewer than 2 values.
+   */
+  @SuppressWarnings("unchecked")
+  public static SplineInterpolator<?> createMonotoneCubicSpline(final List<Double> x, final List<Double> y) {
+    return createMonotoneCubicSpline(new List[] {x, y}, LIST_DOUBLE);
+  }
+
+  /**
+   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+   * values will also be monotonic. This function uses the
+   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+   * parameters.
+   *
+   * @param x The {@code x} component of the control points, strictly increasing.
+   * @param y The {@code y} component of the control points.
+   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
+   *           fewer than 2 values.
+   */
+  public static SplineInterpolator<?> createMonotoneCubicSpline(final DoubleList x, final DoubleList y) {
+    return createMonotoneCubicSpline(new DoubleList[] {x, y}, DOUBLE_LIST);
+  }
+
+//  /**
+//   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+//   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+//   * values will also be monotonic. This function uses the
+//   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+//   * parameters.
+//   *
+//   * @param xy The array of {@code T} component of the control points, strictly increasing.
+//   * @param y The {@code y} component of the control points.
+//   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+//   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
+//   *           fewer than 2 values.
+//   */
+//  public static <T>SplineInterpolator<?> createMonotoneCubicSpline(final T[] xy, final Adapter<T> y) {
+//    return createMonotoneCubicSpline(xy, y);
+//  }
+
+  /**
+   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+   * values will also be monotonic. This function uses the
+   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+   * parameters.
+   *
+   * @param <T> The type parameter of the coordinate object.
+   * @param xy The control points, strictly increasing.
+   * @param adapter The {@link Adapter} for conversion of {@code xy} control points of type {@code &lt;T&gt;} to {@code double}.
+   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
+   *           fewer than 2 values.
+   */
+  public static <T>SplineInterpolator<T> createMonotoneCubicSpline(final T xy, final Adapter<T> adapter) {
+    assertNotNull(xy);
+    final int n = adapter.size(xy), n1 = n - 1, n2 = n - 2;
+    if (adapter.size(xy) < 2)
       throw new IllegalArgumentException("Arrays must be of equal length greater than or equal to two");
 
-    final int n = x.length;
-    final float[] d = new float[n - 1]; // could optimize this out
-    final float[] m = new float[n];
+    final double[] d = new double[n1]; // could optimize this out
+    final double[] m = new double[n];
 
     // Compute slopes of secant lines between successive points
-    for (int i = 0; i < n - 1; ++i) {
-      final float h = x[i + 1] - x[i];
-      if (h <= 0f)
+    for (int i = 0; i < n1; ++i) { // [A]
+      final double h = adapter.get(xy, 0, i + 1) - adapter.get(xy, 0, i);
+      if (h <= 0)
         throw new IllegalArgumentException("Control points must all have strictly increasing x values");
 
-      d[i] = (y[i + 1] - y[i]) / h;
+      d[i] = (adapter.get(xy, 1, i + 1) - adapter.get(xy, 1, i)) / h;
     }
 
     // Initialize the tangents as the average of the secants
     m[0] = d[0];
-    for (int i = 1; i < n - 1; ++i)
-      m[i] = (d[i - 1] + d[i]) / 2f;
+    for (int i = 1; i < n1; ++i) // [A]
+      m[i] = (d[i - 1] + d[i]) / 2;
 
-    m[n - 1] = d[n - 2];
+    m[n1] = d[n2];
 
     // Update the tangents to preserve monotonicity
-    for (int i = 0; i < n - 1; ++i) {
-      if (d[i] == 0f) { // successive Y values are equal
-        m[i] = 0f;
-        m[i + 1] = 0f;
+    for (int i = 0; i < n1; ++i) { // [A]
+      if (d[i] == 0) { // successive Y values are equal
+        m[i] = 0;
+        m[i + 1] = 0;
       }
       else {
-        final float a = m[i] / d[i];
-        final float b = m[i + 1] / d[i];
-        final float h = (float)Math.hypot(a, b);
-        if (h > 9f) {
-          final float t = 3f / h;
+        final double a = m[i] / d[i];
+        final double b = m[i + 1] / d[i];
+        final double h = Math.hypot(a, b);
+        if (h > 9) {
+          final double t = 3 / h;
           m[i] = t * a * d[i];
           m[i + 1] = t * b * d[i];
         }
       }
     }
 
-    return new SplineInterpolator(x, y, m);
+    return new SplineInterpolator<>(adapter, xy, m);
+  }
+
+  private final Adapter<C> adapter;
+  private final C _xy;
+  private final double[] _m;
+
+  private SplineInterpolator(final Adapter<C> adapter, final C xy, final double[] m) {
+    this.adapter = assertNotNull(adapter);
+    _xy = assertNotNull(xy);
+    _m = assertNotEmpty(m);
   }
 
   /**
-   * Interpolates the value of Y = f(X) for given X. Clamps X to the domain of
-   * the spline.
+   * Interpolates the value of Y = f(X) for given X. Clamps X to the domain of the spline.
    *
    * @param x The X value.
    * @return The interpolated Y = f(X) value.
    */
-  public float interpolate(final float x) {
+  public double interpolate(final double x) {
     // Handle the boundary cases.
-    final int n = _x.length;
-    if (Float.isNaN(x))
+    final int n = adapter.size(_xy), n1 = n - 1;
+    if (Double.isNaN(x))
       return x;
 
-    if (x <= _x[0])
-      return _y[0];
+    if (x <= adapter.get(_xy, 0, 0))
+      return adapter.get(_xy, 1, 0);
 
-    if (x >= _x[n - 1])
-      return _y[n - 1];
+    if (x >= adapter.get(_xy, 0, n1))
+      return adapter.get(_xy, 1, n1);
 
     // Find the index 'i' of the last point with smaller x
     // We know this will be within the spline due to the boundary tests
     int i = 0;
-    while (x >= _x[i + 1])
-      if (x == _x[++i])
-        return _y[i];
+    while (x >= adapter.get(_xy, 0, i + 1))
+      if (x == adapter.get(_xy, 0, ++i))
+        return adapter.get(_xy, 1, i);
 
     // Perform cubic Hermite spline interpolation
-    final float h = _x[i + 1] - _x[i];
-    final float t = (x - _x[i]) / h;
-    return (_y[i] * (1 + 2 * t) + h * _m[i] * t) * (1 - t) * (1 - t) + (_y[i + 1] * (3 - 2 * t) + h * _m[i + 1] * (t - 1)) * t * t;
+    final double h = adapter.get(_xy, 0, i + 1) - adapter.get(_xy, 0, i);
+    final double t = (x - adapter.get(_xy, 0, i)) / h;
+    return (adapter.get(_xy, 1, i) * (1 + 2 * t) + h * _m[i] * t) * (1 - t) * (1 - t) + (adapter.get(_xy, 1, i + 1) * (3 - 2 * t) + h * _m[i + 1] * (t - 1)) * t * t;
   }
 
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder();
     builder.append('[');
-    for (int i = 0, n = _x.length; i < n; ++i) {
+    for (int i = 0, i$ = adapter.size(_xy); i < i$; ++i) { // [A]
       if (i > 0)
         builder.append(", ");
 
-      builder.append('(').append(_x[i]);
-      builder.append(", ").append(_y[i]);
+      builder.append('(').append(adapter.get(_xy, 0, i));
+      builder.append(", ").append(adapter.get(_xy, 1, i));
       builder.append(": ").append(_m[i]).append(')');
     }
 
