@@ -43,7 +43,7 @@ public class DecimalSetScaleTest extends DecimalTest {
     final int iterations = 10000;
     int progress = 0;
     String decimalString = null;
-    for (int i = 0; i < iterations; ++i) {
+    for (int i = 0; i < iterations; ++i) { // [N]
       progress = progress(progress, i, i, iterations);
 
       final short newScale = CaseTest.DecimalCase.randomScale(Decimal.MIN_SIGNIFICAND);

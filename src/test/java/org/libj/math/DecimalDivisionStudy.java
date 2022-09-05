@@ -34,23 +34,20 @@ public class DecimalDivisionStudy {
   private static final Random random = new Random();
 
   /**
-   * Returns the unscaled result of the maximum precision available for an
-   * unsigned {@code long} (18 or 19 digits, depending on the value) for the
-   * "long division" of {@code v1} (the dividend) by {@code v2} (the divisor).
+   * Returns the unscaled result of the maximum precision available for an unsigned {@code long} (18 or 19 digits, depending on the
+   * value) for the "long division" of {@code v1} (the dividend) by {@code v2} (the divisor).
    *
    * @param v1 The dividend.
    * @param v2 The divisor.
    * @param v The whole digits of {@code v1 / v2}.
    * @param dp Decimal precision of the result.
-   * @return The unscaled result of the maximum precision available for an
-   *         unsigned {@code long} (18 or 19 digits, depending on the value) for
-   *         the "long division" of {@code v1} (the dividend) by {@code v2} (the
-   *         divisor).
+   * @return The unscaled result of the maximum precision available for an unsigned {@code long} (18 or 19 digits, depending on the
+   *         value) for the "long division" of {@code v1} (the dividend) by {@code v2} (the divisor).
    */
   static long scaleLongDiv(long v1, final long v2, long v, byte dp) {
     long a, r;
     // Perform long division to fill all bits of signed long before overflow.
-    for (int i = 0;; ++i, v = a) {
+    for (int i = 0;; ++i, v = a) { // [N]
       v1 = Long.remainderUnsigned(v1, v2) * 10;
       r = Long.divideUnsigned(v1, v2);
       a = v * 10 + r;
@@ -70,7 +67,7 @@ public class DecimalDivisionStudy {
     final int[] zds = new int[4];
     final int[] x = new int[2];
     final int[] y = new int[2];
-    for (int i = 0; i < 10000000; ++i) {
+    for (int i = 0; i < 10000000; ++i) { // [N]
       long v1 = random.nextLong();
       v1 = Math.abs(v1 == Long.MIN_VALUE ? ++v1 : v1);
 
@@ -106,7 +103,7 @@ public class DecimalDivisionStudy {
 
     System.err.println(Strings.pad("LD", RIGHT, 12) + Strings.pad("MPN", RIGHT, 12));
     final long[] sum = new long[2];
-    for (int i = 0; i < time.length; ++i) {
+    for (int i = 0, i$ = time.length; i < i$; ++i) { // [A]
       final boolean c = time[i][0] < time[i][1];
       System.err.println(Ansi.apply(Strings.pad(String.valueOf(time[i][0]), RIGHT, 12), c ? Color.GREEN : Color.RED) + Ansi.apply(Strings.pad(String.valueOf(time[i][1]), RIGHT, 12), c ? Color.RED : Color.GREEN));
       sum[0] += time[i][0];
@@ -121,7 +118,7 @@ public class DecimalDivisionStudy {
   private static long[][] time = new long[19][];
 
   static {
-    for (int i = 0; i < time.length; ++i)
+    for (int i = 0, i$ = time.length; i < i$; ++i) // [A]
       time[i] = new long[2];
   }
 
@@ -196,7 +193,7 @@ public class DecimalDivisionStudy {
 
   @Test
   public void testFloatingDecimal() {
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 10; ++i) { // [N]
       final double v = random.nextDouble() / random.nextLong();
       final int exp2 = Math.getExponent(v);
 

@@ -22,41 +22,32 @@ import java.math.BigInteger;
 
 abstract class BigIntegerMultiplication extends BigIntMultiplication {
   /**
-   * The threshold value for using 3-way Toom-Cook multiplication.
-   * If the number of ints in each mag array is greater than the
-   * Karatsuba threshold, and the number of ints in at least one of
-   * the mag arrays is greater than this threshold, then Toom-Cook
+   * The threshold value for using 3-way Toom-Cook multiplication. If the number of ints in each mag array is greater than the
+   * Karatsuba threshold, and the number of ints in at least one of the mag arrays is greater than this threshold, then Toom-Cook
    * multiplication will be used.
    */
   static final int TOOM_COOK_THRESHOLD = 240; // 240
 
   /**
-   * The threshold value for using squaring code to perform multiplication
-   * of a {@code BigInteger} instance by itself.  If the number of ints in
-   * the number are larger than this value, {@code multiply(this)} will
-   * return {@code square()}.
+   * The threshold value for using squaring code to perform multiplication of a {@code BigInteger} instance by itself. If the number
+   * of ints in the number are larger than this value, {@code multiply(this)} will return {@code square()}.
    */
   static final int MULTIPLY_SQUARE_THRESHOLD = 20;
 
   /**
-   * The threshold value for using Karatsuba squaring.  If the number
-   * of ints in the number are larger than this value,
-   * Karatsuba squaring will be used.   This value is found
-   * experimentally to work well.
+   * The threshold value for using Karatsuba squaring. If the number of ints in the number are larger than this value, Karatsuba
+   * squaring will be used. This value is found experimentally to work well.
    */
   static final int KARATSUBA_SQUARE_THRESHOLD = 128; // 128
 
   /**
-   * The threshold value for using Toom-Cook squaring.  If the number
-   * of ints in the number are larger than this value,
-   * Toom-Cook squaring will be used.   This value is found
-   * experimentally to work well.
+   * The threshold value for using Toom-Cook squaring. If the number of ints in the number are larger than this value, Toom-Cook
+   * squaring will be used. This value is found experimentally to work well.
    */
   static final int TOOM_COOK_SQUARE_THRESHOLD = 216;
 
   /**
-   * This constant limits {@code mag.length} of BigIntegers to the supported
-   * range.
+   * This constant limits {@code mag.length} of BigIntegers to the supported range.
    */
   static final int MAX_MAG_LENGTH = Integer.MAX_VALUE / Integer.SIZE + 1; // (1 << 26)
 
@@ -133,16 +124,12 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Multiplies two BigIntegers using the Karatsuba multiplication algorithm.
-   * This is a recursive divide-and-conquer algorithm which is more efficient
-   * for large numbers than what is commonly called the "grade-school" algorithm
-   * used in multiplyToLen. If the numbers to be multiplied have length n, the
-   * "grade-school" algorithm has an asymptotic complexity of O(n^2). In
-   * contrast, the Karatsuba algorithm has complexity of O(n^(log2(3))), or
-   * O(n^1.585). It achieves this increased performance by doing 3 multiplies
-   * instead of 4 when evaluating the product. As it has some overhead, should
-   * be used when both numbers are larger than a certain threshold (found
-   * experimentally). See: http://en.wikipedia.org/wiki/Karatsuba_algorithm
+   * Multiplies two BigIntegers using the Karatsuba multiplication algorithm. This is a recursive divide-and-conquer algorithm which
+   * is more efficient for large numbers than what is commonly called the "grade-school" algorithm used in multiplyToLen. If the
+   * numbers to be multiplied have length n, the "grade-school" algorithm has an asymptotic complexity of O(n^2). In contrast, the
+   * Karatsuba algorithm has complexity of O(n^(log2(3))), or O(n^1.585). It achieves this increased performance by doing 3
+   * multiplies instead of 4 when evaluating the product. As it has some overhead, should be used when both numbers are larger than
+   * a certain threshold (found experimentally). See: http://en.wikipedia.org/wiki/Karatsuba_algorithm
    */
   private static int[] mulKaratsuba(final int[] x, final int xlen, final int[] y, final int ylen, int zlen) {
     zlen += OFF;
@@ -276,13 +263,10 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    *
    * @param lowerSize The size of the lower-order bit slices.
    * @param upperSize The size of the higher-order bit slices.
-   * @param slice The index of which slice is requested, which must be a number
-   *          from 0 to size-1. Slice 0 is the highest-order bits, and slice
-   *          size-1 are the lowest-order bits. Slice 0 may be of different size
-   *          than the other slices.
-   * @param fullsize The size of the larger integer array, used to align slices
-   *          to the appropriate position when multiplying different-sized
-   *          numbers.
+   * @param slice The index of which slice is requested, which must be a number from 0 to size-1. Slice 0 is the highest-order bits,
+   *          and slice size-1 are the lowest-order bits. Slice 0 may be of different size than the other slices.
+   * @param fullsize The size of the larger integer array, used to align slices to the appropriate position when multiplying
+   *          different-sized numbers.
    */
   private static int[] getToomSlice(final int[] mag, final int off, final int len, int lowerSize, int upperSize, int slice, int fullsize, final int addSize) {
     int start, sliceSize;
@@ -334,7 +318,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     len += off;
 
     long x, w, borrow = 0;
-    for (int i = off; i < len; ++i) {
+    for (int i = off; i < len; ++i) { // [A]
       x = val[i] & LONG_MASK;
       w = x - borrow;
       if (borrow > x) // Did we make the number go negative?
@@ -358,22 +342,22 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     }
 
     len -= off;
-    for (; val[len] == 0; --len);
+    for (; val[len] == 0; --len); // [A]
     val[0] = sig ? len : -len;
     // _debugLenSig(val);
     return val;
   }
 
   /**
-   * Returns a new BigInteger representing n lower ints of the number. This is
-   * used by Karatsuba multiplication and Karatsuba squaring.
+   * Returns a new BigInteger representing n lower ints of the number. This is used by Karatsuba multiplication and Karatsuba
+   * squaring.
    */
   private static int[] getLower(final int[] val, int len, int n, final boolean reuse, int fixedLen) {
     if (len <= n)
       return abs(reuse && fixedLen <= val.length ? val : val.clone());
 
     // First trim the length
-    for (; val[n] == 0; --n);
+    for (; val[n] == 0; --n); // [A]
 
     final int[] lowerInts;
     if (reuse && fixedLen <= val.length) {
@@ -393,10 +377,8 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Returns a new BigInteger representing mag.length-n upper ints of the
-   * number. This is used by Karatsuba multiplication and Karatsuba squaring.
-   * Pass both lengths to make an array that will be sufficiently sized for
-   * operations to follow.
+   * Returns a new BigInteger representing mag.length-n upper ints of the number. This is used by Karatsuba multiplication and
+   * Karatsuba squaring. Pass both lengths to make an array that will be sufficiently sized for operations to follow.
    * <p>
    * Note: upperLen2 is not checked if it's less than 0!
    */
@@ -444,11 +426,9 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Squares a BigInteger using the Karatsuba squaring algorithm. It should be
-   * used when both numbers are larger than a certain threshold (found
-   * experimentally). It is a recursive divide-and-conquer algorithm that has
-   * better asymptotic performance than the algorithm used in
-   * {@link #squareToLen(int[],int,int,int)}.
+   * Squares a BigInteger using the Karatsuba squaring algorithm. It should be used when both numbers are larger than a certain
+   * threshold (found experimentally). It is a recursive divide-and-conquer algorithm that has better asymptotic performance than
+   * the algorithm used in {@link #squareToLen(int[],int,int,int)}.
    */
   private static int[] squareKaratsuba(final int[] val, final int len, final int fixedLen) {
     final int half = (len + 1) / 2;
@@ -476,11 +456,9 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Squares a BigInteger using the 3-way Toom-Cook squaring algorithm. It
-   * should be used when both numbers are larger than a certain threshold (found
-   * experimentally). It is a recursive divide-and-conquer algorithm that has
-   * better asymptotic performance than the algorithm used in squareToLen or
-   * squareKaratsuba.
+   * Squares a BigInteger using the 3-way Toom-Cook squaring algorithm. It should be used when both numbers are larger than a
+   * certain threshold (found experimentally). It is a recursive divide-and-conquer algorithm that has better asymptotic performance
+   * than the algorithm used in squareToLen or squareKaratsuba.
    */
   private static int[] squareToomCook3(final int[] val, final int off) {
     final int len = Math.abs(val[0]);
@@ -526,14 +504,13 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Squares the contents of the int array x. The result is placed into the int
-   * array z. The contents of x are not changed.
+   * Squares the contents of the int array x. The result is placed into the int array z. The contents of x are not changed.
    */
   private static final int[] squareToLen(final int[] mag, final int off, final int len, final int fixedLen) {
     int zlen = len * 2;
     final int[] z = new int[fixedLen < 0 ? zlen + off : fixedLen];
     squareToLen0(mag, len, z, zlen, off);
-    for (; z[zlen] == 0; --zlen);
+    for (; z[zlen] == 0; --zlen); // [A]
     z[0] = zlen;
     // _debugLenSig(z);
     return z;
@@ -586,13 +563,13 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     zlen += off;
 
     // Store the squares, right shifted one bit (i.e., divided by 2)
-    for (i = xlen - 1, j = zlen; i >= off; --i) {
+    for (i = xlen - 1, j = zlen; i >= off; --i) { // [A]
       z[--j] = ((int)x0 << 31) | (int)((x0 = (x0 = x[i] & LONG_MASK) * x0) >>> 33);
       z[--j] = (int)(x0 >>> 1);
     }
 
     // Add in off-diagonal sums
-    for (i = off, offset = off; i < xlen; ++i, offset += 2) {
+    for (i = off, offset = off; i < xlen; ++i, offset += 2) { // [A]
       j = x[i];
       j = mulAdd(x, i + 1, xlen, j, z, offset + 1);
       addOne(z, offset, zlen, xlen - i, j);
@@ -659,8 +636,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Calculate bitlength of contents of the first len elements an int array,
-   * assuming there are no leading zero ints.
+   * Calculate bitlength of contents of the first len elements an int array, assuming there are no leading zero ints.
    */
   static long bitLength(final int[] val, final int len) {
     return len == 0 ? 0 : ((len - 1) << 5) + bitLengthForInt(val[0]);
@@ -679,11 +655,11 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
 
   public static void hackMultiplyToLen(final int[] x, final int xlen, final int[] y, final int ylen, final int[] z) {
     final int[] xx = new int[xlen];
-    for (int i = 1; i <= xlen; ++i)
+    for (int i = 1; i <= xlen; ++i) // [A]
       xx[xlen - i] = x[i];
 
     final int[] yy = new int[ylen];
-    for (int i = 1; i <= ylen; ++i)
+    for (int i = 1; i <= ylen; ++i) // [A]
       yy[ylen - i] = y[i];
 
     int zlen = xlen + ylen;
@@ -695,7 +671,7 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
     }
 
     z[zlen] = z[0];
-    for (int i = 1; i < zlen; ++i) {
+    for (int i = 1; i < zlen; ++i) { // [A]
       int a = z[i];
       z[i] = z[zlen - i];
       z[zlen - i] = a;

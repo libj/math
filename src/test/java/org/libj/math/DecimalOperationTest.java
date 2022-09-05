@@ -80,7 +80,7 @@ public abstract class DecimalOperationTest {
     epsilonFormatter.setRoundingMode(RoundingMode.CEILING);
     epsilonFormatter.setMinimumFractionDigits(0);
     expectedFormatter.setPositivePrefix("");
-    for (int i = 0; i < pow2.length; ++i)
+    for (int i = 0, i$ = pow2.length; i < i$; ++i) // [A]
       pow2[i] = (long)Math.pow(2, i);
 
     if (Files.exists(errorPath)) {
@@ -154,7 +154,7 @@ public abstract class DecimalOperationTest {
   @SuppressWarnings({"rawtypes", "unchecked"})
   private static int test(final DecimalOperation<?,?> operation, final boolean bounded, final long[] time, final BigDecimal[] errors, final boolean[] failures) {
     int count = 0;
-    for (int i = 0; i < numTests; ++i) {
+    for (int i = 0; i < numTests; ++i) { // [N]
       final long defaultValue = random.nextLong();
       final long d1;
       final long d2;
@@ -224,8 +224,8 @@ public abstract class DecimalOperationTest {
       if (error == null) {
         clearErrorFile();
       }
-      else if (TestAide.isInDebug()) {
-        for (int j = 0; j < 100; ++j) {
+      else if (TestAide.isInDebug(true)) {
+        for (int j = 0; j < 100; ++j) { // [N]
           if (j == 0)
             writeErrorFile(d1, d2);
 

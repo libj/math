@@ -41,21 +41,19 @@ exception statement from your version. */
 package gnu.java.math;
 
 /**
- * This contains various low-level routines for unsigned bigints. The interfaces
- * match the mpn interfaces in gmp, so it should be easy to replace them with
- * fast native functions that are trivial wrappers around the mpn_ functions in
- * gmp (at least on platforms that use 32-bit "limbs").
+ * This contains various low-level routines for unsigned bigints. The interfaces match the mpn interfaces in gmp, so it should be
+ * easy to replace them with fast native functions that are trivial wrappers around the mpn_ functions in gmp (at least on platforms
+ * that use 32-bit "limbs").
  */
 @SuppressWarnings("javadoc")
 public class MPN {
   /**
-   * Add x[0:size-1] and y, and write the size least significant words of the
-   * result to dest. Return carry, either 0 or 1. All values are unsigned. This
-   * is basically the same as gmp's mpn_add_1.
+   * Add x[0:size-1] and y, and write the size least significant words of the result to dest. Return carry, either 0 or 1. All
+   * values are unsigned. This is basically the same as gmp's mpn_add_1.
    */
   public static int add_1(int[] dest, int[] x, int size, int y) {
     long carry = y & 0xffffffffL;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i) { // [A]
       carry += (x[i] & 0xffffffffL);
       dest[i] = (int)carry;
       carry >>= 32;
@@ -64,15 +62,14 @@ public class MPN {
   }
 
   /**
-   * Add x[0:len-1] and y[0:len-1] and write the len least significant words of
-   * the result to dest[0:len-1]. All words are treated as unsigned.
+   * Add x[0:len-1] and y[0:len-1] and write the len least significant words of the result to dest[0:len-1]. All words are treated
+   * as unsigned.
    *
-   * @return the carry, either 0 or 1 This function is basically the same as
-   *         gmp's mpn_add_n.
+   * @return the carry, either 0 or 1 This function is basically the same as gmp's mpn_add_n.
    */
   public static int add_n(int dest[], int[] x, int[] y, int len) {
     long carry = 0;
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < len; ++i) { // [A]
       carry += (x[i] & 0xffffffffL) + (y[i] & 0xffffffffL);
       dest[i] = (int)carry;
       carry >>>= 32;
@@ -81,13 +78,12 @@ public class MPN {
   }
 
   /**
-   * Subtract Y[0:size-1] from X[0:size-1], and write the size least significant
-   * words of the result to dest[0:size-1]. Return borrow, either 0 or 1. This
-   * is basically the same as gmp's mpn_sub_n function.
+   * Subtract Y[0:size-1] from X[0:size-1], and write the size least significant words of the result to dest[0:size-1]. Return
+   * borrow, either 0 or 1. This is basically the same as gmp's mpn_sub_n function.
    */
   public static int sub_n(int[] dest, int[] X, int[] Y, int size) {
     int cy = 0;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i) { // [A]
       int y = Y[i];
       int x = X[i];
       y += cy; /* add previous carry to subtrahend */
@@ -102,16 +98,14 @@ public class MPN {
   }
 
   /**
-   * Multiply x[0:len-1] by y, and write the len least significant words of the
-   * product to dest[0:len-1]. Return the most significant word of the product.
-   * All values are treated as if they were unsigned (i.e. masked with
-   * 0xffffffffL). OK if dest==x (not sure if this is guaranteed for mpn_mul_1).
-   * This function is basically the same as gmp's mpn_mul_1.
+   * Multiply x[0:len-1] by y, and write the len least significant words of the product to dest[0:len-1]. Return the most
+   * significant word of the product. All values are treated as if they were unsigned (i.e. masked with 0xffffffffL). OK if dest==x
+   * (not sure if this is guaranteed for mpn_mul_1). This function is basically the same as gmp's mpn_mul_1.
    */
   public static int mul_1(int[] dest, int[] x, int len, int y) {
     long yword = y & 0xffffffffL;
     long carry = 0;
-    for (int j = 0; j < len; ++j) {
+    for (int j = 0; j < len; ++j) { // [A]
       carry += (x[j] & 0xffffffffL) * yword;
       dest[j] = (int)carry;
       carry >>>= 32;
@@ -120,20 +114,17 @@ public class MPN {
   }
 
   /**
-   * Multiply x[0:xlen-1] and y[0:ylen-1], and write the result to
-   * dest[0:xlen+ylen-1]. The destination has to have space for xlen+ylen words,
-   * even if the result might be one limb smaller. This function requires that
-   * xlen >= ylen. The destination must be distinct from either input operands.
-   * All operands are unsigned. This function is basically the same gmp's
-   * mpn_mul.
+   * Multiply x[0:xlen-1] and y[0:ylen-1], and write the result to dest[0:xlen+ylen-1]. The destination has to have space for
+   * xlen+ylen words, even if the result might be one limb smaller. This function requires that xlen >= ylen. The destination must
+   * be distinct from either input operands. All operands are unsigned. This function is basically the same gmp's mpn_mul.
    */
   public static void mul(int[] dest, int[] x, int xlen, int[] y, int ylen) {
     dest[xlen] = MPN.mul_1(dest, x, xlen, y[0]);
 
-    for (int i = 1; i < ylen; ++i) {
+    for (int i = 1; i < ylen; ++i) { // [A]
       long yword = y[i] & 0xffffffffL;
       long carry = 0;
-      for (int j = 0; j < xlen; ++j) {
+      for (int j = 0; j < xlen; ++j) { // [A]
         carry += (x[j] & 0xffffffffL) * yword + (dest[i + j] & 0xffffffffL);
         dest[i + j] = (int)carry;
         carry >>>= 32;
@@ -143,9 +134,8 @@ public class MPN {
   }
 
   /**
-   * Divide (unsigned long) N by (unsigned int) D. Returns (remainder <<
-   * 32)+(unsigned int)(quotient). Assumes (unsigned int)(N>>32) < (unsigned
-   * int)D. Code transcribed from gmp-2.0's mpn_udiv_w_sdiv function.
+   * Divide (unsigned long) N by (unsigned int) D. Returns (remainder << 32)+(unsigned int)(quotient). Assumes (unsigned int)(N>>32)
+   * < (unsigned int)D. Code transcribed from gmp-2.0's mpn_udiv_w_sdiv function.
    */
   public static long udiv_qrnnd(long N, int D) {
     long q, r;
@@ -217,9 +207,8 @@ public class MPN {
   }
 
   /**
-   * Divide dividend[0:len-1] by (unsigned int)divisor. Write result into
-   * quotient[0:len-1. Return the one-word (unsigned) remainder. OK for
-   * quotient==dividend.
+   * Divide dividend[0:len-1] by (unsigned int)divisor. Write result into quotient[0:len-1. Return the one-word (unsigned)
+   * remainder. OK for quotient==dividend.
    */
   public static int divmod_1(int[] quotient, int[] dividend, int len, int divisor) {
     int i = len - 1;
@@ -232,7 +221,7 @@ public class MPN {
       r <<= 32;
     }
 
-    for (; i >= 0; --i) {
+    for (; i >= 0; --i) { // [A]
       int n0 = dividend[i];
       r = (r & ~0xffffffffL) | (n0 & 0xffffffffL);
       r = udiv_qrnnd(r, divisor);
@@ -242,11 +231,9 @@ public class MPN {
   }
 
   /**
-   * Subtract x[0:len-1]*y from dest[offset:offset+len-1]. All values are
-   * treated as if unsigned.
+   * Subtract x[0:len-1]*y from dest[offset:offset+len-1]. All values are treated as if unsigned.
    *
-   * @return the most significant word of the product, minus borrow-out from the
-   *         subtraction.
+   * @return the most significant word of the product, minus borrow-out from the subtraction.
    */
   public static int submul_1(int[] dest, int offset, int[] x, int len, int y) {
     long yl = y & 0xffffffffL;
@@ -271,9 +258,8 @@ public class MPN {
   }
 
   /**
-   * Divide zds[0:nx] by y[0:ny-1]. The remainder ends up in zds[0:ny-1]. The
-   * quotient ends up in zds[ny:nx]. Assumes: nx>ny. (int)y[ny-1] < 0 (i.e. most
-   * significant bit set)
+   * Divide zds[0:nx] by y[0:ny-1]. The remainder ends up in zds[0:ny-1]. The quotient ends up in zds[ny:nx]. Assumes: nx>ny.
+   * (int)y[ny-1] < 0 (i.e. most significant bit set)
    */
 
   public static void divide(int[] zds, int nx, int[] y, int ny) {
@@ -310,7 +296,7 @@ public class MPN {
         while (num != 0) {
           --qhat;
           long carry = 0;
-          for (int i = 0; i < ny; ++i) {
+          for (int i = 0; i < ny; ++i) { // [A]
             carry += (zds[j - ny + i] & 0xffffffffL) + (y[i] & 0xffffffffL);
             zds[j - ny + i] = (int)carry;
             carry >>>= 32;
@@ -325,10 +311,8 @@ public class MPN {
   }
 
   /**
-   * Number of digits in the conversion base that always fits in a word. For
-   * example, for base 10 this is 9, since 10**9 is the largest number that fits
-   * into a words (assuming 32-bit words). This is the same as gmp's
-   * __mp_bases[radix].chars_per_limb.
+   * Number of digits in the conversion base that always fits in a word. For example, for base 10 this is 9, since 10**9 is the
+   * largest number that fits into a words (assuming 32-bit words). This is the same as gmp's __mp_bases[radix].chars_per_limb.
    *
    * @param radix the base
    * @return number of digits
@@ -375,7 +359,7 @@ public class MPN {
     if (i == 0)
       return 32;
     int count = 0;
-    for (int k = 16; k > 0; k = k >> 1) {
+    for (int k = 16; k > 0; k = k >> 1) { // [A]
       int j = i >>> k;
       if (j == 0)
         count += k;
@@ -392,11 +376,11 @@ public class MPN {
       // least to most significant character/digit. */
       int next_bitpos = 0;
       int bits_per_indigit = 0;
-      for (int i = base; (i >>= 1) != 0;)
+      for (int i = base; (i >>= 1) != 0;) // [N]
         ++bits_per_indigit;
       int res_digit = 0;
 
-      for (int i = str_len; --i >= 0;) {
+      for (int i = str_len; --i >= 0;) { // [A]
         int inp_digit = str[i];
         res_digit |= inp_digit << next_bitpos;
         next_bitpos += bits_per_indigit;
@@ -444,8 +428,7 @@ public class MPN {
   /**
    * Compare x[0:size-1] with y[0:size-1], treating them as unsigned integers.
    *
-   * @result -1, 0, or 1 depending on if x&lt;y, x==y, or x&gt;y. This is
-   *         basically the same as gmp's mpn_cmp function.
+   * @result -1, 0, or 1 depending on if x&lt;y, x==y, or x&gt;y. This is basically the same as gmp's mpn_cmp function.
    */
   public static int cmp(int[] x, int[] y, int size) {
     while (--size >= 0) {
@@ -471,17 +454,15 @@ public class MPN {
   }
 
   /**
-   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by
-   * 2**count). Store the len least significant words of the result at dest. The
-   * bits shifted out to the right are returned. OK if dest==x. Assumes: 0 &lt;
-   * count &lt; 32
+   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by 2**count). Store the len least significant words of
+   * the result at dest. The bits shifted out to the right are returned. OK if dest==x. Assumes: 0 &lt; count &lt; 32
    */
   public static int rshift(int[] dest, int[] x, int x_start, int len, int count) {
     int count_2 = 32 - count;
     int low_word = x[x_start];
     int retval = low_word << count_2;
     int i = 1;
-    for (; i < len; ++i) {
+    for (; i < len; ++i) { // [A]
       int high_word = x[x_start + i];
       dest[i - 1] = (low_word >>> count) | (high_word << count_2);
       low_word = high_word;
@@ -491,16 +472,15 @@ public class MPN {
   }
 
   /**
-   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by
-   * 2**count). Store the len least significant words of the result at dest. OK
-   * if dest==x. Assumes: 0 &lt;= count &lt; 32 Same as rshift, but handles
-   * count==0 (and has no return value).
+   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by 2**count). Store the len least significant words of
+   * the result at dest. OK if dest==x. Assumes: 0 &lt;= count &lt; 32 Same as rshift, but handles count==0 (and has no return
+   * value).
    */
   public static void rshift0(int[] dest, int[] x, int x_start, int len, int count) {
     if (count > 0)
       rshift(dest, x, x_start, len, count);
     else
-      for (int i = 0; i < len; ++i)
+      for (int i = 0; i < len; ++i) // [A]
         dest[i] = x[i + x_start];
   }
 
@@ -529,10 +509,8 @@ public class MPN {
   }
 
   /**
-   * Shift x[0:len-1] left by count bits, and store the len least significant
-   * words of the result in dest[d_offset:d_offset+len-1]. Return the bits
-   * shifted out from the most significant digit. Assumes 0 &lt; count &lt; 32.
-   * OK if dest==x.
+   * Shift x[0:len-1] left by count bits, and store the len least significant words of the result in dest[d_offset:d_offset+len-1].
+   * Return the bits shifted out from the most significant digit. Assumes 0 &lt; count &lt; 32. OK if dest==x.
    */
   public static int lshift(int[] dest, int d_offset, int[] x, int len, int count) {
     int count_2 = 32 - count;
@@ -566,25 +544,23 @@ public class MPN {
   }
 
   /**
-   * Return least i such that words &amp; (1&lt;&lt;i). Assumes there is such an
-   * i.
+   * Return least i such that words &amp; (1&lt;&lt;i). Assumes there is such an i.
    */
   public static int findLowestBit(int[] words) {
-    for (int i = 0;; ++i) {
+    for (int i = 0;; ++i) { // [A]
       if (words[i] != 0)
         return 32 * i + findLowestBit(words[i]);
     }
   }
 
   /**
-   * Calculate Greatest Common Divisior of x[0:len-1] and y[0:len-1]. Assumes
-   * both arguments are non-zero. Leaves result in x, and returns len of result.
-   * Also destroys y (actually sets it to a copy of the result).
+   * Calculate Greatest Common Divisior of x[0:len-1] and y[0:len-1]. Assumes both arguments are non-zero. Leaves result in x, and
+   * returns len of result. Also destroys y (actually sets it to a copy of the result).
    */
   public static int gcd(int[] x, int[] y, int len) {
     int i, word;
     // Find sh such that both x and y are divisible by 2**sh.
-    for (i = 0;; ++i) {
+    for (i = 0;; ++i) { // [A]
       word = x[i] | y[i];
       if (word != 0) {
         // Must terminate, since x and y are non-zero.
@@ -611,17 +587,16 @@ public class MPN {
       other_arg = x;
     }
 
-    for (;;) {
-      // Shift other_arg until it is odd; this doesn't
-      // affect the gcd, since we divide by 2**k, which does not
+    for (;;) { // [A]
+      // Shift other_arg until it is odd; this doesn't affect the gcd, since we divide by 2**k, which does not
       // divide odd_arg.
       for (i = 0; other_arg[i] == 0;)
         ++i;
       if (i > 0) {
         int j;
-        for (j = 0; j < len - i; ++j)
+        for (j = 0; j < len - i; ++j) // [A]
           other_arg[j] = other_arg[j + i];
-        for (; j < len; ++j)
+        for (; j < len; ++j) // [A]
           other_arg[j] = 0;
       }
       i = findLowestBit(other_arg[0]);
@@ -655,10 +630,10 @@ public class MPN {
           x[len++ + initShiftWords] = sh_out;
       }
       else {
-        for (i = len; --i >= 0;)
+        for (i = len; --i >= 0;) // [A]
           x[i + initShiftWords] = x[i];
       }
-      for (i = initShiftWords; --i >= 0;)
+      for (i = initShiftWords; --i >= 0;) // [A]
         x[i] = 0;
       len += initShiftWords;
     }
@@ -670,8 +645,7 @@ public class MPN {
   }
 
   /**
-   * Calcaulte the Common Lisp "integer-length" function. Assumes input is
-   * canonicalized: len==BigInteger.wordsNeeded(words,len)
+   * Calcaulte the Common Lisp "integer-length" function. Assumes input is canonicalized: len==BigInteger.wordsNeeded(words,len)
    */
   public static int intLength(int[] words, int len) {
     --len;

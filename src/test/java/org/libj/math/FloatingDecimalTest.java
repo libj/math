@@ -103,7 +103,7 @@ public class FloatingDecimalTest extends DecimalNative {
     String actualStr = null;
     boolean error = !Float.isNaN(defaultFloat);
     float x = defaultFloat;
-    for (int i = 0; i < tests; ++i) {
+    for (int i = 0; i < tests; ++i) { // [N]
       try {
         if (!error)
           x = randomFloat();
@@ -118,7 +118,7 @@ public class FloatingDecimalTest extends DecimalNative {
       catch (final Throwable e) {
         System.out.println("expected: " + expectedStr);
         System.out.println("  actual: " + actualStr);
-        if (!TestAide.isInDebug())
+        if (!TestAide.isInDebug(true))
           throw e;
 
         error = true;
@@ -138,7 +138,7 @@ public class FloatingDecimalTest extends DecimalNative {
     String actualStr = null;
     boolean error = !Double.isNaN(defaultDouble);
     double x = defaultDouble;
-    for (int i = 0; i < tests; ++i) {
+    for (int i = 0; i < tests; ++i) { // [N]
       try {
         if (!error)
           x = randomDouble();
@@ -164,7 +164,7 @@ public class FloatingDecimalTest extends DecimalNative {
       catch (final Throwable e) {
         System.out.println("expected: " + expectedStr);
         System.out.println("  actual: " + actualStr);
-        if (!TestAide.isInDebug())
+        if (!TestAide.isInDebug(true))
           throw e;
 
         error = true;
@@ -180,7 +180,7 @@ public class FloatingDecimalTest extends DecimalNative {
     String actualStr = null;
     boolean error = !Double.isNaN(defaultDouble);
     double x = defaultDouble;
-    for (int i = 0; i < tests; ++i) {
+    for (int i = 0; i < tests; ++i) { // [N]
       try {
         if (!error)
           x = randomDouble();
@@ -192,7 +192,7 @@ public class FloatingDecimalTest extends DecimalNative {
       catch (final Throwable e) {
         System.out.println("expected: " + expectedStr);
         System.out.println("  actual: " + actualStr);
-        if (!TestAide.isInDebug())
+        if (!TestAide.isInDebug(true))
           throw e;
 
         error = true;

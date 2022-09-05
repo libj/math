@@ -44,7 +44,6 @@ public class CaseSummaryPrinter {
 
   private static class SummaryMap extends LinkedHashMap<String,ArrayList<Object[]>> {
     @Override
-    @SuppressWarnings("unlikely-arg-type")
     public ArrayList<Object[]> get(final Object key) {
       ArrayList<Object[]> value = super.get(key);
       if (value == null)
@@ -89,7 +88,7 @@ public class CaseSummaryPrinter {
       if (methodName == null)
         continue;
 
-      for (int i = 0; i < 3; ++i) {
+      for (int i = 0; i < 3; ++i) { // [N]
         if (!dataMatcher.find())
           continue OUT;
 
@@ -137,7 +136,7 @@ public class CaseSummaryPrinter {
   private static String[][] getColumns(final SummaryMap map, final int index, final boolean withKey) {
     final String[][] strings = new String[withKey ? 4 : 3][map.size()];
     final Iterator<Map.Entry<String,ArrayList<Object[]>>> iterator = map.entrySet().iterator();
-    for (int j = 0; iterator.hasNext(); ++j) {
+    for (int j = 0; iterator.hasNext(); ++j) { // [I]
       final Map.Entry<String,ArrayList<Object[]>> entry = iterator.next();
       final ArrayList<Object[]> list = entry.getValue();
       if (list.size() <= index)
@@ -162,7 +161,7 @@ public class CaseSummaryPrinter {
     final SummaryMap decimalMap = new SummaryMap();
     final File[] files = dir.listFiles();
     Arrays.sort(files);
-    for (int i = 0; i < files.length; ++i)
+    for (int i = 0, i$ = files.length; i < i$; ++i) // [A]
       decompose(files[i], files[i].toString().contains("BigInt") ? bigIntMap : decimalMap);
 
     printMap(bigIntMap);
@@ -183,7 +182,7 @@ public class CaseSummaryPrinter {
 
     final String str = Tables.printTable(tables);
     final String[] lines = str.split("\n");
-    for (int i = 0; i < lines.length; ++i) {
+    for (int i = 0, i$ = lines.length; i < i$; ++i) { // [A]
       lines[i] = "<code>" + lines[i].replace(" ", "&nbsp;") + "</code>";
       if (i >= 4 && i - 3 < cols1[0].length) {
         final String methodName = cols1[0][i - 3];

@@ -35,13 +35,11 @@ import org.libj.lang.Constants;
 
 abstract class BigIntMath extends BigIntDivision {
   /**
-   * Returns the square root of the specified {@code int}, rounded with the
-   * provided {@link RoundingMode}; or {@code -1} if {@code x <= 0} or
-   * {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
+   * Returns the square root of the specified {@code int}, rounded with the provided {@link RoundingMode}; or {@code -1} if
+   * {@code x <= 0} or {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
    *
-   * @return The square root of the specified {@code int}, rounded with the
-   *         provided {@link RoundingMode}; or {@code -1} if {@code x <= 0} or
-   *         {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
+   * @return The square root of the specified {@code int}, rounded with the provided {@link RoundingMode}; or {@code -1} if
+   *         {@code x <= 0} or {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
    */
   private static int sqrt(final int x, final RoundingMode rm) {
     if (x <= 0)
@@ -75,13 +73,11 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Returns the square root of the specified {@code long}, rounded with the
-   * provided {@link RoundingMode}; or {@code -1} if {@code x <= 0} or
-   * {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
+   * Returns the square root of the specified {@code long}, rounded with the provided {@link RoundingMode}; or {@code -1} if
+   * {@code x <= 0} or {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
    *
-   * @return The square root of the specified {@code long}, rounded with the
-   *         provided {@link RoundingMode}; or {@code -1} if {@code x <= 0} or
-   *         {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
+   * @return The square root of the specified {@code long}, rounded with the provided {@link RoundingMode}; or {@code -1} if
+   *         {@code x <= 0} or {@code rm == RoundingMode.UNNECESSARY} and rounding is necessary.
    */
   private static long sqrt(final long x, final RoundingMode rm) {
     if (x <= 0)
@@ -139,19 +135,16 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the square root of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by {@link RoundingMode#DOWN}.
+   * Computes the square root of the provided {@linkplain BigInt#val() value-encoded number}, rounded by {@link RoundingMode#DOWN}.
    *
-   * <blockquote>
-   * <code>val = ⌊val<sup>1/2</sup>⌋</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = ⌊val<sup>1/2</sup>⌋</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @implNote The implementation is based on the material in Henry S. Warren,
-   *           Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison Wesley, 2013),
-   *           279-282.
-   * @return {@code val} with its value replaced with its integer square root,
-   *         or {@code null} if {@code val} is negative.
+   * @implNote The implementation is based on the material in Henry S. Warren, Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison
+   *           Wesley, 2013), 279-282.
+   * @return {@code val} with its value replaced with its integer square root, or {@code null} if {@code val} is negative.
    * @complexity O(n^2) - O(n log n)
    */
   public static int[] sqrt(final int[] val) {
@@ -159,22 +152,19 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the square root of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode}.
+   * Computes the square root of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode}.
    *
-   * <blockquote>
-   * <code>val = |val<sup>1/2</sup>|</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = |val<sup>1/2</sup>|</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
-   * @implNote The implementation is based on the material in Henry S. Warren,
-   *           Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison Wesley, 2013),
-   *           279-282.
-   * @return {@code val} with its value replaced with its rounded square root,
-   *         or {@code null} if {@code val} is negative, or
-   *         {@code rm == RoundingMode.UNNECESSARY || rm == null} yet rounding
-   *         is necessary.
+   * @implNote The implementation is based on the material in Henry S. Warren, Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison
+   *           Wesley, 2013), 279-282.
+   * @return {@code val} with its value replaced with its rounded square root, or {@code null} if {@code val} is negative, or
+   *         {@code rm == RoundingMode.UNNECESSARY || rm == null} yet rounding is necessary.
    * @complexity O(n^2) - O(n log n)
    */
   public static int[] sqrt(final int[] val, final RoundingMode rm) {
@@ -214,21 +204,15 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Adapted from Hacker's Delight, Figure 11-1. Using DoubleUtils.bigToDouble,
-   * getting a double approximation of x is extremely fast, and then we can get
-   * a double approximation of the square root. Then, we iteratively improve
-   * this guess with an application of Newton's method, which sets guess :=
-   * (guess + (x / guess)) / 2. This iteration has the following two properties:
-   * a) every iteration (except potentially the first) has guess >=
-   * floor(sqrt(x)). This is because guess' is the arithmetic mean of guess and
-   * x / guess, sqrt(x) is the geometric mean, and the arithmetic mean is always
-   * higher than the geometric mean. b) this iteration converges to
-   * floor(sqrt(x)). In fact, the number of correct digits doubles with each
-   * iteration, so this algorithm takes O(log(digits)) iterations. We start out
-   * with a double-precision approximation, which may be higher or lower than
-   * the true value. Therefore, we perform at least one Newton iteration to get
-   * a guess that's definitely >= floor(sqrt(x)), and then continue the
-   * iteration until we reach a fixed point.
+   * Adapted from Hacker's Delight, Figure 11-1. Using DoubleUtils.bigToDouble, getting a double approximation of x is extremely
+   * fast, and then we can get a double approximation of the square root. Then, we iteratively improve this guess with an
+   * application of Newton's method, which sets guess := (guess + (x / guess)) / 2. This iteration has the following two properties:
+   * a) every iteration (except potentially the first) has guess >= floor(sqrt(x)). This is because guess' is the arithmetic mean of
+   * guess and x / guess, sqrt(x) is the geometric mean, and the arithmetic mean is always higher than the geometric mean. b) this
+   * iteration converges to floor(sqrt(x)). In fact, the number of correct digits doubles with each iteration, so this algorithm
+   * takes O(log(digits)) iterations. We start out with a double-precision approximation, which may be higher or lower than the true
+   * value. Therefore, we perform at least one Newton iteration to get a guess that's definitely >= floor(sqrt(x)), and then
+   * continue the iteration until we reach a fixed point.
    */
   // FIXME: Perhaps it's possible to yet remove more realloc(s). Use ThreadLocal.
   private static int[] sqrtApprox(final int[] val, final RoundingMode rm) {
@@ -261,10 +245,8 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Returns {@code 1} if {@code x < y} as unsigned longs, and 0 otherwise.
-   * Assumes that x - y fits into a signed long. The implementation is
-   * branch-free, and benchmarks suggest it is measurably faster than the
-   * straightforward ternary expression.
+   * Returns {@code 1} if {@code x < y} as unsigned longs, and 0 otherwise. Assumes that x - y fits into a signed long. The
+   * implementation is branch-free, and benchmarks suggest it is measurably faster than the straightforward ternary expression.
    */
   private static int lessThanBranchFree(final long x, final long y) {
     // Returns the sign bit of x - y.
@@ -309,10 +291,9 @@ abstract class BigIntMath extends BigIntDivision {
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @param len The number of limbs in the provided {@linkplain BigInt#val()
-   *          value-encoded number} (i.e. {@code Math.abs(val[0])}).
-   * @return {@code true} if the provided {@linkplain BigInt#val() value-encoded
-   *         number} fits in a {@code long} (i.e. 64 signed bits).
+   * @param len The number of limbs in the provided {@linkplain BigInt#val() value-encoded number} (i.e. {@code Math.abs(val[0])}).
+   * @return {@code true} if the provided {@linkplain BigInt#val() value-encoded number} fits in a {@code long} (i.e. 64 signed
+   *         bits).
    */
   // FIXME: This should be used in other places too?
   static boolean fitsInLong(final int[] val, final int len) {
@@ -320,16 +301,15 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the base 10 logarithm of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode#DOWN}.
+   * Computes the base 10 logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode#DOWN}.
    *
-   * <blockquote>
-   * <code>val = ⌊log<sub>10</sub>(val)⌋</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = ⌊log<sub>10</sub>(val)⌋</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return The integer value of the log base 10 of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
+   * @return The integer value of the log base 10 of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
    *         {@code val} is not positive.
    * @complexity O(1)
    */
@@ -338,17 +318,16 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the base 10 logarithm of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode}.
+   * Computes the base 10 logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode}.
    *
-   * <blockquote>
-   * <code>val = |log<sub>10</sub>(val)|</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = |log<sub>10</sub>(val)|</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
-   * @return The rounded value of the log base 10 of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
+   * @return The rounded value of the log base 10 of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
    *         {@code val} is not positive.
    * @complexity O(1)
    */
@@ -369,16 +348,15 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the base 2 logarithm of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode#DOWN}.
+   * Computes the base 2 logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode#DOWN}.
    *
-   * <blockquote>
-   * <code>val = ⌊log<sub>2</sub>(val)⌋</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = ⌊log<sub>2</sub>(val)⌋</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return The integer value of the log base 2 of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
+   * @return The integer value of the log base 2 of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
    *         {@code val} is not positive.
    * @complexity O(1)
    */
@@ -387,17 +365,16 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the base 2 logarithm of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode}.
+   * Computes the base 2 logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode}.
    *
-   * <blockquote>
-   * <code>val = |log<sub>2</sub>(val)|</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = |log<sub>2</sub>(val)|</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
-   * @return The rounded value of the log base 2 of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
+   * @return The rounded value of the log base 2 of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
    *         {@code val} is not positive.
    * @complexity O(1)
    */
@@ -415,16 +392,15 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the natural logarithm of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode#DOWN}.
+   * Computes the natural logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode#DOWN}.
    *
    * <pre>
    * val = ⌊log(val)⌋
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return The integer value of the natural log of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
+   * @return The integer value of the natural log of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
    *         {@code val} is not positive.
    * @complexity O(1)
    */
@@ -433,8 +409,8 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the natural logarithm of the provided {@linkplain BigInt#val()
-   * value-encoded number}, rounded by the given {@link RoundingMode}.
+   * Computes the natural logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * {@link RoundingMode}.
    *
    * <pre>
    * val = log(val)
@@ -442,8 +418,7 @@ abstract class BigIntMath extends BigIntDivision {
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
-   * @return The rounded value of the natural log of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
+   * @return The rounded value of the natural log of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
    *         {@code val} is not positive.
    * @complexity O(1)
    */
@@ -452,19 +427,17 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the base {@code b} logarithm of the provided
-   * {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * Computes the base {@code b} logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
    * {@link RoundingMode#DOWN}.
    *
-   * <blockquote>
-   * <code>val = ⌊log<sub>b</sub>(val)⌋</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = ⌊log<sub>b</sub>(val)⌋</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param b The base of the logarithm function.
-   * @return The integer value of the log base {@code b} of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
-   *         {@code val} is not positive.
+   * @return The integer value of the log base {@code b} of the provided {@linkplain BigInt#val() value-encoded number}, or
+   *         {@code -1} if {@code val} is not positive.
    * @complexity O(1)
    */
   public static int log(final int[] val, final double b) {
@@ -472,20 +445,18 @@ abstract class BigIntMath extends BigIntDivision {
   }
 
   /**
-   * Computes the base {@code b} logarithm of the provided
-   * {@linkplain BigInt#val() value-encoded number}, rounded by the given
+   * Computes the base {@code b} logarithm of the provided {@linkplain BigInt#val() value-encoded number}, rounded by the given
    * {@link RoundingMode}.
    *
-   * <blockquote>
-   * <code>val = log<sub>b</sub>(val)</code>
-   * </blockquote>
+   * <pre>
+   *  <code>val = log<sub>b</sub>(val)</code>
+   * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param b The base of the logarithm function.
    * @param rm The {@link RoundingMode}.
-   * @return The rounded value of the log base {@code b} of the provided
-   *         {@linkplain BigInt#val() value-encoded number}, or {@code -1} if
-   *         {@code val} is not positive.
+   * @return The rounded value of the log base {@code b} of the provided {@linkplain BigInt#val() value-encoded number}, or
+   *         {@code -1} if {@code val} is not positive.
    * @complexity O(1)
    */
   public static int log(final int[] val, final double b, final RoundingMode rm) {

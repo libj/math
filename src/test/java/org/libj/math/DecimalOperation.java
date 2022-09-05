@@ -91,7 +91,7 @@ abstract class DecimalOperation<T,C> {
     final StringBuilder builder = new StringBuilder();
     boolean outputErrors = false;
     BigDecimal error = BigDecimal.ZERO;
-    for (int i = 0; i < errors.length; ++i) {
+    for (int i = 0, i$ = errors.length; i < i$; ++i) { // [A]
       outputErrors |= failures[i];
       if (errors[i] != null)
         error = error.add(errors[i]);
@@ -100,7 +100,7 @@ abstract class DecimalOperation<T,C> {
     error = error.divide(BigDecimal.valueOf(errors.length));
 
     if (outputErrors) {
-      for (int i = 0; i < errors.length; ++i) {
+      for (int i = 0, i$ = errors.length; i < i$; ++i) { // [A]
         if (i > 0)
           builder.append(",\n");
 

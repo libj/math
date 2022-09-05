@@ -117,7 +117,7 @@ public class BigIntBasicTest {
 
     me = new BigInt("0");
     facit = BigInteger.ZERO;
-    for (int i = 0; i < 1337; ++i) {
+    for (int i = 0; i < 1337; ++i) { // [N]
       long tmp = rnd.nextLong() & ((1L << 32) - 1);
       me.add(1, (int)tmp);
       final BigInteger x = facit;
@@ -195,7 +195,7 @@ public class BigIntBasicTest {
     facit = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
     me = new BigInt(new int[] {4, -1, -1, -1, -1});
     BigInteger ulong = new BigInteger(1, new byte[] {-1, -1, -1, -1, -1, -1, -1, -1});
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < 256; ++i) { // [N]
       facit = facit.multiply(ulong);
       me.mul(1, -1L);
       assertEquals("Long mul " + i, facit.toString(), me.toString());
@@ -245,7 +245,7 @@ public class BigIntBasicTest {
     final int[][] q = {{1, 0xffff}, {1, 0x0003}, {1, 0xfffe}, {1, 0xffff}};
     final int[][] r = {{1, 0x7fffffff}, {2, 0, 0x2000}, {2, 0xffff0002, 0x7fff}, {2, 0xffffffff, 0x7fff}};
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) { // [N]
       int[] x = u[i].clone();
       x[0] = m[i];
       int[] y = v[i].clone();
@@ -325,7 +325,7 @@ public class BigIntBasicTest {
 
   @Test
   public void longDivTest() { // Division test using long as parameter.
-    for (int i = 0; i < 100; ++i) {// System.err.println(i+" divs");
+    for (int i = 0; i < 100; ++i) {// System.err.println(i+" divs"); // [N]
       final char[] s = getRndNumber(1 + i * 10);
       BigInteger facit = new BigInteger(new String(s));
       final BigInt dividend = new BigInt(s);
@@ -336,7 +336,7 @@ public class BigIntBasicTest {
 
         final byte[] div = new byte[8];
         long tmp = d;
-        for (int j = 7; j >= 0; --j, tmp >>>= 8)
+        for (int j = 7; j >= 0; --j, tmp >>>= 8) // [N]
           div[j] = (byte)(tmp & 0xFF);
 
         BigInteger prv = facit;
@@ -359,7 +359,7 @@ public class BigIntBasicTest {
       num[0] = '-';
 
     num[sign] = (char)('1' + rnd.nextInt(9));
-    for (int i = sign + 1; i < len + sign; i++)
+    for (int i = sign + 1; i < len + sign; i++) // [N]
       num[i] = (char)('0' + rnd.nextInt(10));
 
     return num;
@@ -475,7 +475,7 @@ public class BigIntBasicTest {
     b.flipBit(32);
     facit = facit.flipBit(32);
     assertEquals("Flip bit", facit.toString(), b.toString());
-    for (int i = 0; i < 2048; ++i) {
+    for (int i = 0; i < 2048; ++i) { // [N]
       char[] s = getRndNumber(1 + rnd.nextInt(100));
       int bit = rnd.nextInt(600);
 
@@ -574,7 +574,7 @@ public class BigIntBasicTest {
     BigInt a = new BigInt(1L << 47);
     a.and(new BigInt(0L));
     assertTrue("And with 0", a.isZero());
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < 1024; ++i) { // [N]
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
       final BigInt c = a.clone();
@@ -613,7 +613,7 @@ public class BigIntBasicTest {
           break;
         }
         catch (final Throwable e) {
-          if (!TestAide.isInDebug())
+          if (!TestAide.isInDebug(true))
             throw e;
 
           a = c;
@@ -639,7 +639,7 @@ public class BigIntBasicTest {
     assertEquals("1 or -2 = ", "-1", a.toString());
     a.or(new BigInt(0));
     assertEquals("-1 or 0 = ", "-1", a.toString());
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < 1024; ++i) { // [N]
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
       a.assign(s);
@@ -669,7 +669,7 @@ public class BigIntBasicTest {
     assertEquals("Xor with 0", b.toString(), a.toString());
     a.xor(b);
     assertTrue("Double xor is zero", a.isZero());
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < 1024; ++i) { // [N]
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
       a.assign(s);
@@ -692,7 +692,7 @@ public class BigIntBasicTest {
     assertEquals("AndNot with 0", b.toString(), a.toString());
     a.andNot(b);
     assertTrue("Self andNot is zero", a.isZero());
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < 1024; ++i) { // [N]
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
       a.assign(s);
@@ -724,7 +724,7 @@ public class BigIntBasicTest {
     assertEquals("~0 = ", "-1", a.toString());
     a.not();
     assertTrue("~~0", a.isZero());
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < 1024; ++i) { // [N]
       final char[] s = getRndNumber(1 + rnd.nextInt(64));
       final int sh1 = rnd.nextInt(4) * 32;
       a.assign(s);
@@ -748,7 +748,7 @@ public class BigIntBasicTest {
 
   @Test
   public void testMod() {
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < 1024; ++i) { // [N]
       char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
       BigInt a = new BigInt(s), b = new BigInt(t);
       BigInteger aa = new BigInteger(new String(s)), bb = new BigInteger(new String(t));

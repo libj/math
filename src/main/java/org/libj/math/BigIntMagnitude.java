@@ -33,9 +33,8 @@ abstract class BigIntMagnitude extends BigIntValue {
   /**
    * Increases the magnitude of the provided number by the specified amount.
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           increase of the provided number by the specified amount requires
-   *           a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the increase of the provided number by the specified
+   *           amount requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
@@ -172,7 +171,7 @@ abstract class BigIntMagnitude extends BigIntValue {
 
     // Subtract remainder of longer number while borrow propagates
     boolean borrow = dif >> 32 != 0;
-    for (int i = 2; i <= len && borrow;)
+    for (int i = 2; i <= len && borrow;) // [A]
       borrow = --val[++i] == -1;
 
     while (val[len] == 0)
@@ -183,20 +182,16 @@ abstract class BigIntMagnitude extends BigIntValue {
   }
 
   /**
-   * Increases (or decreased) the magnitude of the provided number by the
-   * specified amount.
+   * Increases (or decreased) the magnitude of the provided number by the specified amount.
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           increase (or decrease) of the provided number by the specified
-   *           amount requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the increase (or decrease) of the provided number by the
+   *           specified amount requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
-   * @param add The {@linkplain BigInt#val() value-encoded amount} by which to
-   *          increase (or decrease).
+   * @param add The {@linkplain BigInt#val() value-encoded amount} by which to increase (or decrease).
    * @param alen The count of limbs in the number by which to increase.
-   * @return The provided number increased (or decreased) by the specified
-   *         amount.
+   * @return The provided number increased (or decreased) by the specified amount.
    * @complexity O(n)
    */
   static int[] addVal(int[] val, int len, final boolean sig, int[] add, int alen) {
@@ -214,7 +209,7 @@ abstract class BigIntMagnitude extends BigIntValue {
 
     long carry = 0;
     int i = 1;
-    for (; i <= len1; ++i) {
+    for (; i <= len1; ++i) { // [A]
       carry += (val1[i] & LONG_MASK) + (add[i] & LONG_MASK);
       val[i] = (int)carry;
       carry >>>= 32;
@@ -247,8 +242,7 @@ abstract class BigIntMagnitude extends BigIntValue {
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
-   * @param sub The {@linkplain BigInt#val() value-encoded amount} by which to
-   *          decrease.
+   * @param sub The {@linkplain BigInt#val() value-encoded amount} by which to decrease.
    * @param slen The count of limbs in the number by which to decrease.
    * @complexity O(n)
    */
@@ -256,7 +250,7 @@ abstract class BigIntMagnitude extends BigIntValue {
     // Assumes len == len2
     long dif = 0;
     int i = 1;
-    for (; i <= slen; ++i) {
+    for (; i <= slen; ++i) { // [A]
       dif += (val[i] & LONG_MASK) - (sub[i] & LONG_MASK);
       val[i] = (int)dif;
       dif >>= 32;

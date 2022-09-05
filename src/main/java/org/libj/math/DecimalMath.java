@@ -117,20 +117,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the square root of the provided {@code dec} with the specified
-   * {@link RoundingMode}.
+   * Calculates the square root of the provided {@code dec} with the specified {@link RoundingMode}.
    *
-   * <blockquote>
+   * <pre>
    * <code>dec<sup>1/2</sup></code>
-   * </blockquote>
+   * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The square root of the provided {@code dec} with the specified
-   *         {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The square root of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long sqrt(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -139,13 +135,12 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its square root
-   * (rounded down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its square root (rounded down), or {@code null} if the result cannot
+   * be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>dec<sup>1/2</sup></code>
-   * </blockquote>
+   * <pre>
+   *  <code>dec<sup>1/2</sup></code>
+   * </pre>
    *
    * Calling this method is the equivalent of:
    *
@@ -154,28 +149,25 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its square root
-   *         (rounded down), or {@code null} if the result cannot be represented
-   *         in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its square root (rounded down), or {@code null} if the result cannot
+   *         be represented in {@link Decimal} encoding.
    */
   public static Decimal sqrt(final Decimal dec) {
     return sqrt0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its square root
-   * with the specified {@link RoundingMode}, or {@code null} if the result
-   * cannot be represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its square root with the specified {@link RoundingMode}, or
+   * {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>dec<sup>1/2</sup></code>
-   * </blockquote>
+   * <pre>
+   *  <code>dec<sup>1/2</sup></code>
+   * </pre>
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its square root
-   *         with the specified {@link RoundingMode}, or {@code null} if the
-   *         result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its square root with the specified {@link RoundingMode}, or
+   *         {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal sqrt(final Decimal dec, final RoundingMode rm) {
     return sqrt0(dec.significand, dec.scale, rm, dec) ? dec : null;
@@ -216,20 +208,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the natural logarithm of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the natural logarithm of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * log(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The natural logarithm of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The natural logarithm of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long log(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -238,9 +226,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its natural
-   * logarithm with the specified {@link RoundingMode}, or {@code null} if the
-   * result cannot be represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its natural logarithm with the specified {@link RoundingMode}, or
+   * {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * log(dec)
@@ -248,18 +235,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its natural
-   *         logarithm with the specified {@link RoundingMode}, or {@code null}
-   *         if the result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its natural logarithm with the specified {@link RoundingMode}, or
+   *         {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log(final Decimal dec, final RoundingMode rm) {
     return log0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its natural
-   * logarithm (rounded down), or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its natural logarithm (rounded down), or {@code null} if the result
+   * cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * log(dec)
@@ -272,30 +257,25 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its natural
-   *         logarithm (rounded down), or {@code null} if the result cannot be
-   *         represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its natural logarithm (rounded down), or {@code null} if the result
+   *         cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log(final Decimal dec) {
     return log0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
   }
 
   /**
-   * Calculates the logarithm of base {@code b} of the provided {@code dec} with
-   * the specified {@link RoundingMode}.
+   * Calculates the logarithm of base {@code b} of the provided {@code dec} with the specified {@link RoundingMode}.
    *
-   * <blockquote>
+   * <pre>
    * <code>log<sub>base</sub>(dec)</code>
-   * </blockquote>
+   * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param b The base of the logarithm function.
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The logarithm base {@code b} of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The logarithm base {@code b} of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long log(final long dec, final double b, final RoundingMode rm, final long defaultValue) {
@@ -304,9 +284,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its logarithm base
-   * {@code b} with the specified {@link RoundingMode}, or {@code null} if the
-   * result cannot be represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its logarithm base {@code b} with the specified {@link RoundingMode},
+   * or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * log(dec)
@@ -315,18 +294,16 @@ public final class DecimalMath {
    * @param dec The {@link Decimal}.
    * @param b The base of the logarithm function.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its logarithm base
-   *         {@code b} with the specified {@link RoundingMode}, or {@code null}
-   *         if the result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its logarithm base {@code b} with the specified {@link RoundingMode},
+   *         or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log(final Decimal dec, final double b, final RoundingMode rm) {
     return log0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its logarithm base
-   * {@code b} (rounded down), or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its logarithm base {@code b} (rounded down), or {@code null} if the
+   * result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * log(dec)
@@ -340,29 +317,24 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param b The base of the logarithm function.
-   * @return The provided {@link Decimal} set to the value of its logarithm base
-   *         {@code b} (rounded down), or {@code null} if the result cannot be
-   *         represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its logarithm base {@code b} (rounded down), or {@code null} if the
+   *         result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log(final Decimal dec, final double b) {
     return log0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
   }
 
   /**
-   * Calculates the logarithm base 2 of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the logarithm base 2 of the provided {@code dec} with the specified {@link RoundingMode}.
    *
-   * <blockquote>
+   * <pre>
    * <code>log<sub>2</sub>(dec)</code>
-   * </blockquote>
+   * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The logarithm base 2 of the provided {@code dec} with the specified
-   *         {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The logarithm base 2 of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long log2(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -371,32 +343,29 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its logarithm base
-   * 2 with the specified {@link RoundingMode}, or {@code null} if the result
-   * cannot be represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its logarithm base 2 with the specified {@link RoundingMode}, or
+   * {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>log<sub>2</sub>(dec)</code>
-   * </blockquote>
+   * <pre>
+   *  <code>log<sub>2</sub>(dec)</code>
+   * </pre>
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its logarithm base
-   *         2 with the specified {@link RoundingMode}, or {@code null} if the
-   *         result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its logarithm base 2 with the specified {@link RoundingMode}, or
+   *         {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log2(final Decimal dec, final RoundingMode rm) {
     return log0(dec.significand, dec.scale, Constants.LOG_2, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its logarithm base
-   * 2 (rounded down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its logarithm base 2 (rounded down), or {@code null} if the result
+   * cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>log<sub>2</sub>(dec)</code>
-   * </blockquote>
+   * <pre>
+   *  <code>log<sub>2</sub>(dec)</code>
+   * </pre>
    *
    * Calling this method is the equivalent of:
    *
@@ -405,29 +374,24 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its logarithm base
-   *         2 (rounded down), or {@code null} if the result cannot be
-   *         represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its logarithm base 2 (rounded down), or {@code null} if the result
+   *         cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log2(final Decimal dec) {
     return log0(dec.significand, dec.scale, Constants.LOG_2, RoundingMode.DOWN, dec) ? dec : null;
   }
 
   /**
-   * Calculates the logarithm base 10 of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the logarithm base 10 of the provided {@code dec} with the specified {@link RoundingMode}.
    *
-   * <blockquote>
+   * <pre>
    * <code>log<sub>10</sub>(dec)</code>
-   * </blockquote>
+   * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The logarithm base 10 of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The logarithm base 10 of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long log10(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -436,32 +400,29 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its logarithm base
-   * 10 with the specified {@link RoundingMode}, or {@code null} if the result
-   * cannot be represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its logarithm base 10 with the specified {@link RoundingMode}, or
+   * {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>log<sub>10</sub>(dec)</code>
-   * </blockquote>
+   * <pre>
+   *  <code>log<sub>10</sub>(dec)</code>
+   * </pre>
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its logarithm base
-   *         10 with the specified {@link RoundingMode}, or {@code null} if the
-   *         result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its logarithm base 10 with the specified {@link RoundingMode}, or
+   *         {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log10(final Decimal dec, final RoundingMode rm) {
     return log0(dec.significand, dec.scale, Constants.LOG_10, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its logarithm base
-   * 10 (rounded down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its logarithm base 10 (rounded down), or {@code null} if the result
+   * cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>log<sub>10</sub>(dec)</code>
-   * </blockquote>
+   * <pre>
+   *  <code>log<sub>10</sub>(dec)</code>
+   * </pre>
    *
    * Calling this method is the equivalent of:
    *
@@ -470,9 +431,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its logarithm base
-   *         10 (rounded down), or {@code null} if the result cannot be
-   *         represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its logarithm base 10 (rounded down), or {@code null} if the result
+   *         cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal log10(final Decimal dec) {
     return log0(dec.significand, dec.scale, Constants.LOG_10, RoundingMode.DOWN, dec) ? dec : null;
@@ -498,20 +458,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the sin of the provided {@code dec} with the specified
-   * {@link RoundingMode}.
+   * Calculates the sin of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * sin(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The sin of the provided {@code dec} with the specified
-   *         {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The sin of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long sin(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -520,9 +476,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its sin with the
-   * specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its sin with the specified {@link RoundingMode}, or {@code null} if
+   * the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * sin(dec)
@@ -530,18 +485,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its sin with the
-   *         specified {@link RoundingMode}, or {@code null} if the result
-   *         cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its sin with the specified {@link RoundingMode}, or {@code null} if
+   *         the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal sin(final Decimal dec, final RoundingMode rm) {
     return sin0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its sin (rounded
-   * down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its sin (rounded down), or {@code null} if the result cannot be
+   * represented in {@link Decimal} encoding.
    *
    * <pre>
    * sin(dec)
@@ -554,9 +507,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its sin (rounded
-   *         down), or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its sin (rounded down), or {@code null} if the result cannot be
+   *         represented in {@link Decimal} encoding.
    */
   public static Decimal sin(final Decimal dec) {
     return cos0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
@@ -582,20 +534,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the cos of the provided {@code dec} with the specified
-   * {@link RoundingMode}.
+   * Calculates the cos of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * cos(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The cos of the provided {@code dec} with the specified
-   *         {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The cos of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long cos(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -604,9 +552,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its cos with the
-   * specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its cos with the specified {@link RoundingMode}, or {@code null} if
+   * the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * cos(dec)
@@ -614,18 +561,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its cos with the
-   *         specified {@link RoundingMode}, or {@code null} if the result
-   *         cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its cos with the specified {@link RoundingMode}, or {@code null} if
+   *         the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal cos(final Decimal dec, final RoundingMode rm) {
     return cos0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its cos (rounded
-   * down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its cos (rounded down), or {@code null} if the result cannot be
+   * represented in {@link Decimal} encoding.
    *
    * <pre>
    * cos(dec)
@@ -638,9 +583,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its cos (rounded
-   *         down), or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its cos (rounded down), or {@code null} if the result cannot be
+   *         represented in {@link Decimal} encoding.
    */
   public static Decimal cos(final Decimal dec) {
     return sin0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
@@ -666,20 +610,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the tan of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the tan of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * tan(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The tan of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The tan of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long tan(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -688,9 +628,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its tan with the
-   * specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its tan with the specified {@link RoundingMode}, or {@code null} if
+   * the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * tan(dec)
@@ -698,18 +637,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its tan with the
-   *         specified {@link RoundingMode}, or {@code null} if the result
-   *         cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its tan with the specified {@link RoundingMode}, or {@code null} if
+   *         the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal tan(final Decimal dec, final RoundingMode rm) {
     return tan0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its tan (rounded
-   * down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its tan (rounded down), or {@code null} if the result cannot be
+   * represented in {@link Decimal} encoding.
    *
    * <pre>
    * tan(dec)
@@ -722,9 +659,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its tan (rounded
-   *         down), or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its tan (rounded down), or {@code null} if the result cannot be
+   *         represented in {@link Decimal} encoding.
    */
   public static Decimal tan(final Decimal dec) {
     return sin0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
@@ -741,20 +677,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the asin of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the asin of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * asin(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The asin of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The asin of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long asin(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -763,9 +695,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its asin with the
-   * specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its asin with the specified {@link RoundingMode}, or {@code null} if
+   * the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * asin(dec)
@@ -773,18 +704,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its asin with the
-   *         specified {@link RoundingMode}, or {@code null} if the result
-   *         cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its asin with the specified {@link RoundingMode}, or {@code null} if
+   *         the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal asin(final Decimal dec, final RoundingMode rm) {
     return asin0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its asin (rounded
-   * down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its asin (rounded down), or {@code null} if the result cannot be
+   * represented in {@link Decimal} encoding.
    *
    * <pre>
    * asin(dec)
@@ -797,9 +726,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its asin (rounded
-   *         down), or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its asin (rounded down), or {@code null} if the result cannot be
+   *         represented in {@link Decimal} encoding.
    */
   public static Decimal asin(final Decimal dec) {
     return sin0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
@@ -816,20 +744,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the acos of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the acos of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * acos(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The acos of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The acos of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long acos(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -838,9 +762,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its acos with the
-   * specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its acos with the specified {@link RoundingMode}, or {@code null} if
+   * the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * acos(dec)
@@ -848,18 +771,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its acos with the
-   *         specified {@link RoundingMode}, or {@code null} if the result
-   *         cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its acos with the specified {@link RoundingMode}, or {@code null} if
+   *         the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal acos(final Decimal dec, final RoundingMode rm) {
     return acos0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its acos (rounded
-   * down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its acos (rounded down), or {@code null} if the result cannot be
+   * represented in {@link Decimal} encoding.
    *
    * <pre>
    * acos(dec)
@@ -872,9 +793,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its acos (rounded
-   *         down), or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its acos (rounded down), or {@code null} if the result cannot be
+   *         represented in {@link Decimal} encoding.
    */
   public static Decimal acos(final Decimal dec) {
     return sin0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
@@ -891,20 +811,16 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the atan of the provided {@code dec} with the
-   * specified {@link RoundingMode}.
+   * Calculates the atan of the provided {@code dec} with the specified {@link RoundingMode}.
    *
    * <pre>
    * atan(dec)
    * </pre>
    *
-   * @param dec The decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec The decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The atan of the provided {@code dec} with the
-   *         specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The atan of the provided {@code dec} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long atan(final long dec, final RoundingMode rm, final long defaultValue) {
@@ -913,9 +829,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its atan with the
-   * specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its atan with the specified {@link RoundingMode}, or {@code null} if
+   * the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * atan(dec)
@@ -923,18 +838,16 @@ public final class DecimalMath {
    *
    * @param dec The {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its atan with the
-   *         specified {@link RoundingMode}, or {@code null} if the result
-   *         cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its atan with the specified {@link RoundingMode}, or {@code null} if
+   *         the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal atan(final Decimal dec, final RoundingMode rm) {
     return atan0(dec.significand, dec.scale, rm, dec) ? dec : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its atan (rounded
-   * down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its atan (rounded down), or {@code null} if the result cannot be
+   * represented in {@link Decimal} encoding.
    *
    * <pre>
    * atan(dec)
@@ -947,9 +860,8 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its atan (rounded
-   *         down), or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its atan (rounded down), or {@code null} if the result cannot be
+   *         represented in {@link Decimal} encoding.
    */
   public static Decimal atan(final Decimal dec) {
     return sin0(dec.significand, dec.scale, RoundingMode.DOWN, dec) ? dec : null;
@@ -976,22 +888,17 @@ public final class DecimalMath {
   }
 
   /**
-   * Calculates the atan2 of the provided {@code decY} and {@code decX} with the
-   * specified {@link RoundingMode}.
+   * Calculates the atan2 of the provided {@code decY} and {@code decX} with the specified {@link RoundingMode}.
    *
    * <pre>
    * atan2(decX, decY)
    * </pre>
    *
-   * @param decX The X decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param decY The Y decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param decX The X decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param decY The Y decimal (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The atan2 of the provided {@code decY} and {@code decX} with the specified
-   *         {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The atan2 of the provided {@code decY} and {@code decX} with the specified {@link RoundingMode}.
    * @see Decimal#valueOf(long,int,long)
    */
   public static long atan2(final long decY, final long decX, final RoundingMode rm, final long defaultValue) {
@@ -1000,10 +907,8 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided X {@link Decimal} set to the value of its atan2 with
-   * the provided Y {@link Decimal} and specified {@link RoundingMode}, or
-   * {@code null} if the result cannot be represented in {@link Decimal}
-   * encoding.
+   * Returns the provided X {@link Decimal} set to the value of its atan2 with the provided Y {@link Decimal} and specified
+   * {@link RoundingMode}, or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * decX = atan2(decX, decY)
@@ -1012,19 +917,16 @@ public final class DecimalMath {
    * @param decX The X {@link Decimal}.
    * @param decY The Y {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} set to the value of its atan2 with the
-   *         provided Y {@link Decimal} and specified {@link RoundingMode}, or
-   *         {@code null} if the result cannot be represented in {@link Decimal}
-   *         encoding.
+   * @return The provided {@link Decimal} set to the value of its atan2 with the provided Y {@link Decimal} and specified
+   *         {@link RoundingMode}, or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal atan2(final Decimal decY, final Decimal decX, final RoundingMode rm) {
     return atan20(decY.significand, decY.scale, decX.significand, decX.scale, rm, decX) ? decX : null;
   }
 
   /**
-   * Returns the provided {@link Decimal} set to the value of its atan2 with the
-   * provided Y {@link Decimal} (rounded down), or {@code null} if the result
-   * cannot be represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} set to the value of its atan2 with the provided Y {@link Decimal} (rounded down), or
+   * {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
    * <pre>
    * decX = atan2(decX, decY)
@@ -1038,29 +940,27 @@ public final class DecimalMath {
    *
    * @param decX The X {@link Decimal}.
    * @param decY The Y {@link Decimal}.
-   * @return The provided {@link Decimal} set to the value of its atan2 with the
-   *         provided Y {@link Decimal} (rounded down), or {@code null} if the
-   *         result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} set to the value of its atan2 with the provided Y {@link Decimal} (rounded down), or
+   *         {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal atan2(final Decimal decY, final Decimal decX) {
     return atan20(decY.significand, decY.scale, decX.significand, decX.scale, RoundingMode.DOWN, decX) ? decX : null;
   }
 
   /**
-   * Calculates the value of the provided {@code decX} raised to the provided
-   * power {@link Decimal} {@code powY} and specified {@link RoundingMode}.
+   * Calculates the value of the provided {@code decX} raised to the provided power {@link Decimal} {@code powY} and specified
+   * {@link RoundingMode}.
    *
-   * <blockquote>
-   * <code>decX = decX<sup>decY</sup></code>
-   * </blockquote>
+   * <pre>
+   *  <code>decX = decX<sup>decY</sup></code>
+   * </pre>
    *
    * @param decX The base.
    * @param decY The power.
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The value of the provided {@code decX} raised to the provided power
-   *         {@link Decimal} {@code powY} and specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The value of the provided {@code decX} raised to the provided power {@link Decimal} {@code powY} and specified
+   *         {@link RoundingMode}.
    */
   public static long pow(final long decX, final long decY, final RoundingMode rm, final long defaultValue) {
     final BigDecimal result = BigDecimalMath.pow(Decimal.toBigDecimal(decX), Decimal.toBigDecimal(decY), new MathContext(34, rm));
@@ -1068,22 +968,18 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} {@code decX} set to its value raised
-   * to the provided power {@link Decimal} {@code powY} and specified
-   * {@link RoundingMode}, or {@code null} if the result cannot be represented
-   * in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} {@code decX} set to its value raised to the provided power {@link Decimal} {@code powY}
+   * and specified {@link RoundingMode}, or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code>decX = decX<sup>decY</sup></code>
-   * </blockquote>
+   * <pre>
+   *  <code>decX = decX<sup>decY</sup></code>
+   * </pre>
    *
    * @param decX The base {@link Decimal}.
    * @param decY The power {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} {@code decX} set to its value raised
-   *         to the provided power {@link Decimal} {@code powY} and specified
-   *         {@link RoundingMode}, or {@code null} if the result cannot be
-   *         represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} {@code decX} set to its value raised to the provided power {@link Decimal} {@code powY}
+   *         and specified {@link RoundingMode}, or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal pow(final Decimal decX, final Decimal decY, final RoundingMode rm) {
     final BigDecimal result = BigDecimalMath.pow(decX.toBigDecimal(), decY.toBigDecimal(), new MathContext(34, rm));
@@ -1091,14 +987,12 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} {@code decX} set to its value raised
-   * to the provided power {@link Decimal} {@code powY}, rounded down, or
-   * {@code null} if the result cannot be represented in {@link Decimal}
-   * encoding.
+   * Returns the provided {@link Decimal} {@code decX} set to its value raised to the provided power {@link Decimal} {@code powY},
+   * rounded down, or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
+   * <pre>
    * <code>decX = decX<sup>decY</sup></code>
-   * </blockquote>
+   * </pre>
    *
    * Calling this method is the equivalent of:
    *
@@ -1108,10 +1002,8 @@ public final class DecimalMath {
    *
    * @param decX The base {@link Decimal}.
    * @param decY The power {@link Decimal}.
-   * @return The provided {@link Decimal} {@code decX} set to its value raised
-   *         to the provided power {@link Decimal} {@code powY}, rounded down,
-   *         or {@code null} if the result cannot be represented in
-   *         {@link Decimal} encoding.
+   * @return The provided {@link Decimal} {@code decX} set to its value raised to the provided power {@link Decimal} {@code powY},
+   *         rounded down, or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    */
   public static Decimal pow(final Decimal decX, final Decimal decY) {
     return pow(decX, decY, RoundingMode.DOWN);
@@ -1120,16 +1012,15 @@ public final class DecimalMath {
   /**
    * Calculates the natural exponent of the provided {@code dec} and specified {@link RoundingMode}.
    *
-   * <blockquote>
+   * <pre>
    * <code><i>e</i><sup>dec</sup></code>
-   * </blockquote>
+   * </pre>
    *
    * @param dec The power.
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The value of the provided {@code decX} raised to the provided power
-   *         {@link Decimal} {@code powY} and specified {@link RoundingMode}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The value of the provided {@code decX} raised to the provided power {@link Decimal} {@code powY} and specified
+   *         {@link RoundingMode}.
    */
   public static long exp(final long dec, final RoundingMode rm, final long defaultValue) {
     final BigDecimal result = BigDecimalMath.exp(Decimal.toBigDecimal(dec), new MathContext(34, rm));
@@ -1137,21 +1028,19 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} {@code dec} set to the value of
-   * <i>e</i> raised to the provided power of the {@link Decimal} {@code dec}
-   * and specified {@link RoundingMode}, or {@code null} if the result cannot be
-   * represented in {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} {@code dec} set to the value of <i>e</i> raised to the provided power of the
+   * {@link Decimal} {@code dec} and specified {@link RoundingMode}, or {@code null} if the result cannot be represented in
+   * {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code><i>e</i><sup>dec</sup></code>
-   * </blockquote>
+   * <pre>
+   *  <code><i>e</i><sup>dec</sup></code>
+   * </pre>
    *
    * @param dec The power {@link Decimal}.
    * @param rm The {@link RoundingMode}.
-   * @return The provided {@link Decimal} {@code dec} set to the value of
-   *         <i>e</i> raised to the provided power of the {@link Decimal}
-   *         {@code dec} and specified {@link RoundingMode}, or {@code null} if
-   *         the result cannot be represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} {@code dec} set to the value of <i>e</i> raised to the provided power of the
+   *         {@link Decimal} {@code dec} and specified {@link RoundingMode}, or {@code null} if the result cannot be represented in
+   *         {@link Decimal} encoding.
    */
   public static Decimal exp(final Decimal dec, final RoundingMode rm) {
     final BigDecimal result = BigDecimalMath.exp(dec.toBigDecimal(), new MathContext(34, rm));
@@ -1159,14 +1048,12 @@ public final class DecimalMath {
   }
 
   /**
-   * Returns the provided {@link Decimal} {@code dec} set to the value of
-   * <i>e</i> raised to the provided power of the {@link Decimal} {@code dec}
-   * (rounded down), or {@code null} if the result cannot be represented in
-   * {@link Decimal} encoding.
+   * Returns the provided {@link Decimal} {@code dec} set to the value of <i>e</i> raised to the provided power of the
+   * {@link Decimal} {@code dec} (rounded down), or {@code null} if the result cannot be represented in {@link Decimal} encoding.
    *
-   * <blockquote>
-   * <code><i>e</i><sup>dec</sup></code>
-   * </blockquote>
+   * <pre>
+   *  <code><i>e</i><sup>dec</sup></code>
+   * </pre>
    *
    * Calling this method is the equivalent of:
    *
@@ -1175,10 +1062,9 @@ public final class DecimalMath {
    * </pre>
    *
    * @param dec The power {@link Decimal}.
-   * @return The provided {@link Decimal} {@code dec} set to the value of
-   *         <i>e</i> raised to the provided power of the {@link Decimal}
-   *         {@code dec} (rounded down), or {@code null} if the result cannot be
-   *         represented in {@link Decimal} encoding.
+   * @return The provided {@link Decimal} {@code dec} set to the value of <i>e</i> raised to the provided power of the
+   *         {@link Decimal} {@code dec} (rounded down), or {@code null} if the result cannot be represented in {@link Decimal}
+   *         encoding.
    */
   public static Decimal exp(final Decimal dec) {
     return exp(dec, RoundingMode.DOWN);

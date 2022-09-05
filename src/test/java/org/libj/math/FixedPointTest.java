@@ -83,7 +83,7 @@ public class FixedPointTest extends DecimalOperationTest {
   @Test
   public void testMulOverflowPoints() {
     boolean flip = false;
-    for (int i = 63, j = 63; i >= 1;) {
+    for (int i = 63, j = 63; i >= 1;) { // [N]
       final BigDecimal a = BigDecimals.TWO.pow(i);
       final BigDecimal b = BigDecimals.TWO.pow(j);
       logger.info(Strings.pad(i + " + " + j, LEFT, 8) + " " + Strings.pad(String.valueOf(i + j), LEFT, 4) + " " + formatOverflowPoint(a.multiply(b), i <= 55 ? 18 : 17));
@@ -104,8 +104,8 @@ public class FixedPointTest extends DecimalOperationTest {
     testEncodeDecode(significand, scale, time);
 
     int count = 0;
-    for (short s = 0; s <= MAX_PSCALE; ++s)
-      for (int i = 0; i < numTests / 10; ++i, ++count)
+    for (short s = 0; s <= MAX_PSCALE; ++s) // [N]
+      for (int i = 0; i < numTests / 10; ++i, ++count) // [N]
         testEncodeDecode(random.nextLong(), s, time);
 
     logger.info("testEncodeDecode(): encode=" + (time[0] / count) + "ns, decode=" + (count / time[1]) + "/ns");
@@ -153,7 +153,7 @@ public class FixedPointTest extends DecimalOperationTest {
     boolean hasFail = false;
 
     // General test
-    for (int i = 0; i < 100000; ++i) {
+    for (int i = 0; i < 100000; ++i) { // [N]
       final double sig = random.nextDouble();
       final byte exp = (byte)((byte)random.nextInt() * 0.25);
       final double x = Math.pow(sig, exp);
@@ -162,10 +162,10 @@ public class FixedPointTest extends DecimalOperationTest {
 
     // Test maximum positive
     double v = maxPos;
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < 1000; ++i) // [N]
       v = Math.nextDown(v);
 
-    for (int i = 0; i < 100000; ++i) {
+    for (int i = 0; i < 100000; ++i) { // [N]
       final boolean pass = (v = Math.nextUp(v)) <= maxPos;
       assertEquals("" + i, pass, isDecimal(v));
       if (pass)
@@ -180,10 +180,10 @@ public class FixedPointTest extends DecimalOperationTest {
 
     // Test maximum negative
     v = maxNeg;
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < 1000; ++i) // [N]
       v = Math.nextUp(v);
 
-    for (int i = 0; i < 100000; ++i) {
+    for (int i = 0; i < 100000; ++i) { // [N]
       final boolean pass = (v = Math.nextDown(v)) >= maxNeg;
 //      assertEquals("" + i, pass, isDecimal(v));
       if (pass)
@@ -198,14 +198,14 @@ public class FixedPointTest extends DecimalOperationTest {
 
     // Test minimum positive
     v = minPos;
-    for (int i = 16; i >= 1; --i) {
+    for (int i = 16; i >= 1; --i) { // [N]
       v = SafeMath.round(v, 256 + i, RoundingMode.DOWN);
       assertTrue("" + v, isDecimal(v));
     }
 
     // Test minimum negative
     v = minNeg;
-    for (int i = 16; i >= 1; --i) {
+    for (int i = 16; i >= 1; --i) { // [N]
       v = SafeMath.round(v, 256 + i, RoundingMode.DOWN);
       assertTrue("" + v, isDecimal(v));
     }
@@ -227,13 +227,13 @@ public class FixedPointTest extends DecimalOperationTest {
 
     long time1 = 0;
     long time2 = 0;
-    for (int j = 0; j < 20; ++j) {
+    for (int j = 0; j < 20; ++j) { // [N]
       if (j % 2 == 0) {
         a = random.nextLong();
         b = random.nextLong();
       }
 
-      for (int i = 0; i < count; ++i) {
+      for (int i = 0; i < count; ++i) { // [N]
         if (j % 2 == 0) {
           ts = System.nanoTime();
           tmp = a;
@@ -264,7 +264,7 @@ public class FixedPointTest extends DecimalOperationTest {
   @Test
   public void testBinaryPrecisionRequiredForValue() {
     assertEquals(0, bitLength(0));
-    for (int i = 1; i < Long.SIZE; ++i)
+    for (int i = 1; i < Long.SIZE; ++i) // [N]
       assertEquals(String.valueOf(i), i, bitLength((long)Math.pow(2, i - 1)));
   }
 }

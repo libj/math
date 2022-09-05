@@ -124,13 +124,13 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
    *
    * @param dir The directory to process.
    * @param predicate The predicate defining the test process.
-   * @return {@code true} if the specified predicate returned {@code true} for
-   *         each sub-path to which it was applied, otherwise {@code false}.
+   * @return {@code true} if the specified predicate returned {@code true} for each sub-path to which it was applied, otherwise
+   *         {@code false}.
    */
   public static boolean recurseDir(final File dir, final Predicate<File> predicate) {
     final File[] files = dir.listFiles();
     if (files != null)
-      for (final File file : files)
+      for (final File file : files) // [A]
         if (!recurseDir(file, predicate))
           return false;
 
@@ -188,7 +188,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
   }
 
   private static void loadJarsInBootstrap(final Instrumentation instr, final String ... names) throws IOException {
-    for (final String name : names) {
+    for (final String name : names) { // [A]
       int start = classpath.indexOf(File.separator + name);
       start = classpath.lastIndexOf(File.pathSeparatorChar, start) + 1;
       int end = classpath.indexOf(File.pathSeparatorChar, start);
@@ -203,7 +203,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
   private static void loadClassesInBootstrap(final String ... classNames) throws IOException {
     final Map<String,byte[]> nameToBytes = new HashMap<>();
-    for (final String className : classNames) {
+    for (final String className : classNames) { // [A]
       try (final InputStream in = AuditRunner.class.getClassLoader().getResource(className.replace('.', '/').concat(".class")).openStream()) {
         final byte[] bytes = new byte[in.available()];
         in.read(bytes);
@@ -244,14 +244,14 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
       final Instrument[] instruments = instrs.value();
       final Result[] results = new Result[instruments.length + 1];
       final Set<Class<?>> allClasses = new IdentityHashSet<>();
-      for (int i = 0; i < instruments.length; ++i) {
+      for (int i = 0, i$ = instruments.length; i < i$; ++i) { // [A]
         final Instrument instrument = instruments[i];
         Collections.addAll(allClasses, instrument.a());
         Collections.addAll(allClasses, instrument.b());
       }
 
       final Class<?>[] allTrackedClasses = allClasses.toArray(new Class[allClasses.size()]);
-      for (int i = 0; i < instruments.length; ++i) {
+      for (int i = 0, i$ = instruments.length; i < i$; ++i) { // [A]
         results[i] = new Result(instruments[i].a(), allTrackedClasses);
       }
 
@@ -393,7 +393,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
 
         final Method[] methods = Classes.getDeclaredMethodsDeep(getJavaClass());
         Classes.sortDeclarativeOrder(methods);
-        for (final Method method : methods) {
+        for (final Method method : methods) { // [A]
           addToAnnotationLists(new FrameworkMethod(method) {
             @Override
             public Object invokeExplosively(final Object target, final Object ... params) throws Throwable {

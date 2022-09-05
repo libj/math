@@ -58,6 +58,8 @@ public class Result {
     if (index == classes.length)
       return new Class<?>[depth];
 
+    if (classes[index] == null)
+      System.out.println();
     if (arrayOrClass != classes[index].isArray())
       return filterTypes(classes, arrayOrClass, index + 1, depth);
 
@@ -67,7 +69,7 @@ public class Result {
   }
 
   public void alloc(final String className) {
-    for (int i = 0; i < resultClassNames.length; ++i) {
+    for (int i = 0, i$ = resultClassNames.length; i < i$; ++i) { // [A]
       if (className.equals(resultClassNames[i])) {
         ++counts[i];
         return;
@@ -87,7 +89,7 @@ public class Result {
 
   public int getAllocations(final Class<?> cls) {
     final String className = cls.getCanonicalName();
-    for (int i = 0; i < resultClassNames.length; ++i)
+    for (int i = 0, i$ = resultClassNames.length; i < i$; ++i) // [A]
       if (className.equals(resultClassNames[i]))
         return counts[i];
 
@@ -100,15 +102,15 @@ public class Result {
 
   public void append(final Set<Rule> rules) {
     rules.add(new ClassRule(classTypes));
-    for (final Class<?> cls : auditClasses) {
-      for (final Method method : Classes.getDeclaredMethodsDeep(cls)) {
+    for (final Class<?> cls : auditClasses) { // [A]
+      for (final Method method : Classes.getDeclaredMethodsDeep(cls)) { // [A]
         if (!method.isSynthetic()) {
           rules.add(new ArrayRule(method, arrayTypes));
           sourceClassNames.add(method.getDeclaringClass().getCanonicalName());
         }
       }
 
-      for (final Constructor<?> constructor : cls.getDeclaredConstructors()) {
+      for (final Constructor<?> constructor : cls.getDeclaredConstructors()) { // [A]
         rules.add(new ArrayRule(constructor, arrayTypes));
       }
     }

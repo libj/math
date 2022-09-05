@@ -30,13 +30,11 @@ public class BigIntStudy extends BigIntTest {
    * Tests which is faster:
    * <ol>
    * <li><ins>Regular: {@code int[] {len, sig, ..}}</ins><br>
-   * Length and sig separated, thus sig can be -1, 0, or 1. A length of 0
-   * means sig must be 0, which means code has to check for this
-   * alignment.</li>
+   * Length and sig separated, thus sig can be -1, 0, or 1. A length of 0 means sig must be 0, which means code has to check for
+   * this alignment.</li>
    * <li><ins>Composite: {@code int[] {sigLen, ..}}</ins><br>
-   * Length and sig are combined, whereby a positive length means a sig =
-   * 1, and a negative length a sig = -1. A length of 0 means the value is
-   * zero, and sig ends up as 1. No alignment checks are necessary.</li>
+   * Length and sig are combined, whereby a positive length means a sig = 1, and a negative length a sig = -1. A length of 0 means
+   * the value is zero, and sig ends up as 1. No alignment checks are necessary.</li>
    * </ol>
    */
   @Test
@@ -141,8 +139,8 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testRandomIntPrecision() {
-    for (int i = 0; i < 1000; ++i) {
-      for (int j = 1; j < 10; ++j) {
+    for (int i = 0; i < 1000; ++i) { // [N]
+      for (int j = 1; j < 10; ++j) { // [N]
         final int random = randomInt(j);
         assertEquals(String.valueOf(random), j, Numbers.precision(random));
       }
@@ -151,8 +149,8 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testRandomLongPrecision() {
-    for (int i = 0; i < 1000; ++i) {
-      for (int j = 1; j < 19; ++j) {
+    for (int i = 0; i < 1000; ++i) { // [N]
+      for (int j = 1; j < 19; ++j) { // [N]
         final long random = randomLong(j);
         assertEquals(j + " " + String.valueOf(random), j, Numbers.precision(random));
       }
@@ -178,7 +176,7 @@ public class BigIntStudy extends BigIntTest {
 
   @Test
   public void testArrayVsBuffer2() {
-    for (int i = 1; i < 10000; i += 10) {
+    for (int i = 1; i < 10000; i += 10) { // [N]
       final int[] x = BigInt.valueOf("9" + Strings.repeat('9', i));
       System.out.println(i + " " + x.length + " " + i / x.length);
     }
@@ -215,7 +213,7 @@ public class BigIntStudy extends BigIntTest {
     short b;
     long time1 = 0;
     long time2 = 0;
-    for (int i = 0; i < 100000000; ++i) {
+    for (int i = 0; i < 100000000; ++i) { // [N]
       a = (byte)random.nextInt();
       b = (short)random.nextInt();
 

@@ -43,89 +43,69 @@ abstract class BigIntMultiplication extends BigIntAddition {
 //  public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
 //  public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
 
-  /**
-   * Factor to be applied Karatsuba thresholds. This factor was determined
-   * experimentally to produce better results in general applications than the
-   * exact factors that were determined in isolated tests.
-   */
+/**
+ * Factor to be applied Karatsuba thresholds. This factor was determined experimentally to produce better results in general
+ * applications than the exact factors that were determined in isolated tests.
+ */
   private static final double THRESHOLD_FACTOR = 1.2;
 
   /**
-   * The "z" threshold value for using Karatsuba multiplication. If the number
-   * of ints in the output array is greater than this number, and both input
-   * arrays are greater than {@link #KARATSUBA_THRESHOLD_X}, then Karatsuba
-   * multiplication will be used.
+   * The "z" threshold value for using Karatsuba multiplication. If the number of ints in the output array is greater than this
+   * number, and both input arrays are greater than {@link #KARATSUBA_THRESHOLD_X}, then Karatsuba multiplication will be used.
    * <p>
-   * This value is found experimentally to work well, but there is room for
-   * further optimization. Optimizations for this threshold with magnitudes of
-   * different lengths produce different results. When the two magnitudes differ
-   * in length the most, the Karatsuba algorithm performs better with lower
-   * values of this threshold. When the two magnitudes are equal in length, the
-   * Karatsuba algorithm performs better with higher values of this threshold.
-   * The difference between the optimal value for this threshold for magnitudes
-   * with greatest differing lengths vs threshold for magnitudes with equal
-   * lengths is ~25%. In summary, the relationship of this threshold across the
-   * range of deltas between the magnitude lengths of the input arrays is not
-   * linear.
+   * This value is found experimentally to work well, but there is room for further optimization. Optimizations for this threshold
+   * with magnitudes of different lengths produce different results. When the two magnitudes differ in length the most, the
+   * Karatsuba algorithm performs better with lower values of this threshold. When the two magnitudes are equal in length, the
+   * Karatsuba algorithm performs better with higher values of this threshold. The difference between the optimal value for this
+   * threshold for magnitudes with greatest differing lengths vs threshold for magnitudes with equal lengths is ~25%. In summary,
+   * the relationship of this threshold across the range of deltas between the magnitude lengths of the input arrays is not linear.
    *
    * @see #KARATSUBA_THRESHOLD_X
    */
   static final int KARATSUBA_THRESHOLD_Z = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 135 : 80) * THRESHOLD_FACTOR); // 135 : 80
 
   /**
-   * The "x" threshold value for using Karatsuba multiplication. If the number
-   * of ints in both input arrays is greater than this number, then
-   * {@link #KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Karatsuba
-   * multiplication is to be used. This value is found experimentally to work
-   * well.
+   * The "x" threshold value for using Karatsuba multiplication. If the number of ints in both input arrays is greater than this
+   * number, then {@link #KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Karatsuba multiplication is to be used. This
+   * value is found experimentally to work well.
    */
   static final int KARATSUBA_THRESHOLD_X = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 70 : 50) * THRESHOLD_FACTOR); // 70 : 50
 
   /**
-   * The threshold value for using Karatsuba squaring. If the number of ints in
-   * the magnitude array is greater than this value, Karatsuba squaring will be
-   * used. This value is found experimentally to work well.
+   * The threshold value for using Karatsuba squaring. If the number of ints in the magnitude array is greater than this value,
+   * Karatsuba squaring will be used. This value is found experimentally to work well.
    * <p>
-   * Note: Values lower than {@code 30} for this threshold will result in errors
-   * for in-place execution of the Karatsuba algorithm.
+   * Note: Values lower than {@code 30} for this threshold will result in errors for in-place execution of the Karatsuba algorithm.
    */
   static final int KARATSUBA_SQUARE_THRESHOLD = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 640 : 400) * THRESHOLD_FACTOR); // 640 : 400
 
   /**
-   * Factor to be applied Parallel Karatsuba thresholds. This factor was
-   * determined experimentally to produce better results in general applications
-   * than the exact factors that were determined in isolated manner.
+   * Factor to be applied Parallel Karatsuba thresholds. This factor was determined experimentally to produce better results in
+   * general applications than the exact factors that were determined in isolated manner.
    */
   private static final double PARALLEL_THRESHOLD_FACTOR = 2;
 
   /**
-   * The "z" threshold value for using Parallel Karatsuba multiplication. If the
-   * number of ints in the output array is greater than this number, and both
-   * input arrays are greater than {@link #PARALLEL_KARATSUBA_THRESHOLD_X}, then
-   * Parallel Karatsuba multiplication will be used.
+   * The "z" threshold value for using Parallel Karatsuba multiplication. If the number of ints in the output array is greater than
+   * this number, and both input arrays are greater than {@link #PARALLEL_KARATSUBA_THRESHOLD_X}, then Parallel Karatsuba
+   * multiplication will be used.
    * <p>
-   * This value is found experimentally to work well, but there is room for
-   * further optimization. Optimizations for this threshold with magnitudes of
-   * different lengths produce different results. When the two magnitudes differ
-   * in length the most, the Parallel Karatsuba algorithm performs better with
-   * lower values of this threshold. When the two magnitudes are equal in
-   * length, the Parallel Karatsuba algorithm performs better with higher values
-   * of this threshold. The difference between the optimal value for this
-   * threshold for magnitudes with greatest differing lengths vs threshold for
-   * magnitudes with equal lengths is ~25%. In summary, the relationship of this
-   * threshold across the range of deltas between the magnitude lengths of the
-   * input arrays is not linear.
+   * This value is found experimentally to work well, but there is room for further optimization. Optimizations for this threshold
+   * with magnitudes of different lengths produce different results. When the two magnitudes differ in length the most, the Parallel
+   * Karatsuba algorithm performs better with lower values of this threshold. When the two magnitudes are equal in length, the
+   * Parallel Karatsuba algorithm performs better with higher values of this threshold. The difference between the optimal value for
+   * this threshold for magnitudes with greatest differing lengths vs threshold for magnitudes with equal lengths is ~25%. In
+   * summary, the relationship of this threshold across the range of deltas between the magnitude lengths of the input arrays is not
+   * linear.
    *
    * @see #PARALLEL_KARATSUBA_THRESHOLD_X
    */
   static final int PARALLEL_KARATSUBA_THRESHOLD_Z = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 1500 : 850) * PARALLEL_THRESHOLD_FACTOR); // 1500 : 850
 
   /**
-   * The "x" threshold value for using Parallel Karatsuba multiplication. If the
-   * number of ints in both input arrays is greater than this number, then
-   * {@link #PARALLEL_KARATSUBA_THRESHOLD_Z} will be evaluated to determine if
-   * Parallel Karatsuba multiplication is to be used. This value is found
-   * experimentally to work well.
+   * The "x" threshold value for using Parallel Karatsuba multiplication. If the number of ints in both input arrays is greater than
+   * this number, then {@link #PARALLEL_KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Parallel Karatsuba multiplication
+   * is to be used. This value is found experimentally to work well.
    */
   static final int PARALLEL_KARATSUBA_THRESHOLD_X = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 120 : 100) * PARALLEL_THRESHOLD_FACTOR); // 120 : 100
 
@@ -185,7 +165,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
   // Initialize BigInt cache of powers of 5
   static {
     int i = 0;
-    for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < INT_5_POW.length; ++i) {
+    for (POW_5_CACHE = new int[MAX_FIVE_POW][]; i < INT_5_POW.length; ++i) { // [A]
       POW_5_CACHE[i] = assignInPlace(new int[2], INT_5_POW[i]);
     }
 
@@ -197,17 +177,15 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Compares the provided {@linkplain BigInt#val() value-encoded number} with
-   * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, and returns one of
-   * {@code -1}, {@code 0}, or {@code 1} if {@code val} is less than, equal to,
-   * or greater than <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, respectively.
+   * Compares the provided {@linkplain BigInt#val() value-encoded number} with <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, and
+   * returns one of {@code -1}, {@code 0}, or {@code 1} if {@code val} is less than, equal to, or greater than
+   * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, respectively.
    *
    * @implNote This function assumes {@code val} is positive.
    * @param val The {@linkplain BigInt#val() value-encoded number} to compare.
    * @param p5 The exponent of the power-of-five factor.
    * @param p2 The exponent of the power-of-two factor.
-   * @return One of {@code -1}, {@code 0}, or {@code 1} if {@code val} is less
-   *         than, equal to, or greater than
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if {@code val} is less than, equal to, or greater than
    *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>, respectively.
    */
   static int compareToPow52(final int[] val, final int p5, final int p2) {
@@ -230,13 +208,12 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Determines whether all elements of a {@linkplain BigInt#val() value-encoded
-   * array} are zero for all indices less than a given index.
+   * Determines whether all elements of a {@linkplain BigInt#val() value-encoded array} are zero for all indices less than a given
+   * index.
    *
    * @param a The {@linkplain BigInt#val() value-encoded array} to be examined.
    * @param from The index strictly below which elements are to be examined.
-   * @return {@code 0} if all elements below the {@code from} index (but above
-   *         index of {@code 1}) are zero, {@code 1} otherwise.
+   * @return {@code 0} if all elements below the {@code from} index (but above index of {@code 1}) are zero, {@code 1} otherwise.
    */
   private static int checkZeroTail(final int[] a, int from) {
     while (from > 1)
@@ -247,16 +224,13 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the provided {@linkplain BigInt#val() value-encoded number}
-   * multiplied by <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} multiplied by <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
    *
-   * @implNote This function assumes the provided array is big enough for the
-   *           operation to be performed in place.
+   * @implNote This function assumes the provided array is big enough for the operation to be performed in place.
    * @param val The {@linkplain BigInt#val() value-encoded number} to multiply.
    * @param p5 The exponent of the power-of-five factor.
    * @param p2 The exponent of the power-of-two factor.
-   * @return The provided {@code val} reference after its multiplication by
-   *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   * @return The provided {@code val} reference after its multiplication by <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
    */
   static int[] mulPow52InPlace(final int[] val, final int p5, final int p2) {
     if (val[0] == 0)
@@ -274,16 +248,14 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the provided {@linkplain BigInt#val() value-encoded number} set to
-   * the numerical value of <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set to the numerical value of
+   * <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
    *
-   * @implNote This function assumes the provided array is big enough for the
-   *           operation to be performed in place.
+   * @implNote This function assumes the provided array is big enough for the operation to be performed in place.
    * @param val The {@linkplain BigInt#val() value-encoded number} to be set.
    * @param p5 The exponent of 5.
    * @param p2 The exponent of 2.
-   * @return The provided {@linkplain BigInt#val() value-encoded number} set to
-   *         the numerical value of
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set to the numerical value of
    *         <code>5<sup>p5</sup> * 2<sup>p2</sup></code>.
    */
   static int[] valueOfPow52(final int[] val, final int p5, final int p2) {
@@ -300,15 +272,12 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the provided {@linkplain BigInt#val() value-encoded number} set to
-   * the numerical value of <code>2<sup>p2</sup></code>.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set to the numerical value of <code>2<sup>p2</sup></code>.
    *
-   * @implNote This function assumes the provided array is big enough for the
-   *           operation to be performed in place.
+   * @implNote This function assumes the provided array is big enough for the operation to be performed in place.
    * @param val The {@linkplain BigInt#val() value-encoded number} to be set.
    * @param p2 The exponent of 2.
-   * @return the provided {@linkplain BigInt#val() value-encoded number} set to
-   *         the numerical value of <code>2<sup>p2</sup></code>.
+   * @return the provided {@linkplain BigInt#val() value-encoded number} set to the numerical value of <code>2<sup>p2</sup></code>.
    */
   private static int[] valueOfPow2(final int[] val, final int p2) {
     final int offBig = (p2 >> 5) + 1;
@@ -320,24 +289,20 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the value of <code>5<sup>p</sup></code> as a
-   * {@linkplain BigInt#val() value-encoded number}.
+   * Returns the value of <code>5<sup>p</sup></code> as a {@linkplain BigInt#val() value-encoded number}.
    *
    * @param p The exponent of {@code 5}.
-   * @return The value of <code>5<sup>p</sup></code> as a
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of <code>5<sup>p</sup></code> as a {@linkplain BigInt#val() value-encoded number}.
    */
   private static int[] big5pow(final int p) {
     return p < MAX_FIVE_POW ? POW_5_CACHE[p] : big5powRec(p);
   }
 
   /**
-   * Recursive function that computes the value of <code>5<sup>p</sup></code> as
-   * a {@linkplain BigInt#val() value-encoded number}.
+   * Recursive function that computes the value of <code>5<sup>p</sup></code> as a {@linkplain BigInt#val() value-encoded number}.
    *
    * @param p The exponent of {@code 5}.
-   * @return The value of <code>5<sup>p</sup></code> as a
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return The value of <code>5<sup>p</sup></code> as a {@linkplain BigInt#val() value-encoded number}.
    */
   private static int[] big5powRec(final int p) {
     if (p < MAX_FIVE_POW)
@@ -359,13 +324,11 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           multiplication of the provided number by the specified multiplier
-   *           requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the multiplication of the provided number by the specified
+   *           multiplier requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The multiplier.
-   * @return The result of the multiplication of the provided number by the
-   *         {@code int} multiplier.
+   * @return The result of the multiplication of the provided number by the {@code int} multiplier.
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int mul) {
@@ -373,21 +336,18 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided number by an <i>unsigned</i> {@code int}
-   * multiplicand.
+   * Multiplies the provided number by an <i>unsigned</i> {@code int} multiplicand.
    *
    * <pre>
    * val = val * mul
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           multiplication of the provided number by the specified multiplier
-   *           requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the multiplication of the provided number by the specified
+   *           multiplier requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param sig The sign of the unsigned {@code int} multiplier.
    * @param mul The multiplier (unsigned).
-   * @return The result of the multiplication of the provided number by the
-   *         <i>unsigned</i> {@code int} multiplier.
+   * @return The result of the multiplication of the provided number by the <i>unsigned</i> {@code int} multiplier.
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final int sig, final int mul) {
@@ -420,13 +380,11 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * val = val * mul
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           multiplication of the provided number by the specified multiplier
-   *           requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the multiplication of the provided number by the specified
+   *           multiplier requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The multiplier.
-   * @return The result of the multiplication of the provided number by the
-   *         {@code long} multiplier.
+   * @return The result of the multiplication of the provided number by the {@code long} multiplier.
    * @complexity O(n)
    */
   public static int[] mul(final int[] val, final long mul) {
@@ -438,21 +396,18 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided number by an <i>unsigned</i> {@code long}
-   * multiplicand.
+   * Multiplies the provided number by an <i>unsigned</i> {@code long} multiplicand.
    *
    * <pre>
    * val = val * mul
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           multiplication of the provided number by the specified multiplier
-   *           requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the multiplication of the provided number by the specified
+   *           multiplier requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param sig The sign of the unsigned {@code long} multiplier.
    * @param mul The multiplier (unsigned).
-   * @return The result of the multiplication of the provided number by the
-   *         <i>unsigned</i> {@code long} multiplier.
+   * @return The result of the multiplication of the provided number by the <i>unsigned</i> {@code long} multiplier.
    * @complexity O(n)
    */
   public static int[] mul(int[] val, int sig, final long mul) {
@@ -499,22 +454,19 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided magnitude by an <i>unsigned</i> {@code int}
-   * multiplicand.
+   * Multiplies the provided magnitude by an <i>unsigned</i> {@code int} multiplicand.
    *
    * <pre>
    * val = val * mul
    * </pre>
    *
-   * @implNote This method assumes that the length of the provided magnitude
-   *           array will accommodate for the result of the multiplication,
-   *           which may at most require 1 free limb.
+   * @implNote This method assumes that the length of the provided magnitude array will accommodate for the result of the
+   *           multiplication, which may at most require 1 free limb.
    * @param mag The multiplicand (little-endian).
    * @param off The offset of the first limb of the multiplicand.
    * @param len The number of limbs of the multiplicand.
    * @param mul The multiplier (unsigned).
-   * @return The result of the multiplication of the provided magnitude by the
-   *         <i>unsigned</i> {@code int} multiplier.
+   * @return The result of the multiplication of the provided magnitude by the <i>unsigned</i> {@code int} multiplier.
    * @complexity O(n)
    */
   public static int umul(final int[] mag, final int off, int len, final int mul) {
@@ -531,22 +483,19 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided magnitude by an <i>unsigned</i> {@code long}
-   * multiplicand.
+   * Multiplies the provided magnitude by an <i>unsigned</i> {@code long} multiplicand.
    *
    * <pre>
    * val = val * mul
    * </pre>
    *
-   * @implNote This method assumes that the length of the provided magnitude
-   *           array will accommodate for the result of the multiplication,
-   *           which may at most require 2 free limbs.
+   * @implNote This method assumes that the length of the provided magnitude array will accommodate for the result of the
+   *           multiplication, which may at most require 2 free limbs.
    * @param mag The multiplicand (little-endian).
    * @param off The offset of the first limb of the multiplicand.
    * @param len The number of limbs of the multiplicand.
    * @param mul The multiplier (unsigned).
-   * @return The result of the multiplication of the provided magnitude by the
-   *         <i>unsigned</i> {@code int} multiplier.
+   * @return The result of the multiplication of the provided magnitude by the <i>unsigned</i> {@code int} multiplier.
    * @complexity O(n)
    */
   public static int umul(final int[] mag, final int off, final int len, final long mul) {
@@ -562,7 +511,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
     long carry = 0, mul;
     int i = off;
     len += off;
-    for (long v0; i < len; ++i) { // Could this overflow?
+    for (long v0; i < len; ++i) { // Could this overflow? // [A]
       mag[i] = (int)((mul = (v0 = mag[i] & LONG_MASK) * mull) + carry);
       carry = (mul >>> 32) + (carry >>> 32) + ((mul & LONG_MASK) + (carry & LONG_MASK) >>> 32) + v0 * mulh;
     }
@@ -575,20 +524,17 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Multiplies the provided number by a {@linkplain BigInt#val() value-encoded
-   * multiplicand}.
+   * Multiplies the provided number by a {@linkplain BigInt#val() value-encoded multiplicand}.
    *
    * <pre>
    * val = val * mul
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           multiplication of the provided number by the specified multiplier
-   *           requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the multiplication of the provided number by the specified
+   *           multiplier requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded multiplicand}.
    * @param mul The {@linkplain BigInt#val() value-encoded multiplier}.
-   * @return The result of the multiplication of the provided
-   *         {@linkplain BigInt#val() value-encoded number} by the
+   * @return The result of the multiplication of the provided {@linkplain BigInt#val() value-encoded number} by the
    *         {@linkplain BigInt#val() value-encoded multiplier}.
    * @complexity O(n^2) - O(n log n)
    */
@@ -741,15 +687,15 @@ abstract class BigIntMultiplication extends BigIntAddition {
     int i, j, k;
 
     long carry = 0, x0 = x[1] & LONG_MASK;
-    for (j = 1; j <= ylen; ++j) {
+    for (j = 1; j <= ylen; ++j) { // [A]
       z[j] = (int)(carry += x0 * (y[j] & LONG_MASK));
       carry >>>= 32;
     }
 
     z[j] = (int)carry;
-    for (i = 2; i <= xlen; ++i) {
+    for (i = 2; i <= xlen; ++i) { // [A]
       x0 = x[i] & LONG_MASK;
-      for (carry = 0, j = 1, k = i; j <= ylen; ++j, ++k) {
+      for (carry = 0, j = 1, k = i; j <= ylen; ++j, ++k) { // [A]
         z[k] = (int)(carry += x0 * (y[j] & LONG_MASK) + (z[k] & LONG_MASK));
         carry >>>= 32;
       }
@@ -766,15 +712,15 @@ abstract class BigIntMultiplication extends BigIntAddition {
     long carry = 0, x0 = x[1] & LONG_MASK;
     zlen += OFF;
 
-    for (j = OFF, l = zlen; j <= ylen; ++j, ++l) {
+    for (j = OFF, l = zlen; j <= ylen; ++j, ++l) { // [A]
       y[j] = (int)(carry += x0 * ((y[l] = y[j]) & LONG_MASK));
       carry >>>= 32;
     }
 
     y[j] = (int)carry;
-    for (i = 2; i <= xlen; ++i) {
+    for (i = 2; i <= xlen; ++i) { // [A]
       x0 = x[i] & LONG_MASK;
-      for (carry = 0, j = OFF, k = i, l = zlen; j <= ylen; ++j, ++k, ++l) {
+      for (carry = 0, j = OFF, k = i, l = zlen; j <= ylen; ++j, ++k, ++l) { // [A]
         y[k] = (int)(carry += x0 * (y[l] & LONG_MASK) + (y[k] & LONG_MASK));
         carry >>>= 32;
       }
@@ -793,8 +739,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
   private static native void nativeKaratsuba(int[] x, int xoff, int[] y, int yoff, int[] z, int zoff, int zlen, int zlength, int off, int len, int parallelThreshold, int parallelThresholdZ);
 
   /**
-   * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and
-   * puts the result in {@code z}. Algorithm: Karatsuba
+   * Multiplies partial magnitude arrays x[off..off+n) and y[off...off+n) and puts the result in {@code z}. Algorithm: Karatsuba
    *
    * @param x The first magnitude array.
    * @param xoff Offset for {@code x}.
@@ -819,16 +764,16 @@ abstract class BigIntMultiplication extends BigIntAddition {
       final int yoffoffl = yoffoff + len, zoffl = zoff + len, xoffoffl = xoffoff + len;
 
       long x0 = x[xoffoff] & LONG_MASK;
-      for (k = yoffoff, j = zoff; j < zoffl; ++j, ++k) {
+      for (k = yoffoff, j = zoff; j < zoffl; ++j, ++k) { // [A]
         z[j] = (int)(carry += x0 * (y[k] & LONG_MASK));
         carry >>>= 32;
       }
 
       z[j] = (int)carry;
-      for (i = xoffoff + 1, l = zoffl + 1, m = zoff + 1; i < xoffoffl; ++i, ++l, ++m) {
+      for (i = xoffoff + 1, l = zoffl + 1, m = zoff + 1; i < xoffoffl; ++i, ++l, ++m) { // [A]
         carry = 0;
         x0 = x[i] & LONG_MASK;
-        for (j = yoffoff, k = m; j < yoffoffl; ++j, ++k) {
+        for (j = yoffoff, k = m; j < yoffoffl; ++j, ++k) { // [A]
           z[k] = (int)(carry += x0 * (y[j] & LONG_MASK) + (z[k] & LONG_MASK));
           carry >>>= 32;
         }
@@ -842,8 +787,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
       final int tmpoff, x2offl_b2, y2offl_b2;
       final int[] tmp;
 
-      j = ll + l_b2 + 2; // length needed for (x2) computation
-      k = j + l_b2 + 1;  // length needed for (y2) computation
+      j = ll + l_b2 + 2; // length needed for (x2) computation // [A]
+      k = j + l_b2 + 1;  // length needed for (y2) computation // [A]
       if (!parallel && z.length >= (i = zoff + zlen) + k + 1) {
         tmpoff = i;
         x2offl_b2 = j + i;
@@ -860,7 +805,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
       final int x2offl_b2b = x2offl_b2 + b, y2offl_b = x2offl_b2 + l_b, y2offl_b1 = y2offl_b + 1, y2offl_b1b = y2offl_b1 + b;
       tmp[x2offl_b2b] = tmp[y2offl_b1b] = tmp[y2offl_b] = tmp[y2offl_b2] = 0;
 
-      for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) {
+      for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) { // [A]
         tmp[i] = (int)(carry += (x[j] & LONG_MASK) + (x[k] & LONG_MASK));
         carry >>>= 32;
       }
@@ -874,7 +819,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
       }
 
       carry = 0;
-      for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) {
+      for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) { // [A]
         tmp[i] = (int)(carry += (y[j] & LONG_MASK) + (y[k] & LONG_MASK));
         carry >>>= 32;
       }
@@ -941,17 +886,17 @@ abstract class BigIntMultiplication extends BigIntAddition {
       System.arraycopy(tmp, tmpoffrr, z, zoff, ll);
 
       carry = 0;
-      for (i = tmpoff, j = zoff + b, k = tmpoffrrbb, l = tmpoffrr, m = tmpoffbb; i < m; ++i, ++j, ++k, ++l) {
+      for (i = tmpoff, j = zoff + b, k = tmpoffrrbb, l = tmpoffrr, m = tmpoffbb; i < m; ++i, ++j, ++k, ++l) { // [A]
         z[j] = (int)(carry += (z[j] & LONG_MASK) + (tmp[i] & LONG_MASK) - (tmp[k] & LONG_MASK) - (tmp[l] & LONG_MASK));
         carry >>= 32;
       }
 
-      for (; i < tmpoffl_b2; ++i, ++j, ++k) {
+      for (; i < tmpoffl_b2; ++i, ++j, ++k) { // [A]
         z[j] = (int)(carry += (z[j] & LONG_MASK) + (tmp[i] & LONG_MASK) - (tmp[k] & LONG_MASK));
         carry >>= 32;
       }
 
-      for (m = tmpoffrr - 1; i < m; ++i, ++j) {
+      for (m = tmpoffrr - 1; i < m; ++i, ++j) { // [A]
         z[j] = (int)(carry += (z[j] & LONG_MASK) + (tmp[i] & LONG_MASK));
         carry >>= 32;
       }
@@ -1014,8 +959,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   private static void javaSquareKaratsuba(final int[] x, final int len, final int[] z, final int zlen, final boolean yCopy, final int parallelThreshold, final int parallelThresholdZ) {
     final int[] y;
     if (yCopy) {
-      // "In place" computation for (mag) requires a copy for (y), otherwise
-      // we're reading and writing from the same array for (x) (y) and (z)
+      // "In place" computation for (mag) requires a copy for `y`, otherwise // [A]
+      // we're reading and writing from the same array for `x` `y` and `z` // [A]
       y = new int[len + OFF];
       System.arraycopy(x, 0, y, 0, len + OFF);
     }
@@ -1039,13 +984,13 @@ abstract class BigIntMultiplication extends BigIntAddition {
     zlen += zoff;
 
     // Store the squares, right shifted one bit (i.e., divided by 2)
-    for (i = xlen - 1, j = zlen; i >= xoff; --i) {
+    for (i = xlen - 1, j = zlen; i >= xoff; --i) { // [A]
       z[--j] = ((int)x0 << 31) | (int)((x0 = (x0 = x[i] & LONG_MASK) * x0) >>> 33);
       z[--j] = (int)(x0 >>> 1);
     }
 
     // Add in off-diagonal sums
-    for (i = xoff, j = xlen - xoff, off = zoff; i < xlen; --j, off += 2) {
+    for (i = xoff, j = xlen - xoff, off = zoff; i < xlen; --j, off += 2) { // [A]
       k = x[i];
       k = mulAdd(x, ++i, xlen, k, z, off + 1);
       addOne(z, off, zlen, j, k);
@@ -1113,24 +1058,21 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the provided {@linkplain BigInt#val() value-encoded number} raised
-   * to the power of the given exponent.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} raised to the power of the given exponent.
    *
-   * <blockquote>
+   * <pre>
    * <code>val = val<sup>exp</sup></code>
-   * </blockquote>
+   * </pre>
    *
    * This method returns {@code 0} in the following situations:
    * <ol>
    * <li>If {@code exp} is negative.</li>
-   * <li>If the length of the resulting value array is greater than the
-   * {@link BigInt#MAX_VAL_LENGTH}.</li>
+   * <li>If the length of the resulting value array is greater than the {@link BigInt#MAX_VAL_LENGTH}.</li>
    * </ol>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           operation results in a number that requires a larger array.
-   * @param val The {@linkplain BigInt#val() value-encoded number} to raise to
-   *          the power of the given {@code exponent}.
+   * @implNote The returned number may be a {@code new int[]} instance if the operation results in a number that requires a larger
+   *           array.
+   * @param val The {@linkplain BigInt#val() value-encoded number} to raise to the power of the given {@code exponent}.
    * @param exp The exponent to which {@code val} is to be raised.
    * @return <code>val<sup>exponent</sup></code>
    * @complexity O(n^2 exp log exp) - O(n log n exp log exp)
@@ -1243,8 +1185,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the provided {@linkplain BigInt#val() value-encoded number} set its
-   * value minus the multiple of the provided parameters.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set its value minus the multiple of the provided
+   * parameters.
    *
    * <pre>
    * val = val - q * s
@@ -1254,8 +1196,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * @param val The {@linkplain BigInt#val() value-encoded number} subtracter.
    * @param q The integer multiplicand.
    * @param s The {@linkplain BigInt#val() value-encoded number} multiplier.
-   * @return The provided {@linkplain BigInt#val() value-encoded number} set its
-   *         value minus the multiple of the provided parameters.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set its value minus the multiple of the provided
+   *         parameters.
    */
   static long multDiffMe(final int[] val, final long q, final int[] s) {
     if (q == 0)
@@ -1263,7 +1205,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
     long diff = 0L;
     final int lenS = s[0];
-    for (int sIndex = 1, tIndex = 1; sIndex <= lenS; ++sIndex, ++tIndex) {
+    for (int sIndex = 1, tIndex = 1; sIndex <= lenS; ++sIndex, ++tIndex) { // [A]
       diff += (val[tIndex] & LONG_MASK) - q * (s[sIndex] & LONG_MASK);
       val[tIndex] = (int)diff;
       diff >>= 32; // N.B. SIGNED shift.

@@ -57,7 +57,7 @@ public class WolframStudy {
     params.put("output", new String[] {"XML"});
     params.put("appid", new String[] {System.getProperty("appid")});
     final zAA.Queryresult result = parse(HTTP.get("https://api.wolframalpha.com/v2/query", params));
-    for (final zAA.Pod pod : result.getWaPod())
+    for (final zAA.Pod pod : result.getWaPod()) // [L]
       if ("Result".equals(pod.getId$().text()))
         return new BigDecimal(pod.getWaSubpod().getWaPlaintext().text().replace("... × 10^", "E"));
 

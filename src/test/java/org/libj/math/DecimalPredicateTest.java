@@ -217,7 +217,7 @@ public class DecimalPredicateTest extends DecimalTest {
     System.out.println("[Decimal.MIN_VALUE]_________________________________________________________________________________");
     final int iterations = 100000;
     int progress = 0;
-    for (int i = 0; i < iterations; ++i) {
+    for (int i = 0; i < iterations; ++i) { // [N]
       final Decimal minDecimal = new Decimal(Decimal.MIN_SIGNIFICAND, CaseTest.DecimalCase.randomScale(Decimal.MIN_SIGNIFICAND));
       final BigDecimal minBigDecimal = minDecimal.toBigDecimal();
       assertEquals(minBigDecimal.floatValue(), minDecimal.floatValue(), 0);
@@ -239,7 +239,7 @@ public class DecimalPredicateTest extends DecimalTest {
     System.out.println("[Decimal.MIN_VALUE]_________________________________________________________________________________");
     final int iterations = 100000;
     int progress = 0;
-    for (int i = 0; i < iterations; ++i) {
+    for (int i = 0; i < iterations; ++i) { // [N]
       final Decimal minDecimal = new Decimal(Decimal.MIN_SIGNIFICAND, CaseTest.DecimalCase.randomScale(Decimal.MIN_SIGNIFICAND));
       final BigDecimal minBigDecimal = minDecimal.toBigDecimal();
       assertEquals(minBigDecimal.doubleValue(), minDecimal.doubleValue(), 0);

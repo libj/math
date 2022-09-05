@@ -73,7 +73,7 @@ public class DecimalMultiplicationStudy {
 
   private static long com(long[] y) {
     long s = 0;
-    for (int i = 0; i < y.length; ++i) {
+    for (int i = 0, i$ = y.length; i < i$; ++i) { // [A]
       s <<= 32;
       s |= y[i];
     }
@@ -155,7 +155,7 @@ public class DecimalMultiplicationStudy {
   private static void div(final long[] dividend, final int d) {
     long r = 0;
     System.err.println("d: " + Buffers.toString(d));
-    for (int i = 0; i < dividend.length; ++i) {
+    for (int i = 0, i$ = dividend.length; i < i$; ++i) { // [A]
       long a = dividend[i] & ((1L << 32) - 1);
       System.err.println("a" + i + ": " + Buffers.toString(a) + " a = " + a);
 

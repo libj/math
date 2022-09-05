@@ -44,26 +44,20 @@ abstract class FixedPoint extends Number {
   private static final int minExp2 = -849;                    // Frexp.frexp(minPos).exponent
 
   /**
-   * Returns {@code true} if the specified {@code long} value can be
-   * represented as a {@link Decimal}, otherwise {@code false}.
+   * Returns {@code true} if the specified {@code long} value can be represented as a {@link Decimal}, otherwise {@code false}.
    *
-   * @param significand The {@code long} value to test for representability as a
-   *          {@link Decimal}.
-   * @return {@code true} if the specified {@code double} value can be
-   *         represented as a {@link Decimal}, otherwise {@code false}.
+   * @param significand The {@code long} value to test for representability as a {@link Decimal}.
+   * @return {@code true} if the specified {@code double} value can be represented as a {@link Decimal}, otherwise {@code false}.
    */
   public static boolean isDecimal(final long significand) {
     return MIN_SIGNIFICAND <= significand && significand <= MAX_SIGNIFICAND;
   }
 
   /**
-   * Returns {@code true} if the specified {@code double} value can be
-   * represented as a {@link Decimal}, otherwise {@code false}.
+   * Returns {@code true} if the specified {@code double} value can be represented as a {@link Decimal}, otherwise {@code false}.
    *
-   * @param val The {@code double} value to test for representability as a
-   *          {@link Decimal}.
-   * @return {@code true} if the specified {@code double} value can be
-   *         represented as a {@link Decimal}, otherwise {@code false}.
+   * @param val The {@code double} value to test for representability as a {@link Decimal}.
+   * @return {@code true} if the specified {@code double} value can be represented as a {@link Decimal}, otherwise {@code false}.
    */
   public static boolean isDecimal(final double val) {
     if (Double.isNaN(val) || Double.isInfinite(val))
@@ -199,31 +193,25 @@ abstract class FixedPoint extends Number {
   }
 
   /**
-   * Returns the number of bits of precision required for the representation of
-   * the specified value.
+   * Returns the number of bits of precision required for the representation of the specified value.
    *
-   * @implNote It is assumed the specified value is positive, as the
-   *           {@link Long#numberOfLeadingZeros(long)} returns 0 for all
+   * @implNote It is assumed the specified value is positive, as the {@link Long#numberOfLeadingZeros(long)} returns 0 for all
    *           negative values.
    * @param v The value for which to return the number of bits of precision.
-   * @return The number of bits of precision required for the representation of
-   *         the specified value.
+   * @return The number of bits of precision required for the representation of the specified value.
    */
   static int bitLength(final long v) {
     return Long.SIZE - Long.numberOfLeadingZeros(v);
   }
 
   /**
-   * Encodes the provided {@code significand} and {@code scale} into a
-   * {@code long} with the given number of {@code scaleBits}.
+   * Encodes the provided {@code significand} and {@code scale} into a {@code long} with the given number of {@code scaleBits}.
    *
    * @param significand The significand.
    * @param scale The scale component.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding with the provided
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding with the provided
    *          {@code scaleBits}.
-   * @return A {@code long} encoded decimal with the provided
-   *         {@code significand} and {@code scale} with the given number of
+   * @return A {@code long} encoded decimal with the provided {@code significand} and {@code scale} with the given number of
    *         {@code scaleBits}.
    */
   public static long valueOf(final long significand, final int scale, final long defaultValue) {
@@ -261,12 +249,12 @@ abstract class FixedPoint extends Number {
   }
 
   /**
-   * Decodes the significand from the {@link Decimal#valueOf(long,int,long)
-   * encoded} decimal with the given number of {@code scaleBits}.
+   * Decodes the significand from the {@link Decimal#valueOf(long,int,long) encoded} decimal with the given number of
+   * {@code scaleBits}.
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} decimal.
-   * @return The significand from the {@link Decimal#valueOf(long,int,long)
-   *         encoded} decimal with the given number of {@code scaleBits}.
+   * @return The significand from the {@link Decimal#valueOf(long,int,long) encoded} decimal with the given number of
+   *         {@code scaleBits}.
    * @see #valueOf(long,int,long)
    * @see #scale(long)
    */
@@ -277,12 +265,10 @@ abstract class FixedPoint extends Number {
   }
 
   /**
-   * Decodes the scale from the {@link Decimal#valueOf(long,int,long) encoded}
-   * decimal with the given number of {@code scaleBits}.
+   * Decodes the scale from the {@link Decimal#valueOf(long,int,long) encoded} decimal with the given number of {@code scaleBits}.
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
-   * @return The scale from the {@link Decimal#valueOf(long,int,long) encoded}
-   *         decimal with the given number of {@code scaleBits}.
+   * @return The scale from the {@link Decimal#valueOf(long,int,long) encoded} decimal with the given number of {@code scaleBits}.
    * @see #valueOf(long,int,long)
    * @see #significand(long)
    */

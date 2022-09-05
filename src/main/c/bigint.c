@@ -26,15 +26,15 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMul
   unsigned long long carry = 0;
   jlong x0 = x[1] & LONG_MASK;
 
-  for (j = 1; j <= ylen; ++j) {
+  for (j = 1; j <= ylen; ++j) { // [A]
     z[j] = (jint)(carry += x0 * (y[j] & LONG_MASK));
     carry >>= 32;
   }
 
   z[j] = (jint)carry;
-  for (i = 2; i <= xlen; ++i) {
+  for (i = 2; i <= xlen; ++i) { // [A]
     x0 = x[i] & LONG_MASK;
-    for (carry = 0, j = 1, k = i; j <= ylen; ++j, ++k) {
+    for (carry = 0, j = 1, k = i; j <= ylen; ++j, ++k) { // [A]
       z[k] = (jint)(carry += x0 * (y[j] & LONG_MASK) + (z[k] & LONG_MASK));
       carry >>= 32;
     }
@@ -52,15 +52,15 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeMul
 
   // memcpy(y + zlen, y + OFF, ylen * sizeof(jint));
 
-  for (j = OFF, l = zlen; j <= ylen; ++j, ++l) {
+  for (j = OFF, l = zlen; j <= ylen; ++j, ++l) { // [A]
     y[j] = (jint)(carry += x0 * ((y[l] = y[j]) & LONG_MASK));
     carry >>= 32;
   }
 
   y[j] = (jint)carry;
-  for (i = 2; i <= xlen; ++i) {
+  for (i = 2; i <= xlen; ++i) { // [A]
     x0 = x[i] & LONG_MASK;
-    for (carry = 0, j = OFF, k = i, l = zlen; j <= ylen; ++j, ++k, ++l) {
+    for (carry = 0, j = OFF, k = i, l = zlen; j <= ylen; ++j, ++k, ++l) { // [A]
       y[k] = (jint)(carry += x0 * (y[l] & LONG_MASK) + (y[k] & LONG_MASK));
       carry >>= 32;
     }
@@ -92,16 +92,16 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     const jint yoffoffl = yoffoff + len, zoffl = zoff + len, xoffoffl = xoffoff + len;
 
     jlong x0 = x[xoffoff] & LONG_MASK;
-    for (k = yoffoff, j = zoff; j < zoffl; ++j, ++k) {
+    for (k = yoffoff, j = zoff; j < zoffl; ++j, ++k) { // [A]
       z[j] = (jint)(carry += x0 * (y[k] & LONG_MASK));
       carry >>= 32;
     }
 
     z[j] = (jint)carry;
-    for (i = xoffoff + 1, l = zoffl + 1, m = zoff + 1; i < xoffoffl; ++i, ++l, ++m) {
+    for (i = xoffoff + 1, l = zoffl + 1, m = zoff + 1; i < xoffoffl; ++i, ++l, ++m) { // [A]
       carry = 0;
       x0 = x[i] & LONG_MASK;
-      for (j = yoffoff, k = m; j < yoffoffl; ++j, ++k) {
+      for (j = yoffoff, k = m; j < yoffoffl; ++j, ++k) { // [A]
         z[k] = (jint)(carry += x0 * (y[j] & LONG_MASK) + (z[k] & LONG_MASK));
         carry >>= 32;
       }
@@ -116,8 +116,8 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     jint *tmp;
     bool allocated;
 
-    j = ll + l_b2 + 2; // length needed for (x2) computation
-    k = j + l_b2 + 1;  // length needed for (y2) computation
+    j = ll + l_b2 + 2; // length needed for `x2` computation
+    k = j + l_b2 + 1;  // length needed for `y2` computation
     if (!parallel && zlength >= (i = zoff + zlen) + k + 1) {
       tmpoff = i;
       x2offl_b2 = j + i;
@@ -137,7 +137,7 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     const jint x2offl_b2b = x2offl_b2 + b, y2offl_b = x2offl_b2 + l_b, y2offl_b1 = y2offl_b + 1, y2offl_b1b = y2offl_b1 + b;
     tmp[x2offl_b2b] = tmp[y2offl_b1b] = tmp[y2offl_b] = tmp[y2offl_b2] = 0;
 
-    for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) {
+    for (i = x2offl_b2, j = xoffoff, k = xoffoff + b; i < x2offl_b2b; ++i, ++j, ++k) { // [A]
       tmp[i] = (jint)(carry += (x[j] & LONG_MASK) + (x[k] & LONG_MASK));
       carry >>= 32;
     }
@@ -151,7 +151,7 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     }
 
     carry = 0;
-    for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) {
+    for (i = y2offl_b1, j = yoffoff, k = yoffoff + b; i < y2offl_b1b; ++i, ++j, ++k) { // [A]
       tmp[i] = (jint)(carry += (y[j] & LONG_MASK) + (y[k] & LONG_MASK));
       carry >>= 32;
     }
@@ -200,17 +200,17 @@ void karatsuba(jint *x, jint xoff, jint *y, jint yoff, jint *z, jint zoff, jint 
     memcpy(z + zoff, tmp + tmpoffrr, ll * sizeof(jint));
 
     x0 = 0;
-    for (i = tmpoff, j = zoff + b, k = tmpoffrrbb, l = tmpoffrr, m = tmpoffbb; i < m; ++i, ++j, ++k, ++l) {
+    for (i = tmpoff, j = zoff + b, k = tmpoffrrbb, l = tmpoffrr, m = tmpoffbb; i < m; ++i, ++j, ++k, ++l) { // [A]
       z[j] = (jint)(x0 += (z[j] & LONG_MASK) + (tmp[i] & LONG_MASK) - (tmp[k] & LONG_MASK) - (tmp[l] & LONG_MASK));
       x0 >>= 32;
     }
 
-    for (; i < tmpoffl_b2; ++i, ++j, ++k) {
+    for (; i < tmpoffl_b2; ++i, ++j, ++k) { // [A]
       z[j] = (jint)(x0 += (z[j] & LONG_MASK) + (tmp[i] & LONG_MASK) - (tmp[k] & LONG_MASK));
       x0 >>= 32;
     }
 
-    for (m = tmpoffrr - 1; i < m; ++i, ++j) {
+    for (m = tmpoffrr - 1; i < m; ++i, ++j) { // [A]
       z[j] = (jint)(x0 += (z[j] & LONG_MASK) + (tmp[i] & LONG_MASK));
       x0 >>= 32;
     }
@@ -230,8 +230,7 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeKar
 
 JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSquareKaratsuba(jint _x, jint *x, jint len, jint _z, jint *z, jint zlen, jint zlength, jboolean yCopy, jint parallelThreshold, jint parallelThresholdZ) {
   if (yCopy) {
-    // InPlace computation for (mag) requires a copy for (y), otherwise we're
-    // reading and writing from the same array for (x) (y) and (z)
+    // InPlace computation for `mag` requires a copy for `y`, otherwise we're reading and writing from the same array for `x` `y` and `z`
     jint *y = (jint*)calloc(len + OFF, sizeof(jint));
     memcpy(y, x, (len + OFF) * sizeof(jint));
     karatsuba(x, OFF, y, OFF, z, OFF, zlen, zlength, 0, len, parallelThreshold, parallelThresholdZ);
@@ -308,7 +307,7 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
   zlen += zoff;
 
   // Store the squares, right shifted one bit (i.e., divided by 2)
-  for (i = xlen - 1, j = zlen; i >= xoff; --i) {
+  for (i = xlen - 1, j = zlen; i >= xoff; --i) { // [A]
     k = (jint)x0 << 31;
     x0 = x[i] & LONG_MASK;
     x0 *= x0;
@@ -317,7 +316,7 @@ JNIEXPORT void JNICALL JavaCritical_org_libj_math_BigIntMultiplication_nativeSqu
   }
 
   // Add in off-diagonal sums
-  for (i = xoff, j = xlen - xoff, off = zoff; i < xlen; --j, off += 2) {
+  for (i = xoff, j = xlen - xoff, off = zoff; i < xlen; --j, off += 2) { // [A]
     k = x[i];
     k = mulAdd(x, ++i, xlen, k, z, off + 1);
     addOne(z, off, zlen, j, k);

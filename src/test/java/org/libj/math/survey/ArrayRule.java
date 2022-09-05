@@ -39,7 +39,7 @@ public class ArrayRule implements Rule {
     if (executable.getParameterCount() != 0) {
       builder.append('(');
       final Class<?>[] parameterTypes = executable.getParameterTypes();
-      for (int i = 0; i < parameterTypes.length; ++i) {
+      for (int i = 0, i$ = parameterTypes.length; i < i$; ++i) { // [A]
         if (i > 0)
           builder.append(',');
 
@@ -100,7 +100,7 @@ public class ArrayRule implements Rule {
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder();
-    for (final Class<?> cls : classes)
+    for (final Class<?> cls : classes) // [A]
       if (cls != null)
         toString(builder, cls);
 

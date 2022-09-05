@@ -25,6 +25,8 @@ TARGET_LIB=$(TARGET_DIR)/lib$(TARGET_LIB_NAME)
 # Java Headers Directories
 JAVA_INCLUDE=$(shell echo $$JAVA_HOME)/include
 
+ARCH=x64
+
 # GCC
 #CC=gcc
 #CC_ARGS_QUAD=-lquadmath
@@ -44,7 +46,18 @@ JAVA_PLATFORM_INCLUDE=$(shell \
 		echo $(JAVA_INCLUDE)/darwin; \
 	fi;)
 
-# Linux
+# Darwin arm64
+ifneq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
+	ARCH=$(shell uname -m)
+	ifeq ($(strip $(ARCH)),arm64)
+		ARCH=aarch64
+		CC=gcc
+		CC_ARGS_QUAD=-lquadmath
+		CC_ARGS=-shared -Ofast -fPIC -axCORE-AVX512,CORE-AVX2,AVX -axCORE-AVX2,AVX,SSE4.2
+	endif
+endif
+
+# Linux x64
 ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 	CC_ARGS:=-fPIC $(CC_ARGS)
 	LIB_EXT=.so
@@ -54,7 +67,7 @@ ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 		fi;)
 endif
 
-# Windows
+# Windows x64
 ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 	TMP_DIR=target/c
 	CC=icl
@@ -68,7 +81,7 @@ ifeq ($(strip $(JAVA_PLATFORM_INCLUDE)),)
 		fi;)
 endif
 
-BUILD=$(CC) -o $(TARGET_LIB)$(1)$(LIB_EXT) $(2) \
+BUILD=$(CC) -o $(TARGET_LIB)$(1)_$(ARCH)$(LIB_EXT) $(2) \
 	-I"$(JAVA_PLATFORM_INCLUDE)" \
 	-I"$(JAVA_INCLUDE)" \
  	$(CC_ARGS) \

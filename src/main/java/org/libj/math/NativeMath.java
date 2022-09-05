@@ -59,6 +59,8 @@ final class NativeMath {
 
     final boolean useCritical = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-Xcomp") > 0;
 
+    final String arch = System.getProperty("os.arch");
+
     final String fileName = "libmath" + (useCritical ? "c" : "j");
     final String extension;
     final OperatingSystem operatingSystem = OperatingSystem.get();
@@ -71,37 +73,40 @@ final class NativeMath {
     else
       throw new UnsupportedOperationException("Unsupported operating system: " + operatingSystem);
 
-    final String resourceName = "/" + fileName + extension;
+    final String resourceName = "/" + fileName + "_" + arch + extension;
     final URL url = NativeMath.class.getResource(resourceName);
-    if (url == null)
-      throw new IllegalStateException("Not found: " + resourceName);
-
-    final File file;
-    try {
-      if (url.toString().startsWith("jar:file:")) {
-        final Path tempPath = Files.createTempFile(fileName, extension);
-        file = tempPath.toFile();
-        file.deleteOnExit();
-        try (final InputStream in = url.openStream()) {
-          Files.copy(in, tempPath, StandardCopyOption.REPLACE_EXISTING);
+    if (url != null) {
+      final File file;
+      try {
+        if (url.toString().startsWith("jar:file:")) {
+          final Path tempPath = Files.createTempFile(fileName, extension);
+          file = tempPath.toFile();
+          file.deleteOnExit();
+          try (final InputStream in = url.openStream()) {
+            Files.copy(in, tempPath, StandardCopyOption.REPLACE_EXISTING);
+          }
+        }
+        else if (url.toString().startsWith("file:")) {
+          file = new File(url.getPath());
+        }
+        else {
+          throw new ExceptionInInitializerError("Unsupported protocol: " + url);
         }
       }
-      else if (url.toString().startsWith("file:")) {
-        file = new File(url.getPath());
+      catch (final IOException e) {
+        throw new ExceptionInInitializerError(e);
       }
-      else {
-        throw new ExceptionInInitializerError("Unsupported protocol: " + url);
-      }
-    }
-    catch (final IOException e) {
-      throw new ExceptionInInitializerError(e);
-    }
 
-    try {
-      System.load(file.getAbsolutePath());
+      try {
+        System.load(file.getAbsolutePath());
+      }
+      catch (final UnsatisfiedLinkError e) {
+        e.printStackTrace();
+        System.err.println("Starting without JNI bindings");
+      }
     }
-    catch (final UnsatisfiedLinkError e) {
-      e.printStackTrace();
+    else {
+      System.err.println("Not found: " + resourceName);
       System.err.println("Starting without JNI bindings");
     }
 

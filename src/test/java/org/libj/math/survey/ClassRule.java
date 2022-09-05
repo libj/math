@@ -60,7 +60,7 @@ public class ClassRule implements Rule {
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder();
-    for (final Class<?> cls : classes) {
+    for (final Class<?> cls : classes) { // [A]
       toString(builder, cls, "<init>");
       toString(builder, cls, "clone");
     }

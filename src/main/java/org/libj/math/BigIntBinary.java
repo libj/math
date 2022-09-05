@@ -34,26 +34,24 @@ import java.math.BigInteger;
 
 abstract class BigIntBinary extends BigIntMagnitude {
   /**
-   * Returns the number of bits in the two's complement representation of the
-   * provided {@linkplain BigInt#val() value-encoded number} that differ from
-   * its sign bit.
+   * Returns the number of bits in the two's complement representation of the provided {@linkplain BigInt#val() value-encoded
+   * number} that differ from its sign bit.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return Number of bits in the two's complement representation of the
-   *         provided {@linkplain BigInt#val() value-encoded number} that differ
-   *         from its sign bit.
+   * @return Number of bits in the two's complement representation of the provided {@linkplain BigInt#val() value-encoded number}
+   *         that differ from its sign bit.
    * @complexity O(n)
    */
   public static int bitCount(final int[] val) {
     int i, bits = 0;
     boolean sig = true; int len = val[0]; if (len < 0) { len = -len; sig = false; }
     // Count the bits in the magnitude
-    for (i = 1; i <= len; ++i)
+    for (i = 1; i <= len; ++i) // [A]
       bits += Integer.bitCount(val[i]);
 
     if (!sig) {
       // Count the trailing zeros in the magnitude
-      for (i = 1; i <= len && val[i] == 0; ++i)
+      for (i = 1; i <= len && val[i] == 0; ++i) // [A]
         bits += 32;
 
       bits += Integer.numberOfTrailingZeros(val[i]) - 1;
@@ -63,20 +61,19 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by
-   * the specified number of bits. The shift distance, {@code num}, may be
-   * negative, in which case this method performs a left shift.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by the specified number of bits. The shift distance,
+   * {@code num}, may be negative, in which case this method performs a left shift.
    *
    * <pre>
    * val = val &gt;&gt; num
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the shift requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the shift requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
-   * @return The result of shifting the provided {@linkplain BigInt#val()
-   *         value-encoded number}} right by the specified number of bits.
+   * @return The result of shifting the provided {@linkplain BigInt#val() value-encoded number}} right by the specified number of
+   *         bits.
    * @complexity O(n)
    */
   public static int[] shiftRight(final int[] val, final int num) {
@@ -106,7 +103,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     if (!sig) {
       // Find out whether any one-bits will be shifted off the end
       final int j = shiftBig + 1;
-      for (int i = 1; i < j && !(oneLost = val[i] != 0); ++i);
+      for (int i = 1; i < j && !(oneLost = val[i] != 0); ++i); // [A]
       if (!oneLost && shiftSmall != 0)
         oneLost = val[j] << (32 - shiftSmall) != 0;
     }
@@ -129,8 +126,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Shifts the provided {@linkplain BigInt#val() value-encoded number} by
-   * {@code 32 * num} bits to the right.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} by {@code 32 * num} bits to the right.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The number of limbs of the number to shift.
@@ -144,8 +140,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by
-   * the specified number of bits (less than 32).
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} right by the specified number of bits (less than 32).
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The number of limbs of the number to shift.
@@ -154,7 +149,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    * @complexity O(n)
    */
   private static int smallShiftRight(final int[] val, int len, final int num) {
-    for (int next = val[1], i = 1; i < len; ++i)
+    for (int next = val[1], i = 1; i < len; ++i) // [A]
       val[i] = next >>> num | (next = val[i + 1]) << 32 - num;
 
     if ((val[len] >>>= num) == 0 && len >= 1)
@@ -164,20 +159,19 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by
-   * the specified number of bits. The shift distance, {@code num}, may be
-   * negative, in which case this method performs a right shift.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by the specified number of bits. The shift distance,
+   * {@code num}, may be negative, in which case this method performs a right shift.
    *
    * <pre>
    * val = val &lt;&lt; num
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the shift requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the shift requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
-   * @return The result of shifting the provided {@linkplain BigInt#val()
-   *         value-encoded number} left by the specified number of bits.
+   * @return The result of shifting the provided {@linkplain BigInt#val() value-encoded number} left by the specified number of
+   *         bits.
    * @complexity O(n)
    */
   public static int[] shiftLeft(final int[] val, final int num) {
@@ -213,8 +207,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Shifts the provided {@linkplain BigInt#val() value-encoded number} by
-   * {@code 32 * num} bits to the right.
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} by {@code 32 * num} bits to the right.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number} to shift.
    * @param len The number of limbs of the number to shift.
@@ -233,7 +226,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     }
     else {
       System.arraycopy(val, 1, val, num, len);
-      for (int i = 1; i < num; ++i)
+      for (int i = 1; i < num; ++i) // [A]
         val[i] = 0;
     }
 
@@ -244,19 +237,18 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by
-   * the specified number of bits (less than 32) starting at the given offset
-   * ({@code off}).
+   * Shifts the provided {@linkplain BigInt#val() value-encoded number} left by the specified number of bits (less than 32) starting
+   * at the given offset ({@code off}).
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the shift requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the shift requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number} to shift.
    * @param off The limb at which to start shifting.
    * @param len The number of limbs of the number to shift.
    * @param sig The sign of the number to shift.
    * @param num The number of bits by which to shift.
-   * @return The result of shifting the provided {@linkplain BigInt#val()
-   *         value-encoded number} left by the specified number of bits.
+   * @return The result of shifting the provided {@linkplain BigInt#val() value-encoded number} left by the specified number of
+   *         bits.
    * @complexity O(n)
    */
   private static int[] smallShiftLeft(int[] val, final int off, int len, final boolean sig, final int num) {
@@ -276,7 +268,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
       next = len >= val.length ? 0 : val[len];
     }
 
-    for (; len > off; --len)
+    for (; len > off; --len) // [A]
       res[len] = next << num | (next = val[len - 1]) >>> 32 - num;
 
     res[off] = next << num;
@@ -285,8 +277,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Tests if the specified bit is set in the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Tests if the specified bit is set in the provided {@linkplain BigInt#val() value-encoded number}.
    * <p>
    * Computes:
    *
@@ -296,8 +287,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The index of the bit to test.
-   * @return {@code true} if the given bit is set in the provided
-   *         {@linkplain BigInt#val() value-encoded number,} otherwise
+   * @return {@code true} if the given bit is set in the provided {@linkplain BigInt#val() value-encoded number,} otherwise
    *         {@code false}.
    * @complexity O(n)
    */
@@ -314,7 +304,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     }
 
     int j = 1;
-    for (; j <= bigBit && val[j] == 0; ++j);
+    for (; j <= bigBit && val[j] == 0; ++j); // [N]
     if (j > bigBit)
       return false;
 
@@ -327,19 +317,17 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Sets the specified bit in the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Sets the specified bit in the provided {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val | (1 &lt;&lt; n)
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to set.
-   * @return The result of setting the specified bit in the provided
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return The result of setting the specified bit in the provided {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] setBit(int[] val, final int bit) {
@@ -371,7 +359,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
 
       if (j > bigBit) {
         val[bigBit] = -1 << smallBit;
-        for (; val[j] == 0; ++j)
+        for (; val[j] == 0; ++j) // [A]
           val[j] = -1;
 
         val[j] = ~-val[j];
@@ -394,26 +382,24 @@ abstract class BigIntBinary extends BigIntMagnitude {
       }
     }
 
-    for (; val[len] == 0; --len);
+    for (; val[len] == 0; --len); // [N]
     val[0] = sig < 0 ? -len : len;
     // _debugLenSig(val);
     return val;
   }
 
   /**
-   * Clears the specified bit in the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Clears the specified bit in the provided {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val &amp; ~(1 &lt;&lt; n)
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to clear.
-   * @return The result of clearing the specified bit in the provided
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return The result of clearing the specified bit in the provided {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] clearBit(int[] val, final int bit) {
@@ -465,7 +451,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
         j = val[bigBit];
         if (j == (-1 ^ k - 1)) {
           val[bigBit] = 0;
-          for (j = bigBit + 1; j <= len && val[j] == -1; ++j)
+          for (j = bigBit + 1; j <= len && val[j] == -1; ++j) // [A]
             val[j] = 0;
 
           if (j == val.length)
@@ -486,7 +472,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     }
 
     if (len > 0)
-      for (; val[len] == 0; --len);
+      for (; val[len] == 0; --len); // [N]
 
     val[0] = sig < 0 ? -len : len;
     // _debugLenSig(val);
@@ -494,19 +480,17 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Flips the specified bit in the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Flips the specified bit in the provided {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val ^ (1 &lt;&lt; n)
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param bit The bit to flip.
-   * @return The result of flipping the specified bit in the provided
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return The result of flipping the specified bit in the provided {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] flipBit(int[] val, final int bit) {
@@ -542,7 +526,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
 
       if (j > bigBit) { // TODO: Refactor with setBit?
         val[bigBit] = -1 << smallBit;
-        for (; val[j] == 0; ++j)
+        for (; val[j] == 0; ++j) // [A]
           val[j] = -1;
 
         val[j] = ~-val[j];
@@ -565,7 +549,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
         j = val[bigBit];
         if (j == (-1 ^ k - 1)) { // TODO: Refactor with clearBit?
           val[bigBit] = 0;
-          for (j = bigBit + 1; j <= len && val[j] == -1; ++j)
+          for (j = bigBit + 1; j <= len && val[j] == -1; ++j) // [A]
             val[j] = 0;
 
           if (j == val.length)
@@ -583,27 +567,25 @@ abstract class BigIntBinary extends BigIntMagnitude {
       }
     }
 
-    for (; val[len] == 0; --len);
+    for (; val[len] == 0; --len); // [N]
     val[0] = sig < 0 ? -len : len;
     // _debugLenSig(val);
     return val;
   }
 
   /**
-   * Performs a bitwise "and" of the specified {@linkplain BigInt#val()
-   * value-encoded mask} onto the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Performs a bitwise "and" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val &amp; mask
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "and".
-   * @return The result of the bitwise "and" of the specified
-   *         {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * @return The result of the bitwise "and" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
    *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
@@ -620,7 +602,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           len1 = len2;
 
         boolean zeroes = true;
-        for (int i = len1; i >= 1; --i) {
+        for (int i = len1; i >= 1; --i) { // [A]
           val[i] &= mask[i];
           if (zeroes && (zeroes = val[i] == 0))
             --len1;
@@ -629,9 +611,9 @@ abstract class BigIntBinary extends BigIntMagnitude {
       else {
         final int mlen = Math.min(len1, len2);
         int a = val[1], b = mask[1], j = 2;
-        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j); // [A]
         if (a != 0 && b == 0) {
-          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j)
+          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j) // [A]
             val[j] = 0;
 
           if (j <= mlen)
@@ -654,7 +636,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           val[j - 1] &= -b;
         }
 
-        for (; j <= mlen; ++j)
+        for (; j <= mlen; ++j) // [A]
           val[j] &= ~mask[j];
       }
     }
@@ -662,10 +644,10 @@ abstract class BigIntBinary extends BigIntMagnitude {
       int mlen = Math.min(len1, len2); // FIXME: Make this final
       if (sig2 > 0) {
         int a = val[1], b = mask[1], j = 2;
-        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j); // [A]
 
         if (a != 0 && b == 0) {
-          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j)
+          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j) // [A]
             val[j] = 0;
         }
         else if (a == 0) { // && (b!=0 || j==mlen)
@@ -681,7 +663,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           val[j - 1] = -a & b;
         }
 
-        for (; j <= mlen; ++j)
+        for (; j <= mlen; ++j) // [A]
           val[j] = ~val[j] & mask[j];
 
         if (len2 > len1) {
@@ -707,10 +689,10 @@ abstract class BigIntBinary extends BigIntMagnitude {
         }
 
         int a = val[1], b = mask[1], j = 2;
-        for (; (a | b) == 0; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0; a = val[j], b = mask[j], ++j); // [A]
 
         if (a != 0 && b == 0) {
-          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j)
+          for (val[j - 1] = 0; j <= mlen && mask[j] == 0; ++j) // [A]
             val[j] = 0;
 
           if (j <= mlen)
@@ -734,7 +716,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
         ++mlen;
         if (j <= mlen && val[j - 1] == 0) {
           if (j < mlen)
-            for (val[j] = -~(val[j] | mask[j]); ++j < mlen && val[j - 1] == 0;)
+            for (val[j] = -~(val[j] | mask[j]); ++j < mlen && val[j - 1] == 0;) // [A]
               val[j] = -~(val[j] | mask[j]); // -(~dig[j]&~mask.dig[j])
 
           if (j == mlen && val[j - 1] == 0) {
@@ -760,7 +742,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           }
         }
 
-        for (; j < mlen; ++j)
+        for (; j < mlen; ++j) // [A]
           val[j] |= mask[j]; // ~(~dig[j]&~mask.dig[j]);
 
         if (len2 > len1)
@@ -769,7 +751,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     }
 
     if (len1 > 0)
-      for (; val[len1] == 0; --len1);
+      for (; val[len1] == 0; --len1); // [A]
 
     val[0] = sig1 < 0 ? -len1 : len1;
 
@@ -778,20 +760,18 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Performs a bitwise "or" of the specified {@linkplain BigInt#val()
-   * value-encoded mask} onto the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Performs a bitwise "or" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val | mask
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "or".
-   * @return The result of the bitwise "or" of the specified
-   *         {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * @return The result of the bitwise "or" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
    *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
@@ -813,13 +793,13 @@ abstract class BigIntBinary extends BigIntMagnitude {
             val = realloc(val, len1 + 1, len2 + 2);
 
           System.arraycopy(mask, len1 + 1, val, len1 + 1, len2 - len1);
-          for (int i = 1; i <= len1; ++i)
+          for (int i = 1; i <= len1; ++i) // [A]
             val[i] |= mask[i];
 
           len1 = len2;
         }
         else {
-          for (int i = 1; i <= len2; ++i)
+          for (int i = 1; i <= len2; ++i) // [A]
             val[i] |= mask[i];
         }
       }
@@ -832,10 +812,10 @@ abstract class BigIntBinary extends BigIntMagnitude {
 
         final int mlen = Math.min(len2, len1);
         int a = val[1], b = mask[1], j = 2;
-        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j); // [A]
         if (a != 0 && b == 0) {
           val[j - 1] = -a;
-          for (; mask[j] == 0; ++j)
+          for (; mask[j] == 0; ++j) // [A]
             val[j] ^= -1;
 
           if (j <= mlen)
@@ -846,14 +826,14 @@ abstract class BigIntBinary extends BigIntMagnitude {
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          for (val[j - 1] = b; j <= mlen && val[j] == 0; ++j)
+          for (val[j - 1] = b; j <= mlen && val[j] == 0; ++j) // [A]
             val[j] = mask[j];
         }
         else { // a!=0 && b!=0
           val[j - 1] = -(a | -b);
         }
 
-        for (; j <= mlen; ++j)
+        for (; j <= mlen; ++j) // [A]
           val[j] = ~val[j] & mask[j]; // ~(dig[j]|~mask.dig[j])
 
         len1 = len2;
@@ -864,22 +844,22 @@ abstract class BigIntBinary extends BigIntMagnitude {
       final int mlen = Math.min(len2, len1);
 
       int a = val[1], b = mask[1], j = 2;
-      for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j);
+      for (; (a | b) == 0 && j <= mlen; a = val[j], b = mask[j], ++j); // [A]
 
       if (sig2 > 0) {
         if (a != 0 && b == 0) {
-          for (; j <= mlen && mask[j] == 0; ++j);
+          for (; j <= mlen && mask[j] == 0; ++j); // [A]
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
           val[j - 1] = -b;
-          for (; j <= mlen && val[j] == 0; ++j)
+          for (; j <= mlen && val[j] == 0; ++j) // [A]
             val[j] = ~mask[j];
 
           if (j <= mlen) {
             val[j] = ~(-val[j] | mask[j]);
           }
           else {
-            for (; val[j] == 0; ++j)
+            for (; val[j] == 0; ++j) // [A]
               val[j] = -1;
 
             val[j] = ~-val[j];
@@ -891,19 +871,19 @@ abstract class BigIntBinary extends BigIntMagnitude {
           val[j - 1] = -(-a | b);
         }
 
-        for (; j <= mlen; ++j)
+        for (; j <= mlen; ++j) // [A]
           val[j] &= ~mask[j]; // ~(~dig[j]|mask.dig[j])
       }
       else {
         if (a != 0 && b == 0) {
-          for (; j <= mlen && mask[j] == 0; ++j);
+          for (; j <= mlen && mask[j] == 0; ++j); // [A]
           if (j <= mlen)
             val[j] = ~(~val[j] | -mask[j]);
 
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          for (val[j - 1] = b; j <= mlen && val[j] == 0; ++j)
+          for (val[j - 1] = b; j <= mlen && val[j] == 0; ++j) // [A]
             val[j] = mask[j];
 
           if (j <= mlen)
@@ -915,7 +895,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           val[j - 1] = -(-a | -b);
         }
 
-        for (; j <= mlen; ++j)
+        for (; j <= mlen; ++j) // [A]
           val[j] &= mask[j]; // ~(~dig[j]|~mask.dig[j])
 
         len1 = mlen;
@@ -923,7 +903,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     }
 
     if (len1 > 0)
-      for (; val[len1] == 0; --len1);
+      for (; val[len1] == 0; --len1); // [A]
 
     val[0] = sig1 < 0 ? -len1 : len1;
 
@@ -932,20 +912,18 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Performs a bitwise "xor" of the specified {@linkplain BigInt#val()
-   * value-encoded mask} onto the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Performs a bitwise "xor" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val ^ mask
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "xor".
-   * @return The result of the bitwise "xor" of the specified
-   *         {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * @return The result of the bitwise "xor" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
    *         {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
@@ -988,15 +966,15 @@ abstract class BigIntBinary extends BigIntMagnitude {
 
       final int mlen = Math.min(len1, len2);
       if (sig2 > 0) {
-        for (int i = 0; i < mlen; ++i)
+        for (int i = 0; i < mlen; ++i) // [A]
           val[i] ^= mask[i];
       }
       else {
         int a = val[off], b = mask[off], j = 1 + off;
-        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j); // [A]
         if (a != 0 && b == 0) {
           val[j - 1] = -a;
-          for (; mask[j] == 0; ++j)
+          for (; mask[j] == 0; ++j) // [A]
             val[j] ^= -1;
 
           if (j < len1)
@@ -1011,13 +989,13 @@ abstract class BigIntBinary extends BigIntMagnitude {
         }
         else { // a!=0 && b!=0
           val[j - 1] = -(a ^ -b);
-          for (; j < mlen && val[j - 1] == 0; ++j)
+          for (; j < mlen && val[j - 1] == 0; ++j) // [A]
             val[j] = -(val[j] ^ ~mask[j]);
 
           if (j >= mlen && val[j - 1] == 0) {
             final int[] tmp = j < len1 ? val : mask;
             final int blen = Math.max(len1, len2);
-            for (; j < blen && tmp[j] == -1; ++j)
+            for (; j < blen && tmp[j] == -1; ++j) // [A]
               val[j] = 0;
 
             if (blen == val.length)
@@ -1035,7 +1013,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           }
         }
 
-        for (; j < mlen; ++j)
+        for (; j < mlen; ++j) // [A]
           val[j] ^= mask[j]; // ~(dig[j]^~dig2[j]);
 
         sig1 = -1;
@@ -1052,13 +1030,13 @@ abstract class BigIntBinary extends BigIntMagnitude {
       final int mlen = Math.min(len1, len2);
       if (sig2 > 0) {
         int a = val[off], b = mask[off], j = 1 + off;
-        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j); // [A]
         if (a != 0 && b == 0) {
           while (j < mlen && mask[j] == 0)
             ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mLen)
-          for (val[j - 1] = -b; j < mlen && val[j] == 0; ++j)
+          for (val[j - 1] = -b; j < mlen && val[j] == 0; ++j) // [A]
             val[j] = ~mask[j];
 
           while (j < len1 && val[j] == 0)
@@ -1074,13 +1052,13 @@ abstract class BigIntBinary extends BigIntMagnitude {
         else { // a!=0 && b!=0
           val[j - 1] = -(-a ^ b);
           if (val[j - 1] == 0) { // Perform carry.
-            for (; val[j - 1] == 0 && j < mlen; j++) {
+            for (; val[j - 1] == 0 && j < mlen; j++) { // [A]
               val[j] ^= mask[j];
               ++val[j];
             }
 
             final int blen = Math.max(len1, len2);
-            for (; val[j - 1] == 0 && j < blen; j++)
+            for (; val[j - 1] == 0 && j < blen; j++) // [A]
               ++val[j];
 
             if (j == val.length)
@@ -1097,14 +1075,14 @@ abstract class BigIntBinary extends BigIntMagnitude {
           }
         }
 
-        for (; j < mlen; j++)
+        for (; j < mlen; j++) // [A]
           val[j] ^= mask[j]; // ~(~dig[j]^dig2[j]);
       }
       else {
         int a = val[off], b = mask[off], j = 1 + off;
-        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j);
+        for (; (a | b) == 0 && j < mlen; a = val[j], b = mask[j], ++j); // [A]
         if (a != 0 && b == 0) {
-          for (val[j - 1] = -a; mask[j] == 0; ++j)
+          for (val[j - 1] = -a; mask[j] == 0; ++j) // [A]
             val[j] ^= -1; // ~dig[j]
 
           if (j < len1)
@@ -1115,7 +1093,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           ++j;
         }
         else if (a == 0) { // && b!=0
-          for (val[j - 1] = -b; j < len2 && val[j] == 0; ++j)
+          for (val[j - 1] = -b; j < len2 && val[j] == 0; ++j) // [A]
             val[j] = ~mask[j];
 
           while (val[j] == 0)
@@ -1132,7 +1110,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           val[j - 1] = -a ^ -b;
         }
 
-        for (; j < mlen; ++j)
+        for (; j < mlen; ++j) // [A]
           val[j] ^= mask[j]; // ~dig[j]^~dig2[j]
 
         sig1 = 1;
@@ -1143,7 +1121,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
       len1 = len2;
 
     len1 -= off;
-    for (; len1 > 0 && val[len1] == 0; --len1);
+    for (; len1 > 0 && val[len1] == 0; --len1); // [A]
     val[0] = sig1 < 0 ? -len1 : len1;
 
     // _debugLenSig(val);
@@ -1151,21 +1129,19 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Performs a bitwise "and-not" of the specified {@linkplain BigInt#val()
-   * value-encoded mask} onto the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Performs a bitwise "and-not" of the specified {@linkplain BigInt#val() value-encoded mask} onto the provided
+   * {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = val &amp; ~mask
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param mask The number with which to perform the bitwise "and-not".
-   * @return The result of the bitwise "and-not" of the specified value-encoded
-   *         mask onto the provided {@linkplain BigInt#val() value-encoded
-   *         number}.
+   * @return The result of the bitwise "and-not" of the specified value-encoded mask onto the provided {@linkplain BigInt#val()
+   *         value-encoded number}.
    * @complexity O(n)
    */
   public static int[] andNot(int[] val, final int[] mask) {
@@ -1179,7 +1155,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     final int mlen = Math.min(len1, len2);
     if (sig1 > 0) {
       if (sig2 > 0) {
-        for (int i = off; i < mlen; ++i)
+        for (int i = off; i < mlen; ++i) // [A]
           val[i] &= ~mask[i];
       }
       else {
@@ -1188,7 +1164,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           ++j;
 
         if (j < mlen)
-          for (val[j] &= ~-mask[j]; ++j < mlen;)
+          for (val[j] &= ~-mask[j]; ++j < mlen;) // [A]
             val[j] &= mask[j]; // ~~val2[j]
 
         len1 = mlen;
@@ -1204,7 +1180,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
 
       if (sig2 > 0) {
         int j = off;
-        for (; val[j] == 0; ++j);
+        for (; val[j] == 0; ++j); // [A]
         if (j < mlen) {
           val[j] = -(-val[j] & ~mask[j]);
           while (++j < mlen && val[j - 1] == 0) // FIXME:...
@@ -1234,7 +1210,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
             ++j;
           }
 
-          for (; j < mlen; ++j)
+          for (; j < mlen; ++j) // [A]
             val[j] |= mask[j]; // ~(~dig[j]&~val2[j]);
 
           if (len2 > len1)
@@ -1243,10 +1219,10 @@ abstract class BigIntBinary extends BigIntMagnitude {
       }
       else {
         int a = val[off], b = mask[off], j = 1 + off;
-        for (; j < mlen && (a | b) == 0; a = val[j], b = mask[j], ++j);
+        for (; j < mlen && (a | b) == 0; a = val[j], b = mask[j], ++j); // [A]
         if (a != 0 && b == 0) {
           val[j - 1] = -a;
-          for (; j < len2 && mask[j] == 0; ++j)
+          for (; j < len2 && mask[j] == 0; ++j) // [A]
             val[j] ^= -1;
 
           if (j < len1)
@@ -1257,7 +1233,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           ++j;
         }
         else if (a == 0) { // && (b!=0 || j==mlen)
-          for (; j < mlen && val[j] == 0; ++j);
+          for (; j < mlen && val[j] == 0; ++j); // [A]
           if (j < mlen)
             val[j] = -val[j] & mask[j]; // ~~val2[j]
 
@@ -1267,7 +1243,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           val[j - 1] = -a & ~-b;
         }
 
-        for (; j < mlen; ++j)
+        for (; j < mlen; ++j) // [A]
           val[j] = ~val[j] & mask[j];
 
         // FIXME: This was hacked together...
@@ -1281,7 +1257,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
 
     len1 -= off;
     if (len1 > 0)
-      for (; val[len1] == 0; --len1);
+      for (; val[len1] == 0; --len1); // [A]
 
     val[0] = sig1 < 0 ? -len1 : len1;
     // _debugLenSig(val);
@@ -1289,8 +1265,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Inverts the sign and all bits of the provided {@linkplain BigInt#val()
-   * value-encoded number}.
+   * Inverts the sign and all bits of the provided {@linkplain BigInt#val() value-encoded number}.
    *
    * <pre>
    * val = ~val
@@ -1298,11 +1273,10 @@ abstract class BigIntBinary extends BigIntMagnitude {
    *
    * The identity {@code -val = ~val + 1} holds.
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           number resulting from the operation requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the number resulting from the operation requires a larger
+   *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return The result of the bitwise "not" of the provided
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return The result of the bitwise "not" of the provided {@linkplain BigInt#val() value-encoded number}.
    * @complexity O(n)
    */
   public static int[] not(int[] val) {
@@ -1325,19 +1299,16 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Returns a byte array containing the two's-complement representation of the
-   * provided {@linkplain BigInt#val() value-encoded number}. The byte array
-   * will be in the endian order as specified by the {@code littleEndian}
-   * argument. The array will contain the minimum number of bytes required to
-   * represent the provided number, including at least one sign bit, which is
+   * Returns a byte array containing the two's-complement representation of the provided {@linkplain BigInt#val() value-encoded
+   * number}. The byte array will be in the endian order as specified by the {@code littleEndian} argument. The array will contain
+   * the minimum number of bytes required to represent the provided number, including at least one sign bit, which is
    * {@code (ceil((bitLength(val) + 1) / 8))}.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @param littleEndian Whether the produced byte array is to be encoded in
-   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
-   *          ({@code false}).
-   * @return A byte array containing the two's-complement representation of the
-   *         provided {@linkplain BigInt#val() value-encoded number}.
+   * @param littleEndian Whether the produced byte array is to be encoded in <i>little-endian</i> ({@code true}), or
+   *          <i>big-endian</i> ({@code false}).
+   * @return A byte array containing the two's-complement representation of the provided {@linkplain BigInt#val() value-encoded
+   *         number}.
    */
   public static byte[] toByteArray(final int[] val, final boolean littleEndian) {
     int len = val[0];
@@ -1350,7 +1321,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
     final byte[] bytes = new byte[byteLen];
 
     if (littleEndian) {
-      for (int i = 0, bytesCopied = 4, nextInt = 0, intIndex = 1; i < byteLen; ++i) {
+      for (int i = 0, bytesCopied = 4, nextInt = 0, intIndex = 1; i < byteLen; ++i) { // [A]
         if (bytesCopied == 4) {
           nextInt = getInt(sig, len, val, nzIndex, intIndex++);
           bytesCopied = 1;
@@ -1364,7 +1335,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
       }
     }
     else {
-      for (int i = byteLen - 1, bytesCopied = 4, nextInt = 0, intIndex = 1; i >= 0; --i) {
+      for (int i = byteLen - 1, bytesCopied = 4, nextInt = 0, intIndex = 1; i >= 0; --i) { // [A]
         if (bytesCopied == 4) {
           nextInt = getInt(sig, len, val, nzIndex, intIndex++);
           bytesCopied = 1;
@@ -1382,12 +1353,10 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Returns a {@link BigInteger} representation of the provided
-   * {@linkplain BigInt#val() value-encoded number}.
+   * Returns a {@link BigInteger} representation of the provided {@linkplain BigInt#val() value-encoded number}.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @return A {@link BigInteger} representation of the provided
-   *         {@linkplain BigInt#val() value-encoded number}.
+   * @return A {@link BigInteger} representation of the provided {@linkplain BigInt#val() value-encoded number}.
    */
   public static BigInteger toBigInteger(final int[] val) {
     return new BigInteger(toByteArray(val, false));
@@ -1404,10 +1373,8 @@ abstract class BigIntBinary extends BigIntMagnitude {
   }
 
   /**
-   * Returns the specified int of the little-endian two's complement
-   * representation (int 0 is the least significant). The {@code int} number can
-   * be arbitrarily high (values are logically preceded by infinitely many sign
-   * {@code int}s).
+   * Returns the specified int of the little-endian two's complement representation (int 0 is the least significant). The
+   * {@code int} number can be arbitrarily high (values are logically preceded by infinitely many sign {@code int}s).
    */
   private static int getInt(final int sig, final int len, final int[] val, final int nzIndex, final int n) {
     if (n < 1)
@@ -1430,7 +1397,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    */
   private static int firstNonzeroIntNum(final int[] mag, int off, int len) {
     len += off;
-    for (; off < len && mag[off] == 0; ++off); // FIXME: Make more efficient
+    for (; off < len && mag[off] == 0; ++off); // FIXME: Make more efficient // [A]
     return off;
   }
 }

@@ -201,7 +201,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	private void mulAdd(final int mul, final int add)
 	{
 		long carry = 0;
-		for (int i = 0; i<len; i++)
+		for (int i = 0; i<len; i++) // [A]
 		{
 			carry = mul * (dig[i]&mask) + carry;
 			dig[i] = (int)carry;
@@ -213,7 +213,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if((carry >>> 32)!=0)
 		{
 			int i = 1;
-			for (; i<len && ++dig[i]==0; ++i);
+			for (; i<len && ++dig[i]==0; ++i); // [A]
 			if(i==len) dig[len++] = 1; //Todo: realloc() for general case?
 		}
 	}
@@ -306,7 +306,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(len>dig.length) dig = new int[len+2];
 		this.sign = sign;
 		int tmp = vlen/4, j = 0;
-		for (int i = 0; i<tmp; i++, j+=4) dig[i] = v[j+3]<<24|(v[j+2]&0xFF)<<16|(v[j+1]&0xFF)<<8|v[j]&0xFF;
+		for (int i = 0; i<tmp; i++, j+=4) dig[i] = v[j+3]<<24|(v[j+2]&0xFF)<<16|(v[j+1]&0xFF)<<8|v[j]&0xFF; // [A]
 		if(tmp!=len)
 		{
 			tmp = v[j++]&0xFF;
@@ -348,7 +348,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		j -= (sign-1>>1);
 
 		dig[0] = parse(s, 0-(sign-1>>1), j);
-		for (len = 1; j<s.length;)
+		for (len = 1; j<s.length;) // [A]
 			mulAdd(1_000_000_000, parse(s,j,j+=9));
 	}
 	/**
@@ -453,7 +453,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	{
 		if(len>a.len) return 1;
 		if(len<a.len) return -1;
-		for (int i = len-1; i>=0; i--)
+		for (int i = len-1; i>=0; i--) // [A]
 			if(dig[i]!=a.dig[i])
 				if((dig[i]&mask)>(a.dig[i]&mask)) return 1;
 				else return -1;
@@ -488,7 +488,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(len!=a.len) return false;
 		if(isZero() && a.isZero()) return true;
 		if((sign^a.sign)<0) return false; //In case definition of sign would change...
-		for (int i = 0; i<len; i++) if(dig[i]!=a.dig[i]) return false;
+		for (int i = 0; i<len; i++) if(dig[i]!=a.dig[i]) return false; // [A]
 		return true;
 	}
 	/** {@inheritDoc}
@@ -505,7 +505,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	public int hashCode()
 	{
 		int hash = 0; //Todo: Opt and improve.
-		for (int i = 0; i<len; i++) hash = (int)(31*hash + (dig[i]&mask));
+		for (int i = 0; i<len; i++) hash = (int)(31*hash + (dig[i]&mask)); // [A]
 		return sign*hash; //relies on 0 --> hash==0.
 	}
 	/*** </General functions> ***/
@@ -618,7 +618,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if((tmp>>>32)!=0)
 		{
 			int i = 1;
-			for (; i<len && ++dig[i]==0; i++);
+			for (; i<len && ++dig[i]==0; i++); // [A]
 			if(i==len)
 			{
 				if(len==dig.length) realloc();
@@ -641,7 +641,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if((dif>>32)!=0)
 		{
 			int i = 1;
-			for (; dig[i]==0; i++) --dig[i];
+			for (; dig[i]==0; i++) --dig[i]; // [A]
 			if(--dig[i]==0 && i+1==len) --len;
 		}
 	}
@@ -692,7 +692,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(mul==0){ setToZero(); return; } //To be removed?
 
 		long carry = 0; final long m = mul&mask;
-		for (int i = 0; i<len; i++)
+		for (int i = 0; i<len; i++) // [A]
 		{
 			carry = (dig[i]&mask)*m + carry;
 			dig[i] = (int)carry;
@@ -721,7 +721,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	{
 		final long d = div&mask;
 		long rem = 0;
-		for (int i = len-1; i>=0; i--)
+		for (int i = len-1; i>=0; i--) // [A]
 		{
 			rem <<= 32;
 			rem = rem + (dig[i]&mask);
@@ -740,7 +740,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(hq*d + d == hbit) ++hq;
 		final long hrem = hbit - hq*d;
 		long rem = 0;
-		for (int i = len-1; i>=0; i--)
+		for (int i = len-1; i>=0; i--) // [A]
 		{
 			rem = (rem<<32) + (dig[i]&mask);
 			final long q = (hq&rem>>63) + ((rem&hbit-1) + (hrem&rem>>63))/d;
@@ -767,7 +767,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	private void unsafeUrem(final int mod)
 	{
 		long rem = 0, d = mod&mask;
-		for (int i = len-1; i>=0; i--)
+		for (int i = len-1; i>=0; i--) // [A]
 		{
 			rem <<= 32;
 			rem = (rem + (dig[i]&mask))%d;
@@ -785,7 +785,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		long hrem = (hbit-1)%d;
 		if(++hrem==d) hrem = 0;
 		long rem = 0;
-		for (int i = len-1; i>=0; i--)
+		for (int i = len-1; i>=0; i--) // [A]
 		{
 			rem = (rem<<32) + (dig[i]&mask);
 			// Calculate rem %= d.
@@ -823,7 +823,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if((carry>>32)!=0)
 		{
 			int i = 2;
-			for (; i<len && ++dig[i]==0; i++);
+			for (; i<len && ++dig[i]==0; i++); // [A]
 			if(i==len)
 			{
 				if(len==dig.length) realloc();
@@ -851,7 +851,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if((dif>>32)!=0)
 		{
 			int i = 2;
-			for (; dig[i]==0; i++) --dig[i];
+			for (; dig[i]==0; i++) --dig[i]; // [A]
 			if(--dig[i]==0 && i+1==len) --len;
 		}
 		if(len==2 && dig[1]==0) --len;
@@ -927,7 +927,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 		final long mh = mul>>>32, ml = mul&mask;
 		long carry = 0, next = 0, tmp;
-		for (int i = 0; i<len; i++)
+		for (int i = 0; i<len; i++) // [A]
 		{
 			carry = carry + next; //Could this overflow?
 			tmp = (dig[i]&mask)*ml;
@@ -963,7 +963,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 	   long u2 = 0, u1 = dig[len-1]>>>32-s, u0 = (dig[len-1]<<s | dig[len-2]>>>32-s)&mask;
 	   if(s==0){ u1 = 0; u0 = dig[len-1]&mask; }
-	   for (int j = len-2; j>=0; j--)
+	   for (int j = len-2; j>=0; j--) // [A]
 	   {
 	      u2 = u1; u1 = u0; u0 = s>0&&j>0 ? (dig[j]<<s | dig[j-1]>>>32-s)&mask : (dig[j]<<s)&mask;
 
@@ -1147,7 +1147,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(vlen>dig.length) realloc(vlen+1);
 
 		long carry = 0; int i = 0;
-		for (; i<ulen; i++)
+		for (; i<ulen; i++) // [A]
 		{
 			carry = (u[i]&mask) + (v[i]&mask) + carry;
 			dig[i] = (int)carry;
@@ -1156,7 +1156,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(vlen>len){ System.arraycopy(v, len, dig, len, vlen-len); len = vlen; }
 		if(carry!=0) //carry==1
 		{
-			for (; i<len && ++dig[i]==0; i++);
+			for (; i<len && ++dig[i]==0; i++); // [A]
 			if(i==len) //vlen==len
 			{
 				if(len==dig.length) realloc();
@@ -1179,7 +1179,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 		//Assumes vlen=len and v=dig
 		long dif = 0; int i = 0;
-		for (; i<ulen; i++)
+		for (; i<ulen; i++) // [A]
 		{
 			dif = (v[i]&mask) - (u[i]&mask) + dif;
 			dig[i] = (int)dif;
@@ -1187,7 +1187,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		}
 		if(dif!=0)
 		{
-			for (; dig[i]==0; i++) --dig[i];
+			for (; dig[i]==0; i++) --dig[i]; // [A]
 			if(--dig[i]==0 && i+1==len) len = ulen;
 		}
 		while (len>1 && dig[len-1]==0) --len;
@@ -1217,7 +1217,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 		sign = -sign;
 		long dif = 0; int i = 0;
-		for (; i<len; i++)
+		for (; i<len; i++) // [A]
 		{
 			dif = (v[i]&mask)-(dig[i]&mask) + dif;
 			dig[i] = (int)dif;
@@ -1226,7 +1226,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(vlen>len){ System.arraycopy(v, len, dig, len, vlen-len); len = vlen; }
 		if(dif!=0)
 		{
-			for (; i<vlen && dig[i]==0; i++) --dig[i];
+			for (; i<vlen && dig[i]==0; i++) --dig[i]; // [A]
 			if(--dig[i]==0 && i+1==len) --len;
 		}
 		//if(i==vlen) should be impossible
@@ -1253,7 +1253,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 		sign = -sign;
 		long dif = 0; int i = 0;
-		for (; i<len; i++)
+		for (; i<len; i++) // [A]
 		{
 			dif = (v[i]&mask)-(dig[i]&mask) + dif;
 			dig[i] = (int)dif;
@@ -1262,7 +1262,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(vlen>len){ System.arraycopy(v, len, dig, len, vlen-len); len = vlen; }
 		if(dif!=0)
 		{
-			for (; i<vlen && dig[i]==0; i++) --dig[i];
+			for (; i<vlen && dig[i]==0; i++) --dig[i]; // [A]
 			if(--dig[i]==0 && i+1==len) --len;
 		}
 		//if(i==vlen) should be impossible
@@ -1348,10 +1348,10 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
       realloc(mul.len);
 
     if (mul.len < len)
-      for (int i = mul.len; i < len; i++)
+      for (int i = mul.len; i < len; i++) // [A]
         mul.dig[i] = 0;
     if (len < mul.len)
-      for (int i = len; i < mul.len; i++)
+      for (int i = len, i$ = mul.len; i < i$; i++) // [A]
         dig[i] = 0;
 
     final int mlen = Math.max(len, mul.len);
@@ -1392,17 +1392,17 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	{
 		final int[] res = new int[ulen+vlen];
 		long carry = 0, tmp, ui = u[0]&mask;
-		for (int j = 0; j<vlen; j++)
+		for (int j = 0; j<vlen; j++) // [A]
 		{
 			tmp = ui*(v[j]&mask) + carry;
 			res[j] = (int)tmp;
 			carry = tmp >>> 32;
 		}
 		res[vlen] = (int)carry;
-		for (int i = 1; i<ulen; i++)
+		for (int i = 1; i<ulen; i++) // [A]
 		{
 			ui = u[i]&mask; carry = 0;
-			for (int j = 0; j<vlen; j++)
+			for (int j = 0; j<vlen; j++) // [A]
 			{
 				tmp = ui*(v[j]&mask) + (res[i+j]&mask) + carry;
 				res[i+j] = (int)tmp;
@@ -1433,17 +1433,17 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
     // z2 = x1*y1, z0 = x0*y0, z1 = (x1+x0)(y1+y0)-z2-z0
     if (n <= 32) { // Basecase
       long carry = 0, tmp, xi = x[off] & mask;
-      for (int j = 0; j < n; j++) {
+      for (int j = 0; j < n; j++) { // [A]
         tmp = xi * (y[off + j] & mask) + carry;
         z[j] = (int)tmp;
         carry = tmp >>> 32;
       }
 
       z[n] = (int)carry;
-      for (int i = 1; i < n; ++i) {
+      for (int i = 1; i < n; ++i) { // [A]
         xi = x[off + i] & mask;
         carry = 0;
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n; j++) { // [A]
           tmp = xi * (y[off + j] & mask) + (z[i + j] & mask) + carry;
           z[i + j] = (int)tmp;
           carry = tmp >>> 32;
@@ -1459,7 +1459,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
       final int[] x2 = new int[n - b + 1];
       long carry = 0;
-      for (int i = 0; i < b; ++i) {
+      for (int i = 0; i < b; ++i) { // [A]
         carry = (x[off + b + i] & mask) + (x[off + i] & mask) + carry;
         x2[i] = (int)carry;
         carry >>>= 32;
@@ -1473,7 +1473,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
       final int[] y2 = new int[n - b + 1];
       carry = 0;
-      for (int i = 0; i < b; ++i) {
+      for (int i = 0; i < b; ++i) { // [A]
         carry = (y[off + b + i] & mask) + (y[off + i] & mask) + carry;
         y2[i] = (int)carry;
         carry >>>= 32;
@@ -1494,19 +1494,19 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
       // Add z1
       carry = 0;
       int i = 0;
-      for (; i < 2 * b; ++i) {
+      for (; i < 2 * b; ++i) { // [A]
         carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) - (z0[i] & mask) + carry;
         z[i + b] = (int)carry;
         carry >>= 32;
       }
 
-      for (; i < 2 * (n - b); ++i) {
+      for (; i < 2 * (n - b); ++i) { // [A]
         carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) + carry;
         z[i + b] = (int)carry;
         carry >>= 32;
       }
 
-      for (; i < z1.length; ++i) {
+      for (; i < z1.length; ++i) { // [A] // [A]
         carry = (z[i + b] & mask) + (z1[i] & mask) + carry;
         z[i + b] = (int)carry;
         carry >>= 32;
@@ -1553,7 +1553,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
     final int[] x2 = new int[n - b + 1];
     final int[] y2 = new int[n - b + 1];
     long carry = 0;
-    for (int i = 0; i < b; ++i) {
+    for (int i = 0; i < b; ++i) { // [A]
       carry = (x[off + b + i] & mask) + (x[off + i] & mask) + carry;
       x2[i] = (int)carry;
       carry >>>= 32;
@@ -1566,7 +1566,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
       ++x2[b + 1];
 
     carry = 0;
-    for (int i = 0; i < b; ++i) {
+    for (int i = 0; i < b; ++i) { // [A]
       carry = (y[off + b + i] & mask) + (y[off + i] & mask) + carry;
       y2[i] = (int)carry;
       carry >>>= 32;
@@ -1596,19 +1596,19 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
     carry = 0;
     int i = 0;
-    for (; i < 2 * b; ++i) {
+    for (; i < 2 * b; ++i) { // [A]
       carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) - (z0[i] & mask) + carry;
       z[i + b] = (int)carry;
       carry >>= 32;
     }
 
-    for (; i < 2 * (n - b); ++i) {
+    for (; i < 2 * (n - b); ++i) { // [A]
       carry = (z[i + b] & mask) + (z1[i] & mask) - (z2[i] & mask) + carry;
       z[i + b] = (int)carry;
       carry >>= 32;
     }
 
-    for (; i < z1.length; ++i) {
+    for (; i < z1.length; ++i) { // [A]
       carry = (z[i + b] & mask) + (z1[i] & mask) + carry;
       z[i + b] = (int)carry;
       carry >>= 32;
@@ -1643,7 +1643,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		div(dig, div.dig, len, div.len, q);
 
 		dig = q;
-		for (len = q.length; len>1 && dig[len-1]==0; --len);
+		for (len = q.length; len>1 && dig[len-1]==0; --len); // [A]
 		sign *= div.sign;
 	}
 	/**
@@ -1668,7 +1668,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(len==dig.length) realloc(len+1); //We need an extra slot.
 		div(dig, div.dig, len, div.len, q);
 
-		for (len = div.len; len > 0 && dig[len-1]==0; --len);
+		for (len = div.len; len > 0 && dig[len-1]==0; --len); // [A]
 	}
 	/**
 	* Divides this number by the given BigInt and returns the remainder.
@@ -1698,7 +1698,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 		final int[] r = dig;
 		dig = q;
-		for (len = q.length; len>1 && dig[len-1]==0; --len);
+		for (len = q.length; len>1 && dig[len-1]==0; --len); // [A]
 
 		tmp = div.len;
 		while (tmp>1 && r[tmp-1]==0) --tmp;
@@ -1753,17 +1753,17 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	   s = Integer.numberOfLeadingZeros(v[n-1]);
 	   if(s>0) //In Java (x<<32)==(x<<0) so...
 	   {
-		   for (i = n-1; i > 0; i--) v[i] = (v[i] << s) | (v[i-1] >>> 32-s);
+		   for (i = n-1; i > 0; i--) v[i] = (v[i] << s) | (v[i-1] >>> 32-s); // [A]
 		   v[0] = v[0] << s;
 
 		   u[m] = u[m-1] >>> 32-s;
-		   for (i = m-1; i > 0; i--) u[i] = (u[i] << s) | (u[i-1] >>> 32-s);
+		   for (i = m-1; i > 0; i--) u[i] = (u[i] << s) | (u[i-1] >>> 32-s); // [A]
 		   u[0] = u[0] << s;
 	   }
 
 	   final long dh = v[n-1]&mask, dl = v[n-2]&mask, hbit = Long.MIN_VALUE;
 
-	   for (j = m-n; j>=0; j--) //Main loop
+	   for (j = m-n; j>=0; j--) //Main loop // [A]
 	   {
 	      // Compute estimate qhat of q[j].
 	      k = u[j+n]*b + (u[j+n-1]&mask); //Unsigned division is a pain in the ass! ='(
@@ -1781,7 +1781,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 
 	      // Multiply and subtract.
 	      k = 0;
-	      for (i = 0; i<n; i++)
+	      for (i = 0; i<n; i++) // [A]
 	      {
 	         p = qhat*(v[i]&mask);
 	         t = (u[i+j]&mask) - k - (p&mask);
@@ -1796,7 +1796,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	      {
 	         q[j] = q[j] - 1;
 	         k = 0;
-	         for (i = 0; i<n; i++)
+	         for (i = 0; i<n; i++) // [A]
 	         {
 	            t = (u[i+j]&mask) + (v[i]&mask) + k;
 	            u[i+j] = (int)t;
@@ -1809,11 +1809,11 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	   if(s>0)
 	   {
 		   //Unnormalize v[].
-		   for (i = 0; i<n-1; i++) v[i] = v[i]>>>s | v[i+1]<<32-s;
+		   for (i = 0; i<n-1; i++) v[i] = v[i]>>>s | v[i+1]<<32-s; // [A]
 		   v[n-1] >>>= s;
 
 		   //Unnormalize u[].
-		   for (i = 0; i<m; i++) u[i] = u[i]>>>s | u[i+1]<<32-s;
+		   for (i = 0; i<m; i++) u[i] = u[i]>>>s | u[i+1]<<32-s; // [A]
 		   u[m] >>>= s;
 	   }
 	}
@@ -1837,7 +1837,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		while (true)
 		{
 			final int j = top;
-			for (long tmp = toStringDiv(); tmp>0; tmp/=10)
+			for (long tmp = toStringDiv(); tmp>0; tmp/=10) // [A]
 				buf[--top] += tmp%10; //TODO: Optimize.
 			if(len==1 && dig[0]==0) break;
 			else top = j-13;
@@ -1853,7 +1853,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		final int pow5 = 1_220_703_125, pow2 = 1<<13;
 		int nextq = 0;
 		long rem = 0;
-		for (int i = len-1; i>0; i--)
+		for (int i = len-1; i>0; i--) // [A]
 		{
 			rem = (rem<<32) + (dig[i]&mask);
 			final int q = (int)(rem/pow5);
@@ -1899,7 +1899,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			else dig[len-1] = 0;
 
 		int nxt = len>dig.length ? 0 : dig[len-1];
-		for (int i = len-1; i>first; i--) res[i] = nxt<<shift | (nxt = dig[i-1])>>>32-shift;
+		for (int i = len-1; i>first; i--) res[i] = nxt<<shift | (nxt = dig[i-1])>>>32-shift; // [A]
 		res[first] = nxt<<shift;
 		dig = res;
 	}
@@ -1913,7 +1913,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	private void smallShiftRight(final int shift)
 	{
 		int nxt = dig[0];
-		for (int i = 0; i<len-1; i++) dig[i] = nxt>>>shift | (nxt = dig[i+1])<<32-shift;
+		for (int i = 0; i<len-1; i++) dig[i] = nxt>>>shift | (nxt = dig[i+1])<<32-shift; // [A]
 		if((dig[len-1]>>>=shift)==0 && len>1) --len;
 	}
 
@@ -1934,7 +1934,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		else
 		{
 			System.arraycopy(dig, 0, dig, shift, len);
-			for (int i = 0; i<shift; i++) dig[i] = 0;
+			for (int i = 0; i<shift; i++) dig[i] = 0; // [A]
 		}
 		len += shift;
 	}
@@ -1948,7 +1948,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 	private void bigShiftRight(final int shift)
 	{
 		System.arraycopy(dig, shift, dig, 0, len-shift);
-		//for (int i = len-shift; i<len; i++) dig[i] = 0;  dig[j >= len] are allowed to be anything.
+		//for (int i = len-shift; i<len; i++) dig[i] = 0;  dig[j >= len] are allowed to be anything. // [A]
 		len -= shift;
 	}
 
@@ -1991,7 +1991,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		if(bigBit>=len) return sign<0;
 		if(sign>0) return (dig[bigBit]&1<<smallBit)!=0;
 		int j = 0;
-		for (; j<=bigBit && dig[j]==0;) ++j;
+		for (; j<=bigBit && dig[j]==0;) ++j; // [A]
 		if(j>bigBit) return false;
 		if(j<bigBit) return (dig[bigBit]&1<<smallBit)==0;
 		j = -dig[bigBit];
@@ -2016,7 +2016,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			}
 			else if(bigBit>=len)
 			{
-				for (; len<=bigBit; len++) dig[len] = 0;
+				for (; len<=bigBit; len++) dig[len] = 0; // [A]
 				// len = bigBit+1;
 			}
 			dig[bigBit] |= 1<<smallBit;
@@ -2025,11 +2025,11 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		{
 			if(bigBit>=len) return;
 			int j = 0;
-			for (; j<=bigBit && dig[j]==0;) ++j;
+			for (; j<=bigBit && dig[j]==0;) ++j; // [A]
 			if(j>bigBit)
 			{
 				dig[bigBit] = -1<<smallBit;
-				for (; dig[j]==0; j++) dig[j] = -1;
+				for (; dig[j]==0; j++) dig[j] = -1; // [A]
 				dig[j] = ~-dig[j];
 				if(j==len-1 && dig[len-1]==0) --len;
 				return;
@@ -2075,12 +2075,12 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			}
 			else if(bigBit>=len)
 			{
-				for (; len<=bigBit; len++) dig[len] = 0;
+				for (; len<=bigBit; len++) dig[len] = 0; // [A]
 				dig[bigBit] |= 1<<smallBit;
 				return;
 			}
 			int j = 0;
-			for (; j<=bigBit && dig[j]==0;) ++j;
+			for (; j<=bigBit && dig[j]==0;) ++j; // [A]
 			if(j>bigBit) return;
 			if(j<bigBit)
 			{
@@ -2095,7 +2095,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			if(j==(-1^k-1))
 			{
 				dig[bigBit] = 0;
-				for (j=bigBit+1; j<len && dig[j]==-1; j++) dig[j] = 0;
+				for (j=bigBit+1; j<len && dig[j]==-1; j++) dig[j] = 0; // [A]
 				if(j==dig.length) realloc(j+2);
 				if(j==len){ dig[len++] = 1; return; }
 				dig[j] = -~dig[j];
@@ -2126,14 +2126,14 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		}
 		else if(bigBit>=len)
 		{
-			for (; len<=bigBit; len++) dig[len] = 0;
+			for (; len<=bigBit; len++) dig[len] = 0; // [A]
 			dig[bigBit] ^= 1<<smallBit;
 		}
 		else if(sign>0) dig[bigBit] ^= 1<<smallBit;
 		else
 		{
 			int j = 0;
-			for (; j<=bigBit && dig[j]==0;) ++j;
+			for (; j<=bigBit && dig[j]==0;) ++j; // [A]
 			if(j<bigBit)
 			{
 				dig[bigBit] ^= 1<<smallBit;
@@ -2142,7 +2142,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			if(j>bigBit) // TODO: Refactor with setBit?
 			{
 				dig[bigBit] = -1<<smallBit;
-				for (; dig[j]==0; j++) dig[j] = -1;
+				for (; dig[j]==0; j++) dig[j] = -1; // [A]
 				dig[j] = ~-dig[j];
 				if(j==len-1 && dig[len-1]==0) --len;
 				return;
@@ -2155,7 +2155,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			if(j==(-1^k-1)) // TODO: Refactor with clearBit?
 			{
 				dig[bigBit] = 0;
-				for (j=bigBit+1; j<len && dig[j]==-1; j++) dig[j] = 0;
+				for (j=bigBit+1; j<len && dig[j]==-1; j++) dig[j] = 0; // [A]
 				if(j==dig.length) realloc(j+2);
 				if(j==len){ dig[len++] = 1; return; }
 				dig[j] = -~dig[j];
@@ -2182,16 +2182,16 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			if(mask.sign>0)
 			{
 				if(mask.len<len) len = mask.len;
-				for (int i = 0; i<len; i++) dig[i] &= mask.dig[i];
+				for (int i = 0; i<len; i++) dig[i] &= mask.dig[i]; // [A]
 			}
 			else
 			{
 				final int mlen = Math.min(len, mask.len);
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
-					for (dig[j-1] = 0; j<mlen && mask.dig[j]==0; j++) dig[j] = 0;
+					for (dig[j-1] = 0; j<mlen && mask.dig[j]==0; j++) dig[j] = 0; // [A]
 					if(j<mlen) dig[j] &= -mask.dig[j];
 					else if(j==len) len = 1;
 					++j;
@@ -2204,7 +2204,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] &= -b;
 				}
-				for (; j<mlen; j++) dig[j] &= ~mask.dig[j];
+				for (; j<mlen; j++) dig[j] &= ~mask.dig[j]; // [A]
 			}
 			while (dig[len-1]==0 && len>1) --len;
 		}
@@ -2214,10 +2214,10 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			if(mask.sign>0)
 			{
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
-					for (dig[j-1] = 0; j<mlen && mask.dig[j]==0; j++) dig[j] = 0;
+					for (dig[j-1] = 0; j<mlen && mask.dig[j]==0; j++) dig[j] = 0; // [A]
 				}
 				else if(a==0) // && (b!=0 || j==mlen)
 				{
@@ -2229,7 +2229,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] = -a&b;
 				}
-				for (; j<mlen; j++) dig[j] = ~dig[j]&mask.dig[j];
+				for (; j<mlen; j++) dig[j] = ~dig[j]&mask.dig[j]; // [A]
 				if(mask.len>len)
 				{
 					if(mask.len>dig.length) realloc(mask.len+2);
@@ -2247,10 +2247,10 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 					System.arraycopy(mask.dig, len, dig, len, mask.len-len);
 				}
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
-					for (dig[j-1] = 0; j<mlen && mask.dig[j]==0; j++) dig[j] = 0;
+					for (dig[j-1] = 0; j<mlen && mask.dig[j]==0; j++) dig[j] = 0; // [A]
 					if(j<mlen) dig[j] = -(~dig[j]&-mask.dig[j]);
 					++j;
 				}
@@ -2267,7 +2267,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				if(j<=mlen && dig[j-1]==0)
 				{
 					if(j<mlen)
-						for (dig[j] = -~(dig[j]|mask.dig[j]); ++j<mlen && dig[j-1]==0; )
+						for (dig[j] = -~(dig[j]|mask.dig[j]); ++j<mlen && dig[j-1]==0; ) // [A]
 							dig[j] = -~(dig[j]|mask.dig[j]);  // -(~dig[j]&~mask.dig[j])
 					if(j==mlen && dig[j-1]==0)
 					{
@@ -2284,7 +2284,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 						++j;
 					}
 				}
-				for (; j<mlen; j++) dig[j] |= mask.dig[j]; // ~(~dig[j]&~mask.dig[j]);
+				for (; j<mlen; j++) dig[j] |= mask.dig[j]; // ~(~dig[j]&~mask.dig[j]); // [A]
 				if(mask.len>len) len = mask.len;
 			}
 		}
@@ -2306,10 +2306,10 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					if(mask.len>dig.length) realloc(mask.len+1);
 					System.arraycopy(mask.dig, len, dig, len, mask.len-len);
-					for (int i = 0; i<len; i++) dig[i] |= mask.dig[i];
+					for (int i = 0; i<len; i++) dig[i] |= mask.dig[i]; // [A]
 					len = mask.len;
 				}
-				else for (int i = 0; i<mask.len; i++) dig[i] |= mask.dig[i];
+				else for (int i = 0; i<mask.len; i++) dig[i] |= mask.dig[i]; // [A]
 			}
 			else
 			{
@@ -2317,11 +2317,11 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				if(mask.len>len){ System.arraycopy(mask.dig, len, dig, len, mask.len-len); }
 				final int mLen = Math.min(mask.len, len);
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0 && j<mLen; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0 && j<mLen; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
 					dig[j-1] = -a;
-					for (; mask.dig[j]==0; j++) dig[j] ^= -1;
+					for (; mask.dig[j]==0; j++) dig[j] ^= -1; // [A]
 					if(j<mLen)
 						dig[j] = ~(dig[j]|-mask.dig[j]);
 					else // mask.dig[j] == dig[j]
@@ -2330,13 +2330,13 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				}
 				else if(a==0) // && (b!=0 || j==mLen)
 				{
-					for (dig[j-1] = b; j<mLen && dig[j]==0; j++) dig[j] = mask.dig[j];
+					for (dig[j-1] = b; j<mLen && dig[j]==0; j++) dig[j] = mask.dig[j]; // [A]
 				}
 				else // a!=0 && b!=0
 				{
 					dig[j-1] = -(a|-b);
 				}
-				for (; j<mLen; j++) dig[j] = ~dig[j]&mask.dig[j]; // ~(dig[j]|~mask.dig[j])
+				for (; j<mLen; j++) dig[j] = ~dig[j]&mask.dig[j]; // ~(dig[j]|~mask.dig[j]) // [A]
 				sign = -1;
 				len = mask.len;
 				while (dig[len-1]==0) --len;
@@ -2346,22 +2346,22 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		{
 			final int mLen = Math.min(mask.len, len);
 			int a = dig[0], b = mask.dig[0], j = 1;
-			for (; (a|b)==0 && j<mLen; a = dig[j], b = mask.dig[j], j++);
+			for (; (a|b)==0 && j<mLen; a = dig[j], b = mask.dig[j], j++); // [A]
 			if(mask.sign>0)
 			{
 				if(a!=0 && b==0)
 				{
-					for (; j<mLen && mask.dig[j]==0; j++);
+					for (; j<mLen && mask.dig[j]==0; j++); // [A]
 				}
 				else if(a==0) // && (b!=0 || j==mLen)
 				{
 					dig[j-1] = -b;
-					for (; j<mLen && dig[j]==0; j++) dig[j] = ~mask.dig[j];
+					for (; j<mLen && dig[j]==0; j++) dig[j] = ~mask.dig[j]; // [A]
 					if(j<mLen)
 						dig[j] = ~(-dig[j]|mask.dig[j]);
 					else
 					{
-						for (; dig[j]==0; j++) dig[j] = -1;
+						for (; dig[j]==0; j++) dig[j] = -1; // [A]
 						dig[j] = ~-dig[j];
 					}
 					++j;
@@ -2370,19 +2370,19 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] = -(-a|b);
 				}
-				for (; j<mLen; j++) dig[j] &= ~mask.dig[j]; // ~(~dig[j]|mask.dig[j])
+				for (; j<mLen; j++) dig[j] &= ~mask.dig[j]; // ~(~dig[j]|mask.dig[j]) // [A]
 			}
 			else
 			{
 				if(a!=0 && b==0)
 				{
-					for (; j<mLen && mask.dig[j]==0; j++);
+					for (; j<mLen && mask.dig[j]==0; j++); // [A]
 					if(j<mLen) dig[j] = ~(~dig[j]|-mask.dig[j]);
 					++j;
 				}
 				else if(a==0) // && (b!=0 || j==mLen)
 				{
-					for (dig[j-1] = b; j<mLen && dig[j]==0; j++) dig[j] = mask.dig[j];
+					for (dig[j-1] = b; j<mLen && dig[j]==0; j++) dig[j] = mask.dig[j]; // [A]
 					if(j<mLen) dig[j] = ~(-dig[j]|~mask.dig[j]);
 					++j;
 				}
@@ -2390,7 +2390,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] = -(-a|-b);
 				}
-				for (; j<mLen; j++) dig[j] &= mask.dig[j]; // ~(~dig[j]|~mask.dig[j])
+				for (; j<mLen; j++) dig[j] &= mask.dig[j]; // ~(~dig[j]|~mask.dig[j]) // [A]
 				len = mLen;
 			}
 			while (dig[len-1]==0) --len;
@@ -2415,16 +2415,16 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			final int mlen = Math.min(len, mask.len);
 			if(mask.sign>0)
 			{
-				for (int i = 0; i<mlen; i++) dig[i] ^= mask.dig[i];
+				for (int i = 0; i<mlen; i++) dig[i] ^= mask.dig[i]; // [A]
 			}
 			else
 			{
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
 					dig[j-1] = -a;
-					for (; mask.dig[j]==0; ++j) dig[j] ^= -1;
+					for (; mask.dig[j]==0; ++j) dig[j] ^= -1; // [A]
 					if(j<len) dig[j] = ~(dig[j]^-mask.dig[j]);
 					else dig[j] = ~-mask.dig[j];
 					++j;
@@ -2436,19 +2436,19 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				else // a!=0 && b!=0
 				{
 					dig[j-1] = -(a^-b);
-					for (; j<mlen && dig[j-1]==0; j++) dig[j] = -(dig[j]^~mask.dig[j]);
+					for (; j<mlen && dig[j-1]==0; j++) dig[j] = -(dig[j]^~mask.dig[j]); // [A]
 					if(j>=mlen && dig[j-1]==0)
 					{
 						final int[] tmp = j<len ? dig : mask.dig;
 						final int blen = Math.max(len, mask.len);
-						for (; j<blen && tmp[j]==-1; j++) dig[j] = 0;
+						for (; j<blen && tmp[j]==-1; j++) dig[j] = 0; // [A]
 						if(blen==dig.length) realloc(blen+2); // len==blen
 						if(j==blen){ dig[blen] = 1; len = blen+1; }
 						else dig[j] = -~tmp[j];
 						++j;
 					}
 				}
-				for (; j<mlen; j++) dig[j] ^= mask.dig[j]; // ~(dig[j]^~mask.dig[j]);
+				for (; j<mlen; j++) dig[j] ^= mask.dig[j]; // ~(dig[j]^~mask.dig[j]); // [A]
 				sign = -1;
 			}
 			if(mask.len>len) len = mask.len;
@@ -2465,14 +2465,14 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 			if(mask.sign>0)
 			{
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
 					while (j<mlen && mask.dig[j]==0) ++j;
 				}
 				else if(a==0) // && (b!=0 || j==mLen)
 				{
-					for (dig[j-1] = -b; j<mlen && dig[j]==0; j++) dig[j] = ~mask.dig[j];
+					for (dig[j-1] = -b; j<mlen && dig[j]==0; j++) dig[j] = ~mask.dig[j]; // [A]
 					while (j<len && dig[j]==0) dig[j++] = -1;
 					if(j<mlen) dig[j] = ~(-dig[j]^mask.dig[j]);
 					else dig[j] = ~-dig[j];
@@ -2482,31 +2482,31 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] = -(-a^b);
 					if(dig[j-1]==0) { // Perform carry.
-            for (; dig[j-1]==0 && j<mlen; j++) {
+            for (; dig[j-1]==0 && j<mlen; j++) { // [A]
               dig[j] ^= mask.dig[j]; ++dig[j];
             }
             final int blen = Math.max(len, mask.len);
-            for (; dig[j-1]==0 && j<blen; j++) ++dig[j];
+            for (; dig[j-1]==0 && j<blen; j++) ++dig[j]; // [A]
             if(j==dig.length) realloc(j+1);
             if(dig[j-1]==0){ dig[j] = 1; len=j+1; return; }
           }
 				}
-				for (; j<mlen; j++) dig[j] ^= mask.dig[j]; // ~(~dig[j]^mask.dig[j]);
+				for (; j<mlen; j++) dig[j] ^= mask.dig[j]; // ~(~dig[j]^mask.dig[j]); // [A]
 			}
 			else
 			{
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++);
+				for (; (a|b)==0 && j<mlen; a = dig[j], b = mask.dig[j], j++); // [A]
 				if(a!=0 && b==0)
 				{
-					for (dig[j-1] = -a; mask.dig[j]==0; j++) dig[j] ^= -1; // ~dig[j]
+					for (dig[j-1] = -a; mask.dig[j]==0; j++) dig[j] ^= -1; // ~dig[j] // [A]
 					if(j<len) dig[j] = ~dig[j]^-mask.dig[j];
 					else dig[j] = ~-dig[j]; // dig[j]==mask.dig[j], ~0^-mask.dig[j]
 					++j;
 				}
 				else if(a==0) // && b!=0
 				{
-					for (dig[j-1] = -b; j<mask.len && dig[j]==0; j++) dig[j] = ~mask.dig[j];
+					for (dig[j-1] = -b; j<mask.len && dig[j]==0; j++) dig[j] = ~mask.dig[j]; // [A]
 					while (dig[j]==0) dig[j++] = -1;
 					if(j<mask.len) dig[j] = -dig[j]^~mask.dig[j];
 					else dig[j] = ~-dig[j]; // -dig[j]^~0
@@ -2516,7 +2516,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] = -a^-b;
 				}
-				for (; j<mlen; j++) dig[j] ^= mask.dig[j]; // ~dig[j]^~mask.dig[j]
+				for (; j<mlen; j++) dig[j] ^= mask.dig[j]; // ~dig[j]^~mask.dig[j] // [A]
 				sign = 1;
 			}
 			if(mask.len>len) len = mask.len;
@@ -2537,14 +2537,14 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 		{
 			if(mask.sign>0)
 			{
-				for (int i = 0; i<mlen; i++) dig[i] &= ~mask.dig[i];
+				for (int i = 0; i<mlen; i++) dig[i] &= ~mask.dig[i]; // [A]
 			}
 			else
 			{
 				int j = 0;
 				while (j<mlen && mask.dig[j]==0) ++j;
 				if(j<mlen)
-					for (dig[j] &= ~-mask.dig[j]; ++j<mlen; ) dig[j] &= mask.dig[j]; // ~~mask.dig[j]
+					for (dig[j] &= ~-mask.dig[j]; ++j<mlen; ) dig[j] &= mask.dig[j]; // ~~mask.dig[j] // [A]
 				len = mlen;
 			}
 		}
@@ -2562,7 +2562,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				if(j<mlen)
 				{
 					dig[j] = -(-dig[j]&~mask.dig[j]);
-					for (; ++j<mlen && dig[j-1]==0; ) dig[j] = -~(dig[j]|mask.dig[j]); // -(~dig[j]&~mask.dig[j])
+					for (; ++j<mlen && dig[j-1]==0; ) dig[j] = -~(dig[j]|mask.dig[j]); // -(~dig[j]&~mask.dig[j]) // [A]
 					if(j==mlen && dig[j-1]==0)
 					{
 						final int blen = Math.max(len, mask.len);
@@ -2577,25 +2577,25 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 						}
 						++j;
 					}
-					for (; j<mlen; j++) dig[j] |= mask.dig[j]; // ~(~dig[j]&~mask.dig[j]);
+					for (; j<mlen; j++) dig[j] |= mask.dig[j]; // ~(~dig[j]&~mask.dig[j]); // [A]
 					if(mask.len>len) len = mask.len;
 				}
 			}
 			else
 			{
 				int a = dig[0], b = mask.dig[0], j = 1;
-				for (; j<mlen && (a|b)==0; a=dig[j], b=mask.dig[j], ++j);
+				for (; j<mlen && (a|b)==0; a=dig[j], b=mask.dig[j], ++j); // [A]
 				if(a!=0 && b==0)
 				{
 					dig[j-1] = -a;
-					for (; j<mask.len && mask.dig[j]==0; j++) dig[j] ^= -1;
+					for (; j<mask.len && mask.dig[j]==0; j++) dig[j] ^= -1; // [A]
 					if(j<len) dig[j] = ~(dig[j]|-mask.dig[j]); // ~dig[j]&~-mask.dig[j]);
 					else dig[j] = ~-dig[j]; // dig[j]==mask.dig[j]
 					++j;
 				}
 				else if(a==0) // && (b!=0 || j==mlen)
 				{
-					for (; j<mlen && dig[j]==0; j++);
+					for (; j<mlen && dig[j]==0; j++); // [A]
 					if(j<mlen) dig[j] = -dig[j]&mask.dig[j]; // ~~mask.dig[j]
 					++j;
 				}
@@ -2603,7 +2603,7 @@ public class BigInt extends Number implements Comparable<BigInt>, Cloneable
 				{
 					dig[j-1] = -a&~-b;
 				}
-				for (; j<mlen; j++) dig[j] = ~dig[j]&mask.dig[j];
+				for (; j<mlen; j++) dig[j] = ~dig[j]&mask.dig[j]; // [A]
 				len = mask.len;
 				sign = 1;
 			}

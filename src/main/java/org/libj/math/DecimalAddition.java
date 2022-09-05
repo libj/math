@@ -29,8 +29,7 @@ abstract class DecimalAddition extends FixedPoint {
     if (add0(dec.significand, dec.scale, significand2, scale2, false, dec))
       return dec;
 
-    // Special situation where negation may have caused an overflow,
-    // but the result is clearly zero
+    // Special situation where negation may have caused an overflow, but the result is clearly zero
     if (Decimal.compare(dec.significand, dec.scale, -significand2, scale2) == 0)
       return dec.assign(0, (short)0);
 

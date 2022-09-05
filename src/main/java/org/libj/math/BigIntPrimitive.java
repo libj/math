@@ -90,25 +90,20 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Assigns the specified {@code double} value to the provided
-   * {@linkplain BigInt#val() value-encoded <code>int[]</code>}, rounded by the
-   * provided {@link RoundingMode}.
+   * Assigns the specified {@code double} value to the provided {@linkplain BigInt#val() value-encoded <code>int[]</code>}, rounded
+   * by the provided {@link RoundingMode}.
    *
    * <pre>
    * val = mag
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           assignment requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param mag The {@code double} value to assign.
    * @param rm The {@link RoundingMode}.
-   * @return The result of assigning the specified {@code double} value to the
-   *         provided {@linkplain BigInt#val() value-encoded
-   *         <code>int[]</code>}, rounded by the provided {@link RoundingMode},
-   *         or {@code null} if {@code mag} is not a finite value or
-   *         {@code rm == RoundingMode.UNNECESSARY || rm == null} yet rounding
-   *         is necessary.
+   * @return The result of assigning the specified {@code double} value to the provided {@linkplain BigInt#val() value-encoded
+   *         <code>int[]</code>}, rounded by the provided {@link RoundingMode}, or {@code null} if {@code mag} is not a finite value
+   *         or {@code rm == RoundingMode.UNNECESSARY || rm == null} yet rounding is necessary.
    * @complexity O(n)
    */
   public static int[] assign(final int[] val, final double mag, final RoundingMode rm) {
@@ -120,23 +115,19 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Assigns the specified {@code double} value to the provided
-   * {@linkplain BigInt#val() value-encoded <code>int[]</code>}, assuming
+   * Assigns the specified {@code double} value to the provided {@linkplain BigInt#val() value-encoded <code>int[]</code>}, assuming
    * rounding is not necessary.
    *
    * <pre>
    * val = mag
    * </pre>
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the
-   *           assignment requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the assignment requires a larger array.
    * @param val The target array of the assignment.
    * @param mag The {@code double} value to assign.
-   * @return The result of assigning the specified {@code double} value to the
-   *         provided {@linkplain BigInt#val() value-encoded
-   *         <code>int[]</code>}, rounded by the provided {@link RoundingMode},
-   *         or {@code null} if {@code mag} is not a finite value or if rounding
-   *         is necessary.
+   * @return The result of assigning the specified {@code double} value to the provided {@linkplain BigInt#val() value-encoded
+   *         <code>int[]</code>}, rounded by the provided {@link RoundingMode}, or {@code null} if {@code mag} is not a finite value
+   *         or if rounding is necessary.
    * @complexity O(n)
    */
   public static int[] assign(final int[] val, final double mag) {
@@ -164,15 +155,13 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an {@code double}, rounded by the given
-   * {@link RoundingMode}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an {@code double}, rounded by the
+   * given {@link RoundingMode}.
    *
    * @param mag The magnitude.
    * @param rm The {@link RoundingMode}.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an {@code double}, rounded by the given
-   *         {@link RoundingMode}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an {@code double}, rounded by the
+   *         given {@link RoundingMode}.
    * @complexity O(1)
    */
   public static int[] valueOf(final double mag, final RoundingMode rm) {
@@ -180,8 +169,7 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an {@code double}, rounded down.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an {@code double}, rounded down.
    * <p>
    * This is equivalent to:
    *
@@ -190,8 +178,7 @@ abstract class BigIntPrimitive extends BigIntBinary {
    * </pre>
    *
    * @param mag The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an {@code double}, rounded down.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an {@code double}, rounded down.
    * @complexity O(1)
    */
   public static int[] valueOf(final double mag) {
@@ -199,12 +186,10 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an {@code int}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an {@code int}.
    *
    * @param mag The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an {@code int}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an {@code int}.
    * @complexity O(1)
    */
   public static int[] valueOf(final int mag) {
@@ -212,13 +197,11 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an <i>unsigned</i> {@code int}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an <i>unsigned</i> {@code int}.
    *
    * @param sig The sign of the magnitude.
    * @param mag The magnitude (unsigned).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an <i>unsigned</i> {@code int}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an <i>unsigned</i> {@code int}.
    * @complexity O(1)
    */
   public static int[] valueOf(final int sig, final int mag) {
@@ -226,12 +209,10 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as a {@code long}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as a {@code long}.
    *
    * @param mag The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as a {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as a {@code long}.
    * @complexity O(1)
    */
   public static int[] valueOf(final long mag) {
@@ -239,13 +220,11 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as an <i>unsigned</i> {@code long}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an <i>unsigned</i> {@code long}.
    *
    * @param sig The sign of the magnitude.
    * @param mag The magnitude (unsigned).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         provided magnitude as an <i>unsigned</i> {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as an <i>unsigned</i> {@code long}.
    * @complexity O(1)
    */
   public static int[] valueOf(final int sig, final long mag) {
@@ -253,22 +232,16 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * magnitude of the provided byte array containing the two's-complement binary
-   * representation of a {@linkplain BigInt#val() value-encoded
-   * <code>int[]</code>}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided byte array containing the
+   * two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    *
-   * @param mag The two's-complement binary representation of a
-   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @param mag The two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @param off The start offset of the binary representation.
    * @param len The number of bytes to use.
-   * @param littleEndian Whether the specified byte array is encoded in
-   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   * @param littleEndian Whether the specified byte array is encoded in <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided byte array containing the
-   *         two's-complement binary representation of a
-   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided byte array containing the
+   *         two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @complexity O(n^2)
    */
   public static int[] valueOf(final byte[] mag, final int off, final int len, final boolean littleEndian) {
@@ -276,20 +249,14 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * magnitude of the provided byte array containing the two's-complement binary
-   * representation of a {@linkplain BigInt#val() value-encoded
-   * <code>int[]</code>}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided byte array containing the
+   * two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    *
-   * @param mag The two's-complement binary representation of a
-   *          {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
-   * @param littleEndian Whether the specified byte array is encoded in
-   *          <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   * @param mag The two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @param littleEndian Whether the specified byte array is encoded in <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided byte array containing the
-   *         two's-complement binary representation of a
-   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided byte array containing the
+   *         two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @complexity O(n^2)
    */
   public static int[] valueOf(final byte[] mag, final boolean littleEndian) {
@@ -297,12 +264,10 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * magnitude of the provided {@link BigInteger}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided {@link BigInteger}.
    *
    * @param b The {@link BigInteger}.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided {@link BigInteger}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided {@link BigInteger}.
    * @complexity O(n^2)
    */
   public static int[] valueOf(final BigInteger b) {
@@ -310,12 +275,10 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as a {@code char[]}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as a {@code char[]}.
    *
    * @param s The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided {@code long}.
    * @complexity O(n)
    */
   public static int[] valueOf(final char[] s) {
@@ -323,12 +286,10 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Returns a new {@linkplain BigInt#val() value-encoded number} with the
-   * provided magnitude as a {@code String}.
+   * Returns a new {@linkplain BigInt#val() value-encoded number} with the provided magnitude as a {@code String}.
    *
    * @param s The magnitude.
-   * @return A new {@linkplain BigInt#val() value-encoded number} with the
-   *         magnitude of the provided {@code long}.
+   * @return A new {@linkplain BigInt#val() value-encoded number} with the magnitude of the provided {@code long}.
    * @complexity O(n)
    */
   public static int[] valueOf(final String s) {

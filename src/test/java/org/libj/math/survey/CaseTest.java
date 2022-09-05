@@ -80,7 +80,7 @@ public abstract class CaseTest {
   private final int[] scaleFactors = {1, 1, 1, 1};
 
   static {
-    for (int i = 0; i < e10.length; ++i)
+    for (int i = 0, i$ = e10.length; i < i$; ++i) // [A]
       e10[i] = BigDecimal.ONE.scaleByPowerOfTen(i);
   }
 
@@ -198,6 +198,7 @@ public abstract class CaseTest {
 
     /**
      * Return the error between {@code o1} and {@code o2}.
+     *
      * @param o1 The first argument.
      * @param t1 The type of the first argument.
      * @param o2 The second argument.
@@ -375,6 +376,7 @@ public abstract class CaseTest {
 
     /**
      * Return the detail string representation of {@code o1}.
+     *
      * @param o1 The object to return as a string.
      * @param resultType The type of the object.
      * @return The detail string representation of {@code o1}.
@@ -441,9 +443,9 @@ public abstract class CaseTest {
         if (inputs[0] != 0 || inputs[1] != 0)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
-        for (int i = 0; i < SPECIAL.length; ++i) {
+        for (int i = 0, i$ = SPECIAL.length; i < i$; ++i) { // [A]
           inputs[0] = SPECIAL[i];
-          for (int j = 0; j < SPECIAL.length; ++j) {
+          for (int j = 0, j$ = SPECIAL.length; j < j$; ++j) { // [A]
             inputs[1] = SPECIAL[j];
             test(caseTest, label, epsilon, cases, surveys, inputs);
             progress = progress(progress, i, j, SPECIAL.length);
@@ -458,9 +460,9 @@ public abstract class CaseTest {
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
-      for (int i = 0; i < precision; i += skip(precision, skip)) {
-        for (int j = 0; j < precision; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) {
+      for (int i = 0; i < precision; i += skip(precision, skip)) { // [N]
+        for (int j = 0; j < precision; j += skip(precision, skip)) { // [N]
+          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) { // [N]
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             precision = Math.max(precision, test(caseTest, label, epsilon, cases, surveys, inputs));
@@ -483,7 +485,7 @@ public abstract class CaseTest {
     @SuppressWarnings({"rawtypes", "unchecked"})
     <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
       int precision = 0;
-      for (int c = 0; c < cases.length; ++c) {
+      for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final IntCase cse = (IntCase)cases[c];
         try {
           int a = inputs[0];
@@ -634,9 +636,9 @@ public abstract class CaseTest {
         if (inputs[0] != 0 || inputs[1] != 0)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
-        for (int i = 0; i < SPECIAL.length; ++i) {
+        for (int i = 0, i$ = SPECIAL.length; i < i$; ++i) { // [A]
           inputs[0] = SPECIAL[i];
-          for (int j = 0; j < SPECIAL.length; ++j) {
+          for (int j = 0, j$ = SPECIAL.length; j < j$; ++j) { // [A]
             inputs[1] = SPECIAL[j];
             test(caseTest, label, epsilon, cases, surveys, inputs);
             progress = progress(progress, i, j, SPECIAL.length);
@@ -651,9 +653,9 @@ public abstract class CaseTest {
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
-      for (int i = 0; i < precision; i += skip(precision, skip)) {
-        for (int j = 0; j < precision; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) {
+      for (int i = 0; i < precision; i += skip(precision, skip)) { // [N]
+        for (int j = 0; j < precision; j += skip(precision, skip)) { // [N]
+          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) { // [N]
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             precision = Math.max(precision, test(caseTest, label, epsilon, cases, surveys, inputs));
@@ -676,7 +678,7 @@ public abstract class CaseTest {
     @SuppressWarnings({"rawtypes", "unchecked"})
     <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
       int precision = 0;
-      for (int c = 0; c < cases.length; ++c) {
+      for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final LongCase cse = (LongCase)cases[c];
         try {
           Object in1 = null, in2 = null;
@@ -914,7 +916,7 @@ public abstract class CaseTest {
       BigDecimal z = y;
       BigInteger bi;
       try {
-        for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(minValue) < 0 : bi.compareTo(maxValue) > 0; ++i, --scale) {
+        for (int i = 1; (bi = y.toBigInteger()).signum() < 0 ? bi.compareTo(minValue) < 0 : bi.compareTo(maxValue) > 0; ++i, --scale) { // [N]
           // y = z.divide(e10[i], rm); // This variation makes BigDecimal consider all of e10[i] when doing rounding
 
           // This variation makes BigDecimal consider only e10[1] when doing rounding
@@ -1045,14 +1047,14 @@ public abstract class CaseTest {
       if (inputs[0] != 0 || inputs[1] != 0)
         test(caseTest, label, epsilon, cases, surveys, inputs);
 
-      for (int i = 0; i < SPECIAL.length; ++i) {
+      for (int i = 0, i$ = SPECIAL.length; i < i$; ++i) { // [A]
         if (setInput(inputs, 0, SPECIAL[i]))
           i = SPECIAL.length;
 
         if (randomScale)
           inputs[0] = Decimal.valueOf(inputs[0], randomScale(inputs[0]), defaultValue);
 
-        for (int j = 0; j < SPECIAL.length; ++j) {
+        for (int j = 0, j$ = SPECIAL.length; j < j$; ++j) { // [A]
           if (setInput(inputs, 1, SPECIAL[j]))
             j = SPECIAL.length;
 
@@ -1072,7 +1074,7 @@ public abstract class CaseTest {
         init();
         System.out.println(label + "_[DISTINCT]" + Strings.repeat('_', 100 - label.length() - 11));
         testSpecial(caseTest, label, epsilon, cases, surveys, false);
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 100; ++i) { // [N]
           testSpecial(caseTest, label, epsilon, cases, surveys, true);
           progress = progress(progress, i, i, 100);
         }
@@ -1085,9 +1087,9 @@ public abstract class CaseTest {
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
-      for (int i = 0; i < MAX_PRECISION; i += skip(precision, skip)) {
-        for (int j = 0; j < MAX_PRECISION; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(minIterations, warmup / MAX_PRECISION); ++k) {
+      for (int i = 0; i < MAX_PRECISION; i += skip(precision, skip)) { // [N]
+        for (int j = 0; j < MAX_PRECISION; j += skip(precision, skip)) { // [N]
+          for (int k = 0; k < Math.max(minIterations, warmup / MAX_PRECISION); ++k) { // [N]
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             setInput(inputs, 0, inputs[0]);
@@ -1121,7 +1123,7 @@ public abstract class CaseTest {
     @SuppressWarnings({"rawtypes", "unchecked"})
     <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
       int precision = 0;
-      for (int c = 0; c < cases.length; ++c) {
+      for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final DecimalCase cse = (DecimalCase)cases[c];
         try {
           Object in1 = null, in2 = null;
@@ -1339,9 +1341,9 @@ public abstract class CaseTest {
         if (inputs[0] != null || inputs[1] != null)
           test(caseTest, label, epsilon, cases, surveys, inputs);
 
-        for (int i = 0; i < SPECIAL.length; ++i) {
+        for (int i = 0, i$ = SPECIAL.length; i < i$; ++i) { // [A]
           inputs[0] = SPECIAL[i];
-          for (int j = 0; j < SPECIAL.length; ++j) {
+          for (int j = 0, j$ = SPECIAL.length; j < j$; ++j) { // [A]
             inputs[1] = SPECIAL[j];
             test(caseTest, label, epsilon, cases, surveys, inputs);
             progress = progress(progress, i, j, SPECIAL.length);
@@ -1356,9 +1358,9 @@ public abstract class CaseTest {
       progress = 0;
       final int minIterations = report == null ? MIN_ITERATIONS : report.minIterations(MIN_ITERATIONS);
       int precision = MAX_PRECISION;
-      for (int i = 0; i < precision; i += skip(precision, skip)) {
-        for (int j = 0; j < precision; j += skip(precision, skip)) {
-          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) {
+      for (int i = 0; i < precision; i += skip(precision, skip)) { // [N]
+        for (int j = 0; j < precision; j += skip(precision, skip)) { // [N]
+          for (int k = 0; k < Math.max(minIterations, warmup / precision); ++k) { // [N]
             caseTest.randomInputs(i % MAX_PRECISION + 1, j % MAX_PRECISION + 1, inputs);
 
             precision = Math.max(precision, test(caseTest, label, epsilon, cases, surveys, inputs));
@@ -1381,7 +1383,7 @@ public abstract class CaseTest {
     @SuppressWarnings({"rawtypes", "unchecked"})
     <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
       int precision = 0;
-      for (int c = 0; c < cases.length; ++c) {
+      for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final StringCase cse = (StringCase)cases[c];
         try {
           Object in1 = null, in2 = null;
@@ -1907,7 +1909,7 @@ public abstract class CaseTest {
 
   private static String[] heading(final Case<?,?,?,?,?>[] cases) {
     final String[] heading = new String[cases.length];
-    for (int i = 0; i < heading.length; ++i) {
+    for (int i = 0, i$ = heading.length; i < i$; ++i) { // [A]
       final Case<?,?,?,?,?> cse = cases[i];
       heading[i] = cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : String.valueOf(cse.subject);
     }
@@ -1930,7 +1932,7 @@ public abstract class CaseTest {
       throw (T)e;
     }
 
-    if (!TestAide.isInDebug())
+    if (!TestAide.isInDebug(true))
       throw (T)t;
 
     // TODO: Place breakpoint here to debug...

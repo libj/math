@@ -49,7 +49,7 @@ public class AuditReport {
 
   private static File toFile(final Set<Rule> rules) throws IOException {
     final StringBuilder builder = new StringBuilder();
-    for (final Rule rule : rules) {
+    for (final Rule rule : rules) { // [S]
       if (builder.length() > 0)
         builder.append("\n\n");
 
@@ -89,7 +89,7 @@ public class AuditReport {
 
   public File getRulesFile() throws IOException {
     final Set<Rule> rules = new HashSet<>();
-    for (final Result result : results)
+    for (final Result result : results) // [S]
       result.append(rules);
 
     final File rulesFile = toFile(rules);
@@ -98,7 +98,7 @@ public class AuditReport {
   }
 
   public void alloc(final String from, final String className) {
-    for (int i = 0; i < results.length; ++i) {
+    for (int i = 0, i$ = results.length; i < i$; ++i) { // [A]
       if (results[i].isMatch(from)) {
         results[i].alloc(className);
         return;
@@ -110,14 +110,14 @@ public class AuditReport {
 
   public void reset() {
     if (results != null)
-      for (int i = 0; i < results.length; ++i)
+      for (int i = 0, i$ = results.length; i < i$; ++i) // [A]
         results[i].reset();
   }
 
   public int getAllocations(final Class<?> auditClass) {
     int count = 0;
     if (results != null)
-      for (int i = 0; i < results.length; ++i)
+      for (int i = 0, i$ = results.length; i < i$; ++i) // [A]
         count += results[i].getAllocations(auditClass);
 
     return count;
@@ -129,9 +129,9 @@ public class AuditReport {
 
   public void dump() {
     if (results != null) {
-      for (int i = 0; i < results.length; ++i) {
+      for (int i = 0, i$ = results.length; i < i$; ++i) { // [A]
         System.err.println(Arrays.toString(results[i].auditClasses));
-        for (int j = 0; j < results[i].resultClassNames.length; ++j) {
+        for (int j = 0, j$ = results[i].resultClassNames.length; j < j$; ++j) { // [A]
           System.err.println("  " + results[i].resultClassNames[j] + ": " + results[i].getCounts()[j]);
         }
       }
@@ -168,13 +168,13 @@ public class AuditReport {
     }
 
     columns[0].add(label);
-    for (int c = 0; c < headerSize; ++c) {
+    for (int c = 0; c < headerSize; ++c) { // [A]
       if (columns[c + 1] == null) {
         columns[c + 1] = new ArrayList<>();
         columns[c + 1].add(headers.get(c));
       }
 
-      for (int i = 0; i < categories; ++i)
+      for (int i = 0; i < categories; ++i) // [A]
         columns[c + 1].add(String.valueOf(summary[c * categories + i]));
     }
 
@@ -207,12 +207,12 @@ public class AuditReport {
 
     final StringBuilder builder = new StringBuilder();
     // First print the summaries
-    for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : this.headersToSummaries.entrySet()) {
+    for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : this.headersToSummaries.entrySet()) { // [S]
       final int mode = entry.getKey();
       final LinkedHashMap<List<String>,List<Object>[]> headersToSummaries = entry.getValue();
-      for (final Map.Entry<List<String>,List<Object>[]> entry2 : headersToSummaries.entrySet()) {
+      for (final Map.Entry<List<String>,List<Object>[]> entry2 : headersToSummaries.entrySet()) { // [S]
         final Object[][] columns = new Object[entry2.getKey().size()][]; // Assumed the "categories" were added (hack)
-        for (int c = 0; c < columns.length; ++c) {
+        for (int c = 0, c$ = columns.length; c < c$; ++c) { // [A]
           columns[c] = entry2.getValue()[c].toArray();
         }
 
@@ -231,9 +231,9 @@ public class AuditReport {
     }
 
     // Next print the detailed results
-    for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) {
+    for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) { // [S]
       final Iterator<Map.Entry<Integer,String[]>> iterator = result.getValue().entrySet().iterator();
-      for (int i = 0; iterator.hasNext(); ++i) {
+      for (int i = 0; iterator.hasNext(); ++i) { // [I]
         final Map.Entry<Integer,String[]> entry = iterator.next();
         if (out != null) {
           if (i == 0) {
@@ -295,7 +295,7 @@ public class AuditReport {
     final StringBuilder builder = new StringBuilder();
     boolean code = false;
     int a = -1;
-    for (int i = 0, len = str.length(); i < len; ++i, ch1 = ch0) {
+    for (int i = 0, i$ = str.length(); i < i$; ++i, ch1 = ch0) { // [N]
       ch0 = str.charAt(i);
       if (ch0 == '`') {
         builder.append(code ? "</code>" : "<code>");

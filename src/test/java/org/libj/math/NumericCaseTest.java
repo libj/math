@@ -67,7 +67,7 @@ public abstract class NumericCaseTest extends CaseTest {
       num[0] = '-';
 
     num[sign] = (char)('1' + random.nextInt(9));
-    for (int i = sign + 1; i < len; ++i)
+    for (int i = sign + 1; i < len; ++i) // [A]
       num[i] = (char)('0' + random.nextInt(10));
 
     return new String(num);
@@ -118,7 +118,7 @@ public abstract class NumericCaseTest extends CaseTest {
 
   @Override
   public void onSuccess() {
-    for (int i = 0; i < shouldScale.length; ++i)
+    for (int i = 0, i$ = shouldScale.length; i < i$; ++i) // [A]
       shouldScale[i] = random.nextDouble() < shouldScaleFactor;
 
     shouldInflate = random.nextDouble() < shouldInflateFactor;

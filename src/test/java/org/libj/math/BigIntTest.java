@@ -179,8 +179,8 @@ public abstract class BigIntTest extends NumericCaseTest {
 
     final StringBuilder builder = new StringBuilder(a);
     final boolean isNegative = builder.charAt(0) == '-';
-    for (int i = 1, len = a.length(); i < factor; ++i)
-      builder.append(a, isNegative ? 1 : 0, len);
+    for (int i = 1, i$ = a.length(); i < factor; ++i) // [N]
+      builder.append(a, isNegative ? 1 : 0, i$);
 
     return builder.toString();
   }
@@ -188,7 +188,7 @@ public abstract class BigIntTest extends NumericCaseTest {
   static int[] randomVal(final int length) {
     final int[] val = new int[length + 1];
     val[0] = length;
-    for (int i = 1; i <= length; ++i)
+    for (int i = 1; i <= length; ++i) // [A]
       val[i] = random.nextInt();
 
     return val;
@@ -196,7 +196,7 @@ public abstract class BigIntTest extends NumericCaseTest {
 
   static BigInteger newMaxBigInteger(final int byteLength) {
     final int[] mag = new int[byteLength];
-    for (int i = 0; i < mag.length; ++i)
+    for (int i = 0, i$ = mag.length; i < i$; ++i) // [A]
       mag[i] = -1;
 
     try {
@@ -212,7 +212,7 @@ public abstract class BigIntTest extends NumericCaseTest {
   static int[] newMaxValue(final int byteLength) {
     final int[] val = new int[byteLength + 1];
     val[0] = val.length - 1;
-    for (int i = 1; i < val.length; ++i)
+    for (int i = 1, i$ = val.length; i < i$; ++i) // [A]
       val[i] = -1;
 
     return val;

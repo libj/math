@@ -27,30 +27,24 @@ import java.math.RoundingMode;
 import org.libj.lang.Numbers;
 
 /**
- * Abstract class implementing the fixed point representation of a decimal
- * encoded in a {@code long}. A decimal is encoded into a {@code long} in 2
- * components:
+ * Abstract class implementing the fixed point representation of a decimal encoded in a {@code long}. A decimal is encoded into a
+ * {@code long} in 2 components:
  * <ul>
- * <li>significand := The significand of the decimal. The decimal's precision is
- * this component.</li>
- * <li>scale := The inverse scale by which {@code significand} is to be
- * multiplied by a power of {@code 10} (i.e.
+ * <li>significand := The significand of the decimal. The decimal's precision is this component.</li>
+ * <li>scale := The inverse scale by which {@code significand} is to be multiplied by a power of {@code 10} (i.e.
  * <code>10<sup>-scale</sup></code>)</li>
  * </ul>
  */
 public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneable {
   /**
-   * Returns the absolute value of the argument (encoded with
-   * {@link Decimal#valueOf(long,int,long)}.
+   * Returns the absolute value of the argument (encoded with {@link Decimal#valueOf(long,int,long)}.
    * <p>
    * If the argument is not negative, the argument is returned.
    * <p>
    * If the argument is negative, the negation of the argument is returned.
    *
-   * @param dec The value (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
+   * @param dec The value (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
    * @return The absolute value of the argument.
    */
   public static long abs(final long dec, final long defaultValue) {
@@ -78,10 +72,8 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * result = -d
    * </pre>
    *
-   * @param dec The value (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to negate.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
+   * @param dec The value (encoded with {@link Decimal#valueOf(long,int,long)}) to negate.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
    * @return The result of the negation of {@code d}, i.e.: {@code - d}
    * @see #valueOf(long,int,long)
    */
@@ -252,18 +244,18 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   private static Decimal assign(final Decimal dec, final String str, final RoundingMode rm) {
-    final char[] chars = str.toCharArray();
     long significand = 0;
     short scale = 0;
     byte i = 0, p = 0, dot = 0;
-    int end = chars.length;
+    final int len = str.length();
+    int end = len;
     boolean isNeg = false;
     boolean isNegScale = false;
     boolean hasScale = false;
     boolean valLimit = false;
     boolean allZeroes = true;
-    for (char ch0, ch1 = '\0'; i < chars.length; ++i, ch1 = ch0) {
-      ch0 = chars[i];
+    for (char ch0, ch1 = '\0'; i < len; ++i, ch1 = ch0) { // [N]
+      ch0 = str.charAt(i);
       if (ch0 == '.') {
         dot = i;
       }
@@ -396,8 +388,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   };
 
   /**
-   * Creates a new {@link Decimal} with the specified unscaled
-   * {@code significand} and {@code scale}.
+   * Creates a new {@link Decimal} with the specified unscaled {@code significand} and {@code scale}.
    *
    * @param significand The unscaled significand.
    * @param scale The scale.
@@ -503,14 +494,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * result = d1 + d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The result of the addition of {@code d1} to {@code d2}, i.e.:
-   *         {@code d1 + d2}
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The result of the addition of {@code d1} to {@code d2}, i.e.: {@code d1 + d2}
    * @see #valueOf(long,int,long)
    */
   public static long add(final long dec1, final long dec2, final long defaultValue) {
@@ -545,14 +532,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * result = d1 - d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The result of the subtraction of {@code d2} from {@code d1}, i.e.:
-   *         {@code d1 - d2}
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The result of the subtraction of {@code d2} from {@code d1}, i.e.: {@code d1 - d2}
    * @see #valueOf(long,int,long)
    */
   public static long sub(final long dec1, final long dec2, final long defaultValue) {
@@ -608,21 +591,16 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the result of the multiplication of {@code d1} and {@code d2},
-   * i.e.:
+   * Returns the result of the multiplication of {@code d1} and {@code d2}, i.e.:
    *
    * <pre>
    * result = d1 * d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The result of the multiplication of {@code d1} and {@code d2},
-   *         i.e.: {@code d1 * d2}
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The result of the multiplication of {@code d1} and {@code d2}, i.e.: {@code d1 * d2}
    * @see #valueOf(long,int,long)
    */
   public static long mul(final long dec1, final long dec2, final long defaultValue) {
@@ -660,6 +638,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
     return null;
   }
+
   /**
    * Returns the result of the division of {@code d1} by {@code d2}, i.e.:
    *
@@ -667,15 +646,11 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * result = d1 / d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The result of the multiplication of {@code d1} and {@code d2},
-   *         i.e. {@code d1 * d2}
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The result of the multiplication of {@code d1} and {@code d2}, i.e. {@code d1 * d2}
    * @see #valueOf(long,int,long)
    */
   public static long div(final long dec1, final long dec2, final RoundingMode rm, final long defaultValue) {
@@ -770,17 +745,14 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the <i>precision</i> of the specified
-   * {@link Decimal#valueOf(long,int,long) encoded} value. (The precision
-   * is the number of digits in the significand.)
+   * Returns the <i>precision</i> of the specified {@link Decimal#valueOf(long,int,long) encoded} value. (The precision is the
+   * number of digits in the significand.)
    * <p>
    * The precision of a zero value is {@code 1}.
    *
-   * @param dec The {@link Decimal#valueOf(long,int,long) encoded}
-   *          value.
-   * @return The scale component from the
-   *         {@link Decimal#valueOf(long,int,long) encoded} value with the
-   *         given number of sign {@code scaleBits}.
+   * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @return The scale component from the {@link Decimal#valueOf(long,int,long) encoded} value with the given number of sign
+   *         {@code scaleBits}.
    * @see #valueOf(long,int,long)
    */
   public static byte precision(final long dec) {
@@ -800,12 +772,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the {@link Decimal#valueOf(long,int,long) encoded} value with its
-   * scale set to {@code scale}. The significand is determined by multiplying or
-   * dividing the significand of {@code encoded} by the appropriate power of ten
-   * to maintain its overall value. If the scale is reduced by the operation,
-   * the significand must be divided (rather than multiplied), and the value may
-   * be changed; in this case, the value will be rounded down.
+   * Returns the {@link Decimal#valueOf(long,int,long) encoded} value with its scale set to {@code scale}. The significand is
+   * determined by multiplying or dividing the significand of {@code encoded} by the appropriate power of ten to maintain its
+   * overall value. If the scale is reduced by the operation, the significand must be divided (rather than multiplied), and the
+   * value may be changed; in this case, the value will be rounded down.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -815,10 +785,8 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
    * @param newScale The scale component.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The {@link Decimal#valueOf(long,int,long) encoded} value with its
-   *         scale set to {@code scale}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The {@link Decimal#valueOf(long,int,long) encoded} value with its scale set to {@code scale}.
    * @see #valueOf(long,int,long)
    * @see #scale(long)
    */
@@ -827,20 +795,16 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the {@link Decimal#valueOf(long,int,long) encoded} value with its
-   * scale set to {@code scale}. The significand is determined by multiplying or
-   * dividing the significand of {@code encoded} by the appropriate power of ten
-   * to maintain its overall value. If the scale is reduced by the operation,
-   * the significand must be divided (rather than multiplied), and the value may
-   * be changed; in this case, the value will be rounded down.
+   * Returns the {@link Decimal#valueOf(long,int,long) encoded} value with its scale set to {@code scale}. The significand is
+   * determined by multiplying or dividing the significand of {@code encoded} by the appropriate power of ten to maintain its
+   * overall value. If the scale is reduced by the operation, the significand must be divided (rather than multiplied), and the
+   * value may be changed; in this case, the value will be rounded down.
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
    * @param newScale The scale component.
    * @param rm The {@link RoundingMode}.
-   * @param defaultValue The value to be returned if the result cannot be
-   *          represented in {@link Decimal} encoding.
-   * @return The {@link Decimal#valueOf(long,int,long) encoded} value with its
-   *         scale set to {@code scale}.
+   * @param defaultValue The value to be returned if the result cannot be represented in {@link Decimal} encoding.
+   * @return The {@link Decimal#valueOf(long,int,long) encoded} value with its scale set to {@code scale}.
    * @see #valueOf(long,int,long)
    * @see #scale(long)
    */
@@ -881,12 +845,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Sets the scale of this {@link Decimal} to the provided {@code newScale}.
-   * The significand is determined by multiplying or dividing the significand of
-   * {@code encoded} by the appropriate power of ten to maintain its overall
-   * value. If the scale is reduced by the operation, the significand must be
-   * divided (rather than multiplied), and the value may be changed; in this
-   * case, the value will be rounded down.
+   * Sets the scale of this {@link Decimal} to the provided {@code newScale}. The significand is determined by multiplying or
+   * dividing the significand of {@code encoded} by the appropriate power of ten to maintain its overall value. If the scale is
+   * reduced by the operation, the significand must be divided (rather than multiplied), and the value may be changed; in this case,
+   * the value will be rounded down.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -895,25 +857,21 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
    * </pre>
    *
    * @param newScale The new scale to which this {@link Decimal} is to be set.
-   * @return {@code this} {@link Decimal} with its scale set to
-   *         {@code newScale}.
+   * @return {@code this} {@link Decimal} with its scale set to {@code newScale}.
    */
   public Decimal setScale(final short newScale) {
     return setScale(newScale, RoundingMode.DOWN);
   }
 
   /**
-   * Sets the scale of this {@link Decimal} to the provided {@code newScale}.
-   * The significand is determined by multiplying or dividing the significand of
-   * {@code encoded} by the appropriate power of ten to maintain its overall
-   * value. If the scale is reduced by the operation, the significand must be
-   * divided (rather than multiplied), and the value may be changed; in this
-   * case, the value will be rounded down.
+   * Sets the scale of this {@link Decimal} to the provided {@code newScale}. The significand is determined by multiplying or
+   * dividing the significand of {@code encoded} by the appropriate power of ten to maintain its overall value. If the scale is
+   * reduced by the operation, the significand must be divided (rather than multiplied), and the value may be changed; in this case,
+   * the value will be rounded down.
    *
    * @param newScale The new scale to which this {@link Decimal} is to be set.
    * @param rm The {@link RoundingMode}.
-   * @return {@code this} {@link Decimal} with its scale set to
-   *         {@code newScale}.
+   * @return {@code this} {@link Decimal} with its scale set to {@code newScale}.
    */
   public Decimal setScale(final short newScale, final RoundingMode rm) {
     if (scale == newScale || significand == 0)
@@ -934,16 +892,12 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Compares two decimals (encoded with
-   * {@link Decimal#valueOf(long,int,long)})s numerically.
+   * Compares two decimals (encoded with {@link Decimal#valueOf(long,int,long)})s numerically.
    *
-   * @param dec1 The first decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to compare.
-   * @param dec2 The second decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to compare.
-   * @return The value {@code 0} if {@code d1 == d2}; a value less than
-   *         {@code 0} if {@code d1 < d2}; and a value greater than {@code 0} if
-   *         {@code d1 > d2}
+   * @param dec1 The first decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
+   * @param dec2 The second decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
+   * @return The value {@code 0} if {@code d1 == d2}; a value less than {@code 0} if {@code d1 < d2}; and a value greater than
+   *         {@code 0} if {@code d1 > d2}
    * @see #valueOf(long,int,long)
    */
   public static int compare(final long dec1, final long dec2) {
@@ -965,17 +919,14 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Compares two decimals (encoded with {@link Decimal#valueOf(long,int,long)})s
-   * numerically.
+   * Compares two decimals (encoded with {@link Decimal#valueOf(long,int,long)})s numerically.
    *
    * @param significand1 The significand of the first argument to equate.
    * @param scale1 The scale of the first argument to equate.
    * @param significand2 The significand of the second argument to equate.
    * @param scale2 The scale of the second argument to equate.
-   * @return The value {@code 0} if the two arguments are equal; a value less
-   *         than {@code 0} if the first argument is less than the second
-   *         argument; and a value greater than {@code 0} if the first argument
-   *         is greater than the second argument.
+   * @return The value {@code 0} if the two arguments are equal; a value less than {@code 0} if the first argument is less than the
+   *         second argument; and a value greater than {@code 0} if the first argument is greater than the second argument.
    * @see #valueOf(long,int,long)
    */
   public static int compare(final long significand1, final short scale1, final long significand2, final short scale2) {
@@ -1028,19 +979,15 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
-   * {@code false}.
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    *
    * <pre>
    * result = d1 &lt; d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
-   *         {@code false}.
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    * @see #valueOf(long,int,long)
    */
   public static boolean gt(final long dec1, final long dec2) {
@@ -1048,19 +995,15 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
-   * {@code false}.
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    *
    * <pre>
    * result = d1 &lt; d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
-   *         {@code false}.
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    * @see #valueOf(long,int,long)
    */
   public static boolean gte(final long dec1, final long dec2) {
@@ -1068,19 +1011,15 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
-   * {@code false}.
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    *
    * <pre>
    * result = d1 &lt; d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
-   *         {@code false}.
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    * @see #valueOf(long,int,long)
    */
   public static boolean lt(final long dec1, final long dec2) {
@@ -1088,19 +1027,15 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise
-   * {@code false}.
+   * Returns {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    *
    * <pre>
    * result = d1 &lt; d2
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise
-   *         {@code false}.
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @return {@code true} if {@code d1} is less than {@code d2}, otherwise {@code false}.
    * @see #valueOf(long,int,long)
    */
   public static boolean lte(final long dec1, final long dec2) {
@@ -1108,14 +1043,11 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the larger of two {@link Decimal#valueOf(long,int,long)
-   * encoded} values. If the arguments have the same value, the result is that
-   * same value.
+   * Returns the larger of two {@link Decimal#valueOf(long,int,long) encoded} values. If the arguments have the same value, the
+   * result is that same value.
    *
-   * @param dec1 The first decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to compare.
-   * @param dec2 The second decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to compare.
+   * @param dec1 The first decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
+   * @param dec2 The second decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
    * @return The larger of {@code d1} and {@code d2}.
    * @see #valueOf(long,int,long)
    */
@@ -1128,14 +1060,11 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the smaller of two {@link Decimal#valueOf(long,int,long)
-   * encoded} values. If the arguments have the same value, the result is that
-   * same value.
+   * Returns the smaller of two {@link Decimal#valueOf(long,int,long) encoded} values. If the arguments have the same value, the
+   * result is that same value.
    *
-   * @param dec1 The first decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to compare.
-   * @param dec2 The second decimal (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}) to compare.
+   * @param dec1 The first decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
+   * @param dec2 The second decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
    * @return The smaller of {@code d1} and {@code d2}.
    * @see #valueOf(long,int,long)
    */
@@ -1238,13 +1167,11 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns a {@code float} representation of the provided significand
-   * {@code long} and scale {@code short}.
+   * Returns a {@code float} representation of the provided significand {@code long} and scale {@code short}.
    *
    * @param significand The significand.
    * @param scale The scale.
-   * @return A {@code float} representation of the provided significand
-   *         {@code long} and scale {@code short}.
+   * @return A {@code float} representation of the provided significand {@code long} and scale {@code short}.
    */
   public static float floatValue(final long significand, final short scale) {
     if (scale == 0 || significand == 0)
@@ -1260,15 +1187,12 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns a {@code float} representation of the provided
-   * {@link Decimal#valueOf(long,int,long) encoded} value and sign
+   * Returns a {@code float} representation of the provided {@link Decimal#valueOf(long,int,long) encoded} value and sign
    * {@code scaleBits}.
    *
-   * @param dec The {@link Decimal#valueOf(long,int,long) encoded}
-   *          value.
-   * @return A {@code float} representation of the provided
-   *         {@link Decimal#valueOf(long,int,long) encoded} value and
-   *         sign {@code scaleBits}.
+   * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @return A {@code float} representation of the provided {@link Decimal#valueOf(long,int,long) encoded} value and sign
+   *         {@code scaleBits}.
    */
   public static float floatValue(final long dec) {
     return floatValue(significand(dec), scale(dec));
@@ -1284,28 +1208,23 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns a {@code double} representation of the provided significand
-   * {@code long} and scale {@code short}.
+   * Returns a {@code double} representation of the provided significand {@code long} and scale {@code short}.
    *
    * @param value The significand.
    * @param scale The scale.
-   * @return A {@code double} representation of the provided significand
-   *         {@code long} and scale {@code short}.
+   * @return A {@code double} representation of the provided significand {@code long} and scale {@code short}.
    */
   public static double doubleValue(final long value, final short scale) {
     return FloatingDecimal.doubleValue(value, scale);
   }
 
   /**
-   * Returns a {@code double} representation of the provided
-   * {@link Decimal#valueOf(long,int,long) encoded} value and sign
+   * Returns a {@code double} representation of the provided {@link Decimal#valueOf(long,int,long) encoded} value and sign
    * {@code scaleBits}.
    *
-   * @param dec The {@link Decimal#valueOf(long,int,long) encoded}
-   *          value.
-   * @return A {@code double} representation of the provided
-   *         {@link Decimal#valueOf(long,int,long) encoded} value and
-   *         sign {@code scaleBits}.
+   * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @return A {@code double} representation of the provided {@link Decimal#valueOf(long,int,long) encoded} value and sign
+   *         {@code scaleBits}.
    */
   public static double doubleValue(final long dec) {
     return doubleValue(significand(dec), scale(dec));
@@ -1360,15 +1279,12 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns a new {@link BigDecimal} instance with the value of the provided
-   * {@link Decimal#valueOf(long,int,long) encoded} value and sign
-   * {@code scaleBits}.
+   * Returns a new {@link BigDecimal} instance with the value of the provided {@link Decimal#valueOf(long,int,long) encoded} value
+   * and sign {@code scaleBits}.
    *
-   * @param dec The {@link Decimal#valueOf(long,int,long) encoded}
-   *          value.
-   * @return A new {@link BigDecimal} instance with the value of the provided
-   *         {@link Decimal#valueOf(long,int,long) encoded} value and
-   *         sign {@code scaleBits}.
+   * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @return A new {@link BigDecimal} instance with the value of the provided {@link Decimal#valueOf(long,int,long) encoded} value
+   *         and sign {@code scaleBits}.
    */
   public static BigDecimal toBigDecimal(final long dec) {
     return BigDecimal.valueOf(significand(dec), scale(dec));
@@ -1407,21 +1323,19 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns {@code true} if the arguments (encoded with
-   * {@link Decimal#valueOf(long,int,long)} are equal to each other and
+   * Returns {@code true} if the arguments (encoded with {@link Decimal#valueOf(long,int,long)} are equal to each other and
    * {@code false} otherwise.
    *
    * <pre>
-   * {@code result = d1 == d2}
+   * {@code
+   * result = d1 == d2
+   * }
    * </pre>
    *
-   * @param dec1 The first argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @param dec2 The second argument (encoded with
-   *          {@link Decimal#valueOf(long,int,long)}).
-   * @return {@code true} if the arguments (encoded with
-   *         {@link Decimal#valueOf(long,int,long)}) are equal to each
-   *         other and {@code false} otherwise.
+   * @param dec1 The first argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @param dec2 The second argument (encoded with {@link Decimal#valueOf(long,int,long)}).
+   * @return {@code true} if the arguments (encoded with {@link Decimal#valueOf(long,int,long)}) are equal to each other and
+   *         {@code false} otherwise.
    * @see #valueOf(long,int,long)
    */
   public static boolean eq(final long dec1, final long dec2) {
@@ -1429,20 +1343,20 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns {@code true} if the arguments (encoded with
-   * {@link Decimal#valueOf(long,int,long)} are equal to each other and
+   * Returns {@code true} if the arguments (encoded with {@link Decimal#valueOf(long,int,long)} are equal to each other and
    * {@code false} otherwise.
    *
    * <pre>
-   * {@code result = d1 == d2}
+   * {@code
+   * result = d1 == d2
+   * }
    * </pre>
    *
    * @param significand1 The significand of the first argument to equate.
    * @param scale1 The scale of the first argument to equate.
    * @param significand2 The significand of the second argument to equate.
    * @param scale2 The scale of the second argument to equate.
-   * @return {@code true} if the first argument's significand and scale equals
-   *         the second argument's significand and scale.
+   * @return {@code true} if the first argument's significand and scale equals the second argument's significand and scale.
    * @see #valueOf(long,int,long)
    */
   public static boolean eq(final long significand1, final short scale1, final long significand2, final short scale2) {
@@ -1462,17 +1376,13 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the string representation (in
-   * <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific
-   * notation</a>) of the fixed point decimal specified by the provided
-   * significand and scale.
+   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
+   * the fixed point decimal specified by the provided significand and scale.
    *
    * @param significand The significand.
    * @param scale The scale.
-   * @return The string representation (in <a href=
-   *         "https://en.wikipedia.org/wiki/Scientific_notation">scientific
-   *         notation</a>) of the fixed point decimal specified by the provided
-   *         {@code significand} and {@code scale}.
+   * @return The string representation (in <a href= "https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
+   *         the fixed point decimal specified by the provided {@code significand} and {@code scale}.
    * @complexity O(n)
    */
   public static String toScientificString(long significand, final short scale) {
@@ -1515,7 +1425,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
     int i = buf.length;
     if (s != 0) {
-      for (int j = 0; j < scaleLen; ++j, s /= 10)
+      for (int j = 0; j < scaleLen; ++j, s /= 10) // [A]
         buf[--i] = (char)(s % 10 + '0');
 
       if (scaleNeg)
@@ -1528,7 +1438,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
       if (dot > 0) {
         boolean zeroesStripped = false;
         final int j = i;
-        for (long dig; i > dot; significand /= 10) {
+        for (long dig; i > dot; significand /= 10) { // [A]
           dig = -(significand % 10);
           if (zeroesStripped || (zeroesStripped = (dig != 0)))
             buf[--i] = (char)(dig + '0');
@@ -1548,7 +1458,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
       if (dot > 0) {
         boolean zeroesStripped = false;
         final int j = i;
-        for (long dig; i > dot; significand /= 10) {
+        for (long dig; i > dot; significand /= 10) { // [A]
           dig = significand % 10;
           if (zeroesStripped || (zeroesStripped = (dig != 0)))
             buf[--i] = (char)(dig + '0');
@@ -1569,30 +1479,23 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the string representation (in
-   * <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific
-   * notation</a>) of the provided {@link Decimal#valueOf(long,int,long)
-   * encoded} value.
+   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
+   * the provided {@link Decimal#valueOf(long,int,long) encoded} value.
    *
-   * @param dec The {@link Decimal#valueOf(long,int,long) encoded}
-   *          value.
-   * @return The string representation (in <a href=
-   *         "https://en.wikipedia.org/wiki/Scientific_notation">scientific
-   *         notation</a>) of the provided
-   *         {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @return The string representation (in <a href= "https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
+   *         the provided {@link Decimal#valueOf(long,int,long) encoded} value.
    */
   public static String toScientificString(final long dec) {
     return toScientificString(significand(dec), scale(dec));
   }
 
   /**
-   * Returns the string representation (in
-   * <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific
-   * notation</a>) this {@link Decimal}.
+   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) this
+   * {@link Decimal}.
    *
-   * @return The string representation (in <a href=
-   *         "https://en.wikipedia.org/wiki/Scientific_notation">scientific
-   *         notation</a>) of this {@link Decimal}.
+   * @return The string representation (in <a href= "https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
+   *         this {@link Decimal}.
    * @complexity O(n)
    * @amortized O(1)
    */
@@ -1601,13 +1504,11 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the string representation of the fixed point decimal specified by
-   * the provided {@code significand} and {@code scale}.
+   * Returns the string representation of the fixed point decimal specified by the provided {@code significand} and {@code scale}.
    *
    * @param significand The significand.
    * @param scale The scale.
-   * @return The string representation of the fixed point decimal specified by
-   *         the provided {@code significand} and {@code scale}.
+   * @return The string representation of the fixed point decimal specified by the provided {@code significand} and {@code scale}.
    * @complexity O(n)
    */
   public static String toString(long significand, final short scale) {
@@ -1671,7 +1572,7 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
     int i = buf.length;
     if (s != 0) {
-      for (int j = 0; j < scaleLen; ++j, s /= 10)
+      for (int j = 0; j < scaleLen; ++j, s /= 10) // [A]
         buf[--i] = (char)(s % 10 + '0');
 
       if (scaleNeg)
@@ -1682,24 +1583,24 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
     if (isNeg) {
       if (dot > 0) {
-        for (; i > dot; significand /= 10)
+        for (; i > dot; significand /= 10) // [A]
           buf[--i] = (char)(-(significand % 10) + '0');
 
         buf[--i] = '.';
       }
 
-      for (; i > lim; significand /= 10)
+      for (; i > lim; significand /= 10) // [A]
         buf[--i] = (char)(-(significand % 10) + '0');
     }
     else {
       if (dot > 0) {
-        for (; i > dot; significand /= 10)
+        for (; i > dot; significand /= 10) // [A]
           buf[--i] = (char)((significand % 10) + '0');
 
         buf[--i] = '.';
       }
 
-      for (; i > lim; significand /= 10)
+      for (; i > lim; significand /= 10) // [A]
         buf[--i] = (char)((significand % 10) + '0');
     }
 
@@ -1707,13 +1608,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the string representation of the provided
-   * {@link Decimal#valueOf(long,int,long) encoded} value.
+   * Returns the string representation of the provided {@link Decimal#valueOf(long,int,long) encoded} value.
    *
-   * @param dec The {@link Decimal#valueOf(long,int,long) encoded}
-   *          value.
-   * @return The string representation of the provided
-   *         {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
+   * @return The string representation of the provided {@link Decimal#valueOf(long,int,long) encoded} value.
    */
   public static String toString(final long dec) {
     return toString(significand(dec), scale(dec));

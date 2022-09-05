@@ -308,7 +308,7 @@ static inline void DigitGen(const DiyFp W, const DiyFp Mp, uint64_t delta, char*
   }
 
   // kappa = 0
-  for (;;) {
+  for (;;) { // [N]
     p2 *= 10;
     delta *= 10;
     char d = (char )(p2 >> -one.e);
@@ -384,7 +384,7 @@ static inline void Prettify(char* buffer, int length, int k) {
   if (length <= kk && kk <= 21) {
     // 1234e7 -> 12340000000
     int i;
-    for (i = length; i < kk; i++)
+    for (i = length; i < kk; i++) // [A]
       buffer[i] = '0';
     buffer[kk] = '.';
     buffer[kk + 1] = '0';
@@ -403,7 +403,7 @@ static inline void Prettify(char* buffer, int length, int k) {
     buffer[0] = '0';
     buffer[1] = '.';
     int i;
-    for (i = 2; i < offset; i++)
+    for (i = 2; i < offset; i++) // [A]
       buffer[i] = '0';
     buffer[length + offset] = '\0';
   }

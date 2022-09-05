@@ -45,21 +45,21 @@ public abstract class Survey {
     this.divisions = divisions;
     this.counts = new int[variables][divisions];
     if (trackedClasses == null)
-      for (int v = 0; v < variables; ++v)
+      for (int v = 0; v < variables; ++v) // [A]
         Arrays.fill(this.counts[v], -warmup);
 
     this.times = new long[variables][divisions];
 
     this.max = new long[variables][divisions];
-    for (int v = 0; v < variables; ++v)
+    for (int v = 0; v < variables; ++v) // [A]
       Arrays.fill(this.max[v], Long.MIN_VALUE);
 
     this.min = new long[variables][divisions];
-    for (int v = 0; v < variables; ++v)
+    for (int v = 0; v < variables; ++v) // [A]
       Arrays.fill(this.min[v], Long.MAX_VALUE);
 
     this.error = new BigDecimal[variables][divisions];
-    for (int v = 0; v < variables; ++v)
+    for (int v = 0; v < variables; ++v) // [A]
       Arrays.fill(this.error[v], BigDecimal.ZERO);
   }
 
@@ -87,7 +87,7 @@ public abstract class Survey {
       }
 
       if (report != null && report.getMode() == 1) {
-        for (int c = 0; c < trackedClasses.length; ++c)
+        for (int c = 0, c$ = trackedClasses.length; c < c$; ++c) // [A]
           allocations[c][division] += report.getAllocations(trackedClasses[c]);
 
         report.reset();
@@ -101,7 +101,7 @@ public abstract class Survey {
 
   public int getAllocs(final Class<?> subject, final int division) {
     if (trackedClasses != null)
-      for (int c = 0; c < trackedClasses.length; ++c)
+      for (int c = 0, c$ = trackedClasses.length; c < c$; ++c) // [A]
         if (trackedClasses[c] == subject)
           return allocations[c][division];
 
@@ -125,8 +125,8 @@ public abstract class Survey {
   }
 
   public void normalize() {
-    for (int v = 0; v < variables; ++v) {
-      for (int d = 0; d < divisions; ++d) {
+    for (int v = 0; v < variables; ++v) { // [A]
+      for (int d = 0; d < divisions; ++d) { // [A]
         if (counts[v][d] == 0)
           continue;
 
@@ -141,14 +141,14 @@ public abstract class Survey {
     }
 
     if (trackedClasses != null)
-      for (int d = 0; d < divisions; ++d)
-        for (int c = 0; c < allocations.length; ++c)
+      for (int d = 0; d < divisions; ++d) // [A]
+        for (int c = 0, c$ = allocations.length; c < c$; ++c) // [A]
           if (counts[0][d] != 0)
             allocations[c][d] = (int)Math.round((double)allocations[c][d] / counts[0][d]);
   }
 
   public void reset() {
-    for (int v = 0; v < variables; ++v) {
+    for (int v = 0; v < variables; ++v) { // [A]
       Arrays.fill(times[v], 0);
       Arrays.fill(counts[v], 0);
     }

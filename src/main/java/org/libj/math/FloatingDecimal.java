@@ -21,40 +21,25 @@ import java.math.RoundingMode;
 import org.libj.lang.Numbers;
 
 /**
- * Provides constants for encoding of floating primitives, and encodes
- * {@link Decimal} to a double precision floating point number. Redacted from
- * {@code sun.misc.FloatConsts}, {@code sun.misc.DoubleConsts}, and
- * {@code sun.misc.FloatingDecimal}.
+ * Provides constants for encoding of floating primitives, and encodes {@link Decimal} to a double precision floating point number.
+ * Redacted from {@code sun.misc.FloatConsts}, {@code sun.misc.DoubleConsts}, and {@code sun.misc.FloatingDecimal}.
  */
 class FloatingDecimal {
-  // numbers greater than 10^MAX_DIGITS_10 or e^MAX_DIGITS_E are considered
-  // unsafe ('too big') for floating point operations
+  // numbers greater than 10^MAX_DIGITS_10 or e^MAX_DIGITS_E are considered unsafe ('too big') for floating point operations
   static final int MAX_DIGITS_10 = 294;
   static final int MAX_DIGITS_2 = 977; // ~ MAX_DIGITS_10 * LN(10) / LN(2)
   static final int MAX_DIGITS_E = 677; // ~ MAX_DIGITS_10 * LN(10)
 
-  /**
-   * The number of logical bits in the significand of a {@code float} number,
-   * excluding the implicit bit.
-   */
+  /** The number of logical bits in the significand of a {@code float} number, excluding the implicit bit. */
   static final int SIGNIFICAND_BITS_FLOAT = 23;
 
-  /**
-   * The number of logical bits in the significand of a {@code float} number,
-   * including the implicit bit.
-   */
+  /** The number of logical bits in the significand of a {@code float} number, including the implicit bit. */
   static final int SIGNIFICAND_WIDTH_FLOAT = SIGNIFICAND_BITS_FLOAT + 1;
 
-  /**
-   * The number of logical bits in the significand of a {@code double} number,
-   * excluding the implicit bit.
-   */
+  /** The number of logical bits in the significand of a {@code double} number, excluding the implicit bit. */
   static final int SIGNIFICAND_BITS_DOUBLE = 52;
 
-  /**
-   * The number of logical bits in the significand of a {@code double} number,
-   * including the implicit bit.
-   */
+  /** The number of logical bits in the significand of a {@code double} number, including the implicit bit. */
   static final int SIGNIFICAND_WIDTH_DOUBLE = SIGNIFICAND_BITS_DOUBLE + 1;
 
   /** Bit mask to isolate the sign bit of a {@code float}. */
@@ -101,8 +86,7 @@ class FloatingDecimal {
   private static final int EXP_BIT_MASK_FLOAT = 0x7F800000;
 
   /**
-   * All the positive powers of 10 that can be represented exactly in
-   * double/float.
+   * All the positive powers of 10 that can be represented exactly in double/float.
    */
   private static final double[] SMALL_10_POW = {1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
 
@@ -164,12 +148,11 @@ class FloatingDecimal {
     // absVal now contains a long integer with the value of the first kDigits
     // digits of the number. dValue contains the (double) of the same.
     if (nDigits <= MAX_DECIMAL_DIGITS) {
-      // Possibly an easy case:
-      // We know that the digits can be represented exactly.
-      // If the exponent isn't too outrageous, the whole thing can be done with
-      // one operation, thus one rounding error. Note that all our constructors
-      // trim all leading and trailing zeros, so simple values (including zero)
-      // will always end up here.
+      /*
+       * Possibly an easy case: We know that the digits can be represented exactly. If the exponent isn't too outrageous, the whole
+       * thing can be done with one operation, thus one rounding error. Note that all our constructors trim all leading and trailing
+       * zeros, so simple values (including zero) will always end up here.
+       */
       if (exp2 == 0 || dValue == 0d)
         return isNeg ? -dValue : dValue; // small floating integer
 
@@ -199,10 +182,10 @@ class FloatingDecimal {
 
     // We have a hard case with a negative exp:
 
-    // Harder cases:
-    // The sum of digits plus exponent is greater than what we think we can do
-    // with one error. Start by approximating the right answer by, naively,
-    // scaling by powers of 10.
+    /*
+     * Harder cases: The sum of digits plus exponent is greater than what we think we can do with one error. Start by approximating
+     * the right answer by, naively, scaling by powers of 10.
+     */
     if (exp2 > 0) {
       if (exp10 > MAX_DECIMAL_EXPONENT + 1)
         return isNeg ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
@@ -212,7 +195,7 @@ class FloatingDecimal {
 
       if ((exp2 >>= 4) != 0) {
         int j;
-        for (j = 0; exp2 > 1; ++j, exp2 >>= 1)
+        for (j = 0; exp2 > 1; ++j, exp2 >>= 1) // [A]
           if ((exp2 & 1) != 0)
             dValue *= BIG_10_POW[j];
 
@@ -221,11 +204,11 @@ class FloatingDecimal {
         // could overflow.
         double t = dValue * BIG_10_POW[j];
         if (Double.isInfinite(t)) {
-          // It did overflow. Look more closely at the result. If the exponent
-          // is just one too large, then use the maximum finite as our estimate
-          // value. Else call the result infinity and punt it. (I presume this
-          // could happen because rounding forces the result here to be an ULP
-          // or two larger than Double.MAX_VALUE).
+          /*
+           * It did overflow. Look more closely at the result. If the exponent is just one too large, then use the maximum finite as
+           * our estimate value. Else call the result infinity and punt it. (I presume this could happen because rounding forces the
+           * result here to be an ULP or two larger than Double.MAX_VALUE).
+           */
           t = dValue / 2d;
           t *= BIG_10_POW[j];
           if (Double.isInfinite(t))
@@ -247,7 +230,7 @@ class FloatingDecimal {
 
       if ((exp2 >>= 4) != 0) {
         int j;
-        for (j = 0; exp2 > 1; ++j, exp2 >>= 1)
+        for (j = 0; exp2 > 1; ++j, exp2 >>= 1) // [A]
           if ((exp2 & 1) != 0)
             dValue *= TINY_10_POW[j];
 
@@ -255,12 +238,11 @@ class FloatingDecimal {
         // that the last multiply would get unrolled. We handle it here. It could underflow.
         double t = dValue * TINY_10_POW[j];
         if (t == 0d) {
-          // It did underflow:
-          // Look more closely at the result. If the exponent is just one too
-          // small, then use the minimum finite as our estimate value. Else call
-          // the result 0 and punt it. (I presume this could happen because
-          // rounding forces the result here to be an ULP or two less than
-          // Double.MIN_VALUE).
+          /*
+           * It did underflow: Look more closely at the result. If the exponent is just one too small, then use the minimum finite
+           * as our estimate value. Else call the result 0 and punt it. (I presume this could happen because rounding forces the
+           * result here to be an ULP or two less than Double.MIN_VALUE).
+           */
           t = dValue * 2d;
           t *= TINY_10_POW[j];
           if (t == 0d)
@@ -318,10 +300,11 @@ class FloatingDecimal {
       final int bigIntExp = binexp - EXP_SHIFT + lowOrderZeros;
       final int bigIntNBits = EXP_SHIFT + 1 - lowOrderZeros;
 
-      // Scale bigD, bigB appropriately for big-integer operations.
-      // Naively, we multiply by powers of ten and powers of two. What we
-      // actually do is keep track of the powers of 5 and powers of 2 we would
-      // use, then factor out common divisors before doing the work.
+      /*
+       * Scale bigD, bigB appropriately for big-integer operations. Naively, we multiply by powers of ten and powers of two. What we
+       * actually do is keep track of the powers of 5 and powers of 2 we would use, then factor out common divisors before doing the
+       * work.
+       */
       int b2 = b5; // Powers of 2 in bigB
       int d2 = d5; // Powers of 2 in bigD
       if (bigIntExp >= 0)
@@ -333,8 +316,7 @@ class FloatingDecimal {
       // shift bigB and bigD left by a number s. t. halfUlp is still an integer.
       final int hulpbias;
       if (binexp <= -EXP_BIAS_DOUBLE) {
-        // This is going to be a denormalized number (if not actually zero).
-        // half an ULP is at 2^-(EXP_BIAS+EXP_SHIFT+1)
+        // This is going to be a denormalized number (if not actually zero). half an ULP is at 2^-(EXP_BIAS+EXP_SHIFT+1)
         hulpbias = binexp + lowOrderZeros + EXP_BIAS_DOUBLE;
       }
       else {
@@ -515,8 +497,7 @@ class FloatingDecimal {
   }
 
   private static Decimal toDecimal(final int exp2, long fractBits, final int nSignificantBits, final boolean isNegative, final RoundingMode rm, final Decimal result) {
-    // Examine number. Determine if it is an easy case,
-    // which we can do pretty trivially using float/long conversion,
+    // Examine number. Determine if it is an easy case, which we can do pretty trivially using float/long conversion,
     // or whether we must do real work.
     final int tailZeros = Long.numberOfTrailingZeros(fractBits);
 
@@ -526,23 +507,16 @@ class FloatingDecimal {
     // number of significant bits to the right of the point.
     final int nTinyBits = Math.max(0, nFractBits - exp2 - 1);
     if (exp2 <= MAX_SMALL_BIN_EXP && exp2 >= MIN_SMALL_BIN_EXP) {
-      // Look more closely at the number to decide if,
-      // with scaling by 10^nTinyBits, the result will fit in
-      // a long.
+      // Look more closely at the number to decide if, with scaling by 10^nTinyBits, the result will fit in a long.
       if (nTinyBits < BigInt.LONG_5_POW.length && nFractBits + N_5_BITS[nTinyBits] < 64) {
-        // We can do this:
-        // take the fraction bits, which are normalized.
-        // (a) nTinyBits == 0: Shift left or right appropriately
-        // to align the binary point at the extreme right, i.e.
-        // where a long int point is expected to be. The integer
-        // result is easily converted to a string.
-        // (b) nTinyBits > 0: Shift right by EXP_SHIFT-nFractBits,
-        // which effectively converts to long and scales by
-        // 2^nTinyBits. Then multiply by 5^nTinyBits to
-        // complete the scaling. We know this won't overflow
-        // because we just counted the number of bits necessary
-        // in the result. The integer you get from this can
-        // then be converted to a string pretty easily.
+        /**
+         * We can do this: take the fraction bits, which are normalized. (a) nTinyBits == 0: Shift left or right appropriately to
+         * align the binary point at the extreme right, i.e. where a long int point is expected to be. The integer result is easily
+         * converted to a string. (b) nTinyBits > 0: Shift right by EXP_SHIFT-nFractBits, which effectively converts to long and
+         * scales by 2^nTinyBits. Then multiply by 5^nTinyBits to complete the scaling. We know this won't overflow because we just
+         * counted the number of bits necessary in the result. The integer you get from this can then be converted to a string
+         * pretty easily.
+         */
         if (nTinyBits == 0) {
           final int insignificant = exp2 > nSignificantBits ? insignificantDigitsForPow2(exp2 - nSignificantBits - 1) : 0;
           if (exp2 >= EXP_SHIFT)
@@ -553,15 +527,11 @@ class FloatingDecimal {
           short exp10 = 0;
 
           /**
-           * This is the easy subcase -- all the significant bits, after
-           * scaling, are held in lvalue. negSign and exp10 tell us what
-           * processing and scaling has already been done. Exceptional cases
-           * have already been stripped out. In particular: lvalue is a finite
-           * number (not Inf, nor NaN) lvalue > 0L (not zero, nor negative). The
-           * only reason that we develop the digits here, rather than calling on
-           * Long.toString() is that we can do it a little faster, and besides
-           * want to treat trailing 0s specially. If Long.toString changes, we
-           * should re-evaluate this strategy!
+           * This is the easy subcase -- all the significant bits, after scaling, are held in lvalue. negSign and exp10 tell us what
+           * processing and scaling has already been done. Exceptional cases have already been stripped out. In particular: lvalue
+           * is a finite number (not Inf, nor NaN) lvalue > 0L (not zero, nor negative). The only reason that we develop the digits
+           * here, rather than calling on Long.toString() is that we can do it a little faster, and besides want to treat trailing
+           * 0s specially. If Long.toString changes, we should re-evaluate this strategy!
            */
           if (insignificant != 0) {
             // Discard non-significant low-order bits, while rounding,
@@ -623,12 +593,11 @@ class FloatingDecimal {
     M5 = B5;
     M2 = B2 - nSignificantBits;
 
-    // the long integer fractBits contains the (nFractBits) interesting
-    // bits from the mantissa of d ( hidden 1 added if necessary) followed
-    // by (EXP_SHIFT+1-nFractBits) zeros. In the interest of compactness,
-    // I will shift out those zeros before turning fractBits into a
-    // BigInt. The resulting whole number will be
-    // d * 2^(nFractBits-1-exp2).
+    /*
+     * the long integer fractBits contains the (nFractBits) interesting bits from the mantissa of d ( hidden 1 added if necessary)
+     * followed by (EXP_SHIFT+1-nFractBits) zeros. In the interest of compactness, I will shift out those zeros before turning
+     * fractBits into a BigInt. The resulting whole number will be d * 2^(nFractBits-1-exp2).
+     */
     fractBits >>>= tailZeros;
     B2 -= nFractBits - 1;
 
@@ -637,47 +606,38 @@ class FloatingDecimal {
     S2 -= common2factor;
     M2 -= common2factor;
 
-    // HACK!! For exact powers of two, the next smallest number
-    // is only half as far away as we think (because the meaning of
-    // ULP changes at power-of-two bounds) for this reason, we
-    // hack M2. Hope this works.
+    /*
+     * HACK!! For exact powers of two, the next smallest number is only half as far away as we think (because the meaning of ULP
+     * changes at power-of-two bounds) for this reason, we hack M2. Hope this works.
+     */
     if (nFractBits == 1)
       M2 -= 1;
 
     if (M2 < 0) {
-      // oops.
-      // since we cannot scale M down far enough,
-      // we must scale the other values up.
+      // oops. since we cannot scale M down far enough, we must scale the other values up.
       B2 -= M2;
       S2 -= M2;
       M2 = 0;
     }
 
-    // Construct, Scale, iterate.
-    // Some day, we'll write a stopping test that takes
-    // account of the asymmetry of the spacing of floating-point
-    // numbers below perfect powers of 2
-    // 26 Sept 96 is not that day.
-    // So we use a symmetric test.
+    /*
+     * Construct, Scale, iterate. Some day, we'll write a stopping test that takes account of the asymmetry of the spacing of
+     * floating-point numbers below perfect powers of 2 26 Sept 96 is not that day. So we use a symmetric test.
+     */
     boolean low, high;
     long lowDigitDifference;
     int q;
 
-    // Detect the special cases where all the numbers we are about
-    // to compute will fit in int or long integers.
-    // In these cases, we will avoid doing BigInt arithmetic.
-    // We use the same algorithms, except that we "normalize"
-    // our BigInts before iterating. This is to make division easier,
-    // as it makes our fist guess (quotient of high-order words)
-    // more accurate!
-    //
-    // Some day, we'll write a stopping test that takes
-    // account of the asymmetry of the spacing of floating-point
-    // numbers below perfect powers of 2
-    // 26 Sept 96 is not that day.
-    // So we use a symmetric test.
-    //
-    // binary digits needed to represent B, approximation.
+    /**
+     * Detect the special cases where all the numbers we are about to compute will fit in int or long integers. In these cases, we
+     * will avoid doing BigInt arithmetic. We use the same algorithms, except that we "normalize" our BigInts before iterating. This
+     * is to make division easier, as it makes our fist guess (quotient of high-order words) more accurate!
+     * <p>
+     * Some day, we'll write a stopping test that takes account of the asymmetry of the spacing of floating-point numbers below
+     * perfect powers of 2 26 Sept 96 is not that day. So we use a symmetric test.
+     * <p>
+     * binary digits needed to represent B, approximation.
+     */
     final int bBits = nFractBits + B2 + (B5 < N_5_BITS.length ? N_5_BITS[B5] : B5 * 3);
 
     // binary digits needed to represent 10*s, approximation.
@@ -692,8 +652,7 @@ class FloatingDecimal {
         int m = BigInt.INT_5_POW[M5] << M2;
         int tens = s * 10;
 
-        // Unroll the first iteration. If our exp10 estimate
-        // was too high, our first quotient will be zero. In this
+        // Unroll the first iteration. If our exp10 estimate was too high, our first quotient will be zero. In this
         // case, we discard it and decrement exp10.
         q = b / s;
         b = 10 * (b % s);
@@ -709,8 +668,7 @@ class FloatingDecimal {
           value = value * 10 + q;
         }
 
-        // HACK! Java spec says that we always have at least one
-        // digit after the. in either F- or E-form output. Thus
+        // HACK! Java spec says that we always have at least one digit after the. in either F- or E-form output. Thus
         // we will need more than one digit if we're using E-form.
         if (exp10 < -3 || exp10 >= 8)
           high = low = false;
@@ -724,8 +682,7 @@ class FloatingDecimal {
             high = b + m > tens;
           }
           else {
-            // hack -- m might overflow! in this case, it
-            // is certainly > b, which won't and b+m > tens,
+            // hack -- m might overflow! in this case, it is certainly > b, which won't and b+m > tens,
             // too, since that has overflowed either!
             low = true;
             high = true;
@@ -744,8 +701,7 @@ class FloatingDecimal {
         long b = fractBits * BigInt.LONG_5_POW[B5] << B2;
         long m = BigInt.LONG_5_POW[M5] << M2;
 
-        // Unroll the first iteration. If our exp10 estimate
-        // was too high, our first quotient will be zero. In this
+        // Unroll the first iteration. If our exp10 estimate was too high, our first quotient will be zero. In this
         // case, we discard it and decrement exp10.
         q = (int)(b / s);
         b = 10L * (b % s);
@@ -761,8 +717,7 @@ class FloatingDecimal {
           value = value * 10 + q;
         }
 
-        // HACK! Java spec says that we always have at least
-        // one digit after the . in either F- or E-form output.
+        // HACK! Java spec says that we always have at least one digit after the . in either F- or E-form output.
         // Thus we will need more than one digit if we're using
         // E-form
         if (exp10 < -3 || exp10 >= 8)
@@ -777,8 +732,7 @@ class FloatingDecimal {
             high = b + m > s10;
           }
           else {
-            // hack -- m might overflow! in this case, it is certainly > b,
-            // which won't and b+m > tens, too, since that has overflowed
+            // hack -- m might overflow! in this case, it is certainly > b, which won't and b+m > tens, too, since that has overflowed
             // either!
             low = true;
             high = true;
@@ -804,8 +758,7 @@ class FloatingDecimal {
       final int[] b = BigInt.mulPow52InPlace(BigInt.assignInPlace(buf[2], fractBits), B5, B2 + shiftBias);
       final int[] m = BigInt.valueOfPow52(buf[3], M5 + 1, M2 + shiftBias + 1);
 
-      // Unroll the first iteration. If our exp10 estimate
-      // was too high, our first quotient will be zero. In this
+      // Unroll the first iteration. If our exp10 estimate was too high, our first quotient will be zero. In this
       // case, we discard it and decrement exp10.
       q = BigInt.quoRemIteration(b, s);
       low = BigInt.compareTo(b, m) < 0;
@@ -819,10 +772,8 @@ class FloatingDecimal {
         value = value * 10 + q;
       }
 
-      // HACK! Java spec says that we always have at least
-      // one digit after the . in either F- or E-form output.
-      // Thus we will need more than one digit if we're using
-      // E-form
+      // HACK! Java spec says that we always have at least one digit after the . in either F- or E-form output.
+      // Thus we will need more than one digit if we're using E-form
       if (exp10 < -3 || exp10 >= 8)
         high = low = false;
 

@@ -166,12 +166,12 @@ boolean getSignifScale(const long double x, const enum RoundingMode rm, long lon
 
   char r;
   if (x < 0) {
-    for (; *signif < MIN_VALUE; ++*scale) {
+    for (; *signif < MIN_VALUE; ++*scale) { // [A]
       *signif = round10(r = y % 10, y /= 10, rm);
     }
   }
   else {
-    for (; *signif > MAX_VALUE; ++*scale) {
+    for (; *signif > MAX_VALUE; ++*scale) { // [A]
       *signif = round10(r = y % 10, y /= 10, rm);
     }
   }

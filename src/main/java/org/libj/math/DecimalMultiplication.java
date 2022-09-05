@@ -20,14 +20,12 @@ import org.libj.lang.Numbers;
 
 abstract class DecimalMultiplication extends FixedPoint {
   /**
-   * Returns the product of {@code v1 * v2}. If the result overflows
-   * {@code long}, or is outside the range of {@code MIN_VALUE} and
+   * Returns the product of {@code v1 * v2}. If the result overflows {@code long}, or is outside the range of {@code MIN_VALUE} and
    * {@code MAX_VALUE}, this method returns {@code 0}.
    *
    * @param v1 The multiplier.
    * @param v2 The multiplicand.
-   * @return the product of {@code v1 * v2}. If the result overflows
-   *         {@code long}, or is outside the range of {@code MIN_VALUE} and
+   * @return the product of {@code v1 * v2}. If the result overflows {@code long}, or is outside the range of {@code MIN_VALUE} and
    *         {@code MAX_VALUE}, this method returns {@code 0}.
    */
   private static long mulNonZero(final long v1, final long v2) {
