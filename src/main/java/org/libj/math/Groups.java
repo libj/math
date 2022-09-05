@@ -19,26 +19,24 @@ package org.libj.math;
 import static org.libj.lang.Assertions.*;
 
 import java.lang.reflect.Array;
+import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
 
 /**
- * Utility class providing functions related to
- * <a href="https://en.wikipedia.org/wiki/Group_theory">Group Theory</a>, such
- * as <a href="https://en.wikipedia.org/wiki/Combination">combinations</a>,
- * and <a href="https://en.wikipedia.org/wiki/Permutation">permutations</a>.
+ * Utility class providing functions related to <a href="https://en.wikipedia.org/wiki/Group_theory">Group Theory</a>, such as
+ * <a href="https://en.wikipedia.org/wiki/Combination">combinations</a>, and
+ * <a href="https://en.wikipedia.org/wiki/Permutation">permutations</a>.
  */
 public final class Groups {
   /**
-   * Returns an array of all ordered subset permutations of {@code k} elements
-   * from a fixed set of {@code elements}.
+   * Returns an array of all ordered subset permutations of {@code k} elements from a fixed set of {@code elements}.
    *
    * @param <T> The component type of the array.
    * @param elements The elements representing the fixed set.
    * @param k The number of elements representing the subsets.
-   * @return An array of all ordered subset permutations of {@code k} elements
-   *         from a fixed set of {@code n} elements as {@code int} values from
-   *         {@code 0} to {@code n}.
-   * @throws ArithmeticException If {@code elements.length} is less than
-   *           {@code k}.
+   * @return An array of all ordered subset permutations of {@code k} elements from a fixed set of {@code n} elements as {@code int}
+   *         values from {@code 0} to {@code n}.
+   * @throws ArithmeticException If {@code elements.length} is less than {@code k}.
    */
   @SafeVarargs
   @SuppressWarnings("unchecked")
@@ -53,15 +51,13 @@ public final class Groups {
   }
 
   /**
-   * Recursively enumerates and assigns the permutations for the given values,
-   * and returns the number of enumerated permutations.
+   * Recursively enumerates and assigns the permutations for the given values, and returns the number of enumerated permutations.
    *
    * @param a The array.
    * @param n The total number of elements.
    * @param k The subset number of elements in the permutation.
    * @param permutations The resulting array of all unordered subsets.
-   * @param index The {@code permutations} element index into which the
-   *          permutation is to be assigned.
+   * @param index The {@code permutations} element index into which the permutation is to be assigned.
    * @return The number of enumerated permutations.
    */
   @SuppressWarnings("unchecked")
@@ -74,7 +70,7 @@ public final class Groups {
     }
 
     int depth = 0;
-    for (int i = 0, n1 = n - 1, k1 = k - 1; i < n; ++i) {
+    for (int i = 0, n1 = n - 1, k1 = k - 1; i < n; ++i) { // [N]
       swap(a, i, n1);
       depth += enumerate(a, componentType, n1, k1, permutations, index + depth);
       swap(a, i, n1);
@@ -90,15 +86,13 @@ public final class Groups {
   }
 
   /**
-   * Returns an array of all ordered subset permutations of {@code k} elements
-   * from a fixed set of {@code n} elements as {@code int} values from {@code 0}
-   * to {@code n}.
+   * Returns an array of all ordered subset permutations of {@code k} elements from a fixed set of {@code n} elements as {@code int}
+   * values from {@code 0} to {@code n}.
    *
    * @param k The number of elements representing the subsets.
    * @param n The number of elements representing the fixed set.
-   * @return An array of all ordered subset permutations of {@code k} elements
-   *         from a fixed set of {@code n} elements as {@code int} values from
-   *         {@code 0} to {@code n}.
+   * @return An array of all ordered subset permutations of {@code k} elements from a fixed set of {@code n} elements as {@code int}
+   *         values from {@code 0} to {@code n}.
    * @throws ArithmeticException If {@code n} is less than {@code k}.
    */
   public static int[][] permute(final int k, final int n) {
@@ -106,7 +100,7 @@ public final class Groups {
       throw new ArithmeticException("n (" + n + ") is less than k (" + k + ")");
 
     final int[] a = new int[n];
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) // [A]
       a[i] = i;
 
     final long size = SafeMath.factorial((long)n) / SafeMath.factorial((long)(n - k));
@@ -116,15 +110,13 @@ public final class Groups {
   }
 
   /**
-   * Recursively enumerates and assigns the permutations for the given values,
-   * and returns the number of enumerated permutations.
+   * Recursively enumerates and assigns the permutations for the given values, and returns the number of enumerated permutations.
    *
    * @param a The array.
    * @param n The total number of elements.
    * @param k The subset number of elements in the permutation.
    * @param permutations The resulting array of all unordered subsets.
-   * @param index The {@code permutations} element index into which the
-   *          permutation is to be assigned.
+   * @param index The {@code permutations} element index into which the permutation is to be assigned.
    * @return The number of enumerated permutations.
    */
   private static int enumerate(final int[] a, final int n, final int k, final int[][] permutations, final int index) {
@@ -136,7 +128,7 @@ public final class Groups {
     }
 
     int depth = 0;
-    for (int i = 0, n1 = n - 1, k1 = k - 1; i < n; ++i) {
+    for (int i = 0, n1 = n - 1, k1 = k - 1; i < n; ++i) { // [N]
       swap(a, i, n1);
       depth += enumerate(a, n1, k1, permutations, index + depth);
       swap(a, i, n1);
@@ -152,15 +144,13 @@ public final class Groups {
   }
 
   /**
-   * Returns an array of all unordered subset combinations of {@code k} elements
-   * from a fixed set of {@code elements}.
+   * Returns an array of all unordered subset combinations of {@code k} elements from a fixed set of {@code elements}.
    *
    * @param <T> The component type of the array.
    * @param elements The elements representing the fixed set.
    * @param k The number of elements representing the subsets.
-   * @return An array of all unordered subset combinations of {@code k} elements
-   *         from a fixed set of {@code n} elements as {@code int} values from
-   *         {@code 0} to {@code n}.
+   * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
+   *         {@code int} values from {@code 0} to {@code n}.
    * @throws ArithmeticException If {@code elements.length} is less than {@code k}.
    * @throws IllegalArgumentException If {@code elements} is null.
    */
@@ -183,7 +173,7 @@ public final class Groups {
     }
 
     int depth = 0;
-    for (int i = start, len = a.length - k; i <= len; ++i) {
+    for (int i = start, i$ = a.length - k; i <= i$; ++i) { // [A]
       combination[combination.length - k] = a[i];
       depth += combine(a, k - 1, i + 1, combination, combinations, index + depth);
     }
@@ -192,15 +182,13 @@ public final class Groups {
   }
 
   /**
-   * Returns an array of all unordered subset combinations of {@code k} elements
-   * from a fixed set of {@code n} elements as {@code int} values from {@code 0}
-   * to {@code n}.
+   * Returns an array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
+   * {@code int} values from {@code 0} to {@code n}.
    *
    * @param k The number of elements representing the subsets.
    * @param n The number of elements representing the fixed set.
-   * @return An array of all unordered subset combinations of {@code k} elements
-   *         from a fixed set of {@code n} elements as {@code int} values from
-   *         {@code 0} to {@code n}.
+   * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
+   *         {@code int} values from {@code 0} to {@code n}.
    * @throws ArithmeticException If {@code n} is less than {@code k}.
    */
   public static int[][] combine(final int k, final int n) {
@@ -208,7 +196,7 @@ public final class Groups {
       throw new ArithmeticException("n (" + n + ") is less than k (" + k + ")");
 
     final int[] a = new int[n];
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) // [A]
       a[i] = i;
 
     final long size = SafeMath.factorial((long)n) / (SafeMath.factorial((long)k) * SafeMath.factorial((long)(n - k)));
@@ -224,7 +212,7 @@ public final class Groups {
     }
 
     int depth = 0;
-    for (int i = start, len = a.length - k; i <= len; ++i) {
+    for (int i = start, i$ = a.length - k; i <= i$; ++i) { // [A]
       combination[combination.length - k] = a[i];
       depth += combine(a, k - 1, i + 1, combination, combinations, index + depth);
     }
@@ -233,13 +221,10 @@ public final class Groups {
   }
 
   /**
-   * Permutes all subsets of elements in the specified 2-dimensional array,
-   * where:
+   * Permutes all subsets of elements in the specified 2-dimensional array, where:
    * <ul>
-   * <li>{@code n} = the total number of elements in the 2-dimensional
-   * array.</li>
-   * <li>{@code r} = the length of the first dimension of the 2-dimensional
-   * array.</li>
+   * <li>{@code n} = the total number of elements in the 2-dimensional array.</li>
+   * <li>{@code r} = the length of the first dimension of the 2-dimensional array.</li>
    * </ul>
    * Time Complexity: {@code O(n choose r)}
    *
@@ -247,24 +232,23 @@ public final class Groups {
    * @param a The 2-dimensional array.
    * @return A 2-dimensional array of combination sets for {@code a}.
    * @throws ArrayIndexOutOfBoundsException If {@code a.length == 0}.
-   * @throws IllegalArgumentException If {@code a} or any array member of
-   *           {@code a} is null.
+   * @throws IllegalArgumentException If {@code a} or any array member of {@code a} is null.
    */
   @SuppressWarnings("unchecked")
   public static <T>T[][] permute(final T[][] a) {
     int total = assertNotNull(a)[0].length;
-    for (int i = 1; i < a.length; ++i)
+    for (int i = 1, i$ = a.length; i < i$; ++i) // [A]
       total *= assertNotNull(a[i]).length;
 
     final Class<?> componentType1 = a.getClass().getComponentType();
     final T[][] combinations = (T[][])Array.newInstance(componentType1, total);
     final Class<?> componentType2 = componentType1.getComponentType();
-    for (; total > 0; --total) {
+    for (; total > 0; --total) { // [A]
       final T[] currentSet = (T[])Array.newInstance(componentType2, a.length);
       int position = total;
 
       // Pick the required element from each list, and add it to the set
-      for (int i = 0, len; i < a.length; ++i) {
+      for (int i = 0, len; i < a.length; ++i) { // [A]
         len = a[i].length;
         currentSet[i] = a[i][position % len];
         position /= len;
@@ -274,6 +258,44 @@ public final class Groups {
     }
 
     return combinations;
+  }
+
+  @SafeVarargs
+  public static <T>void permute(final Consumer<T[]> consumer, final T ... elements) {
+    recursePermute(consumer, elements.length, elements);
+  }
+
+  @SafeVarargs
+  private static <T>void recursePermute(final Consumer<T[]> consumer, final int n, final T ... elements) {
+    if (n == 1) {
+      consumer.accept(elements);
+    }
+    else {
+      for (int i = 0; i < n - 1; ++i) { // [N]
+        recursePermute(consumer, n - 1, elements);
+        swap(elements, n % 2 == 0 ? i : 0, n - 1);
+      }
+
+      recursePermute(consumer, n - 1, elements);
+    }
+  }
+
+  @SafeVarargs
+  public static <T>void permute(final ObjIntConsumer<T[]> consumer, final int r, final T ... elements) {
+    permute(consumer, 0, elements.length - r, elements);
+  }
+
+  private static <T>void permute(final ObjIntConsumer<T[]> consumer, final int n, final int k, final T[] elements) {
+    if (n == k) {
+      consumer.accept(elements, k);
+      return;
+    }
+
+    for (int i = n, i$ = elements.length; i < i$; ++i) { // [A]
+      swap(elements, n, i);
+      permute(consumer, n + 1, k, elements);
+      swap(elements, n, i);
+    }
   }
 
   private Groups() {
