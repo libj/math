@@ -35,7 +35,7 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
    1. **JNI**: <ins>Java Native</ins> JNI integration for faster performance, with regular function overhead.<sup>**[\*](#jni1)**</sup>
    1. **JIT**: <ins>Java Bytecode</ins> implementation designed to be optimized by JIT compilation.
 
-<a id="jni1"></a>_<sup>\* Native Bindings are built only for MacOS, Linux, and Windows platforms (64-bit), and are loaded by default on system startup.</sup>_<br>
+<a id="jni1"></a>_<sup>\* Native Bindings are present in the built JAR for MacOS (x64 and M1), Linux (x64), and Windows (x64), and are loaded by default on system startup.</sup>_<br>
 <a id="jni2"></a>_<sup>\*\* To use <ins>Critical Native</ins> JNI bindings, the JVM must be launched with `-Xcomp`.</sup>_
 
 ##### Bare `int[]` <ins>value-encoded number</ins> arrays
