@@ -103,13 +103,13 @@
     <dependency>
       <groupId>org.jboss.byteman</groupId>
       <artifactId>byteman</artifactId>
-      <version>4.0.17</version>
+      <version>4.0.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy-agent</artifactId>
-      <version>1.11.21</version>
+      <version>1.12.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -127,7 +127,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.0.1-jre</version>
+      <version>31.1-jre</version>
       <scope>test</scope>
     </dependency>
 
