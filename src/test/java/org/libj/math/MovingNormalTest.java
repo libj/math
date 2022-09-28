@@ -42,7 +42,7 @@ public class MovingNormalTest {
     movingNormal.normalize(2, 4, vals);
     movingNormal.normalize(4, 6, vals);
     movingNormal.normalize(6, 8, vals);
-    for (int i = 0; i < vals.length; ++i) {
+    for (int i = 0, i$ = vals.length; i < i$; ++i) { // [A]
       assertEquals(normals[i], vals[i], epsilon);
       assertNotEquals(0, movingNormal.getMean());
       assertNotEquals(0, movingNormal.getScale());

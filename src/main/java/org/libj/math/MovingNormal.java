@@ -29,15 +29,13 @@ public class MovingNormal {
   protected double count = 0d;
 
   /**
-   * Normalizes the specified array of {@code double} values between the
-   * provided {@code fromIndex} and {@code toIndex} into this
+   * Normalizes the specified array of {@code double} values between the provided {@code fromIndex} and {@code toIndex} into this
    * {@link MovingNormal}.
    *
    * @param values The values to normalize.
    * @param fromIndex The from index.
    * @param toIndex The to index.
-   * @throws ArrayIndexOutOfBoundsException If the given {@code fromIndex} or
-   *           {@code toIndex} is out of range.
+   * @throws ArrayIndexOutOfBoundsException If the given {@code fromIndex} or {@code toIndex} is out of range.
    * @throws IllegalArgumentException If {@code fromIndex > toIndex}.
    * @throws IllegalArgumentException If {@code values} is null.
    */
@@ -45,7 +43,7 @@ public class MovingNormal {
     assertNotNull(values);
     assertRange("fromIndex", fromIndex, "toIndex", toIndex, "values.length", values.length);
 
-    for (int i = fromIndex; i < toIndex; ++i, ++count) {
+    for (int i = fromIndex; i < toIndex; ++i, ++count) { // [A]
       sum += values[i];
       sumSq += values[i] * values[i];
     }
@@ -55,23 +53,23 @@ public class MovingNormal {
     if (scale == 0d)
       scale = 1d;
 
-    for (int i = fromIndex; i < toIndex; ++i)
+    for (int i = fromIndex; i < toIndex; ++i) // [A]
       values[i] = (values[i] - mean) / scale;
   }
 
   /**
-   * Returns the mean value of this {@link MovingNormal}.
+   * Returns the mean value.
    *
-   * @return The mean value of this {@link MovingNormal}.
+   * @return The mean value.
    */
   public double getMean() {
     return mean;
   }
 
   /**
-   * Returns the scale value of this {@link MovingNormal}.
+   * Returns the scale value.
    *
-   * @return The scale value of this {@link MovingNormal}.
+   * @return The scale value.
    */
   public double getScale() {
     return scale;

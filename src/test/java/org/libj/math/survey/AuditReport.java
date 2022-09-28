@@ -49,11 +49,13 @@ public class AuditReport {
 
   private static File toFile(final Set<Rule> rules) throws IOException {
     final StringBuilder builder = new StringBuilder();
-    for (final Rule rule : rules) { // [S]
-      if (builder.length() > 0)
-        builder.append("\n\n");
+    if (rules.size() > 0) {
+      for (final Rule rule : rules) { // [S]
+        if (builder.length() > 0)
+          builder.append("\n\n");
 
-      builder.append(rule);
+        builder.append(rule);
+      }
     }
 
     // System.out.println(builder);
@@ -89,7 +91,7 @@ public class AuditReport {
 
   public File getRulesFile() throws IOException {
     final Set<Rule> rules = new HashSet<>();
-    for (final Result result : results) // [S]
+    for (final Result result : results) // [A]
       result.append(rules);
 
     final File rulesFile = toFile(rules);
@@ -207,17 +209,22 @@ public class AuditReport {
 
     final StringBuilder builder = new StringBuilder();
     // First print the summaries
-    for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : this.headersToSummaries.entrySet()) { // [S]
-      final int mode = entry.getKey();
-      final LinkedHashMap<List<String>,List<Object>[]> headersToSummaries = entry.getValue();
-      for (final Map.Entry<List<String>,List<Object>[]> entry2 : headersToSummaries.entrySet()) { // [S]
-        final Object[][] columns = new Object[entry2.getKey().size()][]; // Assumed the "categories" were added (hack)
-        for (int c = 0, c$ = columns.length; c < c$; ++c) { // [A]
-          columns[c] = entry2.getValue()[c].toArray();
-        }
+    final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = this.headersToSummaries;
+    if (headersToSummaries.size() > 0) {
+      for (final Map.Entry<Integer,LinkedHashMap<List<String>,List<Object>[]>> entry : headersToSummaries.entrySet()) { // [S]
+        final int mode = entry.getKey();
+        final LinkedHashMap<List<String>,List<Object>[]> headersToSummaryValues = entry.getValue();
+        if (headersToSummaryValues.size() > 0) {
+          for (final Map.Entry<List<String>,List<Object>[]> entry2 : headersToSummaryValues.entrySet()) { // [S]
+            final Object[][] columns = new Object[entry2.getKey().size()][]; // Assumed the "categories" were added (hack)
+            for (int c = 0, c$ = columns.length; c < c$; ++c) { // [A]
+              columns[c] = entry2.getValue()[c].toArray();
+            }
 
-        builder.append(getTitle(mode)).append('\n');
-        builder.append(Tables.printTable(true, Align.CENTER, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
+            builder.append(getTitle(mode)).append('\n');
+            builder.append(Tables.printTable(true, Align.CENTER, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
+          }
+        }
       }
     }
 
@@ -231,36 +238,38 @@ public class AuditReport {
     }
 
     // Next print the detailed results
-    for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) { // [S]
-      final Iterator<Map.Entry<Integer,String[]>> iterator = result.getValue().entrySet().iterator();
-      for (int i = 0; iterator.hasNext(); ++i) { // [I]
-        final Map.Entry<Integer,String[]> entry = iterator.next();
-        if (out != null) {
-          if (i == 0) {
-            final String methodName = entry.getValue()[0];
-            out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
+    if (methodLabelToResults.size() > 0) {
+      for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) { // [S]
+        final Iterator<Map.Entry<Integer,String[]>> iterator = result.getValue().entrySet().iterator();
+        for (int i = 0; iterator.hasNext(); ++i) { // [I]
+          final Map.Entry<Integer,String[]> entry = iterator.next();
+          if (out != null) {
+            if (i == 0) {
+              final String methodName = entry.getValue()[0];
+              out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
-            final Method key = (Method)result.getKey().get(0);
-            final Map<Integer,String> modeToComment = methodToModeToComment.get(key);
-            if (modeToComment != null) {
-              final String comment = modeToComment.get(entry.getKey());
-              if (comment != null)
-                out.println("<p>" + mdToHtml(comment, links).replace("\n", "<br>") + "</p>\n");
+              final Method key = (Method)result.getKey().get(0);
+              final Map<Integer,String> modeToComment = methodToModeToComment.get(key);
+              if (modeToComment != null) {
+                final String comment = modeToComment.get(entry.getKey());
+                if (comment != null)
+                  out.println("<p>" + mdToHtml(comment, links).replace("\n", "<br>") + "</p>\n");
+              }
+
+              out.println("<pre><code>");
             }
 
-            out.println("<pre><code>");
+            out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(entry.getKey()))));
+            out.println(Ansi.toHtml(CharacterDatas.escapeForElem(entry.getValue()[1])));
           }
 
-          out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(entry.getKey()))));
-          out.println(Ansi.toHtml(CharacterDatas.escapeForElem(entry.getValue()[1])));
+          System.out.println(getTitle(entry.getKey()));
+          System.out.println(entry.getValue()[1]);
         }
 
-        System.out.println(getTitle(entry.getKey()));
-        System.out.println(entry.getValue()[1]);
+        if (out != null)
+          out.println("</code></pre>\n");
       }
-
-      if (out != null)
-        out.println("</code></pre>\n");
     }
   }
 

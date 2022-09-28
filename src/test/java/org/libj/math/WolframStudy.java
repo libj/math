@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.jaxsb.runtime.BindingList;
 import org.jaxsb.runtime.Bindings;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,9 +58,12 @@ public class WolframStudy {
     params.put("output", new String[] {"XML"});
     params.put("appid", new String[] {System.getProperty("appid")});
     final zAA.Queryresult result = parse(HTTP.get("https://api.wolframalpha.com/v2/query", params));
-    for (final zAA.Pod pod : result.getWaPod()) // [L]
+    final BindingList<zAA.Pod> waPod = result.getWaPod();
+    for (int i = 0, i$ = waPod.size(); i < i$; ++i) { // [RA]
+      final zAA.Pod pod = waPod.get(i);
       if ("Result".equals(pod.getId$().text()))
         return new BigDecimal(pod.getWaSubpod().getWaPlaintext().text().replace("... × 10^", "E"));
+    }
 
     return null;
   }

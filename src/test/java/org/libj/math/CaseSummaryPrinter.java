@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.libj.console.Tables;
+import org.libj.lang.Strings;
 import org.libj.lang.Strings.Align;
 import org.libj.math.survey.AuditReport;
 import org.libj.util.ArrayUtil;
@@ -173,15 +174,15 @@ public class CaseSummaryPrinter {
     final String[][] cols2 = getColumns(map, 1, false);
 
     final String[][] tables = new String[2][];
-    tables[0] = Tables.printTable(true, Align.CENTER, Align.RIGHT, cols1).split("\n");
+    tables[0] = Strings.split(Tables.printTable(true, Align.CENTER, Align.RIGHT, cols1), '\n');
     tables[0] = ArrayUtil.concat(new String[] {"Runtime Performance"}, tables[0]);
     if (cols2 != null) {
-      tables[1] = Tables.printTable(true, Align.CENTER, Align.RIGHT, cols2).split("\n");
+      tables[1] = Strings.split(Tables.printTable(true, Align.CENTER, Align.RIGHT, cols2), '\n');
       tables[1] = ArrayUtil.concat(new String[] {"Heap Allocation"}, tables[1]);
     }
 
     final String str = Tables.printTable(tables);
-    final String[] lines = str.split("\n");
+    final String[] lines = Strings.split(str, '\n');
     for (int i = 0, i$ = lines.length; i < i$; ++i) { // [A]
       lines[i] = "<code>" + lines[i].replace(" ", "&nbsp;") + "</code>";
       if (i >= 4 && i - 3 < cols1[0].length) {
