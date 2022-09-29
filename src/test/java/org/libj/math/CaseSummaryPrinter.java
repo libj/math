@@ -135,22 +135,25 @@ public class CaseSummaryPrinter {
   }
 
   private static String[][] getColumns(final SummaryMap map, final int index, final boolean withKey) {
-    final String[][] strings = new String[withKey ? 4 : 3][map.size()];
-    final Iterator<Map.Entry<String,ArrayList<Object[]>>> iterator = map.entrySet().iterator();
-    for (int j = 0; iterator.hasNext(); ++j) { // [I]
-      final Map.Entry<String,ArrayList<Object[]>> entry = iterator.next();
-      final ArrayList<Object[]> list = entry.getValue();
-      if (list.size() <= index)
-        continue;
+    final int size = map.size();
+    final String[][] strings = new String[withKey ? 4 : 3][size];
+    if (size > 0) {
+      final Iterator<Map.Entry<String,ArrayList<Object[]>>> iterator = map.entrySet().iterator();
+      for (int j = 0; iterator.hasNext(); ++j) { // [I]
+        final Map.Entry<String,ArrayList<Object[]>> entry = iterator.next();
+        final ArrayList<Object[]> list = entry.getValue();
+        if (list.size() <= index)
+          continue;
 
-      int i = -1;
-      if (withKey)
-        strings[++i][j] = entry.getKey();
+        int i = -1;
+        if (withKey)
+          strings[++i][j] = entry.getKey();
 
-      final Object[] array = list.get(index);
-      strings[++i][j] = String.valueOf(toString(array[0]));
-      strings[++i][j] = String.valueOf(toString(array[1]));
-      strings[++i][j] = String.valueOf(toString(array[2]));
+        final Object[] array = list.get(index);
+        strings[++i][j] = String.valueOf(toString(array[0]));
+        strings[++i][j] = String.valueOf(toString(array[1]));
+        strings[++i][j] = String.valueOf(toString(array[2]));
+      }
     }
 
     return strings;

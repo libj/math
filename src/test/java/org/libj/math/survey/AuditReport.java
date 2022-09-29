@@ -240,31 +240,34 @@ public class AuditReport {
     // Next print the detailed results
     if (methodLabelToResults.size() > 0) {
       for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) { // [S]
-        final Iterator<Map.Entry<Integer,String[]>> iterator = result.getValue().entrySet().iterator();
-        for (int i = 0; iterator.hasNext(); ++i) { // [I]
-          final Map.Entry<Integer,String[]> entry = iterator.next();
-          if (out != null) {
-            if (i == 0) {
-              final String methodName = entry.getValue()[0];
-              out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
+        final Map<Integer,String[]> value = result.getValue();
+        if (value.size() > 0) {
+          final Iterator<Map.Entry<Integer,String[]>> iterator = value.entrySet().iterator();
+          for (int i = 0; iterator.hasNext(); ++i) { // [I]
+            final Map.Entry<Integer,String[]> entry = iterator.next();
+            if (out != null) {
+              if (i == 0) {
+                final String methodName = entry.getValue()[0];
+                out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
-              final Method key = (Method)result.getKey().get(0);
-              final Map<Integer,String> modeToComment = methodToModeToComment.get(key);
-              if (modeToComment != null) {
-                final String comment = modeToComment.get(entry.getKey());
-                if (comment != null)
-                  out.println("<p>" + mdToHtml(comment, links).replace("\n", "<br>") + "</p>\n");
+                final Method key = (Method)result.getKey().get(0);
+                final Map<Integer,String> modeToComment = methodToModeToComment.get(key);
+                if (modeToComment != null) {
+                  final String comment = modeToComment.get(entry.getKey());
+                  if (comment != null)
+                    out.println("<p>" + mdToHtml(comment, links).replace("\n", "<br>") + "</p>\n");
+                }
+
+                out.println("<pre><code>");
               }
 
-              out.println("<pre><code>");
+              out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(entry.getKey()))));
+              out.println(Ansi.toHtml(CharacterDatas.escapeForElem(entry.getValue()[1])));
             }
 
-            out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(entry.getKey()))));
-            out.println(Ansi.toHtml(CharacterDatas.escapeForElem(entry.getValue()[1])));
+            System.out.println(getTitle(entry.getKey()));
+            System.out.println(entry.getValue()[1]);
           }
-
-          System.out.println(getTitle(entry.getKey()));
-          System.out.println(entry.getValue()[1]);
         }
 
         if (out != null)
