@@ -39,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.libj.lang.OperatingSystem;
+import org.libj.lang.Systems;
 
 final class NativeMath {
   enum Mode {
@@ -53,8 +54,7 @@ final class NativeMath {
     if (mode != null)
       return mode;
 
-    final String noNativeProp = System.getProperty("org.libj.math.noNative");
-    if (noNativeProp != null && !noNativeProp.equals("false"))
+    if (Systems.hasProperty("org.libj.math.noNative"))
       return Mode.JAVA;
 
     final boolean useCritical = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-Xcomp") > 0;
