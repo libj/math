@@ -74,7 +74,7 @@ public class CaseSummaryPrinter {
     int end = matcher.end();
     final String summary = str.substring(start, end);
     final Matcher lineMatcher = linePattern.matcher(summary);
-//    System.out.println("---- " + summary.toString() + " ------------------------------------------------------------");
+//    System.out.println("---- " + summary + " ------------------------------------------------------------");
     OUT:
     while (lineMatcher.find()) {
       final Object[] values = new Object[3];

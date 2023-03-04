@@ -19,6 +19,7 @@ package org.libj.math;
 import static org.libj.lang.Assertions.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.libj.util.primitive.DoubleList;
 
@@ -88,8 +89,8 @@ public class SplineInterpolator<C> {
    * @param x The {@code x} component of the control points, strictly increasing.
    * @param y The {@code y} component of the control points.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
-   *           fewer than 2 values.
+   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+   * @throws NullPointerException If {@code x} or {@code y} is null.
    */
   public static SplineInterpolator<?> createMonotoneCubicSpline(final float[] x, final float[] y) {
     return createMonotoneCubicSpline(new float[][] {x, y}, FLOAT_ARRAY);
@@ -105,8 +106,8 @@ public class SplineInterpolator<C> {
    * @param x The {@code x} component of the control points, strictly increasing.
    * @param y The {@code y} component of the control points.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
-   *           fewer than 2 values.
+   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+   * @throws NullPointerException If {@code x} or {@code y} is null.
    */
   public static SplineInterpolator<?> createMonotoneCubicSpline(final double[] x, final double[] y) {
     return createMonotoneCubicSpline(new double[][] {x, y}, DOUBLE_ARRAY);
@@ -122,8 +123,8 @@ public class SplineInterpolator<C> {
    * @param x The {@code x} component of the control points, strictly increasing.
    * @param y The {@code y} component of the control points.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
-   *           fewer than 2 values.
+   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+   * @throws NullPointerException If {@code x} or {@code y} is null.
    */
   @SuppressWarnings("unchecked")
   public static SplineInterpolator<?> createMonotoneCubicSpline(final List<Double> x, final List<Double> y) {
@@ -140,8 +141,8 @@ public class SplineInterpolator<C> {
    * @param x The {@code x} component of the control points, strictly increasing.
    * @param y The {@code y} component of the control points.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
-   *           fewer than 2 values.
+   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+   * @throws NullPointerException If {@code x} or {@code y} is null.
    */
   public static SplineInterpolator<?> createMonotoneCubicSpline(final DoubleList x, final DoubleList y) {
     return createMonotoneCubicSpline(new DoubleList[] {x, y}, DOUBLE_LIST);
@@ -157,8 +158,8 @@ public class SplineInterpolator<C> {
 //   * @param xy The array of {@code T} component of the control points, strictly increasing.
 //   * @param y The {@code y} component of the control points.
 //   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-//   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
-//   *           fewer than 2 values.
+//   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+//   * @throws NullPointerException If {@code x} or {@code y} is null.
 //   */
 //  public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C[] xy, final Adapter<C> y) {
 //    return createMonotoneCubicSpline(xy, y);
@@ -175,11 +176,10 @@ public class SplineInterpolator<C> {
    * @param xy The control points, strictly increasing.
    * @param adapter The {@link Adapter} for conversion of {@code xy} control points of type {@code &lt;T&gt;} to {@code double}.
    * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-   * @throws IllegalArgumentException If {@code x} or {@code y} is null, or if {@code x} or {@code y} have different lengths or
-   *           fewer than 2 values.
+   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+   * @throws NullPointerException If {@code x} or {@code y} is null.
    */
   public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C xy, final Adapter<C> adapter) {
-    assertNotNull(xy);
     final int n = adapter.size(xy), n1 = n - 1, n2 = n - 2;
     if (adapter.size(xy) < 2)
       throw new IllegalArgumentException("Arrays must be of equal length greater than or equal to two");
@@ -229,9 +229,10 @@ public class SplineInterpolator<C> {
   private final double[] _m;
 
   private SplineInterpolator(final Adapter<C> adapter, final C xy, final double[] m) {
-    this.adapter = assertNotNull(adapter);
-    _xy = assertNotNull(xy);
-    _m = assertNotEmpty(m);
+    this.adapter = Objects.requireNonNull(adapter);
+    _xy = Objects.requireNonNull(xy);
+    assertPositive(m.length);
+    _m = m;
   }
 
   /**

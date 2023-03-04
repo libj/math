@@ -128,7 +128,7 @@ abstract class DecimalOperation<T,C> {
     final String b = Strings.pad("BigDecimal=" + timeBigDecimal, RIGHT, 20);
     final String c = Strings.pad(String.valueOf(count), RIGHT, 12);
     final String e = Strings.pad(epsilonFormatter.format(error), RIGHT, 6);
-    logger.info(f + " | " + l + " | " + b  + " | count=" + c + " | perf=" + perf + " | error=" + e + builder);
+    if (logger.isInfoEnabled()) logger.info(f + " | " + l + " | " + b  + " | count=" + c + " | perf=" + perf + " | error=" + e + builder);
   }
 
   String format1(final long significand, final short scale) {

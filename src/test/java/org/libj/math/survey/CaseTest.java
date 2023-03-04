@@ -327,7 +327,7 @@ public abstract class CaseTest {
             message.append(label).append('\n');
             message.append(Arrays.toString((byte[])previous)).append('\n').append(Arrays.toString((byte[])o));
             try {
-              assertArrayEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), (byte[])previous, (byte[])o);
+              assertArrayEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n'), (byte[])previous, (byte[])o);
             }
             catch (final ArrayComparisonFailure e) {
               // For some reason, throwing ArrayComparisonFailure causes Eclipse to
@@ -349,7 +349,7 @@ public abstract class CaseTest {
             final String y = toDetailString(o, previousType);
             previous = null; // Reset previous so it doesn't mess up debugging
             message.append(x).append('\n').append(y).append("\nerror: ").append(error);
-            assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n').toString(), x, y);
+            assertEquals((cse.subject instanceof Class ? ((Class<?>)cse.subject).getSimpleName() : cse.subject) + ": " + message.append('\n'), x, y);
           }
         }
       }

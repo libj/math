@@ -16,8 +16,6 @@
 
 package org.libj.math;
 
-import static org.libj.lang.Assertions.*;
-
 import java.lang.reflect.Array;
 import java.util.function.Consumer;
 import java.util.function.ObjIntConsumer;
@@ -152,12 +150,12 @@ public final class Groups {
    * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
    *         {@code int} values from {@code 0} to {@code n}.
    * @throws ArithmeticException If {@code elements.length} is less than {@code k}.
-   * @throws IllegalArgumentException If {@code elements} is null.
+   * @throws NullPointerException If {@code elements} is null.
    */
   @SafeVarargs
   @SuppressWarnings("unchecked")
   public static <T>T[][] combine(final int k, final T ... elements) {
-    if (assertNotNull(elements).length < k)
+    if (elements.length < k)
       throw new ArithmeticException("elements.length (" + elements.length + ") is less than k (" + k + ")");
 
     final long size = SafeMath.factorial((long)elements.length) / (SafeMath.factorial((long)k) * SafeMath.factorial((long)(elements.length - k)));
@@ -232,13 +230,13 @@ public final class Groups {
    * @param a The 2-dimensional array.
    * @return A 2-dimensional array of combination sets for {@code a}.
    * @throws ArrayIndexOutOfBoundsException If {@code a.length == 0}.
-   * @throws IllegalArgumentException If {@code a} or any array member of {@code a} is null.
+   * @throws NullPointerException If {@code a} or any array member of {@code a} is null.
    */
   @SuppressWarnings("unchecked")
   public static <T>T[][] permute(final T[][] a) {
-    int total = assertNotNull(a)[0].length;
+    int total = a[0].length;
     for (int i = 1, i$ = a.length; i < i$; ++i) // [A]
-      total *= assertNotNull(a[i]).length;
+      total *= a[i].length;
 
     final Class<?> componentType1 = a.getClass().getComponentType();
     final T[][] combinations = (T[][])Array.newInstance(componentType1, total);

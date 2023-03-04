@@ -72,7 +72,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
    *           array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param num The amount by which to shift.
-   * @return The result of shifting the provided {@linkplain BigInt#val() value-encoded number}} right by the specified number of
+   * @return The result of shifting the provided {@linkplain BigInt#val() value-encoded number} right by the specified number of
    *         bits.
    * @complexity O(n)
    */

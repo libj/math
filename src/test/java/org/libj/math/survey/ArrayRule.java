@@ -77,7 +77,7 @@ public class ArrayRule implements Rule {
   }
 
   private void toString(final StringBuilder builder, final Class<?> cls) {
-    builder.append("RULE ").append(className).append(".").append(methodSignature).append(" [").append(cls.getName()).append("]\n");
+    builder.append("RULE ").append(className).append('.').append(methodSignature).append(" [").append(cls.getName()).append("]\n");
     builder.append("CLASS ").append(className).append('\n');
     builder.append("METHOD ").append(methodSignature).append('\n');
     builder.append("AFTER NEW ").append(cls.isArray() ? cls.getComponentType().getSimpleName() + "[]" : cls.getSimpleName()).append(" ALL\n");
@@ -88,7 +88,7 @@ public class ArrayRule implements Rule {
   }
 
   private void toStringClone(final StringBuilder builder) {
-    builder.append("RULE ").append(className).append(".").append(methodSignature).append(" [CLONE]\n");
+    builder.append("RULE ").append(className).append('.').append(methodSignature).append(" [CLONE]\n");
     builder.append("CLASS ").append(className).append('\n');
     builder.append("METHOD ").append(methodSignature).append('\n');
     builder.append("AT EXIT\n");

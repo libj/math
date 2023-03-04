@@ -133,10 +133,10 @@ public final class SafeMath {
    * @param a The argument whose absolute value is to be determined.
    * @return A {@link BigDecimal} whose value is the absolute value of this {@link BigDecimal}, and whose scale is
    *         {@code this.scale()}.
-   * @throws IllegalArgumentException If {@code a} is null.
+   * @throws NullPointerException If {@code a} is null.
    */
   public static BigDecimal abs(final BigDecimal a) {
-    return assertNotNull(a).abs();
+    return a.abs();
   }
 
   /**
@@ -162,10 +162,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The arc cosine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal acos(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.acos(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.acos(a, mc);
   }
 
   /**
@@ -178,10 +178,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The arc cosine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal acos(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.acos(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.acos(new BigDecimal(a), mc);
   }
 
   /**
@@ -213,10 +213,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The arc sine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal asin(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.asin(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.asin(a, mc);
   }
 
   /**
@@ -232,10 +232,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The arc sine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal asin(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.asin(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.asin(new BigDecimal(a), mc);
   }
 
   /**
@@ -267,10 +267,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The arc tangent of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal atan(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.atan(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.atan(a, mc);
   }
 
   /**
@@ -286,10 +286,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The arc tangent of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal atan(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.atan(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.atan(new BigDecimal(a), mc);
   }
 
   /**
@@ -363,10 +363,10 @@ public final class SafeMath {
    * @return The <i>theta</i> component of the point (<i>r</i>, <i>theta</i>) in polar coordinates that corresponds to the point
    *         (<i>x</i>, <i>y</i>) in Cartesian coordinates.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code y}, {@code x}, or {@code mc} is null.
+   * @throws NullPointerException If {@code y}, {@code x}, or {@code mc} is null.
    */
   public static BigDecimal atan2(final BigDecimal y, final BigDecimal x, final MathContext mc) {
-    return BigDecimalMath.atan2(assertNotNull(y), assertNotNull(x), assertNotNull(mc));
+    return BigDecimalMath.atan2(y, x, mc);
   }
 
   /**
@@ -517,10 +517,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The cosine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal cos(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.cos(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.cos(a, mc);
   }
 
   /**
@@ -530,10 +530,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The cosine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal cos(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.cos(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.cos(new BigDecimal(a), mc);
   }
 
   /**
@@ -562,10 +562,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base of the natural logarithms.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal exp(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.exp(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.exp(a, mc);
   }
 
   /**
@@ -577,10 +577,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <i>e</i><sup>{@code a}</sup>, where <i>e</i> is the base of the natural logarithms.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal exp(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.exp(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.exp(new BigDecimal(a), mc);
   }
 
   /**
@@ -885,10 +885,10 @@ public final class SafeMath {
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@link MathContext} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigDecimal b, final MathContext mc) {
-    return BigDecimalMath.pow(assertNotNull(a), assertNotNull(b), assertNotNull(mc));
+    return BigDecimalMath.pow(a, b, mc);
   }
 
   /**
@@ -904,10 +904,10 @@ public final class SafeMath {
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc}is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal pow(final BigInteger a, final BigDecimal b, final MathContext mc) {
-    return BigDecimalMath.pow(new BigDecimal(a), assertNotNull(b), assertNotNull(mc));
+    return BigDecimalMath.pow(new BigDecimal(a), b, mc);
   }
 
   /**
@@ -923,10 +923,10 @@ public final class SafeMath {
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@link MathContext} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal pow(final BigDecimal a, final BigInteger b, final MathContext mc) {
-    return BigDecimalMath.pow(assertNotNull(a), new BigDecimal(b), assertNotNull(mc));
+    return BigDecimalMath.pow(a, new BigDecimal(b), mc);
   }
 
   /**
@@ -942,10 +942,10 @@ public final class SafeMath {
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigInteger pow(final BigInteger a, final BigInteger b, final MathContext mc) {
-    return BigDecimalMath.pow(new BigDecimal(assertNotNull(a)), new BigDecimal(assertNotNull(b)), assertNotNull(mc)).toBigInteger();
+    return BigDecimalMath.pow(new BigDecimal(a), new BigDecimal(b), mc).toBigInteger();
   }
 
   /**
@@ -954,7 +954,7 @@ public final class SafeMath {
    * @param a A floating-point value to be rounded to the scaled {@code float}.
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@code float} based on the rounding policy of the provided {@link RoundingMode}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static float round(float a, final RoundingMode rm) {
     final int b = (int)a;
@@ -1015,7 +1015,7 @@ public final class SafeMath {
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@code float} based on the rounding policy of the provided {@link RoundingMode} with
    *         ties at the given {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static float round(final float a, final int scale, final RoundingMode rm) {
     if (scale < 0)
@@ -1042,7 +1042,7 @@ public final class SafeMath {
    * @param scale The number of digits after the decimal at which to round.
    * @return The rounded value of the specified {@code float} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
    *         at the given {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static float round(final float a, final int scale) {
     return round(a, scale, RoundingMode.HALF_UP);
@@ -1054,7 +1054,7 @@ public final class SafeMath {
    * @param a A floating-point value to be rounded to the scaled {@code double}.
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static double round(double a, final RoundingMode rm) {
     final long c = (long)a;
@@ -1115,7 +1115,7 @@ public final class SafeMath {
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}
    *         with ties at the given {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static double round(final double a, final int scale, final RoundingMode rm) {
     if (scale < 0)
@@ -1142,7 +1142,7 @@ public final class SafeMath {
    * @param scale The number of digits after the decimal at which to round.
    * @return The rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with
    *         ties at the given {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static double round(final double a, final int scale) {
     return round(a, scale, RoundingMode.HALF_UP);
@@ -1155,7 +1155,7 @@ public final class SafeMath {
    * @param a A byte value to be rounded to the scaled byte.
    * @param scale Ignored for byte type.
    * @return The value of the argument rounded to the nearest {@code byte} value at {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static byte round(final byte a, final int scale) {
     return a;
@@ -1168,7 +1168,7 @@ public final class SafeMath {
    * @param a A short value to be rounded to the scaled short.
    * @param scale Ignored for short type.
    * @return The value of the argument rounded to the nearest {@code short} value at {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static short round(final short a, final int scale) {
     return a;
@@ -1181,7 +1181,7 @@ public final class SafeMath {
    * @param a A int value to be rounded to the scaled int.
    * @param scale Ignored for int type.
    * @return The value of the argument rounded to the nearest {@code int} value at {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static int round(final int a, final int scale) {
     return a;
@@ -1194,7 +1194,7 @@ public final class SafeMath {
    * @param a A long value to be rounded to the scaled long.
    * @param scale Ignored for long type.
    * @return The value of the argument rounded to the nearest {@code long} value at {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static long round(final long a, final int scale) {
     return a;
@@ -1209,13 +1209,13 @@ public final class SafeMath {
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode}
    *         with ties at the given {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static Decimal round(final Decimal a, final short scale, final RoundingMode rm) {
     if (scale < 0)
       throw new IllegalArgumentException("scale < 0: " + scale);
 
-    return assertNotNull(a).setScale(scale, rm);
+    return a.setScale(scale, rm);
   }
 
   /**
@@ -1232,7 +1232,8 @@ public final class SafeMath {
    * @param scale The number of digits after the decimal at which to round.
    * @return The provided {@link Decimal} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties at the given
    *         {@code scale}.
-   * @throws IllegalArgumentException If {@code a} is null, or if scale is negative.
+   * @throws NullPointerException If {@code a} is null.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static Decimal round(final Decimal a, final short scale) {
     return round(a, scale, RoundingMode.HALF_UP);
@@ -1247,7 +1248,8 @@ public final class SafeMath {
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@link BigDecimal} based on the rounding policy of the provided {@link RoundingMode}
    *         with ties at the given {@code scale}.
-   * @throws IllegalArgumentException If {@code a} is null, or if scale is negative.
+   * @throws NullPointerException If {@code a} is null.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static BigDecimal round(final BigDecimal a, final int scale, final RoundingMode rm) {
     if (scale < 0)
@@ -1264,7 +1266,8 @@ public final class SafeMath {
    * @param scale The number of digits after the decimal at which to round.
    * @return The closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
    *         at the given {@code scale}.
-   * @throws IllegalArgumentException If {@code a} is null, or if scale is negative.
+   * @throws NullPointerException If {@code a} is null.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static BigDecimal round(final BigDecimal a, final int scale) {
     return round(a, scale, RoundingMode.HALF_UP);
@@ -1277,7 +1280,7 @@ public final class SafeMath {
    * @param a A BigInteger value to be rounded to the scaled BigInteger.
    * @param scale Ignored for BigInteger type.
    * @return The value of the argument rounded to the nearest {@link BigInteger} value at {@code scale}.
-   * @throws IllegalArgumentException If scale is negative.
+   * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static BigInteger round(final BigInteger a, final int scale) {
     if (scale < 0)
@@ -1395,10 +1398,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The sine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sin(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.sin(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.sin(a, mc);
   }
 
   /**
@@ -1408,10 +1411,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The sine of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sin(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.sin(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.sin(new BigDecimal(a), mc);
   }
 
   /**
@@ -1439,12 +1442,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The positive square root of {@code a}.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sqrt(final BigDecimal a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(mc);
-    return BigDecimalMath.sqrt(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.sqrt(a, mc);
   }
 
   /**
@@ -1454,12 +1455,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The positive square root of {@code a}.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal sqrt(final BigInteger a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(mc);
-    return sqrt(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return sqrt(new BigDecimal(a), mc);
   }
 
   /**
@@ -1481,11 +1480,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to degrees.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toDegrees(final BigDecimal a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(mc);
     // FIXME: 180 / PI should be cached based on mc
     return a.multiply(BigDecimal.valueOf(180), mc).divide(BigDecimals.PI, mc);
   }
@@ -1498,11 +1495,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to degrees.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toDegrees(final BigInteger a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(mc);
     // FIXME: 180 / PI should be cached based on mc
     return new BigDecimal(a.multiply(BigInteger.valueOf(180)), mc).divide(BigDecimals.PI, mc);
   }
@@ -1526,11 +1521,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to radians.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toRadians(final BigDecimal a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(mc);
     // FIXME: PI / 180 should be cached based on mc
     return a.divide(BigDecimal.valueOf(180), mc).multiply(BigDecimals.PI, mc);
   }
@@ -1543,10 +1536,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The angle, converted to radians.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toRadians(final BigInteger a, final MathContext mc) {
-    return toRadians(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return toRadians(new BigDecimal(a), mc);
   }
 
   /**
@@ -1572,10 +1565,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The tangent of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal tan(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.tan(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.tan(a, mc);
   }
 
   /**
@@ -1585,10 +1578,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The tangent of the argument.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal tan(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.tan(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.tan(new BigDecimal(a), mc);
   }
 
   /**
@@ -1962,12 +1955,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigInteger b, final BigInteger a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(b);
-    assertNotNull(mc);
     return BigDecimalMath.log(new BigDecimal(a), mc).divide(BigDecimalMath.log(new BigDecimal(b), mc), mc);
   }
 
@@ -1990,12 +1980,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigInteger b, final BigDecimal a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(b);
-    assertNotNull(mc);
     return BigDecimalMath.log(a, mc).divide(BigDecimalMath.log(new BigDecimal(b), mc), mc);
   }
 
@@ -2018,12 +2005,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigDecimal b, final BigInteger a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(b);
-    assertNotNull(mc);
     return BigDecimalMath.log(new BigDecimal(a), mc).divide(BigDecimalMath.log(b, mc), mc);
   }
 
@@ -2046,12 +2030,9 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>b</sub>(a)</code> (logarithm base {@code b} of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a}, {@code b}, or {@code mc} is null.
+   * @throws NullPointerException If {@code a}, {@code b}, or {@code mc} is null.
    */
   public static BigDecimal log(final BigDecimal b, final BigDecimal a, final MathContext mc) {
-    assertNotNull(a);
-    assertNotNull(b);
-    assertNotNull(mc);
     return BigDecimalMath.log(a, mc).divide(BigDecimalMath.log(b, mc), mc);
   }
 
@@ -2103,10 +2084,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.log(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.log(new BigDecimal(a), mc);
   }
 
   /**
@@ -2123,10 +2104,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>e</sub>(a)</code>, (i.e. the natural logarithm of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.log(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.log(a, mc);
   }
 
   /**
@@ -2180,10 +2161,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>10</sub>(a)</code>, (i.e. the base {@code 10} logarithm of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log10(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.log10(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.log10(new BigDecimal(a), mc);
   }
 
   /**
@@ -2201,10 +2182,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>10</sub>(a)</code>, (i.e. the base {@code 10} logarithm of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log10(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.log10(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.log10(a, mc);
   }
 
   /**
@@ -2256,10 +2237,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>2</sub>(a)</code>, (i.e. the base {@code 2} logarithm of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log2(final BigInteger a, final MathContext mc) {
-    return BigDecimalMath.log2(new BigDecimal(assertNotNull(a)), assertNotNull(mc));
+    return BigDecimalMath.log2(new BigDecimal(a), mc);
   }
 
   /**
@@ -2275,10 +2256,10 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value <code>log<sub>2</sub>(a)</code>, (i.e. the base {@code 2} logarithm of {@code a}).
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
-   * @throws IllegalArgumentException If {@code a} or {@code mc} is null.
+   * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal log2(final BigDecimal a, final MathContext mc) {
-    return BigDecimalMath.log2(assertNotNull(a), assertNotNull(mc));
+    return BigDecimalMath.log2(a, mc);
   }
 
   /**

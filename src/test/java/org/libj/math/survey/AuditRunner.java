@@ -57,6 +57,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 import org.libj.lang.Classes;
 import org.libj.lang.PackageLoader;
+import org.libj.lang.Systems;
 import org.libj.util.IdentityHashSet;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
@@ -65,15 +66,13 @@ import net.bytebuddy.dynamic.loading.ClassInjector;
 public class AuditRunner extends BlockJUnit4ClassRunner {
   private static final String classpath = System.getProperty("java.class.path");
   private static final File resultDir = new File("src/test/html");
-  private static final boolean skipRTests;
+  private static final boolean skipRTests = Systems.hasProperty("skipRTests");
   private static final Instrumentation instr;
   private static final Map<String,String> links = new HashMap<>();
 
   static {
     resultDir.mkdirs();
 
-    final String skipRTestsProp = System.getProperty("skipRTests");
-    skipRTests = skipRTestsProp != null && !skipRTestsProp.equals("false");
     if (skipRTests) {
       instr = null;
     }

@@ -152,7 +152,7 @@ public class BigIntStudy extends BigIntTest {
     for (int i = 0; i < 1000; ++i) { // [N]
       for (int j = 1; j < 19; ++j) { // [N]
         final long random = randomLong(j);
-        assertEquals(j + " " + String.valueOf(random), j, Numbers.precision(random));
+        assertEquals(j + " " + random, j, Numbers.precision(random));
       }
     }
   }

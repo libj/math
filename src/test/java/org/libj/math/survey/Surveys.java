@@ -261,20 +261,21 @@ public abstract class Surveys {
           errors[s][d * variables + v + 1] = error[v][d].toString();
     }
 
-    String out;
+    StringBuilder out;
     if (hasError()) {
       final String[] tables = {builder.toString(), "\nerror profile\n" + Tables.printTable(true, Align.CENTER, Align.RIGHT, variables, false, errors)};
-      out = Tables.printTable(false, Align.LEFT, Align.LEFT, 1, false, tables);
+      out = new StringBuilder(Tables.printTable(false, Align.LEFT, Align.LEFT, 1, false, tables));
     }
     else {
-      out = builder.toString();
+      out = builder;
     }
 
     if (canvas != null)
-      out += "\n" + canvas.toString();
+      out.append('\n').append(canvas);
 
     // Remove redundant Color RESET->SET
-    return out.replace("\033[0;39m\033[", "\033[");
+    Strings.replace(out, "\033[0;39m\033[", "\033[");
+    return out.toString();
   }
 
   private static String color(final String row, final long val, final long min, final long max, final int s, final int len) {

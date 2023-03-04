@@ -37,10 +37,9 @@ public class MovingNormal {
    * @param toIndex The to index.
    * @throws ArrayIndexOutOfBoundsException If the given {@code fromIndex} or {@code toIndex} is out of range.
    * @throws IllegalArgumentException If {@code fromIndex > toIndex}.
-   * @throws IllegalArgumentException If {@code values} is null.
+   * @throws NullPointerException If {@code values} is null.
    */
   public void normalize(final int fromIndex, final int toIndex, final double ... values) {
-    assertNotNull(values);
     assertRange("fromIndex", fromIndex, "toIndex", toIndex, "values.length", values.length);
 
     for (int i = fromIndex; i < toIndex; ++i, ++count) { // [A]
