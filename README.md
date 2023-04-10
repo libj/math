@@ -35,7 +35,7 @@ An arbitrary-precision integer replacement for `java.math.BigInteger`, with the 
    1. **JNI**: <ins>Java Native</ins> JNI integration for faster performance, with regular function overhead.<sup>**[\*](#jni1)**</sup>
    1. **JIT**: <ins>Java Bytecode</ins> implementation designed to be optimized by JIT compilation.
 
-<a id="jni1"></a>_<sup>\* Native Bindings are present in the built JAR for MacOS (x64 and M1), Linux (x64), and Windows (x64), and are loaded by default on system startup.</sup>_<br>
+<a id="jni1"></a>_<sup>\* Native Bindings are present in the built JAR for MacOS (x64 and Arm64), Linux (x64), and Windows (x64), and are loaded by default on system startup.</sup>_<br>
 <a id="jni2"></a>_<sup>\*\* To use <ins>Critical Native</ins> JNI bindings, the JVM must be launched with `-Xcomp`.</sup>_
 
 ##### Bare `int[]` <ins>value-encoded number</ins> arrays
@@ -53,7 +53,7 @@ The bare `int[]` array can therefore be used as a feature-equivalent replacement
 
 #### Getting Started
 
-`BigInt` is bundled with this module, which is available in the [Maven Central Repository](https://mvnrepository.com/artifact/org.libj/math). The `BigInt` implementation provides JNI bindings for MacOS, Linux and Windows platforms (64-bit), which can improve performance significantly. The JNI bindings are activated automatically, unless `-Dorg.libj.math.BigInt.noNative` is specified as a system property. The JNI bindings were built with Intel compilers, and are _as statically linked as can be_. The bindings also rely on the following shared libraries:
+`BigInt` is bundled with this module, which is available in the [Maven Central Repository](https://mvnrepository.com/artifact/org.libj/math). The `BigInt` implementation provides JNI bindings for MacOS (x64 and Arm64), Linux and Windows platforms (x64), which can improve performance significantly. The JNI bindings are activated automatically, unless `-Dorg.libj.math.BigInt.noNative` is specified as a system property. The JNI bindings were built with Intel compilers, and are _as statically linked as can be_. The bindings also rely on the following shared libraries:
 
 ##### Prerequisites
 
