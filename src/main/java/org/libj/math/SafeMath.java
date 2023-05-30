@@ -1209,6 +1209,7 @@ public final class SafeMath {
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode}
    *         with ties at the given {@code scale}.
+   * @throws NullPointerException If {@code a} or {@code rm} is null.
    * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static Decimal round(final Decimal a, final short scale, final RoundingMode rm) {
@@ -1248,7 +1249,7 @@ public final class SafeMath {
    * @param rm The {@link RoundingMode} to be used for rounding.
    * @return The rounded value of the specified {@link BigDecimal} based on the rounding policy of the provided {@link RoundingMode}
    *         with ties at the given {@code scale}.
-   * @throws NullPointerException If {@code a} is null.
+   * @throws NullPointerException If {@code a} or {@code rm} is null.
    * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static BigDecimal round(final BigDecimal a, final int scale, final RoundingMode rm) {
