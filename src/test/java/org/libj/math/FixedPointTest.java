@@ -264,6 +264,6 @@ public class FixedPointTest extends DecimalOperationTest {
   public void testBinaryPrecisionRequiredForValue() {
     assertEquals(0, bitLength(0));
     for (int i = 1; i < Long.SIZE; ++i) // [N]
-      assertEquals(String.valueOf(i), i, bitLength((long)Math.pow(2, i - 1)));
+      assertEquals(String.valueOf(i), i, bitLength(1L << (i - 1)));
   }
 }

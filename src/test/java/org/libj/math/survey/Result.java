@@ -35,35 +35,33 @@ public class Result {
 
   public Result(final Class<?>[] auditClasses, final Class<?>[] allClasses) {
     this.auditClasses = auditClasses;
-    this.classTypes = filterTypes(allClasses, false, 0, 0);
-    this.arrayTypes = filterTypes(allClasses, true, 0, 0);
-    this.resultClassNames = classesToNames(allClasses, 0, 0);
+    this.classTypes = filterTypes(allClasses, false, allClasses.length, 0, 0);
+    this.arrayTypes = filterTypes(allClasses, true, allClasses.length, 0, 0);
+    this.resultClassNames = classesToNames(allClasses, allClasses.length, 0, 0);
     this.counts = new int[allClasses.length];
   }
 
-  private static String[] classesToNames(final Class<?>[] classes, final int index, final int depth) {
-    if (index == classes.length)
+  private static String[] classesToNames(final Class<?>[] classes, final int length, final int index, final int depth) {
+    if (index == length)
       return new String[depth];
 
     final String name = classes[index] == null ? null : classes[index].getCanonicalName();
     if (name == null)
-      return classesToNames(classes, index + 1, depth);
+      return classesToNames(classes, length, index + 1, depth);
 
-    final String[] names = classesToNames(classes, index + 1, depth + 1);
+    final String[] names = classesToNames(classes, length, index + 1, depth + 1);
     names[depth] = name;
     return names;
   }
 
-  private static Class<?>[] filterTypes(final Class<?>[] classes, final boolean arrayOrClass, final int index, final int depth) {
-    if (index == classes.length)
+  private static Class<?>[] filterTypes(final Class<?>[] classes, final boolean arrayOrClass, final int length, final int index, final int depth) {
+    if (index == length)
       return new Class<?>[depth];
 
-    if (classes[index] == null)
-      System.out.println();
     if (arrayOrClass != classes[index].isArray())
-      return filterTypes(classes, arrayOrClass, index + 1, depth);
+      return filterTypes(classes, arrayOrClass, length, index + 1, depth);
 
-    final Class<?>[] names = filterTypes(classes, arrayOrClass, index + 1, depth + 1);
+    final Class<?>[] names = filterTypes(classes, arrayOrClass, length, index + 1, depth + 1);
     names[depth] = classes[index];
     return names;
   }

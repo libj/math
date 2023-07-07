@@ -28,7 +28,6 @@ import org.libj.lang.Constants;
 import org.libj.lang.Numbers;
 import org.libj.lang.Strings;
 
-@SuppressWarnings("unused")
 public class DecimalDivisionStudy {
   private static final long DIVISOR_MAX = Long.MAX_VALUE / 10;
   private static final Random random = new Random();
@@ -188,7 +187,7 @@ public class DecimalDivisionStudy {
   }
 
   public static double getMantissa(final double x, final int exp) {
-    return x / Math.pow(2, exp);
+    return x / (1 << exp);
   }
 
   @Test
@@ -202,12 +201,11 @@ public class DecimalDivisionStudy {
       final double rem10 = exp - exp10f;
       final int exp10 = (int)exp10f;
 
-      long x = 1000000000000000000L;
       final double man2 = getMantissa(v, exp2);
       final double man10 = man2 * Math.exp((exp10f + rem10 - exp10) * Constants.LOG_10);
 
       System.err.println(v);
-      System.err.println(man2 * Math.pow(2, exp2) + " " + man2 + " " + man2);
+      System.err.println(man2 * (1 << exp2) + " " + man2 + " " + man2);
       System.err.println(man10 + " " + exp10);
       System.err.println("----");
     }

@@ -39,7 +39,7 @@ import org.libj.lang.Strings.Align;
 import org.openjax.xml.api.CharacterDatas;
 
 public class AuditReport {
-  public static boolean isInTest;
+  static boolean isInTest;
   private static AuditReport instance;
 
   public static void allocate(final String from, final String className) {
@@ -48,19 +48,18 @@ public class AuditReport {
   }
 
   private static File toFile(final Set<Rule> rules) throws IOException {
-    final StringBuilder builder = new StringBuilder();
+    final StringBuilder b = new StringBuilder();
     if (rules.size() > 0) {
       for (final Rule rule : rules) { // [S]
-        if (builder.length() > 0)
-          builder.append("\n\n");
+        if (b.length() > 0)
+          b.append("\n\n");
 
-        builder.append(rule);
+        b.append(rule);
       }
     }
 
-    // System.out.println(builder);
     final Path path = Files.createTempFile("rules", "btm");
-    Files.write(path, builder.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    Files.write(path, b.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     return path.toFile();
   }
 
@@ -147,8 +146,8 @@ public class AuditReport {
   }
 
   private final LinkedHashMap<List<Object>,Map<Integer,String[]>> methodLabelToResults = new LinkedHashMap<>();
-  private final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = new HashMap<>();
-  private final Map<Method,Map<Integer,String>> methodToModeToComment = new HashMap<>();
+  private final HashMap<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = new HashMap<>();
+  private final HashMap<Method,LinkedHashMap<Integer,String>> methodToModeToComment = new HashMap<>();
 
   private LinkedHashMap<List<String>,List<Object>[]> getHeadersToSummaries() {
     LinkedHashMap<List<String>,List<Object>[]> summaries = headersToSummaries.get(mode);
@@ -207,7 +206,7 @@ public class AuditReport {
       out.println("<pre><code>");
     }
 
-    final StringBuilder builder = new StringBuilder();
+    final StringBuilder b = new StringBuilder();
     // First print the summaries
     final Map<Integer,LinkedHashMap<List<String>,List<Object>[]>> headersToSummaries = this.headersToSummaries;
     if (headersToSummaries.size() > 0) {
@@ -221,39 +220,42 @@ public class AuditReport {
               columns[c] = entry2.getValue()[c].toArray();
             }
 
-            builder.append(getTitle(mode)).append('\n');
-            builder.append(Tables.printTable(true, Align.CENTER, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
+            b.append(getTitle(mode)).append('\n');
+            b.append(Tables.printTable(true, Align.CENTER, Align.RIGHT, Integer.valueOf(entry2.getKey().get(entry2.getKey().size() - 1)), true, columns)).append('\n');
           }
         }
       }
     }
 
-    if (builder.length() > 1)
-      builder.setLength(builder.length() - 1);
+    if (b.length() > 1)
+      b.setLength(b.length() - 1);
 
-    System.out.println(builder.toString());
+    System.out.println(b.toString());
     if (out != null) {
-      out.println(Ansi.toHtml(CharacterDatas.escapeForElem(builder.toString())));
+      out.println(Ansi.toHtml(CharacterDatas.escapeForElem(b.toString())));
       out.println("</code></pre>\n");
     }
 
     // Next print the detailed results
     if (methodLabelToResults.size() > 0) {
-      for (final Map.Entry<List<Object>,Map<Integer,String[]>> result : methodLabelToResults.entrySet()) { // [S]
-        final Map<Integer,String[]> value = result.getValue();
-        if (value.size() > 0) {
-          final Iterator<Map.Entry<Integer,String[]>> iterator = value.entrySet().iterator();
+      for (final Map.Entry<List<Object>,Map<Integer,String[]>> resultsEntry : methodLabelToResults.entrySet()) { // [S]
+        final List<Object> methodLabel = resultsEntry.getKey();
+        final Map<Integer,String[]> results = resultsEntry.getValue();
+        if (results.size() > 0) {
+          final Iterator<Map.Entry<Integer,String[]>> iterator = results.entrySet().iterator();
           for (int i = 0; iterator.hasNext(); ++i) { // [I]
-            final Map.Entry<Integer,String[]> entry = iterator.next();
+            final Map.Entry<Integer,String[]> resultEntry = iterator.next();
+            final Integer resultKey = resultEntry.getKey();
+            String[] resultValue = resultEntry.getValue();
             if (out != null) {
               if (i == 0) {
-                final String methodName = entry.getValue()[0];
+                final String methodName = resultValue[0];
                 out.println("<h5><a name=\"" + getAnchor(methodName) + "\"><code>" + CharacterDatas.escapeForElem(methodName) + "</code></a></h5>\n");
 
-                final Method key = (Method)result.getKey().get(0);
-                final Map<Integer,String> modeToComment = methodToModeToComment.get(key);
+                final Method method = (Method)methodLabel.get(0);
+                final Map<Integer,String> modeToComment = methodToModeToComment.get(method);
                 if (modeToComment != null) {
-                  final String comment = modeToComment.get(entry.getKey());
+                  final String comment = modeToComment.get(resultKey);
                   if (comment != null)
                     out.println("<p>" + mdToHtml(comment, links).replace("\n", "<br>") + "</p>\n");
                 }
@@ -261,12 +263,12 @@ public class AuditReport {
                 out.println("<pre><code>");
               }
 
-              out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(entry.getKey()))));
-              out.println(Ansi.toHtml(CharacterDatas.escapeForElem(entry.getValue()[1])));
+              out.println(Ansi.toHtml(CharacterDatas.escapeForElem(getTitle(resultKey))));
+              out.println(Ansi.toHtml(CharacterDatas.escapeForElem(resultValue[1])));
             }
 
-            System.out.println(getTitle(entry.getKey()));
-            System.out.println(entry.getValue()[1]);
+            System.out.println(getTitle(resultKey));
+            System.out.println(resultValue[1]);
           }
         }
 
@@ -294,7 +296,7 @@ public class AuditReport {
     if (this.mode != mode)
       return;
 
-    Map<Integer,String> modeToComment = methodToModeToComment.get(method);
+    LinkedHashMap<Integer,String> modeToComment = methodToModeToComment.get(method);
     if (modeToComment == null)
       methodToModeToComment.put(method, modeToComment = new LinkedHashMap<>());
 
@@ -304,13 +306,13 @@ public class AuditReport {
 
   static String mdToHtml(final String str, final Map<String,String> links) {
     char ch0, ch1 = Character.MAX_VALUE;
-    final StringBuilder builder = new StringBuilder();
+    final StringBuilder b = new StringBuilder();
     boolean code = false;
     int a = -1;
     for (int i = 0, i$ = str.length(); i < i$; ++i, ch1 = ch0) { // [N]
       ch0 = str.charAt(i);
       if (ch0 == '`') {
-        builder.append(code ? "</code>" : "<code>");
+        b.append(code ? "</code>" : "<code>");
         code = !code;
       }
       else if (ch0 == '[') {
@@ -318,24 +320,24 @@ public class AuditReport {
           final int end = str.indexOf(']', i + 1);
           final String link = str.substring(i + 1, end);
           final String href = links.get(link);
-          builder.insert(a, href);
+          b.insert(a, href);
           a = -1;
           i = end;
         }
         else {
-          builder.append("<a href=\"");
-          a = builder.length();
-          builder.append("\">");
+          b.append("<a href=\"");
+          a = b.length();
+          b.append("\">");
         }
       }
       else if (ch0 == ']') {
-        builder.append("</a>");
+        b.append("</a>");
       }
       else {
-        builder.append(ch0);
+        b.append(ch0);
       }
     }
 
-    return builder.toString();
+    return b.toString();
   }
 }

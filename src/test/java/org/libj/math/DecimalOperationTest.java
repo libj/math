@@ -82,7 +82,7 @@ public abstract class DecimalOperationTest {
     epsilonFormatter.setMinimumFractionDigits(0);
     expectedFormatter.setPositivePrefix("");
     for (int i = 0, i$ = pow2.length; i < i$; ++i) // [A]
-      pow2[i] = (long)Math.pow(2, i);
+      pow2[i] = 1L << i;
 
     if (Files.exists(errorPath)) {
       errorFile = errorPath.toFile();
