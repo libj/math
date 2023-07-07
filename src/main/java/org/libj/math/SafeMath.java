@@ -22,12 +22,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.HashMap;
 
 import org.libj.lang.BigDecimals;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
-
-// FIXME: Add Assertions.*
 
 /**
  * Utility that supplements functions in {@link Math} by providing compiler-safe implementations for common math functions.
@@ -1473,6 +1472,21 @@ public final class SafeMath {
     return StrictMath.toDegrees(a);
   }
 
+  private static final BigDecimal d180 = BigDecimal.valueOf(180);
+  private static final BigInteger i180 = BigInteger.valueOf(180);
+
+  private static final HashMap<MathContext,BigDecimal> mathContextTo180OverPi = new HashMap<MathContext,BigDecimal>() {
+    @Override
+    public BigDecimal get(final Object key) {
+      BigDecimal value = super.get(key);
+      final MathContext mc = (MathContext)key;
+      if (value == null)
+        super.put(mc, value = d180.divide(BigDecimals.PI, mc));
+
+      return value;
+    }
+  };
+
   /**
    * Converts an angle measured in radians to an approximately equivalent angle measured in degrees. The conversion from radians to
    * degrees is generally inexact; users should <i>not</i> expect {@code cos(toRadians(90.0))} to exactly equal {@code 0.0}.
@@ -1484,8 +1498,7 @@ public final class SafeMath {
    * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toDegrees(final BigDecimal a, final MathContext mc) {
-    // FIXME: 180 / PI should be cached based on mc
-    return a.multiply(BigDecimal.valueOf(180), mc).divide(BigDecimals.PI, mc);
+    return a.multiply(mathContextTo180OverPi.get(mc));
   }
 
   /**
@@ -1499,8 +1512,7 @@ public final class SafeMath {
    * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toDegrees(final BigInteger a, final MathContext mc) {
-    // FIXME: 180 / PI should be cached based on mc
-    return new BigDecimal(a.multiply(BigInteger.valueOf(180)), mc).divide(BigDecimals.PI, mc);
+    return new BigDecimal(a.multiply(i180), mc).divide(BigDecimals.PI, mc);
   }
 
   /**
@@ -1525,8 +1537,7 @@ public final class SafeMath {
    * @throws NullPointerException If {@code a} or {@code mc} is null.
    */
   public static BigDecimal toRadians(final BigDecimal a, final MathContext mc) {
-    // FIXME: PI / 180 should be cached based on mc
-    return a.divide(BigDecimal.valueOf(180), mc).multiply(BigDecimals.PI, mc);
+    return a.divide(mathContextTo180OverPi.get(mc), mc);
   }
 
   /**
@@ -3900,9 +3911,9 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
    * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
    */
-  public static byte gcd(byte a, byte b) {
-    assertNotNegative(a, "a must be positive: %d", a);
-    assertNotNegative(b, "b must be positive: %d", b);
+  public static byte gcd(final byte a, final byte b) {
+    assertNotNegative(a, () -> "a must be positive: " + a);
+    assertNotNegative(b, () -> "b must be positive: " + b);
 
     if (a == 0)
       return b;
@@ -3911,20 +3922,21 @@ public final class SafeMath {
       return a;
 
     final int a2 = Integer.numberOfTrailingZeros(a);
-    a >>= a2;
+    byte a1 = a;
+    a1 >>= a2;
 
     final int b2 = Integer.numberOfTrailingZeros(b);
-    b >>= b2;
+    byte b1 = b;
+    b1 >>= b2;
 
-    while (a != b) {
-      a -= b;
-      final int minDeltaOrZero = a & (a >> (Byte.SIZE - 1));
-      a -= minDeltaOrZero << 1;
-      b += minDeltaOrZero;
-      a >>= Integer.numberOfTrailingZeros(a);
+    for (int minDeltaOrZero; a1 != b1; a1 >>= Integer.numberOfTrailingZeros(a1)) { // [N]
+      a1 -= b1;
+      minDeltaOrZero = a1 & (a1 >> (Byte.SIZE - 1));
+      a1 -= minDeltaOrZero << 1;
+      b1 += minDeltaOrZero;
     }
 
-    return a <<= (a2 < b2 ? a2 : b2);
+    return a1 <<= (a2 < b2 ? a2 : b2);
   }
 
   /**
@@ -3936,9 +3948,9 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
    * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
    */
-  public static short gcd(short a, short b) {
-    assertNotNegative(a, "a must be positive: %d", a);
-    assertNotNegative(b, "b must be positive: %d", b);
+  public static short gcd(final short a, final short b) {
+    assertNotNegative(a, () -> "a must be positive: " + a);
+    assertNotNegative(b, () -> "b must be positive: " + b);
 
     if (a == 0)
       return b;
@@ -3947,20 +3959,21 @@ public final class SafeMath {
       return a;
 
     final int a2 = Integer.numberOfTrailingZeros(a);
-    a >>= a2;
+    short a1 = a;
+    a1 >>= a2;
 
     final int b2 = Integer.numberOfTrailingZeros(b);
-    b >>= b2;
+    short b1 = b;
+    b1 >>= b2;
 
-    while (a != b) {
-      a -= b;
-      final int minDeltaOrZero = a & (a >> (Short.SIZE - 1));
-      a -= minDeltaOrZero << 1;
-      b += minDeltaOrZero;
-      a >>= Integer.numberOfTrailingZeros(a);
+    for (int minDeltaOrZero; a1 != b1; a1 >>= Integer.numberOfTrailingZeros(a1)) { // [N]
+      a1 -= b1;
+      minDeltaOrZero = a1 & (a1 >> (Short.SIZE - 1));
+      a1 -= minDeltaOrZero << 1;
+      b1 += minDeltaOrZero;
     }
 
-    return a <<= (a2 < b2 ? a2 : b2);
+    return a1 <<= (a2 < b2 ? a2 : b2);
   }
 
   /**
@@ -3972,9 +3985,9 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
    * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
    */
-  public static int gcd(int a, int b) {
-    assertNotNegative(a, "a must be positive: %d", a);
-    assertNotNegative(b, "b must be positive: %d", b);
+  public static int gcd(final int a, final int b) {
+    assertNotNegative(a, () -> "a must be positive: " + a);
+    assertNotNegative(b, () -> "b must be positive: " + b);
 
     if (a == 0)
       return b;
@@ -3983,20 +3996,19 @@ public final class SafeMath {
       return a;
 
     final int a2 = Integer.numberOfTrailingZeros(a);
-    a >>= a2;
+    int a1 = a >> a2;
 
     final int b2 = Integer.numberOfTrailingZeros(b);
-    b >>= b2;
+    int b1 = b >> b2;
 
-    while (a != b) {
-      a -= b;
-      final int minDeltaOrZero = a & (a >> (Integer.SIZE - 1));
-      a -= minDeltaOrZero << 1;
-      b += minDeltaOrZero;
-      a >>= Integer.numberOfTrailingZeros(a);
+    for (int minDeltaOrZero; a1 != b1; a1 >>= Integer.numberOfTrailingZeros(a1)) { // [N]
+      a1 -= b1;
+      minDeltaOrZero = a1 & (a1 >> (Integer.SIZE - 1));
+      a1 -= minDeltaOrZero << 1;
+      b1 += minDeltaOrZero;
     }
 
-    return a << Math.min(a2, b2);
+    return a1 <<= (a2 < b2 ? a2 : b2);
   }
 
   /**
@@ -4008,9 +4020,9 @@ public final class SafeMath {
    * @throws IllegalArgumentException If {@code a} of {@code b} is negative.
    * @see <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">Binary GCD algorithm</a>
    */
-  public static long gcd(long a, long b) {
-    assertNotNegative(a, "a must be positive: %d", a);
-    assertNotNegative(b, "b must be positive: %d", b);
+  public static long gcd(final long a, final long b) {
+    assertNotNegative(a, () -> "a must be positive: " + a);
+    assertNotNegative(b, () -> "b must be positive: " + b);
 
     if (a == 0)
       return b;
@@ -4019,20 +4031,19 @@ public final class SafeMath {
       return a;
 
     final int a2 = Long.numberOfTrailingZeros(a);
-    a >>= a2;
+    long a1 = a >> a2;
 
     final int b2 = Long.numberOfTrailingZeros(b);
-    b >>= b2;
+    long b1 = b >> b2;
 
-    while (a != b) {
-      a -= b;
-      final long minDeltaOrZero = a & (a >> (Long.SIZE - 1L));
-      a -= minDeltaOrZero << 1;
-      b += minDeltaOrZero;
-      a >>= Long.numberOfTrailingZeros(a);
+    for (long minDeltaOrZero; a1 != b1; a1 >>= Long.numberOfTrailingZeros(a1)) { // [N]
+      a1 -= b1;
+      minDeltaOrZero = a1 & (a1 >> (Long.SIZE - 1));
+      a1 -= minDeltaOrZero << 1;
+      b1 += minDeltaOrZero;
     }
 
-    return a << Math.min(a2, b2);
+    return a1 << Math.min(a2, b2);
   }
 
   private SafeMath() {
