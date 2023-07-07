@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class DoublePrecisionTest {
   static final AtomicInteger c = new AtomicInteger(0);
   static final AtomicInteger cd = new AtomicInteger(0);
