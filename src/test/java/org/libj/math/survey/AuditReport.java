@@ -39,7 +39,7 @@ import org.libj.lang.Strings.Align;
 import org.openjax.xml.api.CharacterDatas;
 
 public class AuditReport {
-  static boolean isInTest;
+  public static boolean isInTest;
   private static AuditReport instance;
 
   public static void allocate(final String from, final String className) {
