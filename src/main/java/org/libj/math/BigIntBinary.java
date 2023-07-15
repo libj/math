@@ -1052,13 +1052,13 @@ abstract class BigIntBinary extends BigIntMagnitude {
         else { // a!=0 && b!=0
           val[j - 1] = -(-a ^ b);
           if (val[j - 1] == 0) { // Perform carry.
-            for (; val[j - 1] == 0 && j < mlen; j++) { // [A]
+            for (; val[j - 1] == 0 && j < mlen; ++j) { // [A]
               val[j] ^= mask[j];
               ++val[j];
             }
 
             final int blen = Math.max(len1, len2);
-            for (; val[j - 1] == 0 && j < blen; j++) // [A]
+            for (; val[j - 1] == 0 && j < blen; ++j) // [A]
               ++val[j];
 
             if (j == val.length)
@@ -1075,7 +1075,7 @@ abstract class BigIntBinary extends BigIntMagnitude {
           }
         }
 
-        for (; j < mlen; j++) // [A]
+        for (; j < mlen; ++j) // [A]
           val[j] ^= mask[j]; // ~(~dig[j]^dig2[j]);
       }
       else {
