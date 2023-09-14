@@ -100,8 +100,9 @@ public class AuditReport {
 
   public void alloc(final String from, final String className) {
     for (int i = 0, i$ = results.length; i < i$; ++i) { // [A]
-      if (results[i].isMatch(from)) {
-        results[i].alloc(className);
+      final Result result = results[i];
+      if (result.isMatch(from)) {
+        result.alloc(className);
         return;
       }
     }
@@ -131,9 +132,10 @@ public class AuditReport {
   public void dump() {
     if (results != null) {
       for (int i = 0, i$ = results.length; i < i$; ++i) { // [A]
-        System.err.println(Arrays.toString(results[i].auditClasses));
-        for (int j = 0, j$ = results[i].resultClassNames.length; j < j$; ++j) { // [A]
-          System.err.println("  " + results[i].resultClassNames[j] + ": " + results[i].getCounts()[j]);
+        final Result result = results[i];
+        System.err.println(Arrays.toString(result.auditClasses));
+        for (int j = 0, j$ = result.resultClassNames.length; j < j$; ++j) { // [A]
+          System.err.println("  " + result.resultClassNames[j] + ": " + result.getCounts()[j]);
         }
       }
     }

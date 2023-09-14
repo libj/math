@@ -846,7 +846,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
         final Thread t1 = new Thread() {
           @Override
           public void run() {
-            // System.err.print(".");
+            // System.err.print('.');
             javaKaratsuba(tmp, x2offl_b2, tmp, y2offl_b1, tmp, tmpoff, tmplen, 0, r, parallelThreshold * 2, parallelThresholdZ * 2);
           }
         };

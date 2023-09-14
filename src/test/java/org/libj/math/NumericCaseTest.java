@@ -26,7 +26,7 @@ public abstract class NumericCaseTest extends CaseTest {
   protected static final double shouldBeEqualFactor = 0; // 0.1;
   protected static final double shouldInflateFactor = 0; // 0.2;
 
-  protected static boolean[] shouldScale = new boolean[3];
+  protected static final boolean[] shouldScale = new boolean[3];
   protected static boolean shouldInflate;
   protected static boolean shouldBeEqual;
 

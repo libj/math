@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.libj.test.TestAide;
 
 public class BigIntBasicTest {
-  private static Random rnd = new Random();
+  private static final Random random = new Random();
 
   @Test
   public void testAddInt() {
@@ -118,12 +118,12 @@ public class BigIntBasicTest {
     me = new BigInt("0");
     facit = BigInteger.ZERO;
     for (int i = 0; i < 1337; ++i) { // [N]
-      long tmp = rnd.nextLong() & ((1L << 32) - 1);
+      long tmp = random.nextLong() & ((1L << 32) - 1);
       me.add(1, (int)tmp);
       final BigInteger x = facit;
       facit = facit.add(BigInteger.valueOf(tmp));
       assertEquals("For-loop " + i + ": " + me + " " + x + " Added: " + tmp + "\n", facit.toString(), me.toString());
-      tmp = rnd.nextLong() >>> 1;
+      tmp = random.nextLong() >>> 1;
       me.add(1, tmp);
       facit = facit.add(BigInteger.valueOf(tmp));
       assertEquals("For-loop2 " + i + ": " + me + " " + facit + " Added: " + tmp + "\n", facit.toString(), me.toString());
@@ -330,7 +330,7 @@ public class BigIntBasicTest {
       BigInteger facit = new BigInteger(new String(s));
       final BigInt dividend = new BigInt(s);
       while (!dividend.isZero()) {
-        final long d = rnd.nextLong();
+        final long d = random.nextLong();
         if (d == 0)
           continue;
 
@@ -353,14 +353,14 @@ public class BigIntBasicTest {
   }
 
   static char[] getRndNumber(final int len) {
-    final int sign = rnd.nextInt(2);
+    final int sign = random.nextInt(2);
     final char[] num = new char[len + sign];
     if (sign > 0)
       num[0] = '-';
 
-    num[sign] = (char)('1' + rnd.nextInt(9));
+    num[sign] = (char)('1' + random.nextInt(9));
     for (int i = sign + 1; i < len + sign; i++) // [N]
-      num[i] = (char)('0' + rnd.nextInt(10));
+      num[i] = (char)('0' + random.nextInt(10));
 
     return num;
   }
@@ -476,8 +476,8 @@ public class BigIntBasicTest {
     facit = facit.flipBit(32);
     assertEquals("Flip bit", facit.toString(), b.toString());
     for (int i = 0; i < 2048; ++i) { // [N]
-      char[] s = getRndNumber(1 + rnd.nextInt(100));
-      int bit = rnd.nextInt(600);
+      char[] s = getRndNumber(1 + random.nextInt(100));
+      int bit = random.nextInt(600);
 
       a.assign(s);
 
@@ -491,7 +491,7 @@ public class BigIntBasicTest {
         }
       }
 
-      bit = rnd.nextInt(600);
+      bit = random.nextInt(600);
       facit = facit.setBit(bit);
       int[] x = a.val().clone();
       while (true) {
@@ -507,7 +507,7 @@ public class BigIntBasicTest {
         }
       }
 
-      bit = rnd.nextInt(600);
+      bit = random.nextInt(600);
       facit = facit.clearBit(bit);
       x = a.val().clone();
       while (true) {
@@ -523,7 +523,7 @@ public class BigIntBasicTest {
         }
       }
 
-      bit = rnd.nextInt(600);
+      bit = random.nextInt(600);
       facit = facit.flipBit(bit);
       x = a.val().clone();
       while (true) {
@@ -575,8 +575,8 @@ public class BigIntBasicTest {
     a.and(new BigInt(0L));
     assertTrue("And with 0", a.isZero());
     for (int i = 0; i < 1024; ++i) { // [N]
-      char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
-      final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
+      char[] s = getRndNumber(1 + random.nextInt(64)), t = getRndNumber(1 + random.nextInt(64));
+      final int sh1 = random.nextInt(4) * 32, sh2 = random.nextInt(4) * 32;
       final BigInt c = a.clone();
       while (true) {
         try {
@@ -640,8 +640,8 @@ public class BigIntBasicTest {
     a.or(new BigInt(0));
     assertEquals("-1 or 0 = ", "-1", a.toString());
     for (int i = 0; i < 1024; ++i) { // [N]
-      char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
-      final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
+      char[] s = getRndNumber(1 + random.nextInt(64)), t = getRndNumber(1 + random.nextInt(64));
+      final int sh1 = random.nextInt(4) * 32, sh2 = random.nextInt(4) * 32;
       a.assign(s);
       b.assign(t);
       a.shiftLeft(sh1);
@@ -670,8 +670,8 @@ public class BigIntBasicTest {
     a.xor(b);
     assertTrue("Double xor is zero", a.isZero());
     for (int i = 0; i < 1024; ++i) { // [N]
-      char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
-      final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
+      char[] s = getRndNumber(1 + random.nextInt(64)), t = getRndNumber(1 + random.nextInt(64));
+      final int sh1 = random.nextInt(4) * 32, sh2 = random.nextInt(4) * 32;
       a.assign(s);
       b.assign(t);
       a.shiftLeft(sh1);
@@ -693,8 +693,8 @@ public class BigIntBasicTest {
     a.andNot(b);
     assertTrue("Self andNot is zero", a.isZero());
     for (int i = 0; i < 1024; ++i) { // [N]
-      char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
-      final int sh1 = rnd.nextInt(4) * 32, sh2 = rnd.nextInt(4) * 32;
+      char[] s = getRndNumber(1 + random.nextInt(64)), t = getRndNumber(1 + random.nextInt(64));
+      final int sh1 = random.nextInt(4) * 32, sh2 = random.nextInt(4) * 32;
       a.assign(s);
       a.shiftLeft(sh1);
       BigInteger facit = new BigInteger(new String(s)).shiftLeft(sh1);
@@ -725,8 +725,8 @@ public class BigIntBasicTest {
     a.not();
     assertTrue("~~0", a.isZero());
     for (int i = 0; i < 1024; ++i) { // [N]
-      final char[] s = getRndNumber(1 + rnd.nextInt(64));
-      final int sh1 = rnd.nextInt(4) * 32;
+      final char[] s = getRndNumber(1 + random.nextInt(64));
+      final int sh1 = random.nextInt(4) * 32;
       a.assign(s);
       a.shiftLeft(sh1);
       a.not();
@@ -749,7 +749,7 @@ public class BigIntBasicTest {
   @Test
   public void testMod() {
     for (int i = 0; i < 1024; ++i) { // [N]
-      char[] s = getRndNumber(1 + rnd.nextInt(64)), t = getRndNumber(1 + rnd.nextInt(64));
+      char[] s = getRndNumber(1 + random.nextInt(64)), t = getRndNumber(1 + random.nextInt(64));
       BigInt a = new BigInt(s), b = new BigInt(t);
       BigInteger aa = new BigInteger(new String(s)), bb = new BigInteger(new String(t));
       if (bb.compareTo(BigInteger.ZERO) <= 0) {

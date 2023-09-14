@@ -114,7 +114,7 @@ public class DecimalDivisionStudy {
     System.err.println(Ansi.apply(Strings.pad(String.valueOf(sum[0]), RIGHT, 12), Color.MAGENTA) + Ansi.apply(Strings.pad(String.valueOf(sum[1]), RIGHT, 12), Color.MAGENTA));
   }
 
-  private static long[][] time = new long[19][];
+  private static final long[][] time = new long[19][];
 
   static {
     for (int i = 0, i$ = time.length; i < i$; ++i) // [A]

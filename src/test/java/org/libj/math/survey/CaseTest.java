@@ -90,8 +90,10 @@ public abstract class CaseTest {
 
     final int p = Math.min(100, (int)Math.round(100d * (i * range + j) / (range * range)));
     if (p > progress) {
-      do
-        System.out.print("╸");
+      do {
+        System.out.print('╸');
+        System.out.flush();
+      }
       while (++progress <= p);
     }
 

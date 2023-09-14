@@ -695,7 +695,7 @@ abstract class BigIntValue extends Number {
    * @return The parsed {@code int}.
    * @complexity O(n)
    */
-  private static int parse(final String s, int fromIndex, final int toIndex) {
+  private static int parse(final CharSequence s, int fromIndex, final int toIndex) {
     int v = s.charAt(fromIndex) - '0';
     while (++fromIndex < toIndex)
       v = v * 10 + s.charAt(fromIndex) - '0';
