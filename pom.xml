@@ -132,6 +132,12 @@
       <version>32.1.2-jre</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.29.2-GA</version>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.libj</groupId>

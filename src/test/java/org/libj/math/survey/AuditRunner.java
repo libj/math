@@ -391,7 +391,13 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
         methodsForAnnotations.clear();
 
         final Method[] methods = Classes.getDeclaredMethodsDeep(getJavaClass());
-        Classes.sortDeclarativeOrder(methods);
+        try {
+          Classes.sortDeclarativeOrder(methods, true);
+        }
+        catch (final ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+
         for (final Method method : methods) { // [A]
           addToAnnotationLists(new FrameworkMethod(method) {
             @Override
