@@ -35,19 +35,20 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 @Ignore
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(UNINSTRUMENTED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalSqrtTest extends DecimalTest {
   private void test(final AuditReport report, final RoundingMode rm, final BigDecimal epsilon) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Square root of `T` (RoundingMode." + rm + ")." + (epsilon == null ? "" : " Note: This has an epsilon, because RoundingMode.HALF_DOWN considers more than just the next digit for rounding."));
     setRoundingMode(rm);
     final MathContext mc = new MathContext(24, rm);
     final long defaultValue = random.nextLong();
-    test("sqrt(" + rm + ")").withEpsilon(epsilon).withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> BigDecimalMath.sqrt(a, mc), o -> o),
-      d(Decimal.class, this::toDecimal, (Decimal a) -> sqrt(a, rm), o -> o),
-      d(long.class, a -> a, (long a) -> sqrt(a, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("sqrt(" + rm + ")").withEpsilon(epsilon)
+      .withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a) -> BigDecimalMath.sqrt(a, mc), o -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a) -> sqrt(a, rm), o -> o),
+        d(long.class, a -> a, (final long a) -> sqrt(a, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test

@@ -19,7 +19,6 @@ package org.libj.math;
 import static org.libj.lang.Assertions.*;
 
 import java.util.Objects;
-import java.util.function.DoubleConsumer;
 
 /**
  * An abstract representation of a mutable {@link Sampler} that represents a window sampler.

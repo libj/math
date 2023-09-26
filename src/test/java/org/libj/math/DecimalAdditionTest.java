@@ -28,19 +28,19 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalAdditionTest extends DecimalTest {
   @Test
   public void testAdd(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Add `T` to `T`.");
 
     final long defaultValue = random.nextLong();
-    test("add").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.add(toBigDecimal(b)), o -> o),
-      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.add(toDecimal(b)), o -> o),
-      d(long.class, (long a, long b) -> Decimal.add(a, b, defaultValue), (long o) -> o == defaultValue ? null : o)
-    );
+    test("add").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.add(toBigDecimal(b)), o -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.add(toDecimal(b)), o -> o),
+        d(long.class, (final long a, final long b) -> Decimal.add(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test
@@ -48,10 +48,10 @@ public class DecimalAdditionTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Subtract `T` from `T`.");
 
     final long defaultValue = random.nextLong();
-    test("sub").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.subtract(toBigDecimal(b)), o -> o),
-      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.sub(toDecimal(b)), o -> o),
-      d(long.class, (long a, long b) -> Decimal.sub(a, b, defaultValue), (long o) -> o == defaultValue ? null : o)
-    );
+    test("sub").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.subtract(toBigDecimal(b)), o -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.sub(toDecimal(b)), o -> o),
+        d(long.class, (final long a, final long b) -> Decimal.sub(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

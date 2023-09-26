@@ -35,8 +35,8 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 @Ignore
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(UNINSTRUMENTED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalTanTest extends DecimalTest {
   // FIXME: Scale is limited here to 2, as a stop-gap.
   private void test(final AuditReport report, final RoundingMode rm) {
@@ -44,11 +44,12 @@ public class DecimalTanTest extends DecimalTest {
     setRoundingMode(rm);
     final MathContext mc = new MathContext(34, rm);
     final long defaultValue = random.nextLong();
-    test("tan(" + rm + ")").withEpsilon(null).withAuditReport(report).withCases(
-      d(BigDecimal.class, a -> toBigDecimal(lim(a, Long.MAX_VALUE, 2)), (BigDecimal a) -> BigDecimalMath.tan(a, mc), o -> o),
-      d(Decimal.class, a -> toDecimal(lim(a, Long.MAX_VALUE, 2)), (Decimal a) -> tan(a, rm), o -> o),
-      d(long.class, a -> lim(a, Long.MAX_VALUE, 2), (long a) -> tan(a, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("tan(" + rm + ")").withEpsilon(null)
+      .withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, a -> toBigDecimal(lim(a, Long.MAX_VALUE, 2)), (final BigDecimal a) -> BigDecimalMath.tan(a, mc), o -> o),
+        d(Decimal.class, a -> toDecimal(lim(a, Long.MAX_VALUE, 2)), (final Decimal a) -> tan(a, rm), o -> o),
+        d(long.class, a -> lim(a, Long.MAX_VALUE, 2), (final long a) -> tan(a, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test

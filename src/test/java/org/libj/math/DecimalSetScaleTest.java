@@ -32,8 +32,8 @@ import org.libj.math.survey.CaseTest;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalSetScaleTest extends DecimalTest {
   public void test(final AuditReport report, final RoundingMode rm) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Set scale of `T` (RoundingMode." + rm + ").");
@@ -77,11 +77,11 @@ public class DecimalSetScaleTest extends DecimalTest {
 
     final long defaultValue = random.nextLong();
 
-    test("setScale").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, b -> (byte)b, (BigDecimal a, long b) -> BigDecimals.setScale(a, (byte)b, rm), o -> o),
-      d(Decimal.class, this::toDecimal, b -> (byte)b, (Decimal a, long b) -> a.setScale((byte)b, rm), o -> o),
-      d(long.class, a -> a, b -> (byte)b, (long a, long b) -> Decimal.setScale(a, (byte)b, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("setScale").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, b -> (byte)b, (final BigDecimal a, final long b) -> BigDecimals.setScale(a, (byte)b, rm), o -> o),
+        d(Decimal.class, this::toDecimal, b -> (byte)b, (final Decimal a, final long b) -> a.setScale((byte)b, rm), o -> o),
+        d(long.class, a -> a, b -> (byte)b, (final long a, final long b) -> Decimal.setScale(a, (byte)b, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test

@@ -87,7 +87,7 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   static int[] alloc(final int len) {
-//    System.err.println("alloc");
+    // System.err.println("alloc");
     return new int[32 + len];
   }
 
@@ -124,8 +124,8 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Assigns the content of {@code copyLength} number of elements of the specified source array to the provided target array,
-   * ensuring the length of the target array is at least {@code arrayLength}.
+   * Assigns the content of {@code copyLength} number of elements of the specified source array to the provided target array, ensuring
+   * the length of the target array is at least {@code arrayLength}.
    *
    * @implNote The returned array may be a {@code new int[]} instance if the length of the provided target array not sufficient to
    *           satisfy the required {@code arrayLength}.
@@ -156,8 +156,8 @@ abstract class BigIntValue extends Number {
    *
    * @param val The {@linkplain BigInt#val() value-encoded number} to trim.
    * @return A {@code int[]} with its length less than or equal to the length of the provided {@linkplain BigInt#val() value-encoded
-   *         number}. If the length of the provided array is less than or equal to {@code length}, the provided instance is
-   *         returned; otherwise, a new {@code int[]} is created.
+   *         number}. If the length of the provided array is less than or equal to {@code length}, the provided instance is returned;
+   *         otherwise, a new {@code int[]} is created.
    * @complexity O(n)
    */
   public static int[] trim(final int[] val) {
@@ -166,9 +166,9 @@ abstract class BigIntValue extends Number {
 
   /**
    * Trims the provided {@linkplain BigInt#val() value-encoded number} to the given {@code len} (which is equal to
-   * {@code Math.abs(val[0])}. This is merely a shortcut function to avoid having to evaluate {@code Math.abs(val[0])} if it is
-   * known by the calling frame. If the length of the provided array is less than or equal to {@code len + 1}, the provided instance
-   * is returned; otherwise, a new {@code int[]} is created.
+   * {@code Math.abs(val[0])}. This is merely a shortcut function to avoid having to evaluate {@code Math.abs(val[0])} if it is known
+   * by the calling frame. If the length of the provided array is less than or equal to {@code len + 1}, the provided instance is
+   * returned; otherwise, a new {@code int[]} is created.
    *
    * @param val The {@linkplain BigInt#val() value-encoded number} to trim.
    * @param len The number of limbs in the {@linkplain BigInt#val() value-encoded number}.
@@ -281,8 +281,8 @@ abstract class BigIntValue extends Number {
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code long}.
    * @param mag The magnitude (unsigned).
-   * @return The result of assigning an <i>unsigned</i> {@code long} magnitude to the provided {@linkplain BigInt#val()
-   *         value-encoded number}.
+   * @return The result of assigning an <i>unsigned</i> {@code long} magnitude to the provided {@linkplain BigInt#val() value-encoded
+   *         number}.
    * @complexity O(1)
    */
   public static int[] assign(final int[] val, final boolean sig, final long mag) {
@@ -300,8 +300,8 @@ abstract class BigIntValue extends Number {
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param sig The sign of the unsigned {@code long}.
    * @param mag The magnitude (unsigned).
-   * @return The result of assigning an <i>unsigned</i> {@code long} magnitude to the provided {@linkplain BigInt#val()
-   *         value-encoded number}.
+   * @return The result of assigning an <i>unsigned</i> {@code long} magnitude to the provided {@linkplain BigInt#val() value-encoded
+   *         number}.
    * @complexity O(1)
    */
   public static int[] assign(final int[] val, final int sig, final long mag) {
@@ -374,9 +374,8 @@ abstract class BigIntValue extends Number {
    * @param mag The two's-complement binary representation of a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @param littleEndian Whether the specified byte array is encoded in <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @return The result of assigning a byte array containing the two's-complement binary representation of a
-   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a {@linkplain BigInt#val() value-encoded
-   *         <code>int[]</code>}.
+   * @return The result of assigning a byte array containing the two's-complement binary representation of a {@linkplain BigInt#val()
+   *         value-encoded <code>int[]</code>} into a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @complexity O(n^2)
    */
   public static int[] assign(final int[] val, final byte[] mag, final boolean littleEndian) {
@@ -398,9 +397,8 @@ abstract class BigIntValue extends Number {
    * @param len The number of bytes to use.
    * @param littleEndian Whether the specified byte array is encoded in <i>little-endian</i> ({@code true}), or <i>big-endian</i>
    *          ({@code false}).
-   * @return The result of assigning a byte array containing the two's-complement binary representation of a
-   *         {@linkplain BigInt#val() value-encoded <code>int[]</code>} into a {@linkplain BigInt#val() value-encoded
-   *         <code>int[]</code>}.
+   * @return The result of assigning a byte array containing the two's-complement binary representation of a {@linkplain BigInt#val()
+   *         value-encoded <code>int[]</code>} into a {@linkplain BigInt#val() value-encoded <code>int[]</code>}.
    * @complexity O(n^2)
    */
   public static int[] assign(final int[] val, final byte[] mag, final int off, final int len, final boolean littleEndian) {
@@ -427,8 +425,7 @@ abstract class BigIntValue extends Number {
     for (keep = off + len - 1; keep >= indexBound && mag[keep] == -1; --keep);
 
     /*
-     * Allocate output array. If all non-sign bytes are 0x00, we must allocate
-     * space for one extra output byte.
+     * Allocate output array. If all non-sign bytes are 0x00, we must allocate space for one extra output byte.
      */
     for (k = keep; k >= indexBound && mag[k] == 0; --k);
 
@@ -438,8 +435,7 @@ abstract class BigIntValue extends Number {
       val = alloc(vlen + 1);
 
     /*
-     * Copy one's complement of input into output, leaving extra byte (if it
-     * exists) == 0x00
+     * Copy one's complement of input into output, leaving extra byte (if it exists) == 0x00
      */
     for (int i = 1, j, b = indexBound, numBytesToTransfer, lim, mask; i <= vlen; ++i) { // [A]
       numBytesToTransfer = Math.max(0, Math.min(3, keep - b));
@@ -496,8 +492,8 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Takes a big-endian array a representing a negative 2's-complement number and returns the minimal (no leading zero bytes)
-   * unsigned whose value is -a.
+   * Takes a big-endian array a representing a negative 2's-complement number and returns the minimal (no leading zero bytes) unsigned
+   * whose value is -a.
    */
   private static int[] assignNegativeBigEndian(int[] val, final byte[] mag, final int off, final int len) {
     final int indexBound = off + len;
@@ -507,8 +503,7 @@ abstract class BigIntValue extends Number {
     for (keep = off; keep < indexBound && mag[keep] == -1; ++keep);
 
     /*
-     * Allocate output array. If all non-sign bytes are 0x00, we must allocate
-     * space for one extra output byte.
+     * Allocate output array. If all non-sign bytes are 0x00, we must allocate space for one extra output byte.
      */
     for (k = keep; k < indexBound && mag[k] == 0; ++k);
 
@@ -518,8 +513,7 @@ abstract class BigIntValue extends Number {
       val = alloc(vlen + 1);
 
     /*
-     * Copy one's complement of input into output, leaving extra byte (if it
-     * exists) == 0x00
+     * Copy one's complement of input into output, leaving extra byte (if it exists) == 0x00
      */
     for (int i = 1, j, b = indexBound - 1, numBytesToTransfer, lim, mask; i <= vlen; ++i) { // [A]
       numBytesToTransfer = Math.max(0, Math.min(3, b - keep));
@@ -704,8 +698,7 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Multiplies the provided {@linkplain BigInt#val() value-encoded number} with {@code mul}, adds {@code add}, and returns the
-   * carry.
+   * Multiplies the provided {@linkplain BigInt#val() value-encoded number} with {@code mul}, adds {@code add}, and returns the carry.
    *
    * <pre>
    * val = val * mul + add
@@ -863,7 +856,9 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static long longValue(final int[] val) {
-    int sig = 1; int len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    int sig = 1;
+    int len = val[0];
+    if (len < 0) { len = -len; sig = -1; }
     return longValue(val, 1, len, sig);
   }
 
@@ -923,7 +918,8 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static float floatValue(final int[] val) {
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    int sig = 1, len = val[0];
+    if (len < 0) { len = -len; sig = -1; }
     return floatValue(val, 1, len, sig);
   }
 
@@ -954,12 +950,10 @@ abstract class BigIntValue extends Number {
       return sig > 0 ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
 
     /*
-     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit.
-     * To make rounding easier, we pick out the top SIGNIFICAND_WIDTH + 1 bits,
-     * so we have one to help us round up or down. twiceSignifFloor will contain
-     * the top SIGNIFICAND_WIDTH + 1 bits, and signifFloor the top
-     * SIGNIFICAND_WIDTH. It helps to consider the real number signif =
-     * abs(this) * 2^(SIGNIFICAND_WIDTH - 1 - exponent).
+     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit. To make rounding easier, we pick out the top
+     * SIGNIFICAND_WIDTH + 1 bits, so we have one to help us round up or down. twiceSignifFloor will contain the top SIGNIFICAND_WIDTH +
+     * 1 bits, and signifFloor the top SIGNIFICAND_WIDTH. It helps to consider the real number signif = abs(this) * 2^(SIGNIFICAND_WIDTH
+     * - 1 - exponent).
      */
     final int shift = exponent - FloatingDecimal.SIGNIFICAND_WIDTH_FLOAT;
 
@@ -980,21 +974,18 @@ abstract class BigIntValue extends Number {
     final int signifFloor = twiceSignifFloor >> 1 & FloatingDecimal.SIGNIF_BIT_MASK_FLOAT; // remove the implied bit
 
     /*
-     * We round up if either the fractional part of signif is strictly greater
-     * than 0.5 (which is true if the 0.5 bit is set and any lower bit is set),
-     * or if the fractional part of signif is >= 0.5 and signifFloor is odd
-     * (which is true if both the 0.5 bit and the 1 bit are set). This is
-     * equivalent to the desired HALF_EVEN rounding.
+     * We round up if either the fractional part of signif is strictly greater than 0.5 (which is true if the 0.5 bit is set and any
+     * lower bit is set), or if the fractional part of signif is >= 0.5 and signifFloor is odd (which is true if both the 0.5 bit and
+     * the 1 bit are set). This is equivalent to the desired HALF_EVEN rounding.
      */
     final boolean increment = (twiceSignifFloor & 1) != 0 && ((signifFloor & 1) != 0 || getLowestSetBit(mag) < shift);
     final int signifRounded = increment ? signifFloor + 1 : signifFloor;
     final int bits = ((exponent + FloatingDecimal.EXP_BIAS_FLOAT) << (FloatingDecimal.SIGNIFICAND_WIDTH_FLOAT - 1)) + signifRounded;
 
     /*
-     * If signifRounded == 2^24, we'd need to set all of the significand bits to
-     * zero and add 1 to the exponent. This is exactly the behavior we get from
-     * just adding signifRounded to bits directly. If the exponent is
-     * Float.MAX_EXPONENT, we round up (correctly) to Float.POSITIVE_INFINITY.
+     * If signifRounded == 2^24, we'd need to set all of the significand bits to zero and add 1 to the exponent. This is exactly the
+     * behavior we get from just adding signifRounded to bits directly. If the exponent is Float.MAX_EXPONENT, we round up (correctly)
+     * to Float.POSITIVE_INFINITY.
      */
     return Float.intBitsToFloat(bits | sig & FloatingDecimal.SIGN_BIT_MASK_FLOAT);
   }
@@ -1007,7 +998,8 @@ abstract class BigIntValue extends Number {
    * @complexity O(1)
    */
   public static double doubleValue(final int[] val) {
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    int sig = 1, len = val[0];
+    if (len < 0) { len = -len; sig = -1; }
     return doubleValue(val, 1, len, sig);
   }
 
@@ -1039,12 +1031,10 @@ abstract class BigIntValue extends Number {
       return sig > 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
 
     /*
-     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit.
-     * To make rounding easier, we pick out the top SIGNIFICAND_WIDTH + 1 bits,
-     * so we have one to help us round up or down. twiceSignifFloor will contain
-     * the top SIGNIFICAND_WIDTH + 1 bits, and signifFloor the top
-     * SIGNIFICAND_WIDTH. It helps to consider the real number signif =
-     * abs(this) * 2^(SIGNIFICAND_WIDTH - 1 - exponent).
+     * We need the top SIGNIFICAND_WIDTH bits, including the "implicit" one bit. To make rounding easier, we pick out the top
+     * SIGNIFICAND_WIDTH + 1 bits, so we have one to help us round up or down. twiceSignifFloor will contain the top SIGNIFICAND_WIDTH +
+     * 1 bits, and signifFloor the top SIGNIFICAND_WIDTH. It helps to consider the real number signif = abs(this) * 2^(SIGNIFICAND_WIDTH
+     * - 1 - exponent).
      */
     final int shift = exponent - FloatingDecimal.SIGNIFICAND_WIDTH_DOUBLE;
 
@@ -1073,21 +1063,18 @@ abstract class BigIntValue extends Number {
     final long signifFloor = twiceSignifFloor >> 1 & FloatingDecimal.SIGNIF_BIT_MASK_DOUBLE; // remove the implied bit
 
     /*
-     * We round up if either the fractional part of signif is strictly greater
-     * than 0.5 (which is true if the 0.5 bit is set and any lower bit is set),
-     * or if the fractional part of signif is >= 0.5 and signifFloor is odd
-     * (which is true if both the 0.5 bit and the 1 bit are set). This is
-     * equivalent to the desired HALF_EVEN rounding.
+     * We round up if either the fractional part of signif is strictly greater than 0.5 (which is true if the 0.5 bit is set and any
+     * lower bit is set), or if the fractional part of signif is >= 0.5 and signifFloor is odd (which is true if both the 0.5 bit and
+     * the 1 bit are set). This is equivalent to the desired HALF_EVEN rounding.
      */
     final boolean increment = (twiceSignifFloor & 1) != 0 && ((signifFloor & 1) != 0 || getLowestSetBit(mag) < shift);
     final long signifRounded = increment ? signifFloor + 1 : signifFloor;
     final long bits = ((long)(exponent + FloatingDecimal.EXP_BIAS_DOUBLE) << (FloatingDecimal.SIGNIFICAND_WIDTH_DOUBLE - 1)) + signifRounded;
 
     /*
-     * If signifRounded == 2^53, we'd need to set all of the significand bits to
-     * zero and add 1 to the exponent. This is exactly the behavior we get from
-     * just adding signifRounded to bits directly. If the exponent is
-     * Double.MAX_EXPONENT, we round up (correctly) to Double.POSITIVE_INFINITY.
+     * If signifRounded == 2^53, we'd need to set all of the significand bits to zero and add 1 to the exponent. This is exactly the
+     * behavior we get from just adding signifRounded to bits directly. If the exponent is Double.MAX_EXPONENT, we round up (correctly)
+     * to Double.POSITIVE_INFINITY.
      */
     return Double.longBitsToDouble(bits | sig & FloatingDecimal.SIGN_BIT_MASK_DOUBLE);
   }
@@ -1143,9 +1130,8 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Compares the values of the provided {@linkplain BigInt#val() value-encoded numbers}, and returns one of {@code -1}, {@code 0},
-   * or {@code 1} whether the first number's value is less than, equal to, or greater than that of the second argument,
-   * respectively.
+   * Compares the values of the provided {@linkplain BigInt#val() value-encoded numbers}, and returns one of {@code -1}, {@code 0}, or
+   * {@code 1} whether the first number's value is less than, equal to, or greater than that of the second argument, respectively.
    *
    * @param val1 The first {@linkplain BigInt#val() value-encoded number}.
    * @param val2 The second {@linkplain BigInt#val() value-encoded number}.
@@ -1274,7 +1260,8 @@ abstract class BigIntValue extends Number {
     if (len == 0)
       return 0;
 
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
 
     int hashCode = 0;
     for (; len >= 1; --len) // [A]
@@ -1334,7 +1321,8 @@ abstract class BigIntValue extends Number {
     if (isZero(val))
       return "0";
 
-    int sig = 1, len = val[0]; if (len < 0) { len = -len; sig = -1; }
+    int sig = 1, len = val[0];
+    if (len < 0) { len = -len; sig = -1; }
 
     int j, top = len * 10 + 3;
     final char[] chars = new char[top];
@@ -1364,9 +1352,9 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the number of bits in the minimal two's-complement representation of the provided {@linkplain BigInt#val()
-   * value-encoded number}, <em>excluding</em> a sign bit. For positive numbers, this is equivalent to the number of bits in the
-   * ordinary binary representation. For zero this method returns {@code 0}.
+   * Returns the number of bits in the minimal two's-complement representation of the provided {@linkplain BigInt#val() value-encoded
+   * number}, <em>excluding</em> a sign bit. For positive numbers, this is equivalent to the number of bits in the ordinary binary
+   * representation. For zero this method returns {@code 0}.
    *
    * <pre>
    * ceil(log2(val < 0 ? -val : val + 1))
@@ -1387,9 +1375,9 @@ abstract class BigIntValue extends Number {
   }
 
   /**
-   * Returns the number of bits in the minimal two's-complement representation of the provided {@linkplain BigInt#val()
-   * value-encoded number}, <em>excluding</em> a sign bit. For positive numbers, this is equivalent to the number of bits in the
-   * ordinary binary representation. For zero this method returns {@code 0}.
+   * Returns the number of bits in the minimal two's-complement representation of the provided {@linkplain BigInt#val() value-encoded
+   * number}, <em>excluding</em> a sign bit. For positive numbers, this is equivalent to the number of bits in the ordinary binary
+   * representation. For zero this method returns {@code 0}.
    *
    * <pre>
    * ceil(log2(val < 0 ? -val : val + 1))

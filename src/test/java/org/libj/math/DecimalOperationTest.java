@@ -109,7 +109,7 @@ public abstract class DecimalOperationTest {
   }
 
   private static void logVariables(final long d1, final long d2) {
-    if (logger.isInfoEnabled()) logger.info(c(Color.RED, "----------------------------------------\nd1: (significand = " + d1 + "L, scale = " + scale(d1) + ") d2: (significand = " + d2 + "L, scale = " + scale(d2) + ")"));
+    if (logger.isInfoEnabled()) { logger.info(c(Color.RED, "----------------------------------------\nd1: (significand = " + d1 + "L, scale = " + scale(d1) + ") d2: (significand = " + d2 + "L, scale = " + scale(d2) + ")")); }
   }
 
   private static void writeErrorFile(final long d1, final long d2) {
@@ -232,8 +232,8 @@ public abstract class DecimalOperationTest {
           logVariables(d1, d2);
           final String actu;
           if (actual instanceof Long) {
-//              final short s = decodeScale(((Long)actual).longValue());
-//              expected = ((BigDecimal)expected).setScale(s, RoundingMode.HALF_UP);
+            // final short s = decodeScale(((Long)actual).longValue());
+            // expected = ((BigDecimal)expected).setScale(s, RoundingMode.HALF_UP);
             actu = String.valueOf(((Long)actual).longValue() == defaultValue ? "err" : Decimal.toString((Long)actual));
           }
           else {
@@ -259,7 +259,7 @@ public abstract class DecimalOperationTest {
           }
           errorBuilder.append('}');
 
-          if (logger.isInfoEnabled()) logger.info(function + " = " + expe + "\n" + Strings.pad("= " + actu, LEFT, 3 + actu.length() + function.length()) + Strings.pad(errorBuilder.toString(), LEFT, 1 + errorBuilder.length() + Math.abs(expe.length() - actu.length())));
+          if (logger.isInfoEnabled()) { logger.info(function + " = " + expe + "\n" + Strings.pad("= " + actu, LEFT, 3 + actu.length() + function.length()) + Strings.pad(errorBuilder.toString(), LEFT, 1 + errorBuilder.length() + Math.abs(expe.length() - actu.length()))); }
           try {
             actual = operation.test(d1, d2, bd1, bd2, defaultValue, time);
           }

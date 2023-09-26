@@ -161,7 +161,13 @@ abstract class DecimalAddition extends FixedPoint {
           final int[] val1 = BigInt.assignInPlace(Decimal.buf1.get(), significand1);
           int len = val1[0];
           final int sig;
-          if (len < 0) { len = -len; sig = -1; } else sig = 1;
+          if (len < 0) {
+            len = -len;
+            sig = -1;
+          }
+          else {
+            sig = 1;
+          }
 
           long f = FastMath.longE10[ds2];
           if (ds2 < 10)

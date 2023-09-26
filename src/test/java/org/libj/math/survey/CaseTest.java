@@ -284,10 +284,10 @@ public abstract class CaseTest {
     }
 
     abstract void test(CaseTest caseTest, String label, int skip, BigDecimal epsilon, AuditReport report, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys);
-    abstract <I,O>int test(CaseTest caseTest, String label, BigDecimal epsilon, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys, T inputs);
+    abstract <I,O> int test(CaseTest caseTest, String label, BigDecimal epsilon, Case<?,?,I,?,O>[] cases, Supplier<Surveys> surveys, T inputs);
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    <I,O>int verify(final String label, final Case<?,?,I,Object,O> cse, final BigDecimal epsilon, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
+    <I,O> int verify(final String label, final Case<?,?,I,Object,O> cse, final BigDecimal epsilon, final Object in1, final Object in2, final Object result, final int c, final long time, final Supplier<Surveys> surveys) {
       final Object o;
       if (cse.out == null)
         o = result;
@@ -368,6 +368,7 @@ public abstract class CaseTest {
 
     /**
      * Return the exact string representation of {@code o1}.
+     *
      * @param o1 The object to return as a string.
      * @param resultType The type of the object.
      * @return The exact string representation of {@code o1}.
@@ -485,7 +486,7 @@ public abstract class CaseTest {
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
+    <I,O> int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final int[] inputs) {
       int precision = 0;
       for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final IntCase cse = (IntCase)cases[c];
@@ -678,7 +679,7 @@ public abstract class CaseTest {
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
+    <I,O> int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
       int precision = 0;
       for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final LongCase cse = (LongCase)cases[c];
@@ -927,7 +928,7 @@ public abstract class CaseTest {
           if (i > 1)
             y = y.divide(e10[i - 1], RoundingMode.DOWN);
 
-            y = y.divide(e10[1], rm);
+          y = y.divide(e10[1], rm);
         }
       }
       catch (final ArithmeticException e) {
@@ -1123,7 +1124,7 @@ public abstract class CaseTest {
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
+    <I,O> int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final long[] inputs) {
       int precision = 0;
       for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final DecimalCase cse = (DecimalCase)cases[c];
@@ -1383,7 +1384,7 @@ public abstract class CaseTest {
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    <I,O>int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
+    <I,O> int test(final CaseTest caseTest, final String label, final BigDecimal epsilon, final Case<?,?,I,?,O>[] cases, final Supplier<Surveys> surveys, final String[] inputs) {
       int precision = 0;
       for (int c = 0, c$ = cases.length; c < c$; ++c) { // [A]
         final StringCase cse = (StringCase)cases[c];
@@ -1524,199 +1525,199 @@ public abstract class CaseTest {
     return obj;
   }
 
-  public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final IntFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final IntFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final ObjIntToIntFunction<A> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final ObjIntToIntFunction<A> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final ObjIntFunction<A,R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final Function<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> IntCase<S,A,B,R,O> i(final S subject, final IntFunction<A> aToA, final Function<A,R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,R,O>IntCase<S,A,?,R,O> i(final S subject, final IntFunction<A> aToA, final IntToIntFunction bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,R,O> IntCase<S,A,?,R,O> i(final S subject, final IntFunction<A> aToA, final IntToIntFunction bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntToIntFunction aToA, final BiIntFunction<R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> IntCase<S,A,B,R,O> i(final S subject, final IntToIntFunction aToA, final BiIntFunction<R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>IntCase<S,A,B,R,O> i(final S subject, final IntToIntFunction aToA, final IntToIntFunction test, final IntFunction<O> out) {
+  public static <S,A,B,R,O> IntCase<S,A,B,R,O> i(final S subject, final IntToIntFunction aToA, final IntToIntFunction test, final IntFunction<O> out) {
     return new IntCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final BiIntFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> IntCase<S,Integer,Integer,R,O> i(final S subject, final BiIntFunction<R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 2, null, null, test, out);
   }
 
-  public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final IntToIntFunction aToA, final IntFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> IntCase<S,Integer,Integer,R,O> i(final S subject, final IntToIntFunction aToA, final IntFunction<R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final IntFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> IntCase<S,Integer,Integer,R,O> i(final S subject, final IntFunction<R> test, final Function<R,O> out) {
     return new IntCase<>(subject, 1, null, null, test, out);
   }
 
-  public static <S,R,O>IntCase<S,Integer,Integer,R,O> i(final S subject, final IntToIntFunction test, final IntFunction<O> out) {
+  public static <S,R,O> IntCase<S,Integer,Integer,R,O> i(final S subject, final IntToIntFunction test, final IntFunction<O> out) {
     return new IntCase<>(subject, 1, null, null, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final LongFunction<B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final Function<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final Function<A,R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final LongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final LongToLongFunction test, final LongFunction<O> out) {
     return new LongCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongFunction<R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongFunction<R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,R,O>LongCase<S,Long,Long,R,O> l(final S subject, final BiLongFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> LongCase<S,Long,Long,R,O> l(final S subject, final BiLongFunction<R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, null, null, test, out);
   }
 
-  public static <S,R,O>LongCase<S,Long,Long,R,O> l(final S subject, final LongFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> LongCase<S,Long,Long,R,O> l(final S subject, final LongFunction<R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 1, null, null, test, out);
   }
 
-  public static <S,R,O>LongCase<S,Long,Long,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> LongCase<S,Long,Long,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongFunction<R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final ObjLongToLongFunction<A> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final ObjLongToLongFunction<A> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final ObjLongFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final ObjLongFunction<A,R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final LongToLongFunction bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongFunction<A> aToA, final LongToLongFunction bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
     return new LongCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final LongToLongFunction aToA, final BiLongToLongFunction test, final LongFunction<O> out) {
     return new LongCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>LongCase<S,A,B,R,O> l(final S subject, final BiLongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> LongCase<S,A,B,R,O> l(final S subject, final BiLongToLongFunction test, final LongFunction<O> out) {
     return new LongCase<>(subject, 2, null, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final Function<? extends A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final Function<? extends A,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final LongFunction<? extends B> bToB, final Function<? extends A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final LongFunction<? extends B> bToB, final Function<? extends A,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 1, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToFloatFunction aToA, final FloatFunction<R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToFloatFunction aToA, final FloatFunction<R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToDoubleFunction aToA, final DoubleFunction<R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToDoubleFunction aToA, final DoubleFunction<R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ToLongFunction<? extends A> test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ToLongFunction<? extends A> test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToFloatFunction aToA, final FloatToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToFloatFunction aToA, final FloatToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToDoubleFunction aToA, final DoubleToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToDoubleFunction aToA, final DoubleToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final LongFunction<? extends B> bToB, final BiFunction<? extends A,? extends B,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final LongFunction<? extends B> bToB, final BiFunction<? extends A,? extends B,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final LongToLongFunction bToB, final BiLongToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ObjLongToLongFunction<? extends A> bToB, final ObjLongFunction<? extends A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ObjLongToLongFunction<? extends A> bToB, final ObjLongFunction<? extends A,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<A> aToA, final LongToLongFunction bToB, final ObjLongFunction<? extends A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<A> aToA, final LongToLongFunction bToB, final ObjLongFunction<? extends A,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,R,O>DecimalCase<S,Long,Long,R,O> d(final S subject, final BiLongFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> DecimalCase<S,Long,Long,R,O> d(final S subject, final BiLongFunction<R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 2, null, null, test, out);
   }
 
-  public static <S,R,O>DecimalCase<S,Long,Long,R,O> d(final S subject, final LongFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> DecimalCase<S,Long,Long,R,O> d(final S subject, final LongFunction<R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 1, null, null, test, out);
   }
 
-  public static <S,R,O>DecimalCase<S,Long,Long,R,O> d(final S subject, final LongToLongFunction aToA, final BiLongFunction<R> test, final Function<R,O> out) {
+  public static <S,R,O> DecimalCase<S,Long,Long,R,O> d(final S subject, final LongToLongFunction aToA, final BiLongFunction<R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ObjLongFunction<? extends A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongFunction<? extends A> aToA, final ObjLongFunction<? extends A,R> test, final Function<R,O> out) {
     return new DecimalCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final BiLongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final LongToLongFunction aToA, final BiLongToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>DecimalCase<S,A,B,R,O> d(final S subject, final BiLongToLongFunction test, final LongFunction<O> out) {
+  public static <S,A,B,R,O> DecimalCase<S,A,B,R,O> d(final S subject, final BiLongToLongFunction test, final LongFunction<O> out) {
     return new DecimalCase<>(subject, 2, null, null, test, out);
   }
 
-  public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final Function<String,B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final Function<String,B> bToB, final BiFunction<A,B,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiFunction<A,B,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiFunction<A,B,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 2, aToA, null, test, out);
   }
 
-  public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final Function<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final Function<A,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 1, aToA, null, test, out);
   }
 
-  public static <S,R,O>StringCase<S,String,String,R,O> s(final S subject, final BiFunction<String,String,R> test, final Function<R,O> out) {
+  public static <S,R,O> StringCase<S,String,String,R,O> s(final S subject, final BiFunction<String,String,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 2, null, null, test, out);
   }
 
-  public static <S,R,O>StringCase<S,String,String,R,O> s(final S subject, final Function<String,R> test, final Function<R,O> out) {
+  public static <S,R,O> StringCase<S,String,String,R,O> s(final S subject, final Function<String,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 1, null, null, test, out);
   }
 
-  public static <S,R,O>StringCase<S,String,String,R,O> s(final S subject, final ToLongFunction<String> test, final LongFunction<O> out) {
+  public static <S,R,O> StringCase<S,String,String,R,O> s(final S subject, final ToLongFunction<String> test, final LongFunction<O> out) {
     return new StringCase<>(subject, 1, null, null, test, out);
   }
 
-  public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToLongFunction<A,String> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToLongFunction<A,String> bToB, final ObjLongFunction<A,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 2, aToA, bToB, test, out);
   }
 
-  public static <S,A,B,R,O>StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToIntFunction<A,String> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
+  public static <S,A,B,R,O> StringCase<S,A,B,R,O> s(final S subject, final Function<String,A> aToA, final BiObjToIntFunction<A,String> bToB, final ObjIntFunction<A,R> test, final Function<R,O> out) {
     return new StringCase<>(subject, 2, aToA, bToB, test, out);
   }
 
@@ -1772,14 +1773,14 @@ public abstract class CaseTest {
     }
   }
 
-  public final <O>Builder<O,Object> test(final String label) {
+  public final <O> Builder<O,Object> test(final String label) {
     return new Builder<>(label);
   }
 
   public abstract Ansi.Color getColor(Case<?,?,?,?,?> cse);
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  private final <I,O>void exec(final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,I,?,O>[] cases) {
+  private final <I,O> void exec(final String label, final int skip, final BigDecimal epsilon, final AuditReport report, final Case<?,?,I,?,O>[] cases) {
     final Case prototype = cases[0];
     final int divisions = 11;
     final int variables = prototype.variables();
@@ -1866,8 +1867,8 @@ public abstract class CaseTest {
             final byte[] val = (byte[])obj;
             // FIXME: This is incorrect! But, whatever!
             dig = 25 * val.length % (divisions * 2);
-//            final int bits = (val.length - 1) * 8;
-//            dig = (int)Math.floor(Math.log10((1L << bits) - 1));
+            // final int bits = (val.length - 1) * 8;
+            // dig = (int)Math.floor(Math.log10((1L << bits) - 1));
           }
           else if (obj instanceof String) {
             final String val = (String)obj;
@@ -1889,7 +1890,7 @@ public abstract class CaseTest {
           int division = (int)((maxPrecision + dig - 1) / width);
           if (0 > division || division > divisions - 1)
             division = Math.max(0, Math.min(10, division));
-//            throw new IllegalStateException(String.valueOf(obj));
+          // throw new IllegalStateException(String.valueOf(obj));
 
           return division;
         }
@@ -1920,7 +1921,7 @@ public abstract class CaseTest {
   }
 
   @SuppressWarnings("unchecked")
-  private static <T extends Throwable>void checkDebug(final Throwable t, final Case<?,?,?,?,?> cse, final Object inputs) throws T {
+  private static <T extends Throwable> void checkDebug(final Throwable t, final Case<?,?,?,?,?> cse, final Object inputs) throws T {
     TestAide.printStackTrace(System.err, t);
 
     try {

@@ -177,15 +177,12 @@ public class DecimalMultiplicationStudy {
   }
 
   /**
-   * Returns the result of the division of a 128-bit number represented by
-   * {@code high} and {@code low} by {@code 10^factor}.
+   * Returns the result of the division of a 128-bit number represented by {@code high} and {@code low} by {@code 10^factor}.
    *
    * @param high The high 64-bits of the 128-bit value.
    * @param low The low 64-bits of the 128-bit value.
-   * @param factor The decimal factor to be converted to:
-   *          {@code divisor = 10^factor}.
-   * @return The result of the division of a 128-bit number represented by
-   *         {@code high} and {@code low} by {@code 10^factor}.
+   * @param factor The decimal factor to be converted to: {@code divisor = 10^factor}.
+   * @return The result of the division of a 128-bit number represented by {@code high} and {@code low} by {@code 10^factor}.
    */
   private static long div128e10(long high, long low, int factor) {
     long a, m, r = 0;
@@ -349,8 +346,7 @@ public class DecimalMultiplicationStudy {
   }
 
   /**
-   * Returns as a {@code long} the most significant 64 bits of the 128-bit
-   * product of two 64-bit factors.
+   * Returns as a {@code long} the most significant 64 bits of the 128-bit product of two 64-bit factors.
    *
    * @param x The first value.
    * @param y The second value.
@@ -382,10 +378,9 @@ public class DecimalMultiplicationStudy {
   }
 
   /**
-   * A <b>medium error</b> approach for {@code v1 * v2} via
-   * {@link #multiplyHigh(long,long)} that tries to shift {@code high} and
-   * {@code low} into a single 64-bit {@code long}, perform the division by the
-   * specified {@code factor}, and then shift back to the original position.
+   * A <b>medium error</b> approach for {@code v1 * v2} via {@link #multiplyHigh(long,long)} that tries to shift {@code high} and
+   * {@code low} into a single 64-bit {@code long}, perform the division by the specified {@code factor}, and then shift back to the
+   * original position.
    */
   private static long mulHigh(final long v1, final long v2, int factor) {
     long h = multiplyHigh(v1, v2);
@@ -409,8 +404,7 @@ public class DecimalMultiplicationStudy {
   }
 
   /**
-   * A <b>high error</b> approach for {@code v1 * v2} by just factoring down
-   * {@code v1} and {@code v2} individually.
+   * A <b>high error</b> approach for {@code v1 * v2} by just factoring down {@code v1} and {@code v2} individually.
    */
   private static long mulDirect(long v1, long s1, long v2, long s2, final byte bp1, final byte bp2) {
     // Need to scale down if we have high order bits

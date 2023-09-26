@@ -169,7 +169,8 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
       val = alloc(1);
     }
     else {
-      int sig = 1; if (mag < 0) { mag = -mag; sig = -1; }
+      int sig = 1;
+      if (mag < 0) { mag = -mag; sig = -1; }
       final int magh = (int)(mag >>> 32);
       val = magh != 0 ? assignInPlace(alloc(3), sig, (int)mag, magh) : assignInPlace(alloc(2), sig, (int)mag);
     }
@@ -1005,8 +1006,8 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   }
 
   /**
-   * Divides this {@link BigInt} by the specified <i>unsigned</i> {@code long} divisor, and returns the <i>absolute unsigned
-   * long</i> remainder.
+   * Divides this {@link BigInt} by the specified <i>unsigned</i> {@code long} divisor, and returns the <i>absolute unsigned long</i>
+   * remainder.
    *
    * <pre>
    * rem = this % div
@@ -1244,8 +1245,8 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   }
 
   /**
-   * Shifts this {@link BigInt} left by the specified number of bits. The shift distance, {@code num}, may be negative, in which
-   * case this method performs a right shift.
+   * Shifts this {@link BigInt} left by the specified number of bits. The shift distance, {@code num}, may be negative, in which case
+   * this method performs a right shift.
    *
    * <pre>
    * this = this &lt;&lt; num
@@ -1261,8 +1262,8 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   }
 
   /**
-   * Shifts this {@link BigInt} right by the specified number of bits. The shift distance, {@code num}, may be negative, in which
-   * case this method performs a left shift.
+   * Shifts this {@link BigInt} right by the specified number of bits. The shift distance, {@code num}, may be negative, in which case
+   * this method performs a left shift.
    *
    * <pre>
    * this = this &gt; &gt; num
@@ -1500,12 +1501,12 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   }
 
   /**
-   * Returns a byte array containing the two's-complement representation of this {@link BigInt}. The byte array will be in the
-   * endian order as specified by the {@code littleEndian} argument. The array will contain the minimum number of bytes required to
-   * represent this {@link BigInt}, including at least one sign bit, which is {@code (ceil((bitLength(val) + 1) / 8))}.
+   * Returns a byte array containing the two's-complement representation of this {@link BigInt}. The byte array will be in the endian
+   * order as specified by the {@code littleEndian} argument. The array will contain the minimum number of bytes required to represent
+   * this {@link BigInt}, including at least one sign bit, which is {@code (ceil((bitLength(val) + 1) / 8))}.
    *
-   * @param littleEndian Whether the produced byte array is to be encoded in <i>little-endian</i> ({@code true}), or
-   *          <i>big-endian</i> ({@code false}).
+   * @param littleEndian Whether the produced byte array is to be encoded in <i>little-endian</i> ({@code true}), or <i>big-endian</i>
+   *          ({@code false}).
    * @return A byte array containing the two's-complement representation of this {@link BigInt}.
    */
   public byte[] toByteArray(final boolean littleEndian) {
@@ -1531,13 +1532,13 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   }
 
   /**
-   * Compares the absolute values of this {@link BigInt} to the provided {@link BigInt}, and returns one of {@code -1}, {@code 0},
-   * or {@code 1} whether the absolute value of {@code this} is less than, equal to, or greater than that of the provided
-   * {@link BigInt}, respectively.
+   * Compares the absolute values of this {@link BigInt} to the provided {@link BigInt}, and returns one of {@code -1}, {@code 0}, or
+   * {@code 1} whether the absolute value of {@code this} is less than, equal to, or greater than that of the provided {@link BigInt},
+   * respectively.
    *
    * @param o The {@link BigInt} with which to compare.
-   * @return One of {@code -1}, {@code 0}, or {@code 1} if the absolute value of {@code this} is less than, equal to, or greater
-   *         than that of he provided {@link BigInt}, respectively.
+   * @return One of {@code -1}, {@code 0}, or {@code 1} if the absolute value of {@code this} is less than, equal to, or greater than
+   *         that of he provided {@link BigInt}, respectively.
    * @complexity O(n)
    */
   public int compareToAbs(final BigInt o) {
@@ -1545,9 +1546,8 @@ public class BigInt extends BigIntMath implements Comparable<BigInt>, Cloneable 
   }
 
   /**
-   * Compares the values of this {@link BigInt} to the provided {@link BigInt}, and returns one of {@code -1}, {@code 0}, or
-   * {@code 1} whether the value of {@code this} is less than, equal to, or greater than that of the provided {@link BigInt},
-   * respectively.
+   * Compares the values of this {@link BigInt} to the provided {@link BigInt}, and returns one of {@code -1}, {@code 0}, or {@code 1}
+   * whether the value of {@code this} is less than, equal to, or greater than that of the provided {@link BigInt}, respectively.
    *
    * @param o The {@link BigInt} with which to compare.
    * @return One of {@code -1}, {@code 0}, or {@code 1} if the value of {@code this} is less than, equal to, or greater than that of

@@ -1144,8 +1144,8 @@ public final class StatMath {
   }
 
   /**
-   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one
-   * to iterate through a specific dimension, 0 or 1.
+   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one to
+   * iterate through a specific dimension, 0 or 1.
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
@@ -1166,8 +1166,8 @@ public final class StatMath {
   }
 
   /**
-   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one
-   * to iterate through a specific dimension, 0 or 1.
+   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one to
+   * iterate through a specific dimension, 0 or 1.
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
@@ -1188,8 +1188,8 @@ public final class StatMath {
   }
 
   /**
-   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one
-   * to iterate through a specific dimension, 0 or 1.
+   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one to
+   * iterate through a specific dimension, 0 or 1.
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
@@ -1210,8 +1210,8 @@ public final class StatMath {
   }
 
   /**
-   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one
-   * to iterate through a specific dimension, 0 or 1.
+   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one to
+   * iterate through a specific dimension, 0 or 1.
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.
@@ -1232,8 +1232,8 @@ public final class StatMath {
   }
 
   /**
-   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one
-   * to iterate through a specific dimension, 0 or 1.
+   * Calculate the standard deviation of the values in the argument array. This method accepts a 2 dimensional array, allowing one to
+   * iterate through a specific dimension, 0 or 1.
    *
    * @param values The array of values.
    * @param dimension The index of dimension that should be aggregated.

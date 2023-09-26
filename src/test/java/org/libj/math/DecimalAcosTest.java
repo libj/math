@@ -34,8 +34,8 @@ import org.libj.math.survey.AuditRunner;
 @Ignore
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(UNINSTRUMENTED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalAcosTest extends DecimalTest {
   // FIXME: Scale is limited here to 2, as a stop-gap.
   private void test(final AuditReport report, final RoundingMode rm) {
@@ -43,11 +43,12 @@ public class DecimalAcosTest extends DecimalTest {
     setRoundingMode(rm);
     final MathContext mc = new MathContext(34, rm);
     final long defaultValue = random.nextLong();
-    test("acos(" + rm + ")").withEpsilon(null).withAuditReport(report).withCases(
-      d(BigDecimal.class, a -> toBigDecimal(lim(a, 1, 0)), (BigDecimal a) -> acos(a, mc), o -> o),
-      d(Decimal.class, a -> toDecimal(lim(a, 1, 0)), (Decimal a) -> acos(a, rm), o -> o),
-      d(long.class, a -> lim(a, 1, 0), (long a) -> acos(a, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("acos(" + rm + ")").withEpsilon(null)
+      .withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, a -> toBigDecimal(lim(a, 1, 0)), (final BigDecimal a) -> acos(a, mc), o -> o),
+        d(Decimal.class, a -> toDecimal(lim(a, 1, 0)), (final Decimal a) -> acos(a, rm), o -> o),
+        d(long.class, a -> lim(a, 1, 0), (final long a) -> acos(a, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test

@@ -53,7 +53,8 @@ public class FixedPointTest extends DecimalOperationTest {
       return;
     }
 
-    if (debug && logger.isInfoEnabled()) logger.info("Encod: " + Buffers.toString(encoded));
+    if (debug && logger.isInfoEnabled())
+      logger.info("Encod: " + Buffers.toString(encoded));
 
     ts = System.nanoTime();
     final long decodedValue = significand(encoded);
@@ -85,7 +86,7 @@ public class FixedPointTest extends DecimalOperationTest {
     for (int i = 63, j = 63; i >= 1;) { // [N]
       final BigDecimal a = BigDecimals.TWO.pow(i);
       final BigDecimal b = BigDecimals.TWO.pow(j);
-      if (logger.isInfoEnabled()) logger.info(Strings.pad(i + " + " + j, LEFT, 8) + " " + Strings.pad(String.valueOf(i + j), LEFT, 4) + " " + formatOverflowPoint(a.multiply(b), i <= 55 ? 18 : 17));
+      if (logger.isInfoEnabled()) { logger.info(Strings.pad(i + " + " + j, LEFT, 8) + " " + Strings.pad(String.valueOf(i + j), LEFT, 4) + " " + formatOverflowPoint(a.multiply(b), i <= 55 ? 18 : 17)); }
       if (flip)
         --i;
       else
@@ -107,13 +108,13 @@ public class FixedPointTest extends DecimalOperationTest {
       for (int i = 0; i < numTests / 10; ++i, ++count) // [N]
         testEncodeDecode(random.nextLong(), s, time);
 
-    if (logger.isInfoEnabled()) logger.info("testEncodeDecode(): encode=" + (time[0] / count) + "ns, decode=" + (count / time[1]) + "/ns");
+    if (logger.isInfoEnabled()) { logger.info("testEncodeDecode(): encode=" + (time[0] / count) + "ns, decode=" + (count / time[1]) + "/ns"); }
   }
 
   private static double print(final String label, final long significand, final short pscale) {
     final long dec = encodeInPlace(significand, pscale);
     final String str = Decimal.toScientificString(dec);
-//    Math.nextUp(dbl)
+    // Math.nextUp(dbl)
     System.out.println(label + "   " + Buffers.toString(dec) + " " + str + " " + significand + " " + pscale);
     // assertEquals(significand, Decimal.significand(dec));
     // assertEquals(scale, Decimal.scale(dec));
@@ -184,7 +185,7 @@ public class FixedPointTest extends DecimalOperationTest {
 
     for (int i = 0; i < 100000; ++i) { // [N]
       final boolean pass = (v = Math.nextDown(v)) >= maxNeg;
-//      assertEquals("" + i, pass, isDecimal(v));
+      // assertEquals("" + i, pass, isDecimal(v));
       if (pass)
         hasPass = true;
       else
@@ -255,8 +256,8 @@ public class FixedPointTest extends DecimalOperationTest {
       }
     }
 
-    if (logger.isInfoEnabled()) logger.info("tmp: " + time1);
-    if (logger.isInfoEnabled()) logger.info("xor: " + time2);
+    if (logger.isInfoEnabled()) { logger.info("tmp: " + time1); }
+    if (logger.isInfoEnabled()) { logger.info("xor: " + time2); }
     // assertTrue(time1 < time2);
   }
 

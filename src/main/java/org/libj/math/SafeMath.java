@@ -95,8 +95,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the absolute value of a {@code double} value. If the argument is not negative, the argument is returned. If the
-   * argument is negative, the negation of the argument is returned.
+   * Returns the absolute value of a {@code double} value. If the argument is not negative, the argument is returned. If the argument
+   * is negative, the negation of the argument is returned.
    * <p>
    * Special cases:
    * <ul>
@@ -293,20 +293,20 @@ public final class SafeMath {
 
   /**
    * Returns the angle <i>theta</i> from the conversion of rectangular coordinates ({@code x}, {@code y}) to polar coordinates (r,
-   * <i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent of {@code y/x} in the range of
-   * -<i>pi</i> to <i>pi</i>.
+   * <i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent of {@code y/x} in the range of -<i>pi</i>
+   * to <i>pi</i>.
    * <p>
    * Special cases:
    * <ul>
    * <li>If either argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the first argument is positive zero and the second argument is positive, or the first argument is positive and finite
-   * and the second argument is positive infinity, then the result is positive zero.</li>
-   * <li>If the first argument is negative zero and the second argument is positive, or the first argument is negative and finite
-   * and the second argument is positive infinity, then the result is negative zero.</li>
-   * <li>If the first argument is positive zero and the second argument is negative, or the first argument is positive and finite
-   * and the second argument is negative infinity, then the result is the {@code double} value closest to <i>pi</i>.</li>
-   * <li>If the first argument is negative zero and the second argument is negative, or the first argument is negative and finite
-   * and the second argument is negative infinity, then the result is the {@code double} value closest to -<i>pi</i>.</li>
+   * <li>If the first argument is positive zero and the second argument is positive, or the first argument is positive and finite and
+   * the second argument is positive infinity, then the result is positive zero.</li>
+   * <li>If the first argument is negative zero and the second argument is positive, or the first argument is negative and finite and
+   * the second argument is positive infinity, then the result is negative zero.</li>
+   * <li>If the first argument is positive zero and the second argument is negative, or the first argument is positive and finite and
+   * the second argument is negative infinity, then the result is the {@code double} value closest to <i>pi</i>.</li>
+   * <li>If the first argument is negative zero and the second argument is negative, or the first argument is negative and finite and
+   * the second argument is negative infinity, then the result is the {@code double} value closest to -<i>pi</i>.</li>
    * <li>If the first argument is positive and the second argument is positive zero or negative zero, or the first argument is
    * positive infinity and the second argument is finite, then the result is the {@code double} value closest to <i>pi</i>/2.</li>
    * <li>If the first argument is negative and the second argument is positive zero or negative zero, or the first argument is
@@ -330,20 +330,20 @@ public final class SafeMath {
 
   /**
    * Returns the angle <i>theta</i> from the conversion of rectangular coordinates ({@code x}, {@code y}) to polar coordinates (r,
-   * <i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent of {@code y/x} in the range of
-   * -<i>pi</i> to <i>pi</i>.
+   * <i>theta</i>). This method computes the phase <i>theta</i> by computing an arc tangent of {@code y/x} in the range of -<i>pi</i>
+   * to <i>pi</i>.
    * <p>
    * Special cases:
    * <ul>
    * <li>If either argument is {@code NaN}, then the result is {@code NaN}.</li>
-   * <li>If the first argument is positive zero and the second argument is positive, or the first argument is positive and finite
-   * and the second argument is positive infinity, then the result is positive zero.</li>
-   * <li>If the first argument is negative zero and the second argument is positive, or the first argument is negative and finite
-   * and the second argument is positive infinity, then the result is negative zero.</li>
-   * <li>If the first argument is positive zero and the second argument is negative, or the first argument is positive and finite
-   * and the second argument is negative infinity, then the result is the {@code double} value closest to <i>pi</i>.</li>
-   * <li>If the first argument is negative zero and the second argument is negative, or the first argument is negative and finite
-   * and the second argument is negative infinity, then the result is the {@code double} value closest to -<i>pi</i>.</li>
+   * <li>If the first argument is positive zero and the second argument is positive, or the first argument is positive and finite and
+   * the second argument is positive infinity, then the result is positive zero.</li>
+   * <li>If the first argument is negative zero and the second argument is positive, or the first argument is negative and finite and
+   * the second argument is positive infinity, then the result is negative zero.</li>
+   * <li>If the first argument is positive zero and the second argument is negative, or the first argument is positive and finite and
+   * the second argument is negative infinity, then the result is the {@code double} value closest to <i>pi</i>.</li>
+   * <li>If the first argument is negative zero and the second argument is negative, or the first argument is negative and finite and
+   * the second argument is negative infinity, then the result is the {@code double} value closest to -<i>pi</i>.</li>
    * <li>If the first argument is positive and the second argument is positive zero or negative zero, or the first argument is
    * positive infinity and the second argument is finite, then the result is the {@code double} value closest to <i>pi</i>/2.</li>
    * <li>If the first argument is negative and the second argument is positive zero or negative zero, or the first argument is
@@ -369,8 +369,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code byte} value that is greater than or equal to the argument and is
-   * equal to a mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@code byte} value that is greater than or equal to the argument and is equal
+   * to a mathematical integer.
    *
    * @param a The value.
    * @return The smallest (closest to negative infinity) byte value that is greater than or equal to the argument and is equal to a
@@ -393,8 +393,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code int} value that is greater than or equal to the argument and is
-   * equal to a mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@code int} value that is greater than or equal to the argument and is equal
+   * to a mathematical integer.
    *
    * @param a The value.
    * @return The smallest (closest to negative infinity) int value that is greater than or equal to the argument and is equal to a
@@ -405,8 +405,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@code long} value that is greater than or equal to the argument and is
-   * equal to a mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@code long} value that is greater than or equal to the argument and is equal
+   * to a mathematical integer.
    *
    * @param a The value.
    * @return The smallest (closest to negative infinity) long value that is greater than or equal to the argument and is equal to a
@@ -459,8 +459,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@link BigInteger} value that is greater than or equal to the argument and
-   * is equal to a mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@link BigInteger} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
    * @return The smallest (closest to negative infinity) BigInteger value that is greater than or equal to the argument and is equal
@@ -483,8 +483,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the smallest (closest to negative infinity) {@link BigDecimal} value that is greater than or equal to the argument and
-   * is equal to a mathematical integer.
+   * Returns the smallest (closest to negative infinity) {@link BigDecimal} value that is greater than or equal to the argument and is
+   * equal to a mathematical integer.
    *
    * @param a The value.
    * @return The smallest (closest to negative infinity) BigDecimal value that is greater than or equal to the argument and is equal
@@ -667,8 +667,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code byte} value that is less than or equal to the argument and is equal
-   * to a mathematical integer.
+   * Returns the largest (closest to positive infinity) {@code byte} value that is less than or equal to the argument and is equal to
+   * a mathematical integer.
    *
    * @param a The value.
    * @return The largest (closest to positive infinity) byte value that less than or equal to the argument and is equal to a
@@ -679,8 +679,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code short} value that is less than or equal to the argument and is equal
-   * to a mathematical integer.
+   * Returns the largest (closest to positive infinity) {@code short} value that is less than or equal to the argument and is equal to
+   * a mathematical integer.
    *
    * @param a The value.
    * @return The largest (closest to positive infinity) short value that less than or equal to the argument and is equal to a
@@ -691,8 +691,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code int} value that is less than or equal to the argument and is equal to
-   * a mathematical integer.
+   * Returns the largest (closest to positive infinity) {@code int} value that is less than or equal to the argument and is equal to a
+   * mathematical integer.
    *
    * @param a The value.
    * @return The largest (closest to positive infinity) int value that less than or equal to the argument and is equal to a
@@ -703,8 +703,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the largest (closest to positive infinity) {@code long} value that is less than or equal to the argument and is equal
-   * to a mathematical integer.
+   * Returns the largest (closest to positive infinity) {@code long} value that is less than or equal to the argument and is equal to
+   * a mathematical integer.
    *
    * @param a The value.
    * @return The largest (closest to positive infinity) long value that less than or equal to the argument and is equal to a
@@ -726,8 +726,8 @@ public final class SafeMath {
    * </ul>
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to
-   *         a mathematical integer.
+   * @return The largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static float floor(final float a) {
     return (float)StrictMath.floor(a);
@@ -745,8 +745,8 @@ public final class SafeMath {
    * </ul>
    *
    * @param a The value.
-   * @return The largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to
-   *         a mathematical integer.
+   * @return The largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to a
+   *         mathematical integer.
    */
   public static double floor(final double a) {
     return StrictMath.floor(a);
@@ -849,14 +849,14 @@ public final class SafeMath {
    * then the result is negative infinity.</li>
    * <li>If the first argument is finite and less than zero
    * <ul>
-   * <li>if the second argument is a finite even integer, the result is equal to the result of raising the absolute value of the
-   * first argument to the power of the second argument</li>
+   * <li>if the second argument is a finite even integer, the result is equal to the result of raising the absolute value of the first
+   * argument to the power of the second argument</li>
    * <li>if the second argument is a finite odd integer, the result is equal to the negative of the result of raising the absolute
    * value of the first argument to the power of the second argument</li>
    * <li>if the second argument is finite and not an integer, then the result is {@code NaN}.</li>
    * </ul>
-   * <li>If both arguments are integers, then the result is exactly equal to the mathematical result of raising the first argument
-   * to the power of the second argument if that result can in fact be represented exactly as a {@code double} value.</li>
+   * <li>If both arguments are integers, then the result is exactly equal to the mathematical result of raising the first argument to
+   * the power of the second argument if that result can in fact be represented exactly as a {@code double} value.</li>
    * </ul>
    * <p>
    * (In the foregoing descriptions, a floating-point value is considered to be an integer if and only if it is finite and a fixed
@@ -879,8 +879,7 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
    * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
-   *           expansion.
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal expansion.
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
@@ -898,8 +897,7 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
    * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
-   *           expansion.
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal expansion.
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
@@ -917,8 +915,7 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
    * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
-   *           expansion.
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal expansion.
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
@@ -936,8 +933,7 @@ public final class SafeMath {
    * @param mc The {@link MathContext} used for the result.
    * @return The value {@code a}<sup>{@code b}</sup>.
    * @throws ArithmeticException If {@code b} is negative and the result is inexact but the rounding mode is
-   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal
-   *           expansion.
+   *           {@link RoundingMode#UNNECESSARY} or {@code mc.precision == 0} and the quotient has a non-terminating decimal expansion.
    * @throws ArithmeticException If the rounding mode is {@link RoundingMode#UNNECESSARY} and the {@link BigDecimal} operation would
    *           require rounding.
    * @throws UnsupportedOperationException If the {@link MathContext} has unlimited precision.
@@ -1106,14 +1102,14 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}
-   * with ties at the given {@code scale}.
+   * Returns the rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode} with
+   * ties at the given {@code scale}.
    *
    * @param a A floating-point value to be rounded to the scaled double.
    * @param scale The number of digits after the decimal at which to round.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode}
-   *         with ties at the given {@code scale}.
+   * @return The rounded value of the specified {@code double} based on the rounding policy of the provided {@link RoundingMode} with
+   *         ties at the given {@code scale}.
    * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static double round(final double a, final int scale, final RoundingMode rm) {
@@ -1128,8 +1124,8 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with
-   * ties at the given {@code scale}.
+   * Returns the rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
+   * at the given {@code scale}.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -1139,8 +1135,8 @@ public final class SafeMath {
    *
    * @param a A floating-point value to be rounded to the scaled double.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with
-   *         ties at the given {@code scale}.
+   * @return The rounded value of the specified {@code double} based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
+   *         at the given {@code scale}.
    * @throws IllegalArgumentException If {@code scale} is negative.
    */
   public static double round(final double a, final int scale) {
@@ -1200,14 +1196,14 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode}
-   * with ties at the given {@code scale}.
+   * Returns the rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode} with
+   * ties at the given {@code scale}.
    *
    * @param a The {@link Decimal} value to be rounded.
    * @param scale The number of digits after the decimal at which to round.
    * @param rm The {@link RoundingMode} to be used for rounding.
-   * @return The rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode}
-   *         with ties at the given {@code scale}.
+   * @return The rounded value of the specified {@link Decimal} based on the rounding policy of the provided {@link RoundingMode} with
+   *         ties at the given {@code scale}.
    * @throws NullPointerException If {@code a} or {@code rm} is null.
    * @throws IllegalArgumentException If {@code scale} is negative.
    */
@@ -1259,13 +1255,13 @@ public final class SafeMath {
   }
 
   /**
-   * Returns the closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
-   * at the given {@code scale}.
+   * Returns the closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties at
+   * the given {@code scale}.
    *
    * @param a A {@link BigDecimal} value to be rounded to the scaled {@link BigDecimal}.
    * @param scale The number of digits after the decimal at which to round.
-   * @return The closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties
-   *         at the given {@code scale}.
+   * @return The closest {@link BigDecimal} to the argument, based on the rounding policy of {@link RoundingMode#HALF_UP} with ties at
+   *         the given {@code scale}.
    * @throws NullPointerException If {@code a} is null.
    * @throws IllegalArgumentException If {@code scale} is negative.
    */

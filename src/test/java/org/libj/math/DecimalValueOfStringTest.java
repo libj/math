@@ -30,18 +30,18 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalValueOfStringTest extends DecimalTest {
   private void test(final AuditReport report, final RoundingMode rm) {
     setRoundingMode(rm);
     final MathContext mc = new MathContext(18, rm);
     final long defaultValue = random.nextLong();
-    test("valueOf(String)[" + rm + "]").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toDecimalString, (String a) -> new BigDecimal(a, mc), o -> o),
-      d(Decimal.class, this::toDecimalString, (String a) -> Decimal.valueOf(a, rm), o -> o),
-      d(long.class, this::toDecimalString, (String a) -> Decimal.valueOf(a, rm, defaultValue), (long o) -> o == defaultValue ? null : o)
-    );
+    test("valueOf(String)[" + rm + "]").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toDecimalString, (final String a) -> new BigDecimal(a, mc), o -> o),
+        d(Decimal.class, this::toDecimalString, (final String a) -> Decimal.valueOf(a, rm), o -> o),
+        d(long.class, this::toDecimalString, (final String a) -> Decimal.valueOf(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

@@ -62,8 +62,7 @@ abstract class BigIntAddition extends BigIntPrimitive {
    *           {@code int} requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The subtrahend.
-   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded
-   *         minuend}.
+   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sub) {
@@ -145,8 +144,7 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sig The sign of the unsigned {@code int} to subtract.
    * @param sub The subtrahend (unsigned).
-   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded
-   *         minuend}.
+   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sig, final int sub) {
@@ -226,8 +224,7 @@ abstract class BigIntAddition extends BigIntPrimitive {
    *           {@code long} requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sub The subtrahend.
-   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded
-   *         minuend}.
+   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final long sub) {
@@ -266,7 +263,8 @@ abstract class BigIntAddition extends BigIntPrimitive {
     if (len == 0)
       return assignInPlace(val.length >= 3 ? val : alloc(3), 1, (int)add, (int)addh);
 
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, add & LONG_MASK, addh, true);
   }
 
@@ -279,7 +277,8 @@ abstract class BigIntAddition extends BigIntPrimitive {
     if (len == 0)
       return assignInPlace(val, 1, (int)add, (int)addh);
 
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
     return uaddSubInPlace(val, len, sig, add & LONG_MASK, addh, true);
   }
 
@@ -295,8 +294,7 @@ abstract class BigIntAddition extends BigIntPrimitive {
    * @param val The {@linkplain BigInt#val() value-encoded minuend}.
    * @param sig The sign of the unsigned {@code long} to subtract.
    * @param sub The subtrahend (unsigned).
-   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded
-   *         minuend}.
+   * @return The result of the subtraction of the specified amount from the provided {@linkplain BigInt#val() value-encoded minuend}.
    * @complexity O(n)
    */
   public static int[] sub(final int[] val, final int sig, final long sub) {
@@ -316,7 +314,8 @@ abstract class BigIntAddition extends BigIntPrimitive {
     if (len == 0)
       return assignInPlace(val.length >= 3 ? val : alloc(3), -1, (int)sub, (int)subh);
 
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
     return uaddSub(val, len, sig, sub & LONG_MASK, subh, false);
   }
 
@@ -329,7 +328,8 @@ abstract class BigIntAddition extends BigIntPrimitive {
     if (len == 0)
       return assignInPlace(val, -1, (int)sub, (int)subh);
 
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
     return uaddSubInPlace(val, len, sig, sub & LONG_MASK, subh, false);
   }
 
@@ -439,8 +439,7 @@ abstract class BigIntAddition extends BigIntPrimitive {
   }
 
   /**
-   * Subtracts a {@linkplain BigInt#val() value-encoded subtrahend} from the provided {@linkplain BigInt#val() value-encoded
-   * minuend}.
+   * Subtracts a {@linkplain BigInt#val() value-encoded subtrahend} from the provided {@linkplain BigInt#val() value-encoded minuend}.
    *
    * <pre>
    * val = val - sub
@@ -491,12 +490,14 @@ abstract class BigIntAddition extends BigIntPrimitive {
       return val;
     }
 
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
     return addSub0(val, len, sig, add, addOrSub, inPlace);
   }
 
   static int[] addSub0(int[] val, int len, boolean sig, final int[] add, final boolean addOrSub, final boolean inPlace) {
-    int len2 = add[0]; if (len2 < 0) { len2 = -len2; }
+    int len2 = add[0];
+    if (len2 < 0) { len2 = -len2; }
     if (addOrSub == (sig == add[0] >= 0))
       return addVal(val, len, sig, add, len2);
 

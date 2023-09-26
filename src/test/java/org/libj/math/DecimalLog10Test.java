@@ -35,18 +35,19 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 @Ignore
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(UNINSTRUMENTED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalLog10Test extends DecimalTest {
   private void test(final AuditReport report, final RoundingMode rm, final BigDecimal epsilon) {
     setRoundingMode(rm);
     final MathContext mc = new MathContext(26, rm);
     final long defaultValue = random.nextLong();
-    test("log10(" + rm + ")").withEpsilon(epsilon).withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a) -> BigDecimalMath.log10(a, mc), o -> o),
-      d(Decimal.class, this::toDecimal, (Decimal a) -> log10(a, rm), o -> o),
-      d(long.class, a -> a, (long a) -> log10(a, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("log10(" + rm + ")").withEpsilon(epsilon)
+      .withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a) -> BigDecimalMath.log10(a, mc), o -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a) -> log10(a, rm), o -> o),
+        d(long.class, a -> a, (final long a) -> log10(a, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test

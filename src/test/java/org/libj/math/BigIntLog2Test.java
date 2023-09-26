@@ -30,17 +30,17 @@ import com.google.common.math.BigIntegerMath;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
-@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
+@AuditRunner.Instrument(a = BigInteger.class, b = int[].class)
+@AuditRunner.Instrument(a = BigInt.class, b = int[].class)
 public class BigIntLog2Test extends BigIntTest {
   public void test(final AuditReport report, final RoundingMode rm) {
     report.addComment(UNINSTRUMENTED.ordinal(), "log base 2 of `T` (RoundingMode." + rm + ")");
 
-    test("log2(" + rm + ")").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> BigIntegerMath.log2(a, rm), o -> o == null ? null : String.valueOf(o)),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.log2(rm), o -> o == -1 ? null : String.valueOf(o)),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.log2(a, rm), o -> o == -1 ? null : String.valueOf(o))
-    );
+    test("log2(" + rm + ")").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.log2(a, rm), o -> o == null ? null : String.valueOf(o)),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.log2(rm), o -> o == -1 ? null : String.valueOf(o)),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.log2(a, rm), o -> o == -1 ? null : String.valueOf(o)));
   }
 
   @Test

@@ -35,9 +35,10 @@ import java.math.RoundingMode;
 abstract class BigIntPrimitive extends BigIntBinary {
   private static final double MIN_LONG_AS_DOUBLE = -0x1p63;
 
-  /* We cannot store Long.MAX_VALUE as a double without losing precision.
-   * Instead, store Long.MAX_VALUE + 1 == -Long.MIN_VALUE, and then offset all
-   * comparisons by 1. */
+  /*
+   * We cannot store Long.MAX_VALUE as a double without losing precision. Instead, store Long.MAX_VALUE + 1 == -Long.MIN_VALUE, and
+   * then offset all comparisons by 1.
+   */
   private static final double MAX_LONG_AS_DOUBLE_PLUS_ONE = 0x1p63;
 
   /**
@@ -54,8 +55,8 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /*
-   * This method returns a value y such that rounding y DOWN (towards zero)
-   * gives the same result as rounding x according to the specified mode.
+   * This method returns a value y such that rounding y DOWN (towards zero) gives the same result as rounding x according to the
+   * specified mode.
    */
   private static double roundIntermediate(final double x, final int exponent, final long significand, final RoundingMode rm) {
     if (!Double.isFinite(x))
@@ -90,8 +91,8 @@ abstract class BigIntPrimitive extends BigIntBinary {
   }
 
   /**
-   * Assigns the specified {@code double} value to the provided {@linkplain BigInt#val() value-encoded <code>int[]</code>}, rounded
-   * by the provided {@link RoundingMode}.
+   * Assigns the specified {@code double} value to the provided {@linkplain BigInt#val() value-encoded <code>int[]</code>}, rounded by
+   * the provided {@link RoundingMode}.
    *
    * <pre>
    * val = mag

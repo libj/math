@@ -75,7 +75,7 @@ public class DecimalDivisionStudy {
       if (v2 > DIVISOR_MAX)
         v2 /= 10;
 
-//      System.err.println("[" + i + "] " + v1 + " / " + v2  + " = " + (double)v1 / v2);
+      // System.err.println("[" + i + "] " + v1 + " / " + v2 + " = " + (double)v1 / v2);
 
       // How many bits are available until overflow long?
       final byte bp1 = (byte)(Long.numberOfLeadingZeros(v1));
@@ -87,14 +87,14 @@ public class DecimalDivisionStudy {
       // allowing it to use the sign bit
       if (dp1 > 0) {
         v1 = v1 * FastMath.longE10[dp1];
-//        s1 += dp1;
+        // s1 += dp1;
       }
 
       // If v2 has trailing zeroes, remove them first
       final byte z2 = Numbers.trailingZeroes(v2);
       if (z2 > 0) {
         v2 /= FastMath.longE10[z2];
-//        s2 -= z2;
+        // s2 -= z2;
       }
 
       test3(v1, v2, zds, x, y, buf);
@@ -169,7 +169,7 @@ public class DecimalDivisionStudy {
     final byte ds = (byte)(Numbers.precision(v1) - Numbers.precision(v2));
     final byte p = Numbers.precision(r1);
     final short s1 = (short)(p - ds);
-//    System.err.println("r1: " + r1 + "E" + (-s1));
+    // System.err.println("r1: " + r1 + "E" + (-s1));
 
     // MPN
     ts = System.nanoTime();

@@ -29,17 +29,17 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalValueOfFloatTest extends DecimalTest {
   @Test
   public void test(final AuditReport report) {
     final MathContext mc = new MathContext(18);
     final long defaultValue = random.nextLong();
-    test("valueOf(float)").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toDecimalFloat, (float a) -> new BigDecimal(String.valueOf(a), mc), o -> o),
-      d(Decimal.class, this::toDecimalFloat, (float a) -> Decimal.valueOf(a), o -> o),
-      d(long.class, this::toDecimalFloat, (float a) -> Decimal.valueOf(a, defaultValue), (long o) -> o == defaultValue ? null : o)
-    );
+    test("valueOf(float)").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toDecimalFloat, (final float a) -> new BigDecimal(String.valueOf(a), mc), o -> o),
+        d(Decimal.class, this::toDecimalFloat, (final float a) -> Decimal.valueOf(a), o -> o),
+        d(long.class, this::toDecimalFloat, (final float a) -> Decimal.valueOf(a, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

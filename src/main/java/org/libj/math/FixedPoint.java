@@ -241,10 +241,10 @@ abstract class FixedPoint extends Number {
   static long encodeInPlace(final long significand, final long pscale) {
     final long scaleMask = pscale << VALUE_BITS & SCALE_MASK;
     final long dec = significand < 0 ? significand ^ scaleMask : significand | scaleMask;
-    // System.out.println("      scale: " + Buffers.toString(scale));
-    // System.out.println("  scaleMask: " + Buffers.toString(scaleMask));
+    // System.out.println(" scale: " + Buffers.toString(scale));
+    // System.out.println(" scaleMask: " + Buffers.toString(scaleMask));
     // System.out.println("significand: " + Buffers.toString(significand));
-    // System.out.println("    decimal: " + Buffers.toString(dec));
+    // System.out.println(" decimal: " + Buffers.toString(dec));
     return dec;
   }
 
@@ -284,7 +284,7 @@ abstract class FixedPoint extends Number {
     short scale = (short)((dec < 0 ? ~(dec | ~SCALE_MASK) : (dec & SCALE_MASK)) >> LONG_SHORT_SCALE_SHIFT);
     scale >>= SHORT_SCALE_SHIFT;
     // System.out.println("~ encoded: " + Buffers.toString(dec));
-    // System.out.println("~   scale:                                                 " + Buffers.toString(scale) + " " + scale);
+    // System.out.println("~ scale: " + Buffers.toString(scale) + " " + scale);
     return scale += precision;
   }
 

@@ -31,51 +31,51 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalDivisionTest extends DecimalTest {
   private void testDiv(final AuditReport report, final RoundingMode rm) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Divide `T` by `T`.");
 
     final long defaultValue = random.nextLong();
-    test("div(" + rm + ")").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.divide(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
-      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.div(toDecimal(dnz(b)), rm), o -> o),
-      d(long.class, a -> a, b -> dnz(b), (long a, long b) -> Decimal.div(a, b, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("div(" + rm + ")").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.divide(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.div(toDecimal(dnz(b)), rm), o -> o),
+        d(long.class, a -> a, b -> dnz(b), (final long a, final long b) -> Decimal.div(a, b, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivDown(final AuditReport report) {
     testDiv(report, RoundingMode.DOWN);
   }
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivUp(final AuditReport report) {
     testDiv(report, RoundingMode.UP);
   }
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivFloor(final AuditReport report) {
     testDiv(report, RoundingMode.FLOOR);
   }
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivCeiling(final AuditReport report) {
     testDiv(report, RoundingMode.CEILING);
   }
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivHalfDown(final AuditReport report) {
     testDiv(report, RoundingMode.HALF_DOWN);
   }
@@ -87,14 +87,14 @@ public class DecimalDivisionTest extends DecimalTest {
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivHalfEven(final AuditReport report) {
     testDiv(report, RoundingMode.HALF_EVEN);
   }
 
   @Test
   @Ignore("Not supported yet")
-  //FIXME: Support this RoundingMode
+  // FIXME: Support this RoundingMode
   public void testDivUnnecessary(final AuditReport report) {
     testDiv(report, RoundingMode.UNNECESSARY);
   }
@@ -104,10 +104,10 @@ public class DecimalDivisionTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Remainder of `T` divided by `T`.");
 
     final long defaultValue = random.nextLong();
-    test("rem").withAuditReport(report).withCases(
-      d(BigDecimal.class, this::toBigDecimal, (BigDecimal a, long b) -> a.remainder(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
-      d(Decimal.class, this::toDecimal, (Decimal a, long b) -> a.rem(toDecimal(dnz(b))), o -> o),
-      d(long.class, a -> a, b -> dnz(b), (long a, long b) -> Decimal.rem(a, b, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("rem").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.remainder(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.rem(toDecimal(dnz(b))), o -> o),
+        d(long.class, a -> a, b -> dnz(b), (final long a, final long b) -> Decimal.rem(a, b, defaultValue), o -> o == defaultValue ? null : o));
   }
 }

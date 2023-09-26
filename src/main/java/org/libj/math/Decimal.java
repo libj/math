@@ -330,10 +330,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
     scale += ds;
     if (isNeg) {
-//      if (significand == Long.MIN_VALUE) {
-//        significand = roundHalfUp10(significand);
-//        --scale;
-//      }
+      // if (significand == Long.MIN_VALUE) {
+      // significand = roundHalfUp10(significand);
+      // --scale;
+      // }
 
       significand = -significand;
     }
@@ -745,8 +745,8 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the <i>precision</i> of the specified {@link Decimal#valueOf(long,int,long) encoded} value. (The precision is the
-   * number of digits in the significand.)
+   * Returns the <i>precision</i> of the specified {@link Decimal#valueOf(long,int,long) encoded} value. (The precision is the number
+   * of digits in the significand.)
    * <p>
    * The precision of a zero value is {@code 1}.
    *
@@ -773,9 +773,9 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
   /**
    * Returns the {@link Decimal#valueOf(long,int,long) encoded} value with its scale set to {@code scale}. The significand is
-   * determined by multiplying or dividing the significand of {@code encoded} by the appropriate power of ten to maintain its
-   * overall value. If the scale is reduced by the operation, the significand must be divided (rather than multiplied), and the
-   * value may be changed; in this case, the value will be rounded down.
+   * determined by multiplying or dividing the significand of {@code encoded} by the appropriate power of ten to maintain its overall
+   * value. If the scale is reduced by the operation, the significand must be divided (rather than multiplied), and the value may be
+   * changed; in this case, the value will be rounded down.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -796,9 +796,9 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
 
   /**
    * Returns the {@link Decimal#valueOf(long,int,long) encoded} value with its scale set to {@code scale}. The significand is
-   * determined by multiplying or dividing the significand of {@code encoded} by the appropriate power of ten to maintain its
-   * overall value. If the scale is reduced by the operation, the significand must be divided (rather than multiplied), and the
-   * value may be changed; in this case, the value will be rounded down.
+   * determined by multiplying or dividing the significand of {@code encoded} by the appropriate power of ten to maintain its overall
+   * value. If the scale is reduced by the operation, the significand must be divided (rather than multiplied), and the value may be
+   * changed; in this case, the value will be rounded down.
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
    * @param newScale The scale component.
@@ -845,10 +845,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Sets the scale of this {@link Decimal} to the provided {@code newScale}. The significand is determined by multiplying or
-   * dividing the significand of {@code encoded} by the appropriate power of ten to maintain its overall value. If the scale is
-   * reduced by the operation, the significand must be divided (rather than multiplied), and the value may be changed; in this case,
-   * the value will be rounded down.
+   * Sets the scale of this {@link Decimal} to the provided {@code newScale}. The significand is determined by multiplying or dividing
+   * the significand of {@code encoded} by the appropriate power of ten to maintain its overall value. If the scale is reduced by the
+   * operation, the significand must be divided (rather than multiplied), and the value may be changed; in this case, the value will
+   * be rounded down.
    * <p>
    * Calling this method is the equivalent of:
    *
@@ -864,10 +864,10 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Sets the scale of this {@link Decimal} to the provided {@code newScale}. The significand is determined by multiplying or
-   * dividing the significand of {@code encoded} by the appropriate power of ten to maintain its overall value. If the scale is
-   * reduced by the operation, the significand must be divided (rather than multiplied), and the value may be changed; in this case,
-   * the value will be rounded down.
+   * Sets the scale of this {@link Decimal} to the provided {@code newScale}. The significand is determined by multiplying or dividing
+   * the significand of {@code encoded} by the appropriate power of ten to maintain its overall value. If the scale is reduced by the
+   * operation, the significand must be divided (rather than multiplied), and the value may be changed; in this case, the value will
+   * be rounded down.
    *
    * @param newScale The new scale to which this {@link Decimal} is to be set.
    * @param rm The {@link RoundingMode}.
@@ -1043,8 +1043,8 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the larger of two {@link Decimal#valueOf(long,int,long) encoded} values. If the arguments have the same value, the
-   * result is that same value.
+   * Returns the larger of two {@link Decimal#valueOf(long,int,long) encoded} values. If the arguments have the same value, the result
+   * is that same value.
    *
    * @param dec1 The first decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
    * @param dec2 The second decimal (encoded with {@link Decimal#valueOf(long,int,long)}) to compare.
@@ -1279,12 +1279,12 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns a new {@link BigDecimal} instance with the value of the provided {@link Decimal#valueOf(long,int,long) encoded} value
-   * and sign {@code scaleBits}.
+   * Returns a new {@link BigDecimal} instance with the value of the provided {@link Decimal#valueOf(long,int,long) encoded} value and
+   * sign {@code scaleBits}.
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
-   * @return A new {@link BigDecimal} instance with the value of the provided {@link Decimal#valueOf(long,int,long) encoded} value
-   *         and sign {@code scaleBits}.
+   * @return A new {@link BigDecimal} instance with the value of the provided {@link Decimal#valueOf(long,int,long) encoded} value and
+   *         sign {@code scaleBits}.
    */
   public static BigDecimal toBigDecimal(final long dec) {
     return BigDecimal.valueOf(significand(dec), scale(dec));
@@ -1376,8 +1376,8 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
-   * the fixed point decimal specified by the provided significand and scale.
+   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of the
+   * fixed point decimal specified by the provided significand and scale.
    *
    * @param significand The significand.
    * @param scale The scale.
@@ -1479,8 +1479,8 @@ public class Decimal extends FixedPoint implements Comparable<Decimal>, Cloneabl
   }
 
   /**
-   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of
-   * the provided {@link Decimal#valueOf(long,int,long) encoded} value.
+   * Returns the string representation (in <a href="https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of the
+   * provided {@link Decimal#valueOf(long,int,long) encoded} value.
    *
    * @param dec The {@link Decimal#valueOf(long,int,long) encoded} value.
    * @return The string representation (in <a href= "https://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>) of

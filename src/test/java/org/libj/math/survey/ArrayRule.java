@@ -82,7 +82,7 @@ public class ArrayRule implements Rule {
     builder.append("METHOD ").append(methodSignature).append('\n');
     builder.append("AFTER NEW ").append(cls.isArray() ? cls.getComponentType().getSimpleName() + "[]" : cls.getSimpleName()).append(" ALL\n");
     builder.append("IF true\n");
-//    builder.append("DO traceln(\"-----> \" + $CLASS + \" \" + $NEWCLASS);\n");
+    // builder.append("DO traceln(\"-----> \" + $CLASS + \" \" + $NEWCLASS);\n");
     builder.append("DO org.libj.math.survey.AuditReport.allocate($CLASS,$NEWCLASS)\n");
     builder.append("ENDRULE\n");
   }

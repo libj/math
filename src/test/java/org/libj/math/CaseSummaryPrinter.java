@@ -66,7 +66,7 @@ public class CaseSummaryPrinter {
   }
 
   private static void decompose(final File file, final SummaryMap map) throws IOException {
-   final String str = new String(Files.readAllBytes(file.toPath()));
+    final String str = new String(Files.readAllBytes(file.toPath()));
     final Matcher matcher = prePattern.matcher(str);
     matcher.find();
     int start = matcher.end();
@@ -74,12 +74,12 @@ public class CaseSummaryPrinter {
     int end = matcher.end();
     final String summary = str.substring(start, end);
     final Matcher lineMatcher = linePattern.matcher(summary);
-//    System.out.println("---- " + summary + " ------------------------------------------------------------");
+    // System.out.println("---- " + summary + " ------------------------------------------------------------");
     OUT:
     while (lineMatcher.find()) {
       final Object[] values = new Object[3];
       final String line = summary.substring(lineMatcher.start(), summary.indexOf('\n', lineMatcher.start() + 1)).trim();
-//      System.out.println(line);
+      // System.out.println(line);
       final Matcher dataMatcher = cellMatcher.matcher(line);
       dataMatcher.find();
       start = dataMatcher.end();
@@ -120,8 +120,8 @@ public class CaseSummaryPrinter {
 
       map.get(methodName).add(values);
       map.methodNameToFileName.put(methodName, file.getName());
-//      System.out.println(methodName + " -> " + Arrays.toString(values));
-//      System.out.println(methodName + " " + Arrays.toString(values));
+      // System.out.println(methodName + " -> " + Arrays.toString(values));
+      // System.out.println(methodName + " " + Arrays.toString(values));
     }
   }
 

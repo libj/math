@@ -48,8 +48,8 @@ package gnu.java.math;
 @SuppressWarnings("javadoc")
 public class MPN {
   /**
-   * Add x[0:size-1] and y, and write the size least significant words of the result to dest. Return carry, either 0 or 1. All
-   * values are unsigned. This is basically the same as gmp's mpn_add_1.
+   * Add x[0:size-1] and y, and write the size least significant words of the result to dest. Return carry, either 0 or 1. All values
+   * are unsigned. This is basically the same as gmp's mpn_add_1.
    */
   public static int add_1(int[] dest, int[] x, int size, int y) {
     long carry = y & 0xffffffffL;
@@ -62,8 +62,8 @@ public class MPN {
   }
 
   /**
-   * Add x[0:len-1] and y[0:len-1] and write the len least significant words of the result to dest[0:len-1]. All words are treated
-   * as unsigned.
+   * Add x[0:len-1] and y[0:len-1] and write the len least significant words of the result to dest[0:len-1]. All words are treated as
+   * unsigned.
    *
    * @return the carry, either 0 or 1 This function is basically the same as gmp's mpn_add_n.
    */
@@ -78,8 +78,8 @@ public class MPN {
   }
 
   /**
-   * Subtract Y[0:size-1] from X[0:size-1], and write the size least significant words of the result to dest[0:size-1]. Return
-   * borrow, either 0 or 1. This is basically the same as gmp's mpn_sub_n function.
+   * Subtract Y[0:size-1] from X[0:size-1], and write the size least significant words of the result to dest[0:size-1]. Return borrow,
+   * either 0 or 1. This is basically the same as gmp's mpn_sub_n function.
    */
   public static int sub_n(int[] dest, int[] X, int[] Y, int size) {
     int cy = 0;
@@ -98,9 +98,9 @@ public class MPN {
   }
 
   /**
-   * Multiply x[0:len-1] by y, and write the len least significant words of the product to dest[0:len-1]. Return the most
-   * significant word of the product. All values are treated as if they were unsigned (i.e. masked with 0xffffffffL). OK if dest==x
-   * (not sure if this is guaranteed for mpn_mul_1). This function is basically the same as gmp's mpn_mul_1.
+   * Multiply x[0:len-1] by y, and write the len least significant words of the product to dest[0:len-1]. Return the most significant
+   * word of the product. All values are treated as if they were unsigned (i.e. masked with 0xffffffffL). OK if dest==x (not sure if
+   * this is guaranteed for mpn_mul_1). This function is basically the same as gmp's mpn_mul_1.
    */
   public static int mul_1(int[] dest, int[] x, int len, int y) {
     long yword = y & 0xffffffffL;
@@ -115,8 +115,8 @@ public class MPN {
 
   /**
    * Multiply x[0:xlen-1] and y[0:ylen-1], and write the result to dest[0:xlen+ylen-1]. The destination has to have space for
-   * xlen+ylen words, even if the result might be one limb smaller. This function requires that xlen >= ylen. The destination must
-   * be distinct from either input operands. All operands are unsigned. This function is basically the same gmp's mpn_mul.
+   * xlen+ylen words, even if the result might be one limb smaller. This function requires that xlen >= ylen. The destination must be
+   * distinct from either input operands. All operands are unsigned. This function is basically the same gmp's mpn_mul.
    */
   public static void mul(int[] dest, int[] x, int xlen, int[] y, int ylen) {
     dest[xlen] = MPN.mul_1(dest, x, xlen, y[0]);
@@ -134,8 +134,8 @@ public class MPN {
   }
 
   /**
-   * Divide (unsigned long) N by (unsigned int) D. Returns (remainder << 32)+(unsigned int)(quotient). Assumes (unsigned int)(N>>32)
-   * < (unsigned int)D. Code transcribed from gmp-2.0's mpn_udiv_w_sdiv function.
+   * Divide (unsigned long) N by (unsigned int) D. Returns (remainder << 32)+(unsigned int)(quotient). Assumes (unsigned int)(N>>32) <
+   * (unsigned int)D. Code transcribed from gmp-2.0's mpn_udiv_w_sdiv function.
    */
   public static long udiv_qrnnd(long N, int D) {
     long q, r;
@@ -207,8 +207,8 @@ public class MPN {
   }
 
   /**
-   * Divide dividend[0:len-1] by (unsigned int)divisor. Write result into quotient[0:len-1. Return the one-word (unsigned)
-   * remainder. OK for quotient==dividend.
+   * Divide dividend[0:len-1] by (unsigned int)divisor. Write result into quotient[0:len-1. Return the one-word (unsigned) remainder.
+   * OK for quotient==dividend.
    */
   public static int divmod_1(int[] quotient, int[] dividend, int len, int divisor) {
     int i = len - 1;
@@ -454,8 +454,8 @@ public class MPN {
   }
 
   /**
-   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by 2**count). Store the len least significant words of
-   * the result at dest. The bits shifted out to the right are returned. OK if dest==x. Assumes: 0 &lt; count &lt; 32
+   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by 2**count). Store the len least significant words of the
+   * result at dest. The bits shifted out to the right are returned. OK if dest==x. Assumes: 0 &lt; count &lt; 32
    */
   public static int rshift(int[] dest, int[] x, int x_start, int len, int count) {
     int count_2 = 32 - count;
@@ -472,9 +472,8 @@ public class MPN {
   }
 
   /**
-   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by 2**count). Store the len least significant words of
-   * the result at dest. OK if dest==x. Assumes: 0 &lt;= count &lt; 32 Same as rshift, but handles count==0 (and has no return
-   * value).
+   * Shift x[x_start:x_start+len-1] count bits to the "right" (i.e. divide by 2**count). Store the len least significant words of the
+   * result at dest. OK if dest==x. Assumes: 0 &lt;= count &lt; 32 Same as rshift, but handles count==0 (and has no return value).
    */
   public static void rshift0(int[] dest, int[] x, int x_start, int len, int count) {
     if (count > 0)
@@ -653,13 +652,10 @@ public class MPN {
   }
 
   /*
-   * DEBUGGING: public static void dprint (BigInteger x) { if (x.words == null)
-   * System.err.print(Long.toString((long) x.ival & 0xffffffffL, 16)); else
-   * dprint (System.err, x.words, x.ival); } public static void dprint (int[] x)
-   * { dprint (System.err, x, x.length); } public static void dprint (int[] x,
-   * int len) { dprint (System.err, x, len); } public static void dprint
-   * (java.io.PrintStream ps, int[] x, int len) { ps.print('('); for (int i = 0;
-   * i < len; ++i) { if (i > 0) ps.print (' '); ps.print ("#x" + Long.toString
-   * ((long) x[i] & 0xffffffffL, 16)); } ps.print(')'); }
+   * DEBUGGING: public static void dprint (BigInteger x) { if (x.words == null) System.err.print(Long.toString((long) x.ival &
+   * 0xffffffffL, 16)); else dprint (System.err, x.words, x.ival); } public static void dprint (int[] x) { dprint (System.err, x,
+   * x.length); } public static void dprint (int[] x, int len) { dprint (System.err, x, len); } public static void dprint
+   * (java.io.PrintStream ps, int[] x, int len) { ps.print('('); for (int i = 0; i < len; ++i) { if (i > 0) ps.print (' '); ps.print
+   * ("#x" + Long.toString ((long) x[i] & 0xffffffffL, 16)); } ps.print(')'); }
    */
 }

@@ -33,20 +33,20 @@ import java.util.Arrays;
 
 abstract class BigIntMultiplication extends BigIntAddition {
   // For debugging
-//  public static boolean record = true;
-//  public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_QN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_QI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_QIN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_K = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_KI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
-//  public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static boolean record = true;
+  // public static int[] X_Q = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_QN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_QI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_QIN = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_K = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_KI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_KP = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+  // public static int[] X_KPI = {Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
 
-/**
- * Factor to be applied Karatsuba thresholds. This factor was determined experimentally to produce better results in general
- * applications than the exact factors that were determined in isolated tests.
- */
+  /**
+   * Factor to be applied Karatsuba thresholds. This factor was determined experimentally to produce better results in general
+   * applications than the exact factors that were determined in isolated tests.
+   */
   private static final double THRESHOLD_FACTOR = 1.2;
 
   /**
@@ -54,11 +54,11 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * number, and both input arrays are greater than {@link #KARATSUBA_THRESHOLD_X}, then Karatsuba multiplication will be used.
    * <p>
    * This value is found experimentally to work well, but there is room for further optimization. Optimizations for this threshold
-   * with magnitudes of different lengths produce different results. When the two magnitudes differ in length the most, the
-   * Karatsuba algorithm performs better with lower values of this threshold. When the two magnitudes are equal in length, the
-   * Karatsuba algorithm performs better with higher values of this threshold. The difference between the optimal value for this
-   * threshold for magnitudes with greatest differing lengths vs threshold for magnitudes with equal lengths is ~25%. In summary,
-   * the relationship of this threshold across the range of deltas between the magnitude lengths of the input arrays is not linear.
+   * with magnitudes of different lengths produce different results. When the two magnitudes differ in length the most, the Karatsuba
+   * algorithm performs better with lower values of this threshold. When the two magnitudes are equal in length, the Karatsuba
+   * algorithm performs better with higher values of this threshold. The difference between the optimal value for this threshold for
+   * magnitudes with greatest differing lengths vs threshold for magnitudes with equal lengths is ~25%. In summary, the relationship
+   * of this threshold across the range of deltas between the magnitude lengths of the input arrays is not linear.
    *
    * @see #KARATSUBA_THRESHOLD_X
    */
@@ -66,8 +66,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
   /**
    * The "x" threshold value for using Karatsuba multiplication. If the number of ints in both input arrays is greater than this
-   * number, then {@link #KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Karatsuba multiplication is to be used. This
-   * value is found experimentally to work well.
+   * number, then {@link #KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Karatsuba multiplication is to be used. This value
+   * is found experimentally to work well.
    */
   static final int KARATSUBA_THRESHOLD_X = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 70 : 50) * THRESHOLD_FACTOR); // 70 : 50
 
@@ -94,9 +94,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * with magnitudes of different lengths produce different results. When the two magnitudes differ in length the most, the Parallel
    * Karatsuba algorithm performs better with lower values of this threshold. When the two magnitudes are equal in length, the
    * Parallel Karatsuba algorithm performs better with higher values of this threshold. The difference between the optimal value for
-   * this threshold for magnitudes with greatest differing lengths vs threshold for magnitudes with equal lengths is ~25%. In
-   * summary, the relationship of this threshold across the range of deltas between the magnitude lengths of the input arrays is not
-   * linear.
+   * this threshold for magnitudes with greatest differing lengths vs threshold for magnitudes with equal lengths is ~25%. In summary,
+   * the relationship of this threshold across the range of deltas between the magnitude lengths of the input arrays is not linear.
    *
    * @see #PARALLEL_KARATSUBA_THRESHOLD_X
    */
@@ -104,8 +103,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
   /**
    * The "x" threshold value for using Parallel Karatsuba multiplication. If the number of ints in both input arrays is greater than
-   * this number, then {@link #PARALLEL_KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Parallel Karatsuba multiplication
-   * is to be used. This value is found experimentally to work well.
+   * this number, then {@link #PARALLEL_KARATSUBA_THRESHOLD_Z} will be evaluated to determine if Parallel Karatsuba multiplication is
+   * to be used. This value is found experimentally to work well.
    */
   static final int PARALLEL_KARATSUBA_THRESHOLD_X = (int)((NATIVE_THRESHOLD == Integer.MAX_VALUE ? 120 : 100) * PARALLEL_THRESHOLD_FACTOR); // 120 : 100
 
@@ -355,7 +354,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   private static int[] mul0(int[] val, int sig, final int mul, final boolean allocExact) {
-    int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
+    int len = val[0];
+    if (len < 0) { len = -len; sig = -sig; }
     if (len + 2 >= val.length)
       val = allocExact ? reallocExact(val, len + OFF, len + 2) : realloc(val, len + OFF, len + 2);
 
@@ -366,7 +366,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   private static int[] mulInPlace(int[] val, int sig, final int mul) {
-    int len = val[0]; if (len < 0) { len = -len; sig = -sig; }
+    int len = val[0];
+    if (len < 0) { len = -len; sig = -sig; }
     len = umul0(val, OFF, len, mul);
     val[0] = sig * len;
     // _debugLenSig(val);
@@ -617,16 +618,16 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
     final int[] z;
     final int inlineLen = zlen * 2 + 1;
-//    final boolean PARALLEL = len > PARALLEL_KARATSUBA_THRESHOLD_X && zlen > PARALLEL_KARATSUBA_THRESHOLD_Z;
+    // final boolean PARALLEL = len > PARALLEL_KARATSUBA_THRESHOLD_X && zlen > PARALLEL_KARATSUBA_THRESHOLD_Z;
     if (!xNew && x.length > inlineLen) {
-//      if (record) { final int X[] = PARALLEL ? X_KPI : X_KI; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+      // if (record) { final int X[] = PARALLEL ? X_KPI : X_KI; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = x;
       z[zlen] = 0;
       karatsuba(x, y, z, inlineLen, len);
     }
     else {
-//      if (record) { final int X[] = PARALLEL ? X_KP : X_K; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+      // if (record) { final int X[] = PARALLEL ? X_KP : X_K; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = alloc(OFF + zlen * 2); // (OFF + zlen) is all that's needed, but increase to potentially reuse the original array
       // z = alloc((OFF + zlen) * ((int)(1 + 10 * Math.random()))); // FIXME: Remove this!
@@ -647,7 +648,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
   static int[] mulQuad(final int[] x, final int xlen, final int[] y, final int ylen, int zlen, final boolean sig, final boolean allocExact) {
     final int[] z;
     if (x.length >= zlen + xlen) {
-//      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_QI : X_QIN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+      // if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_QI : X_QIN; X[0] = Math.min(X[0], zlen);
+      // X[1] = Math.max(X[1], zlen); ++X[2]; }
 
       z = x;
       if (xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD)
@@ -656,7 +658,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
         nativeMulQuadInPlace(y, ylen, z, xlen, zlen - 2);
     }
     else {
-//      if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_Q : X_QN; X[0] = Math.min(X[0], zlen); X[1] = Math.max(X[1], zlen); ++X[2]; }
+      // if (record) { final int X[] = xlen < NATIVE_THRESHOLD || ylen < NATIVE_THRESHOLD ? X_Q : X_QN; X[0] = Math.min(X[0], zlen); X[1]
+      // = Math.max(X[1], zlen); ++X[2]; }
 
       z = allocExact ? new int[zlen] : alloc(zlen);
       if (xlen < ylen) {
@@ -1004,8 +1007,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
 
   // shifts a up to len left n bits assumes no leading zeros, 0<=n<32
   private static void primitiveLeftShift(final int[] a, final int start, int end, final int n) {
-//    if (end <= start || n == 0)
-//      return;
+    // if (end <= start || n == 0)
+    // return;
 
     final int n2 = 32 - n;
     int c = a[--end];
@@ -1085,7 +1088,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
     if (len == 0)
       return val;
 
-    boolean sig = true; if (len < 0) { val[0] = len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { val[0] = len = -len; sig = false; }
 
     int[] res;
     if (len == 1 && val[1] == 10) {
@@ -1185,8 +1189,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
   }
 
   /**
-   * Returns the provided {@linkplain BigInt#val() value-encoded number} set its value minus the multiple of the provided
-   * parameters.
+   * Returns the provided {@linkplain BigInt#val() value-encoded number} set its value minus the multiple of the provided parameters.
    *
    * <pre>
    * val = val - q * s
@@ -1196,8 +1199,7 @@ abstract class BigIntMultiplication extends BigIntAddition {
    * @param val The {@linkplain BigInt#val() value-encoded number} subtracter.
    * @param q The integer multiplicand.
    * @param s The {@linkplain BigInt#val() value-encoded number} multiplier.
-   * @return The provided {@linkplain BigInt#val() value-encoded number} set its value minus the multiple of the provided
-   *         parameters.
+   * @return The provided {@linkplain BigInt#val() value-encoded number} set its value minus the multiple of the provided parameters.
    */
   static long multDiffMe(final int[] val, final long q, final int[] s) {
     if (q == 0)

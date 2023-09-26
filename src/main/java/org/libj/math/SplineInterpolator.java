@@ -81,8 +81,8 @@ public class SplineInterpolator<C> {
 
   /**
    * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
-   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
-   * values will also be monotonic. This function uses the
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated values
+   * will also be monotonic. This function uses the
    * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
    * parameters.
    *
@@ -98,8 +98,8 @@ public class SplineInterpolator<C> {
 
   /**
    * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
-   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
-   * values will also be monotonic. This function uses the
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated values
+   * will also be monotonic. This function uses the
    * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
    * parameters.
    *
@@ -115,8 +115,8 @@ public class SplineInterpolator<C> {
 
   /**
    * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
-   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
-   * values will also be monotonic. This function uses the
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated values
+   * will also be monotonic. This function uses the
    * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
    * parameters.
    *
@@ -133,8 +133,8 @@ public class SplineInterpolator<C> {
 
   /**
    * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
-   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
-   * values will also be monotonic. This function uses the
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated values
+   * will also be monotonic. This function uses the
    * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
    * parameters.
    *
@@ -148,27 +148,27 @@ public class SplineInterpolator<C> {
     return createMonotoneCubicSpline(new DoubleList[] {x, y}, DOUBLE_LIST);
   }
 
-//  /**
-//   * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
-//   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
-//   * values will also be monotonic. This function uses the
-//   * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
-//   * parameters.
-//   *
-//   * @param xy The array of {@code T} component of the control points, strictly increasing.
-//   * @param y The {@code y} component of the control points.
-//   * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
-//   * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
-//   * @throws NullPointerException If {@code x} or {@code y} is null.
-//   */
-//  public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C[] xy, final Adapter<C> y) {
-//    return createMonotoneCubicSpline(xy, y);
-//  }
+  // /**
+  // * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
+  // * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
+  // * values will also be monotonic. This function uses the
+  // * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
+  // * parameters.
+  // *
+  // * @param xy The array of {@code T} component of the control points, strictly increasing.
+  // * @param y The {@code y} component of the control points.
+  // * @return A new {@link SplineInterpolator} of a monotone cubic spline from the given set of control points.
+  // * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
+  // * @throws NullPointerException If {@code x} or {@code y} is null.
+  // */
+  // public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C[] xy, final Adapter<C> y) {
+  // return createMonotoneCubicSpline(xy, y);
+  // }
 
   /**
    * Creates a monotone cubic spline from a given set of control points. The spline is guaranteed to pass through each control point
-   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated
-   * values will also be monotonic. This function uses the
+   * exactly. Moreover, assuming the control points are monotonic (Y is non-decreasing or non-increasing) then the interpolated values
+   * will also be monotonic. This function uses the
    * <a href= "http://en.wikipedia.org/wiki/Monotone_cubic_interpolation">Fritsch-Carlson</a> method for computing the spline
    * parameters.
    *
@@ -179,7 +179,7 @@ public class SplineInterpolator<C> {
    * @throws IllegalArgumentException If {@code x} or {@code y} have different lengths or fewer than 2 values.
    * @throws NullPointerException If {@code x} or {@code y} is null.
    */
-  public static <C>SplineInterpolator<C> createMonotoneCubicSpline(final C xy, final Adapter<C> adapter) {
+  public static <C> SplineInterpolator<C> createMonotoneCubicSpline(final C xy, final Adapter<C> adapter) {
     final int n = adapter.size(xy), n1 = n - 1, n2 = n - 2;
     if (adapter.size(xy) < 2)
       throw new IllegalArgumentException("Arrays must be of equal length greater than or equal to two");

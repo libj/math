@@ -49,7 +49,7 @@ public class DoublePrecisionTest {
       final BigDecimal zd = BigDecimal.valueOf(d);
       d = zd.doubleValue();
       if (zd.compareTo(z) != 0) {
-//        System.err.println("double: " + z + " != " + zd);
+        // System.err.println("double: " + z + " != " + zd);
         cd.getAndIncrement();
       }
     }

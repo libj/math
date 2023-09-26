@@ -30,17 +30,17 @@ import com.google.common.math.BigIntegerMath;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
-@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
+@AuditRunner.Instrument(a = BigInteger.class, b = int[].class)
+@AuditRunner.Instrument(a = BigInt.class, b = int[].class)
 public class BigIntSqrtTest extends BigIntTest {
   private void test(final AuditReport report, final RoundingMode rm) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Square root of `T`");
 
-    test("sqrt(" + rm + ")").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> BigIntegerMath.sqrt(a, rm), o -> o == null ? null : String.valueOf(o)),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.sqrt(rm), o -> o == null ? null : String.valueOf(o)),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.sqrt(a, rm), BigInt::toString)
-    );
+    test("sqrt(" + rm + ")").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.sqrt(a, rm), o -> o == null ? null : String.valueOf(o)),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.sqrt(rm), o -> o == null ? null : String.valueOf(o)),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.sqrt(a, rm), BigInt::toString));
   }
 
   @Test

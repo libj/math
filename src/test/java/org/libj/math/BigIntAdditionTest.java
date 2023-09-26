@@ -28,8 +28,8 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
-@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
+@AuditRunner.Instrument(a = BigInteger.class, b = int[].class)
+@AuditRunner.Instrument(a = BigInt.class, b = int[].class)
 public class BigIntAdditionTest extends BigIntTest {
   @Test
   public void testAddUnsignedInt(final AuditReport report) {
@@ -37,22 +37,25 @@ public class BigIntAdditionTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
 
     final int[] sig = {0};
-    test("add(int,int)").withAuditReport(report).withCases(
-      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, int b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.add(sig[0], b), String::valueOf),
-      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.add(a, sig[0], b), BigInt::toString)
-    );
+    test("add(int,int)").withAuditReport(report)
+      .withCases(
+        i(BigInteger.class, this::scaledBigInteger, b -> {
+          sig[0] = b % 2 == 0 ? -1 : 1;
+          return b;
+        }, (final BigInteger a, final int b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.add(sig[0], b), String::valueOf),
+        i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.add(a, sig[0], b), BigInt::toString));
   }
 
   @Test
   public void testAddSignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Addition of signed `int`.");
 
-    test("add(int)").withAuditReport(report).withCases(
-      i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.add(b), String::valueOf),
-      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.add(a, b), BigInt::toString)
-    );
+    test("add(int)").withAuditReport(report)
+      .withCases(
+        i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, int b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
+        i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.add(b), String::valueOf),
+        i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.add(a, b), BigInt::toString));
   }
 
   @Test
@@ -61,33 +64,36 @@ public class BigIntAdditionTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
 
     final int[] sig = {0};
-    test("add(int,long)").withAuditReport(report).withCases(
-      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, long b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.add(sig[0], b), String::valueOf),
-      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.add(a, sig[0], b), BigInt::toString)
-    );
+    test("add(int,long)").withAuditReport(report)
+      .withCases(
+        l(BigInteger.class, this::scaledBigInteger, b -> {
+          sig[0] = b % 2 == 0 ? -1 : 1;
+          return b;
+        }, (final BigInteger a, long b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.add(sig[0], b), String::valueOf),
+        l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.add(a, sig[0], b), BigInt::toString));
   }
 
   @Test
   public void testAddSignedLong(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Addition of signed `long`.");
 
-    test("add(long)").withAuditReport(report).withCases(
-      l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.add(b), String::valueOf),
-      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.add(a, b), BigInt::toString)
-    );
+    test("add(long)").withAuditReport(report)
+      .withCases(
+        l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, long b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
+        l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.add(b), String::valueOf),
+        l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.add(a, b), BigInt::toString));
   }
 
   @Test
   public void testAddBig(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Addition of `T`.");
 
-    test("add(T)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.add(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.add(b), String::valueOf),
-      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.add(a, b), BigInt::toString)
-    );
+    test("add(T)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (final BigInteger a, final BigInteger b) -> a.add(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, BigInt::new, (final BigInt a, final BigInt b) -> a.add(b), String::valueOf),
+        s(int[].class, this::scaledVal, BigInt::valueOf, (final int[] a, final int[] b) -> BigInt.add(a, b), BigInt::toString));
   }
 
   @Test
@@ -96,22 +102,25 @@ public class BigIntAdditionTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `int`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `int` is accomplished with the [`BigIntegers.valueOf(int)`][BigIntegers] utility method.");
 
     final int[] sig = {0};
-    test("sub(int,int)").withAuditReport(report).withCases(
-      i(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, int b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.sub(sig[0], b), String::valueOf),
-      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.sub(a, sig[0], b), BigInt::toString)
-    );
+    test("sub(int,int)").withAuditReport(report)
+      .withCases(
+        i(BigInteger.class, this::scaledBigInteger, b -> {
+          sig[0] = b % 2 == 0 ? -1 : 1;
+          return b;
+        }, (final BigInteger a, int b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.sub(sig[0], b), String::valueOf),
+        i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.sub(a, sig[0], b), BigInt::toString));
   }
 
   @Test
   public void testSubSignedInt(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Subtraction of signed `int`.");
 
-    test("sub(int)").withAuditReport(report).withCases(
-      i(BigInteger.class, this::scaledBigInteger, (BigInteger a, int b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
-      i(BigInt.class, this::scaledBigInt, (BigInt a, int b) -> a.sub(b), String::valueOf),
-      i(int[].class, this::scaledVal, (int[] a, int b) -> BigInt.sub(a, b), BigInt::toString)
-    );
+    test("sub(int)").withAuditReport(report)
+      .withCases(
+        i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, int b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
+        i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.sub(b), String::valueOf),
+        i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.sub(a, b), BigInt::toString));
   }
 
   @Test
@@ -120,32 +129,35 @@ public class BigIntAdditionTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not have a constructor for unsigned `long`. Therefore, for this test, the creation of a `BigInteger` from an unsigned `long` is accomplished with the [`BigIntegers.valueOf(long)`][BigIntegers] utility method.");
 
     final int[] sig = {0};
-    test("sub(int,long)").withAuditReport(report).withCases(
-      l(BigInteger.class, this::scaledBigInteger, b -> { sig[0] = b % 2 == 0 ? -1 : 1; return b; }, (BigInteger a, long b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.sub(sig[0], b), String::valueOf),
-      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.sub(a, sig[0], b), BigInt::toString)
-    );
+    test("sub(int,long)").withAuditReport(report)
+      .withCases(
+        l(BigInteger.class, this::scaledBigInteger, b -> {
+          sig[0] = b % 2 == 0 ? -1 : 1;
+          return b;
+        }, (final BigInteger a, long b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.sub(sig[0], b), String::valueOf),
+        l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.sub(a, sig[0], b), BigInt::toString));
   }
 
   @Test
   public void testSubSignedLong(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Subtraction of signed `long`.");
 
-    test("sub(long)").withAuditReport(report).withCases(
-      l(BigInteger.class, this::scaledBigInteger, (BigInteger a, long b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
-      l(BigInt.class, this::scaledBigInt, (BigInt a, long b) -> a.sub(b), String::valueOf),
-      l(int[].class, this::scaledVal, (int[] a, long b) -> BigInt.sub(a, b), BigInt::toString)
-    );
+    test("sub(long)").withAuditReport(report)
+      .withCases(
+        l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, long b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
+        l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.sub(b), String::valueOf),
+        l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.sub(a, b), BigInt::toString));
   }
 
   @Test
   public void testSubBig(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Subtraction of `T`.");
 
-    test("sub(T)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (BigInteger a, BigInteger b) -> a.subtract(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, BigInt::new, (BigInt a, BigInt b) -> a.sub(b), String::valueOf),
-      s(int[].class, this::scaledVal, BigInt::valueOf, (int[] a, int[] b) -> BigInt.sub(a, b), BigInt::toString)
-    );
+    test("sub(T)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (final BigInteger a, final BigInteger b) -> a.subtract(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, BigInt::new, (final BigInt a, final BigInt b) -> a.sub(b), String::valueOf),
+        s(int[].class, this::scaledVal, BigInt::valueOf, (final int[] a, final int[] b) -> BigInt.sub(a, b), BigInt::toString));
   }
 }

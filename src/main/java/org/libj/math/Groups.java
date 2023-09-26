@@ -38,7 +38,7 @@ public final class Groups {
    */
   @SafeVarargs
   @SuppressWarnings("unchecked")
-  public static <T>T[][] permute(final int k, final T ... elements) {
+  public static <T> T[][] permute(final int k, final T ... elements) {
     if (elements.length < k)
       throw new ArithmeticException("n (" + elements.length + ") is less than k (" + k + ")");
 
@@ -59,7 +59,7 @@ public final class Groups {
    * @return The number of enumerated permutations.
    */
   @SuppressWarnings("unchecked")
-  private static <T>int enumerate(final T[] a, final Class<T> componentType, final int n, final int k, final T[][] permutations, final int index) {
+  private static <T> int enumerate(final T[] a, final Class<T> componentType, final int n, final int k, final T[][] permutations, final int index) {
     if (k == 0) {
       final T[] subArray = (T[])Array.newInstance(componentType, a.length - n);
       System.arraycopy(a, n, subArray, 0, subArray.length);
@@ -77,7 +77,7 @@ public final class Groups {
     return depth;
   }
 
-  private static <T>void swap(final T[] a, final int i, final int j) {
+  private static <T> void swap(final T[] a, final int i, final int j) {
     final T temp = a[i];
     a[i] = a[j];
     a[j] = temp;
@@ -147,14 +147,14 @@ public final class Groups {
    * @param <T> The component type of the array.
    * @param elements The elements representing the fixed set.
    * @param k The number of elements representing the subsets.
-   * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
-   *         {@code int} values from {@code 0} to {@code n}.
+   * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as {@code int}
+   *         values from {@code 0} to {@code n}.
    * @throws ArithmeticException If {@code elements.length} is less than {@code k}.
    * @throws NullPointerException If {@code elements} is null.
    */
   @SafeVarargs
   @SuppressWarnings("unchecked")
-  public static <T>T[][] combine(final int k, final T ... elements) {
+  public static <T> T[][] combine(final int k, final T ... elements) {
     if (elements.length < k)
       throw new ArithmeticException("elements.length (" + elements.length + ") is less than k (" + k + ")");
 
@@ -164,7 +164,7 @@ public final class Groups {
     return permutations;
   }
 
-  private static <T>int combine(final T[] a, final int k, final int start, final T[] combination, final T[][] combinations, final int index) {
+  private static <T> int combine(final T[] a, final int k, final int start, final T[] combination, final T[][] combinations, final int index) {
     if (k == 0) {
       combinations[index] = combination.clone();
       return 1;
@@ -180,13 +180,13 @@ public final class Groups {
   }
 
   /**
-   * Returns an array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
-   * {@code int} values from {@code 0} to {@code n}.
+   * Returns an array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as {@code int}
+   * values from {@code 0} to {@code n}.
    *
    * @param k The number of elements representing the subsets.
    * @param n The number of elements representing the fixed set.
-   * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as
-   *         {@code int} values from {@code 0} to {@code n}.
+   * @return An array of all unordered subset combinations of {@code k} elements from a fixed set of {@code n} elements as {@code int}
+   *         values from {@code 0} to {@code n}.
    * @throws ArithmeticException If {@code n} is less than {@code k}.
    */
   public static int[][] combine(final int k, final int n) {
@@ -233,7 +233,7 @@ public final class Groups {
    * @throws NullPointerException If {@code a} or any array member of {@code a} is null.
    */
   @SuppressWarnings("unchecked")
-  public static <T>T[][] permute(final T[][] a) {
+  public static <T> T[][] permute(final T[][] a) {
     int total = a[0].length;
     for (int i = 1, i$ = a.length; i < i$; ++i) // [A]
       total *= a[i].length;
@@ -259,12 +259,12 @@ public final class Groups {
   }
 
   @SafeVarargs
-  public static <T>void permute(final Consumer<T[]> consumer, final T ... elements) {
+  public static <T> void permute(final Consumer<T[]> consumer, final T ... elements) {
     recursePermute(consumer, elements.length, elements);
   }
 
   @SafeVarargs
-  private static <T>void recursePermute(final Consumer<T[]> consumer, final int n, final T ... elements) {
+  private static <T> void recursePermute(final Consumer<T[]> consumer, final int n, final T ... elements) {
     if (n == 1) {
       consumer.accept(elements);
     }
@@ -279,11 +279,11 @@ public final class Groups {
   }
 
   @SafeVarargs
-  public static <T>void permute(final ObjIntConsumer<T[]> consumer, final int r, final T ... elements) {
+  public static <T> void permute(final ObjIntConsumer<T[]> consumer, final int r, final T ... elements) {
     permute(consumer, 0, elements.length - r, elements);
   }
 
-  private static <T>void permute(final ObjIntConsumer<T[]> consumer, final int n, final int k, final T[] elements) {
+  private static <T> void permute(final ObjIntConsumer<T[]> consumer, final int n, final int k, final T[] elements) {
     if (n == k) {
       consumer.accept(elements, k);
       return;

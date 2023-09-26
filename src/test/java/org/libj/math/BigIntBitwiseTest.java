@@ -28,8 +28,8 @@ import org.libj.util.ArrayUtil;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
-@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
+@AuditRunner.Instrument(a = BigInteger.class, b = int[].class)
+@AuditRunner.Instrument(a = BigInt.class, b = int[].class)
 public class BigIntBitwiseTest extends BigIntTest {
   private static int randomBit(final String seed, final int bitCount) {
     return Math.abs(seed.hashCode() % (bitCount + 1));
@@ -39,44 +39,44 @@ public class BigIntBitwiseTest extends BigIntTest {
   public void testBitCount(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The number of bits in the two's complement representation that differ from the sign bit.");
 
-    test("bitCount()").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.bitCount(), Integer::valueOf),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.bitCount(), Integer::valueOf),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.bitCount(a), Integer::valueOf)
-    );
+    test("bitCount()").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.bitCount(), Integer::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.bitCount(), Integer::valueOf),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.bitCount(a), Integer::valueOf));
   }
 
   @Test
   public void testBitLength(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The number of bits in the minimal two's-complement representation excluding the sign bit.");
 
-    test("bitLength()").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.bitLength(), Integer::valueOf),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.bitLength(), Long::valueOf),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.bitLength(a), Long::valueOf)
-    );
+    test("bitLength()").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.bitLength(), Integer::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.bitLength(), Long::valueOf),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.bitLength(a), Long::valueOf));
   }
 
   @Test
   public void testLowestSetBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "The number of bits in the minimal two's-complement representation excluding the sign bit.");
 
-    test("bitLength()").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.getLowestSetBit(), Integer::valueOf),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.getLowestSetBit(), Integer::valueOf),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.getLowestSetBit(a), Integer::valueOf)
-    );
+    test("bitLength()").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.getLowestSetBit(), Integer::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.getLowestSetBit(), Integer::valueOf),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.getLowestSetBit(a), Integer::valueOf));
   }
 
   @Test
   public void testToByteArrayBigEndian(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Convert the number to a `byte` array in big-endian order.");
 
-    test("toByteArray() BE").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> a.toByteArray(), o -> o),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(false), o -> o),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, false), o -> o)
-    );
+    test("toByteArray() BE").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.toByteArray(), o -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.toByteArray(false), o -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.toByteArray(a, false), o -> o));
   }
 
   @Test
@@ -84,76 +84,76 @@ public class BigIntBitwiseTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Convert the number to a `byte` array in little-endian order.");
     report.addComment(UNINSTRUMENTED.ordinal(), "The `BigInteger` class does not support little endian `byte[]` encoding. Therefore, for this test, the output array is reversed just for `BigInteger`. The time for the array reversal _is_ included in the runtime measure.");
 
-    test("toByteArray() LE").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (BigInteger a) -> ArrayUtil.reverse(a.toByteArray()), o -> o),
-      s(BigInt.class, this::scaledBigInt, (BigInt a) -> a.toByteArray(true), o -> o),
-      s(int[].class, this::scaledVal, (int[] a) -> BigInt.toByteArray(a, true), o -> o)
-    );
+    test("toByteArray() LE").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> ArrayUtil.reverse(a.toByteArray()), o -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.toByteArray(true), o -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.toByteArray(a, true), o -> o));
   }
 
   @Test
   public void testTestBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Tests whether the provided bit is set.");
 
-    test("testBit(int)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.testBit(b), Boolean::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.testBit(b), Boolean::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.testBit(a, b), Boolean::valueOf)
-    );
+    test("testBit(int)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (final BigInteger a, final int b) -> a.testBit(b), Boolean::valueOf),
+        s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (final BigInt a, final int b) -> a.testBit(b), Boolean::valueOf),
+        s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (final int[] a, final int b) -> BigInt.testBit(a, b), Boolean::valueOf));
   }
 
   @Test
   public void testSetBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Sets the provided bit.");
 
-    test("setBit(int)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.setBit(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.setBit(b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.setBit(a, b), BigInt::toString)
-    );
+    test("setBit(int)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (final BigInteger a, final int b) -> a.setBit(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (final BigInt a, final int b) -> a.setBit(b), String::valueOf),
+        s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (final int[] a, final int b) -> BigInt.setBit(a, b), BigInt::toString));
   }
 
   @Test
   public void testFlipBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Flips the provided bit.");
 
-    test("flipBit(int)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.flipBit(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.flipBit(b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.flipBit(a, b), BigInt::toString)
-    );
+    test("flipBit(int)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (final BigInteger a, final int b) -> a.flipBit(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (final BigInt a, final int b) -> a.flipBit(b), String::valueOf),
+        s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (final int[] a, final int b) -> BigInt.flipBit(a, b), BigInt::toString));
   }
 
   @Test
   public void testClearBit(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Clears the provided bit.");
 
-    test("clearBit(int)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.clearBit(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.clearBit(b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.clearBit(a, b), BigInt::toString)
-    );
+    test("clearBit(int)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (final BigInteger a, final int b) -> a.clearBit(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (final BigInt a, final int b) -> a.clearBit(b), String::valueOf),
+        s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (final int[] a, final int b) -> BigInt.clearBit(a, b), BigInt::toString));
   }
 
   @Test
   public void testShiftLeft(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Shifts the bits in the number left by the given amount.");
 
-    test("shiftLeft(int)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.shiftLeft(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.shiftLeft(b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.shiftLeft(a, b), BigInt::toString)
-    );
+    test("shiftLeft(int)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (final BigInteger a, final int b) -> a.shiftLeft(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (final BigInt a, final int b) -> a.shiftLeft(b), String::valueOf),
+        s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (final int[] a, final int b) -> BigInt.shiftLeft(a, b), BigInt::toString));
   }
 
   @Test
   public void testShiftRight(final AuditReport report) {
     report.addComment(UNINSTRUMENTED.ordinal(), "Shifts the bits in the number right by the given amount.");
 
-    test("shiftRight(int)").withAuditReport(report).withCases(
-      s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (BigInteger a, int b) -> a.shiftRight(b), String::valueOf),
-      s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (BigInt a, int b) -> a.shiftRight(b), String::valueOf),
-      s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (int[] a, int b) -> BigInt.shiftRight(a, b), BigInt::toString)
-    );
+    test("shiftRight(int)").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, this::scaledBigInteger, (a, b) -> randomBit(b, a.bitCount()), (final BigInteger a, final int b) -> a.shiftRight(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (a, b) -> randomBit(b, a.bitCount()), (final BigInt a, final int b) -> a.shiftRight(b), String::valueOf),
+        s(int[].class, this::scaledVal, (a, b) -> randomBit(b, BigInt.bitCount(a)), (final int[] a, final int b) -> BigInt.shiftRight(a, b), BigInt::toString));
   }
 }

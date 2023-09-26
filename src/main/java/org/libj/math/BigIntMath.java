@@ -57,17 +57,10 @@ abstract class BigIntMath extends BigIntDivision {
 
     final int halfSquare = sqrtFloor * sqrtFloor + sqrtFloor;
     /*
-     * Test whether x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25.
-     * Since both x and halfSquare are integers, this is equivalent to testing
-     * whether x <= halfSquare. (We have to deal with overflow, though). If we
-     * treat halfSquare as an unsigned int, we know that
-     *
-     * sqrtFloor^2 <= x < (sqrtFloor + 1)^2
-     *
-     * halfSquare - sqrtFloor <= x < halfSquare + sqrtFloor + 1
-     *
-     * so |x - halfSquare| <= sqrtFloor. Therefore, it's safe to treat
-     * x - halfSquare as a signed int, so lessThanBranchFree is safe for use.
+     * Test whether x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25. Since both x and halfSquare are integers, this is equivalent to
+     * testing whether x <= halfSquare. (We have to deal with overflow, though). If we treat halfSquare as an unsigned int, we know that
+     * sqrtFloor^2 <= x < (sqrtFloor + 1)^2 halfSquare - sqrtFloor <= x < halfSquare + sqrtFloor + 1 so |x - halfSquare| <= sqrtFloor.
+     * Therefore, it's safe to treat x - halfSquare as a signed int, so lessThanBranchFree is safe for use.
      */
     return sqrtFloor + lessThanBranchFree(halfSquare, x);
   }
@@ -87,18 +80,11 @@ abstract class BigIntMath extends BigIntDivision {
       return sqrt((int)x, rm);
 
     /*
-     * Let k be the true value of floor(sqrt(x)), so that
-     *            k * k  <=            x  <             (k + 1) * (k + 1)
-     *   (double)(k * k) <=    (double)x  <=   (double)((k + 1) * (k + 1))
-     * since casting to double is nondecreasing.
-     * Note that the right-hand inequality is no longer strict.
-     *       sqrt(k * k) <=       sqrt(x) <=       sqrt((k + 1) * (k + 1))
-     * since sqrt() is monotonic.
-     * (long)sqrt(k * k) <= (long)sqrt(x) <= (long)sqrt((k + 1) * (k + 1))
-     * since casting to long is monotonic
-     *                 k <= (long)sqrt(x) <= k + 1
-     * since (long) sqrt(k * k) == k, as checked exhaustively in
-     * {@link LongMathTest#testSqrtOfPerfectSquareAsDoubleIsPerfect}
+     * Let k be the true value of floor(sqrt(x)), so that k * k <= x < (k + 1) * (k + 1) (double)(k * k) <= (double)x <= (double)((k +
+     * 1) * (k + 1)) since casting to double is nondecreasing. Note that the right-hand inequality is no longer strict. sqrt(k * k) <=
+     * sqrt(x) <= sqrt((k + 1) * (k + 1)) since sqrt() is monotonic. (long)sqrt(k * k) <= (long)sqrt(x) <= (long)sqrt((k + 1) * (k + 1))
+     * since casting to long is monotonic k <= (long)sqrt(x) <= k + 1 since (long) sqrt(k * k) == k, as checked exhaustively in {@link
+     * LongMathTest#testSqrtOfPerfectSquareAsDoubleIsPerfect}
      */
     final long guess = (long)Math.sqrt(x);
     // Note: guess is always <= FLOOR_SQRT_MAX_LONG.
@@ -119,17 +105,10 @@ abstract class BigIntMath extends BigIntDivision {
     final long halfSquare = sqrtFloor * sqrtFloor + sqrtFloor;
 
     /*
-     * Test whether x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25.
-     * Since both x and halfSquare are integers, this is equivalent to testing
-     * whether x <= halfSquare. (We have to deal with overflow, though). If we
-     * treat halfSquare as an unsigned int, we know that
-     *
-     * sqrtFloor^2 <= x < (sqrtFloor + 1)^2
-     *
-     * halfSquare - sqrtFloor <= x < halfSquare + sqrtFloor + 1
-     *
-     * so |x - halfSquare| <= sqrtFloor. Therefore, it's safe to treat
-     * x - halfSquare as a signed int, so lessThanBranchFree is safe for use.
+     * Test whether x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25. Since both x and halfSquare are integers, this is equivalent to
+     * testing whether x <= halfSquare. (We have to deal with overflow, though). If we treat halfSquare as an unsigned int, we know that
+     * sqrtFloor^2 <= x < (sqrtFloor + 1)^2 halfSquare - sqrtFloor <= x < halfSquare + sqrtFloor + 1 so |x - halfSquare| <= sqrtFloor.
+     * Therefore, it's safe to treat x - halfSquare as a signed int, so lessThanBranchFree is safe for use.
      */
     return sqrtFloor + lessThanBranchFree(halfSquare, x);
   }
@@ -142,8 +121,8 @@ abstract class BigIntMath extends BigIntDivision {
    * </pre>
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
-   * @implNote The implementation is based on the material in Henry S. Warren, Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison
-   *           Wesley, 2013), 279-282.
+   * @implNote The implementation is based on the material in Henry S. Warren, Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison Wesley,
+   *           2013), 279-282.
    * @return {@code val} with its value replaced with its integer square root, or {@code null} if {@code val} is negative.
    * @complexity O(n^2) - O(n log n)
    */
@@ -161,8 +140,8 @@ abstract class BigIntMath extends BigIntDivision {
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param rm The {@link RoundingMode}.
-   * @implNote The implementation is based on the material in Henry S. Warren, Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison
-   *           Wesley, 2013), 279-282.
+   * @implNote The implementation is based on the material in Henry S. Warren, Jr., <i>Hacker's Delight (2nd ed.)</i> (Addison Wesley,
+   *           2013), 279-282.
    * @return {@code val} with its value replaced with its rounded square root, or {@code null} if {@code val} is negative, or
    *         {@code rm == RoundingMode.UNNECESSARY || rm == null} yet rounding is necessary.
    * @complexity O(n^2) - O(n log n)
@@ -197,22 +176,23 @@ abstract class BigIntMath extends BigIntDivision {
       return equals(tmp, val) ? sqrtApprox : null;
 
     final int[] halfSquare = addInPlace(tmp, sqrtApprox);
-    /* Test whether or not x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25. Since
-     * both x and halfSquare are integers, this is equivalent to testing whether
-     * or not x <= halfSquare. */
+    /*
+     * Test whether or not x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25. Since both x and halfSquare are integers, this is equivalent to
+     * testing whether or not x <= halfSquare.
+     */
     return compareToAbs(halfSquare, val) >= 0 ? sqrtApprox : addInPlace(sqrtApprox, 1, 1);
   }
 
   /**
-   * Adapted from Hacker's Delight, Figure 11-1. Using DoubleUtils.bigToDouble, getting a double approximation of x is extremely
-   * fast, and then we can get a double approximation of the square root. Then, we iteratively improve this guess with an
-   * application of Newton's method, which sets guess := (guess + (x / guess)) / 2. This iteration has the following two properties:
-   * a) every iteration (except potentially the first) has guess >= floor(sqrt(x)). This is because guess' is the arithmetic mean of
-   * guess and x / guess, sqrt(x) is the geometric mean, and the arithmetic mean is always higher than the geometric mean. b) this
-   * iteration converges to floor(sqrt(x)). In fact, the number of correct digits doubles with each iteration, so this algorithm
-   * takes O(log(digits)) iterations. We start out with a double-precision approximation, which may be higher or lower than the true
-   * value. Therefore, we perform at least one Newton iteration to get a guess that's definitely >= floor(sqrt(x)), and then
-   * continue the iteration until we reach a fixed point.
+   * Adapted from Hacker's Delight, Figure 11-1. Using DoubleUtils.bigToDouble, getting a double approximation of x is extremely fast,
+   * and then we can get a double approximation of the square root. Then, we iteratively improve this guess with an application of
+   * Newton's method, which sets guess := (guess + (x / guess)) / 2. This iteration has the following two properties: a) every
+   * iteration (except potentially the first) has guess >= floor(sqrt(x)). This is because guess' is the arithmetic mean of guess and
+   * x / guess, sqrt(x) is the geometric mean, and the arithmetic mean is always higher than the geometric mean. b) this iteration
+   * converges to floor(sqrt(x)). In fact, the number of correct digits doubles with each iteration, so this algorithm takes
+   * O(log(digits)) iterations. We start out with a double-precision approximation, which may be higher or lower than the true value.
+   * Therefore, we perform at least one Newton iteration to get a guess that's definitely >= floor(sqrt(x)), and then continue the
+   * iteration until we reach a fixed point.
    */
   // FIXME: Perhaps it's possible to yet remove more realloc(s). Use ThreadLocal.
   private static int[] sqrtApprox(final int[] val, final RoundingMode rm) {
@@ -223,8 +203,10 @@ abstract class BigIntMath extends BigIntDivision {
     }
     else {
       final int shift = (log2 - FloatingDecimal.SIGNIFICAND_BITS_DOUBLE) & ~1; // even!
-      /* We have that x / 2^shift < 2^54. Our initial approximation to
-       * sqrtFloor(x) will be 2^(shift/2) * sqrtApproxWithDoubles(x / 2^shift). */
+      /*
+       * We have that x / 2^shift < 2^54. Our initial approximation to sqrtFloor(x) will be 2^(shift/2) * sqrtApproxWithDoubles(x /
+       * 2^shift).
+       */
       res = shiftLeft(sqrtApproxDoubleInPlace(shiftRight(val.clone(), shift), rm), shift >> 1);
     }
 
@@ -258,17 +240,14 @@ abstract class BigIntMath extends BigIntDivision {
 
   private static int log10Floor(final long x) {
     /*
-     * Based on Hacker's Delight Fig. 11-5, the two-table-lookup, branch-free
-     * implementation. The key idea is that based on the number of leading zeros
-     * (equivalently, floor(log2(x))), we can narrow the possible
-     * floor(log10(x)) values to two. For example, if floor(log2(x)) is 6, then
-     * 64 <= x < 128, so floor(log10(x)) is either 1 or 2.
+     * Based on Hacker's Delight Fig. 11-5, the two-table-lookup, branch-free implementation. The key idea is that based on the number
+     * of leading zeros (equivalently, floor(log2(x))), we can narrow the possible floor(log10(x)) values to two. For example, if
+     * floor(log2(x)) is 6, then 64 <= x < 128, so floor(log10(x)) is either 1 or 2.
      */
     final int y = maxLog10ForLeadingZeros[Long.numberOfLeadingZeros(x)];
     /*
-     * y is the higher of the two possible values of floor(log10(x)). If x <
-     * 10^y, then we want the lower of the two possible values, or y - 1,
-     * otherwise, we want y.
+     * y is the higher of the two possible values of floor(log10(x)). If x < 10^y, then we want the lower of the two possible values, or
+     * y - 1, otherwise, we want y.
      */
     return y - lessThanBranchFree(x, FastMath.longE10[y]);
   }
@@ -292,8 +271,7 @@ abstract class BigIntMath extends BigIntDivision {
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The number of limbs in the provided {@linkplain BigInt#val() value-encoded number} (i.e. {@code Math.abs(val[0])}).
-   * @return {@code true} if the provided {@linkplain BigInt#val() value-encoded number} fits in a {@code long} (i.e. 64 signed
-   *         bits).
+   * @return {@code true} if the provided {@linkplain BigInt#val() value-encoded number} fits in a {@code long} (i.e. 64 signed bits).
    */
   // FIXME: This should be used in other places too?
   static boolean fitsInLong(final int[] val, final int len) {
@@ -436,8 +414,8 @@ abstract class BigIntMath extends BigIntDivision {
    *
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param b The base of the logarithm function.
-   * @return The integer value of the log base {@code b} of the provided {@linkplain BigInt#val() value-encoded number}, or
-   *         {@code -1} if {@code val} is not positive.
+   * @return The integer value of the log base {@code b} of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1}
+   *         if {@code val} is not positive.
    * @complexity O(1)
    */
   public static int log(final int[] val, final double b) {
@@ -455,8 +433,8 @@ abstract class BigIntMath extends BigIntDivision {
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param b The base of the logarithm function.
    * @param rm The {@link RoundingMode}.
-   * @return The rounded value of the log base {@code b} of the provided {@linkplain BigInt#val() value-encoded number}, or
-   *         {@code -1} if {@code val} is not positive.
+   * @return The rounded value of the log base {@code b} of the provided {@linkplain BigInt#val() value-encoded number}, or {@code -1}
+   *         if {@code val} is not positive.
    * @complexity O(1)
    */
   public static int log(final int[] val, final double b, final RoundingMode rm) {

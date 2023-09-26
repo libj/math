@@ -33,8 +33,8 @@ abstract class BigIntMagnitude extends BigIntValue {
   /**
    * Increases the magnitude of the provided number by the specified amount.
    *
-   * @implNote The returned number may be a {@code new int[]} instance if the increase of the provided number by the specified
-   *           amount requires a larger array.
+   * @implNote The returned number may be a {@code new int[]} instance if the increase of the provided number by the specified amount
+   *           requires a larger array.
    * @param val The {@linkplain BigInt#val() value-encoded number}.
    * @param len The count of limbs in the number.
    * @param sig The sign of the number.
@@ -133,8 +133,8 @@ abstract class BigIntMagnitude extends BigIntValue {
       int i = 3;
       for (; i <= len && ++val[i] == 0; ++i);
       if (i > len) {
-//        if (i == val.length)
-//          val = realloc(val, len + 1, i + 1);
+        // if (i == val.length)
+        // val = realloc(val, len + 1, i + 1);
 
         len = i;
         val[len] = 1;

@@ -127,9 +127,9 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    * Multiplies two BigIntegers using the Karatsuba multiplication algorithm. This is a recursive divide-and-conquer algorithm which
    * is more efficient for large numbers than what is commonly called the "grade-school" algorithm used in multiplyToLen. If the
    * numbers to be multiplied have length n, the "grade-school" algorithm has an asymptotic complexity of O(n^2). In contrast, the
-   * Karatsuba algorithm has complexity of O(n^(log2(3))), or O(n^1.585). It achieves this increased performance by doing 3
-   * multiplies instead of 4 when evaluating the product. As it has some overhead, should be used when both numbers are larger than
-   * a certain threshold (found experimentally). See: http://en.wikipedia.org/wiki/Karatsuba_algorithm
+   * Karatsuba algorithm has complexity of O(n^(log2(3))), or O(n^1.585). It achieves this increased performance by doing 3 multiplies
+   * instead of 4 when evaluating the product. As it has some overhead, should be used when both numbers are larger than a certain
+   * threshold (found experimentally). See: http://en.wikipedia.org/wiki/Karatsuba_algorithm
    */
   private static int[] mulKaratsuba(final int[] x, final int xlen, final int[] y, final int ylen, int zlen) {
     zlen += OFF;
@@ -182,26 +182,17 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Multiplies two BigIntegers using a 3-way Toom-Cook multiplication
-   * algorithm. This is a recursive divide-and-conquer algorithm which is more
-   * efficient for large numbers than what is commonly called the "grade-school"
-   * algorithm used in multiplyToLen. If the numbers to be multiplied have
-   * length n, the "grade-school" algorithm has an asymptotic complexity of
-   * O(n^2). In contrast, 3-way Toom-Cook has a complexity of about O(n^1.465).
-   * It achieves this increased asymptotic performance by breaking each number
-   * into three parts and by doing 5 multiplies instead of 9 when evaluating the
-   * product. Due to overhead (additions, shifts, and one division) in the
-   * Toom-Cook algorithm, it should only be used when both numbers are larger
-   * than a certain threshold (found experimentally). This threshold is
-   * generally larger than that for Karatsuba multiplication, so this algorithm
-   * is generally only used when numbers become significantly larger. The
-   * algorithm used is the "optimal" 3-way Toom-Cook algorithm outlined by Marco
-   * Bodrato. See: http://bodrato.it/toom-cook/
-   * http://bodrato.it/papers/#WAIFI2007 "Towards Optimal Toom-Cook
-   * Multiplication for Univariate and Multivariate Polynomials in
-   * Characteristic 2 and 0." by Marco BODRATO; In C.Carlet and B.Sunar, Eds.,
-   * "WAIFI'07 proceedings", p. 116-133, LNCS #4547. Springer, Madrid, Spain,
-   * June 21-22, 2007.
+   * Multiplies two BigIntegers using a 3-way Toom-Cook multiplication algorithm. This is a recursive divide-and-conquer algorithm
+   * which is more efficient for large numbers than what is commonly called the "grade-school" algorithm used in multiplyToLen. If the
+   * numbers to be multiplied have length n, the "grade-school" algorithm has an asymptotic complexity of O(n^2). In contrast, 3-way
+   * Toom-Cook has a complexity of about O(n^1.465). It achieves this increased asymptotic performance by breaking each number into
+   * three parts and by doing 5 multiplies instead of 9 when evaluating the product. Due to overhead (additions, shifts, and one
+   * division) in the Toom-Cook algorithm, it should only be used when both numbers are larger than a certain threshold (found
+   * experimentally). This threshold is generally larger than that for Karatsuba multiplication, so this algorithm is generally only
+   * used when numbers become significantly larger. The algorithm used is the "optimal" 3-way Toom-Cook algorithm outlined by Marco
+   * Bodrato. See: http://bodrato.it/toom-cook/ http://bodrato.it/papers/#WAIFI2007 "Towards Optimal Toom-Cook Multiplication for
+   * Univariate and Multivariate Polynomials in Characteristic 2 and 0." by Marco BODRATO; In C.Carlet and B.Sunar, Eds., "WAIFI'07
+   * proceedings", p. 116-133, LNCS #4547. Springer, Madrid, Spain, June 21-22, 2007.
    */
   private static int[] mulToomCook3(final int[] x, final int xlen, final int[] y, final int ylen, final int off, final int fixedLen) {
     final int largest = Math.max(xlen, ylen);
@@ -306,15 +297,14 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Does an exact division (that is, the remainder is known to be zero) of the
-   * specified number by 3. This is used in Toom-Cook multiplication. This is an
-   * efficient algorithm that runs in linear time. If the argument is not
-   * exactly divisible by 3, results are undefined. Note that this is expected
-   * to be called with positive arguments only.
+   * Does an exact division (that is, the remainder is known to be zero) of the specified number by 3. This is used in Toom-Cook
+   * multiplication. This is an efficient algorithm that runs in linear time. If the argument is not exactly divisible by 3, results
+   * are undefined. Note that this is expected to be called with positive arguments only.
    */
   private static int[] exactDivBy3(final int[] val, final int off) {
     int len = val[0];
-    boolean sig = true; if (len < 0) { len = -len; sig = false; }
+    boolean sig = true;
+    if (len < 0) { len = -len; sig = false; }
     len += off;
 
     long x, w, borrow = 0;
@@ -398,8 +388,8 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Returns a BigInteger whose value is {@code (this<sup>2</sup>)}. If the
-   * invocation is recursive certain overflow checks are skipped.
+   * Returns a BigInteger whose value is {@code (this<sup>2</sup>)}. If the invocation is recursive certain overflow checks are
+   * skipped.
    *
    * @param isRecursion whether this is a recursive invocation
    * @return {@code this<sup>2</sup>}
@@ -427,8 +417,8 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
 
   /**
    * Squares a BigInteger using the Karatsuba squaring algorithm. It should be used when both numbers are larger than a certain
-   * threshold (found experimentally). It is a recursive divide-and-conquer algorithm that has better asymptotic performance than
-   * the algorithm used in {@link #squareToLen(int[],int,int,int)}.
+   * threshold (found experimentally). It is a recursive divide-and-conquer algorithm that has better asymptotic performance than the
+   * algorithm used in {@link #squareToLen(int[],int,int,int)}.
    */
   private static int[] squareKaratsuba(final int[] val, final int len, final int fixedLen) {
     final int half = (len + 1) / 2;
@@ -456,9 +446,9 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * Squares a BigInteger using the 3-way Toom-Cook squaring algorithm. It should be used when both numbers are larger than a
-   * certain threshold (found experimentally). It is a recursive divide-and-conquer algorithm that has better asymptotic performance
-   * than the algorithm used in squareToLen or squareKaratsuba.
+   * Squares a BigInteger using the 3-way Toom-Cook squaring algorithm. It should be used when both numbers are larger than a certain
+   * threshold (found experimentally). It is a recursive divide-and-conquer algorithm that has better asymptotic performance than the
+   * algorithm used in squareToLen or squareKaratsuba.
    */
   private static int[] squareToomCook3(final int[] val, final int off) {
     final int len = Math.abs(val[0]);
@@ -517,8 +507,8 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
   }
 
   /**
-   * The algorithm used here is adapted from Colin Plumb's C library. Technique:
-   * Consider the partial products in the multiplication of "abcde" by itself:
+   * The algorithm used here is adapted from Colin Plumb's C library. Technique: Consider the partial products in the multiplication
+   * of "abcde" by itself:
    *
    * <pre>
    *               a  b  c  d  e
@@ -549,11 +539,9 @@ abstract class BigIntegerMultiplication extends BigIntMultiplication {
    *     ab ac ad ae
    * </pre>
    *
-   * Thus, the sum is 2 * (off the diagonal) + diagonal. This is accumulated
-   * beginning with the diagonal (which consist of the squares of the digits of
-   * the input), which is then divided by two, the off-diagonal added, and
-   * multiplied by two again. The low bit is simply a copy of the low bit of the
-   * input, so it doesn't need special care.
+   * Thus, the sum is 2 * (off the diagonal) + diagonal. This is accumulated beginning with the diagonal (which consist of the squares
+   * of the digits of the input), which is then divided by two, the off-diagonal added, and multiplied by two again. The low bit is
+   * simply a copy of the low bit of the input, so it doesn't need special care.
    */
   private static final void squareToLen0(final int[] x, int xlen, final int[] z, int zlen, final int off) {
     int i, j, offset;

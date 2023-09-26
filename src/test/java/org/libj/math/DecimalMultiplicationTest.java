@@ -28,8 +28,8 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalMultiplicationTest extends DecimalTest {
   @Test
   public void testMul(final AuditReport report) {
@@ -40,10 +40,10 @@ public class DecimalMultiplicationTest extends DecimalTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "`long` outperform `Decimal` and `BigDecimal` in heap allocation by avoiding heap allocation entirely for all operations.");
 
     final long defaultValue = random.nextLong();
-    test("mul").withAuditReport(report).withCases(
-      d(BigDecimal.class, (long a, long b) -> toBigDecimal(a).multiply(toBigDecimal(b)), o -> o),
-      d(Decimal.class, (long a, long b) -> toDecimal(a).mul(toDecimal(b)), o -> o),
-      d(long.class, (long a, long b) -> Decimal.mul(a, b, defaultValue), (long o) -> o == defaultValue ? null : o)
-    );
+    test("mul").withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, (final long a, final long b) -> toBigDecimal(a).multiply(toBigDecimal(b)), o -> o),
+        d(Decimal.class, (final long a, final long b) -> toDecimal(a).mul(toDecimal(b)), o -> o),
+        d(long.class, (final long a, final long b) -> Decimal.mul(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

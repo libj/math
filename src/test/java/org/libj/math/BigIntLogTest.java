@@ -28,17 +28,17 @@ import org.libj.math.survey.AuditRunner;
 
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(PHASED)
-@AuditRunner.Instrument(a=BigInteger.class, b=int[].class)
-@AuditRunner.Instrument(a=BigInt.class, b=int[].class)
+@AuditRunner.Instrument(a = BigInteger.class, b = int[].class)
+@AuditRunner.Instrument(a = BigInt.class, b = int[].class)
 public class BigIntLogTest extends BigIntTest {
   public void test(final AuditReport report, final RoundingMode rm) {
     report.addComment(UNINSTRUMENTED.ordinal(), "log base 2 of `T` (RoundingMode." + rm + ")");
 
-    test("log(" + rm + ")").withAuditReport(report).withCases(
-      s(BigInteger.class, a -> scaledBigInteger(abs(nz(a))), (BigInteger a) -> BigMath.logBigInteger(a, rm), o -> Double.isNaN(o) || Double.isInfinite(o) ? null : String.valueOf(o.intValue())),
-      s(BigInt.class, a -> scaledBigInt(abs(nz(a))), (BigInt a) -> a.log(rm), o -> o == -1 ? null : String.valueOf(o)),
-      s(int[].class, a -> scaledVal(abs(nz(a))), (int[] a) -> BigInt.log(a, rm), o -> o == -1 ? null : String.valueOf(o))
-    );
+    test("log(" + rm + ")").withAuditReport(report)
+      .withCases(
+        s(BigInteger.class, a -> scaledBigInteger(abs(nz(a))), (final BigInteger a) -> BigMath.logBigInteger(a, rm), o -> Double.isNaN(o) || Double.isInfinite(o) ? null : String.valueOf(o.intValue())),
+        s(BigInt.class, a -> scaledBigInt(abs(nz(a))), (final BigInt a) -> a.log(rm), o -> o == -1 ? null : String.valueOf(o)),
+        s(int[].class, a -> scaledVal(abs(nz(a))), (final int[] a) -> BigInt.log(a, rm), o -> o == -1 ? null : String.valueOf(o)));
   }
 
   @Test

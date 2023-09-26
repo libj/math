@@ -35,8 +35,8 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 @Ignore
 @RunWith(AuditRunner.class)
 @AuditRunner.Execution(UNINSTRUMENTED)
-@AuditRunner.Instrument(a={BigDecimal.class, BigInteger.class}, b=int[].class)
-@AuditRunner.Instrument(a={Decimal.class, BigInt.class}, b=int[].class)
+@AuditRunner.Instrument(a = {BigDecimal.class, BigInteger.class}, b = int[].class)
+@AuditRunner.Instrument(a = {Decimal.class, BigInt.class}, b = int[].class)
 public class DecimalAtan2Test extends DecimalTest {
   // FIXME: Scale is limited here to 2, as a stop-gap.
   private void test(final AuditReport report, final RoundingMode rm) {
@@ -44,11 +44,12 @@ public class DecimalAtan2Test extends DecimalTest {
     setRoundingMode(rm);
     final MathContext mc = new MathContext(34, rm);
     final long defaultValue = random.nextLong();
-    test("atan2(" + rm + ")").withEpsilon(null).withAuditReport(report).withCases(
-      d(BigDecimal.class, a -> toBigDecimal(nz(lim(a, 1, 0))), b -> toBigDecimal(nz(lim(b, 1, 0))), (BigDecimal a, BigDecimal b) -> BigDecimalMath.atan2(a, b, mc), o -> o),
-      d(Decimal.class, a -> toDecimal(nz(lim(a, 1, 0))), b -> toDecimal(nz(lim(b, 1, 0))), (Decimal a, Decimal b) -> atan2(a, b, rm), o -> o),
-      d(long.class, a -> nz(lim(a, 1, 0)), b -> nz(lim(b, 1, 0)), (long a, long b) -> atan2(a, b, rm, defaultValue), o -> o == defaultValue ? null : o)
-    );
+    test("atan2(" + rm + ")").withEpsilon(null)
+      .withAuditReport(report)
+      .withCases(
+        d(BigDecimal.class, a -> toBigDecimal(nz(lim(a, 1, 0))), b -> toBigDecimal(nz(lim(b, 1, 0))), (final BigDecimal a, final BigDecimal b) -> BigDecimalMath.atan2(a, b, mc), o -> o),
+        d(Decimal.class, a -> toDecimal(nz(lim(a, 1, 0))), b -> toDecimal(nz(lim(b, 1, 0))), (final Decimal a, final Decimal b) -> atan2(a, b, rm), o -> o),
+        d(long.class, a -> nz(lim(a, 1, 0)), b -> nz(lim(b, 1, 0)), (final long a, final long b) -> atan2(a, b, rm, defaultValue), o -> o == defaultValue ? null : o));
   }
 
   @Test

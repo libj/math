@@ -48,24 +48,21 @@ public class FastMathTest extends BigIntTest {
   @Test
   public void testDivideUnsignedLong() {
     test("divideUnsigned(long,long)").withCases(
-      l("Long", a -> a, this::nz, (long a, long b) -> Long.divideUnsigned(a, b), o -> o),
-      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.divideUnsigned(a, b), o -> o)
-    );
+      l("Long", a -> a, this::nz, (final long a, final long b) -> Long.divideUnsigned(a, b), o -> o),
+      l("FastMath", a -> a, this::nz, (final long a, final long b) -> FastMath.divideUnsigned(a, b), o -> o));
   }
 
   @Test
   public void testRemainderUnsignedLong() {
     test("remainderUnsigned(long,long)").withCases(
-      l("Long", a -> a, this::nz, (long a, long b) -> Long.remainderUnsigned(a, b), o -> o),
-      l("FastMath", a -> a, this::nz, (long a, long b) -> FastMath.remainderUnsigned(a, b), o -> o)
-    );
+      l("Long", a -> a, this::nz, (final long a, final long b) -> Long.remainderUnsigned(a, b), o -> o),
+      l("FastMath", a -> a, this::nz, (final long a, final long b) -> FastMath.remainderUnsigned(a, b), o -> o));
   }
 
   @Test
   public void testDoubleE10() {
     test("doubleE10(int)").withCases(
-      i("pow(10)", a -> abs(a), (int a) -> StrictMath.pow(10, a), o -> o),
-      i("doubleE10", a -> abs(a), (int a) -> FastMath.doubleE10(a), o -> o)
-    );
+      i("pow(10)", a -> abs(a), (final int a) -> StrictMath.pow(10, a), o -> o),
+      i("doubleE10", a -> abs(a), (final int a) -> FastMath.doubleE10(a), o -> o));
   }
 }
