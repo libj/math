@@ -64,7 +64,7 @@ public abstract class Survey {
   }
 
   public Class<?> getSubject() {
-    return this.subject;
+    return subject;
   }
 
   public Case<?,?,?,?,?> getCase() {
@@ -117,11 +117,11 @@ public abstract class Survey {
   }
 
   public BigDecimal[][] getError() {
-    return this.error;
+    return error;
   }
 
   public boolean hasError() {
-    return this.hasError;
+    return hasError;
   }
 
   public void normalize() {

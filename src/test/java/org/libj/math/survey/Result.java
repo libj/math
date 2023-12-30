@@ -78,7 +78,7 @@ public class Result {
   }
 
   public int[] getCounts() {
-    return this.counts;
+    return counts;
   }
 
   public void reset() {

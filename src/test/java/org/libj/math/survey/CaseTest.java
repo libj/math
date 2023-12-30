@@ -127,7 +127,7 @@ public abstract class CaseTest {
 
   @SuppressWarnings("rawtypes")
   private int getScaleFactor(final Class<? extends Case> cls) {
-    return this.scaleFactors[getCaseIndex(cls)];
+    return scaleFactors[getCaseIndex(cls)];
   }
 
   public static String neg(final String num) {
@@ -230,7 +230,7 @@ public abstract class CaseTest {
     }
 
     public S getSubject() {
-      return this.subject;
+      return subject;
     }
 
     int variables() {
