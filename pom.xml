@@ -22,10 +22,10 @@
   <parent>
     <groupId>org.libj</groupId>
     <artifactId>libj</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
+    <version>0.9.9</version>
   </parent>
   <artifactId>math</artifactId>
-  <version>0.6.8-SNAPSHOT</version>
+  <version>0.6.8</version>
   <name>LibJ Math</name>
   <description>
     Supplementary extensions to the java.math package.
@@ -48,7 +48,7 @@
       <plugin>
         <groupId>org.jaxsb</groupId>
         <artifactId>jaxsb-maven-plugin</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>jaxsb-generate</id>
@@ -81,25 +81,25 @@
     <dependency>
       <groupId>org.openjax.xml</groupId>
       <artifactId>api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.libj</groupId>
       <artifactId>test</artifactId>
-      <version>0.7.3-SNAPSHOT</version>
+      <version>0.7.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.libj</groupId>
       <artifactId>console</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jaxsb</groupId>
       <artifactId>generator</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <version>3.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -142,12 +142,12 @@
     <dependency>
       <groupId>org.libj</groupId>
       <artifactId>lang</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.8.1</version>
     </dependency>
     <dependency>
       <groupId>org.libj</groupId>
       <artifactId>util</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
+      <version>0.9.1</version>
     </dependency>
 
     <dependency>
