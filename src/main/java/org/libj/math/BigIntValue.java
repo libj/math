@@ -181,7 +181,6 @@ abstract class BigIntValue extends Number {
     if (val.length <= len)
       return val;
 
-    System.err.println("trim");
     final int[] res = new int[len];
     System.arraycopy(val, 0, res, 0, len);
     return res;
