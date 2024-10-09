@@ -39,8 +39,8 @@ public class DecimalValueOfDoubleTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("valueOf(double)[" + rm + "]").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toDecimalDouble, (final double a) -> new BigDecimal(String.valueOf(a), mc), o -> o),
-        d(Decimal.class, this::toDecimalDouble, (final double a) -> Decimal.valueOf(a, rm), o -> o),
+        d(BigDecimal.class, this::toDecimalDouble, (final double a) -> new BigDecimal(String.valueOf(a), mc), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimalDouble, (final double a) -> Decimal.valueOf(a, rm), (final Decimal o) -> o),
         d(long.class, this::toDecimalDouble, (final double a) -> Decimal.valueOf(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 

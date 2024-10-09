@@ -46,9 +46,9 @@ public class DecimalLogTest extends DecimalTest {
     test("log(" + rm + ")").withEpsilon(epsilon)
       .withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a) -> BigDecimalMath.log(a, mc), o -> o),
-        d(Decimal.class, this::toDecimal, (final Decimal a) -> log(a, rm), o -> o),
-        d(long.class, a -> a, (final long a) -> log(a, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a) -> BigDecimalMath.log(a, mc), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a) -> log(a, rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> a, (final long a) -> log(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

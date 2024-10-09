@@ -38,8 +38,8 @@ public class DecimalAdditionTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("add").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.add(toBigDecimal(b)), o -> o),
-        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.add(toDecimal(b)), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.add(toBigDecimal(b)), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.add(toDecimal(b)), (final Decimal o) -> o),
         d(long.class, (final long a, final long b) -> Decimal.add(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
@@ -50,8 +50,8 @@ public class DecimalAdditionTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("sub").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.subtract(toBigDecimal(b)), o -> o),
-        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.sub(toDecimal(b)), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.subtract(toBigDecimal(b)), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.sub(toDecimal(b)), (final Decimal o) -> o),
         d(long.class, (final long a, final long b) -> Decimal.sub(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

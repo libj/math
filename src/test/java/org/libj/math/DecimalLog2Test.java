@@ -46,9 +46,9 @@ public class DecimalLog2Test extends DecimalTest {
     test("log2(" + rm + ")").withEpsilon(epsilon)
       .withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a) -> BigDecimalMath.log2(a, mc), o -> o),
-        d(Decimal.class, this::toDecimal, (final Decimal a) -> log2(a, rm), o -> o),
-        d(long.class, a -> a, (final long a) -> log2(a, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a) -> BigDecimalMath.log2(a, mc), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a) -> log2(a, rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> a, (final long a) -> log2(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

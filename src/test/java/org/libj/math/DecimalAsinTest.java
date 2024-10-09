@@ -47,9 +47,9 @@ public class DecimalAsinTest extends DecimalTest {
     test("asin(" + rm + ")").withEpsilon(null)
       .withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, a -> toBigDecimal(lim(a, 1, 0)), (final BigDecimal a) -> BigDecimalMath.asin(a, mc), o -> o),
-        d(Decimal.class, a -> toDecimal(lim(a, 1, 0)), (final Decimal a) -> asin(a, rm), o -> o),
-        d(long.class, a -> lim(a, 1, 0), (final long a) -> asin(a, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, (final long a) -> toBigDecimal(lim(a, 1, 0)), (final BigDecimal a) -> BigDecimalMath.asin(a, mc), (final BigDecimal o) -> o),
+        d(Decimal.class, (final long a) -> toDecimal(lim(a, 1, 0)), (final Decimal a) -> asin(a, rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> lim(a, 1, 0), (final long a) -> asin(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

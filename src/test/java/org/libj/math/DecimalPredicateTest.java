@@ -39,9 +39,9 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("eq").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.equals(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.equals(b), o -> o),
-        d(long.class, (final long a, final long b) -> Decimal.eq(a, b), o -> o));
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.equals(b), (final Boolean o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.equals(b), (final Boolean o) -> o),
+        d(long.class, (final long a, final long b) -> Decimal.eq(a, b), (final Boolean o) -> o));
   }
 
   @Test
@@ -50,8 +50,8 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("compareTo").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b), (final Integer o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b), (final Integer o) -> o),
         d(long.class, (final long a, final long b) -> Decimal.compare(a, b), (final long o) -> o));
   }
 
@@ -61,9 +61,9 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("lt").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) < 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) < 0, o -> o),
-        d(long.class, (final long a, final long b) -> Decimal.lt(a, b), o -> o));
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) < 0, (final Boolean o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) < 0, (final Boolean o) -> o),
+        d(long.class, (final long a, final long b) -> Decimal.lt(a, b), (final Boolean o) -> o));
   }
 
   @Test
@@ -72,9 +72,9 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("gt").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) > 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) > 0, o -> o),
-        d(long.class, (final long a, final long b) -> Decimal.gt(a, b), o -> o));
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) > 0, (final Boolean o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) > 0, (final Boolean o) -> o),
+        d(long.class, (final long a, final long b) -> Decimal.gt(a, b), (final Boolean o) -> o));
   }
 
   @Test
@@ -83,9 +83,9 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("lte").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) <= 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) <= 0, o -> o),
-        d(long.class, (final long a, final long b) -> Decimal.lte(a, b), o -> o));
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) <= 0, (final Boolean o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) <= 0, (final Boolean o) -> o),
+        d(long.class, (final long a, final long b) -> Decimal.lte(a, b), (final Boolean o) -> o));
   }
 
   @Test
@@ -94,9 +94,9 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("gte").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) >= 0, o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) >= 0, o -> o),
-        d(long.class, (final long a, final long b) -> Decimal.gte(a, b), o -> o));
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.compareTo(b) >= 0, (final Boolean o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.compareTo(b) >= 0, (final Boolean o) -> o),
+        d(long.class, (final long a, final long b) -> Decimal.gte(a, b), (final Boolean o) -> o));
   }
 
   @Test
@@ -105,8 +105,8 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("max").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.max(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.max(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.max(b), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.max(b), (final Decimal o) -> o),
         d(long.class, (final long a, final long b) -> Decimal.max(a, b), (final long o) -> o));
   }
 
@@ -116,8 +116,8 @@ public class DecimalPredicateTest extends DecimalTest {
 
     test("min").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.min(b), o -> o),
-        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.min(b), o -> o),
+        d(BigDecimal.class, this::toBigDecimal, this::toBigDecimal, (final BigDecimal a, final BigDecimal b) -> a.min(b), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, this::toDecimal, (final Decimal a, final Decimal b) -> a.min(b), (final Decimal o) -> o),
         d(long.class, (final long a, final long b) -> Decimal.min(a, b), (final long o) -> o));
   }
 

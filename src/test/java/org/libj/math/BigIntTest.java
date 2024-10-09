@@ -205,6 +205,9 @@ public abstract class BigIntTest extends NumericCaseTest {
       return c.newInstance(mag, 1);
     }
     catch (final Exception e) {
+      if (e instanceof RuntimeException)
+        throw (RuntimeException)e;
+
       throw new RuntimeException(e);
     }
   }

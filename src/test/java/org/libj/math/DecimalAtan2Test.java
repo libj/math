@@ -47,9 +47,9 @@ public class DecimalAtan2Test extends DecimalTest {
     test("atan2(" + rm + ")").withEpsilon(null)
       .withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, a -> toBigDecimal(nz(lim(a, 1, 0))), b -> toBigDecimal(nz(lim(b, 1, 0))), (final BigDecimal a, final BigDecimal b) -> BigDecimalMath.atan2(a, b, mc), o -> o),
-        d(Decimal.class, a -> toDecimal(nz(lim(a, 1, 0))), b -> toDecimal(nz(lim(b, 1, 0))), (final Decimal a, final Decimal b) -> atan2(a, b, rm), o -> o),
-        d(long.class, a -> nz(lim(a, 1, 0)), b -> nz(lim(b, 1, 0)), (final long a, final long b) -> atan2(a, b, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, (final long a) -> toBigDecimal(nz(lim(a, 1, 0))), b -> toBigDecimal(nz(lim(b, 1, 0))), (final BigDecimal a, final BigDecimal b) -> BigDecimalMath.atan2(a, b, mc), (final BigDecimal o) -> o),
+        d(Decimal.class, (final long a) -> toDecimal(nz(lim(a, 1, 0))), b -> toDecimal(nz(lim(b, 1, 0))), (final Decimal a, final Decimal b) -> atan2(a, b, rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> nz(lim(a, 1, 0)), b -> nz(lim(b, 1, 0)), (final long a, final long b) -> atan2(a, b, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

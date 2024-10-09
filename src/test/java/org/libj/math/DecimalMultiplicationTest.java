@@ -42,8 +42,8 @@ public class DecimalMultiplicationTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("mul").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, (final long a, final long b) -> toBigDecimal(a).multiply(toBigDecimal(b)), o -> o),
-        d(Decimal.class, (final long a, final long b) -> toDecimal(a).mul(toDecimal(b)), o -> o),
+        d(BigDecimal.class, (final long a, final long b) -> toBigDecimal(a).multiply(toBigDecimal(b)), (final BigDecimal o) -> o),
+        d(Decimal.class, (final long a, final long b) -> toDecimal(a).mul(toDecimal(b)), (final Decimal o) -> o),
         d(long.class, (final long a, final long b) -> Decimal.mul(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

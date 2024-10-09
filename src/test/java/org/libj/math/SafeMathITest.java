@@ -121,143 +121,143 @@ public class SafeMathITest {
 
   @Test
   public void testAbsByte() {
-    test(0, short.class, SafeMath::abs, n -> (short)Math.abs(n));
-    test(1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
-    test(-1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
+    test(0, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
+    test(1, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
+    test(-1, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, short.class, SafeMath::abs, n -> (short)Math.abs(n));
+      test(d0() * 10, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
   }
 
   @Test
   public void testAbsShort() {
-    test(0, short.class, SafeMath::abs, n -> (short)Math.abs(n));
-    test(1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
-    test(-1, short.class, SafeMath::abs, n -> (short)Math.abs(n));
+    test(0, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
+    test(1, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
+    test(-1, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, short.class, SafeMath::abs, n -> (short)Math.abs(n));
+      test(d0() * 10, short.class, SafeMath::abs, (final Short n) -> (short)Math.abs(n));
   }
 
   @Test
   public void testAbsInt() {
-    test(0, int.class, SafeMath::abs, n -> Math.abs(n));
-    test(1, int.class, SafeMath::abs, n -> Math.abs(n));
-    test(-1, int.class, SafeMath::abs, n -> Math.abs(n));
+    test(0, int.class, SafeMath::abs, (final Integer n) -> Math.abs(n));
+    test(1, int.class, SafeMath::abs, (final Integer n) -> Math.abs(n));
+    test(-1, int.class, SafeMath::abs, (final Integer n) -> Math.abs(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, int.class, SafeMath::abs, n -> Math.abs(n));
+      test(d0() * 10, int.class, SafeMath::abs, (final Integer n) -> Math.abs(n));
   }
 
   @Test
   public void testAbsLong() {
-    test(0, long.class, SafeMath::abs, n -> Math.abs(n));
-    test(1, long.class, SafeMath::abs, n -> Math.abs(n));
-    test(-1, long.class, SafeMath::abs, n -> Math.abs(n));
+    test(0, long.class, SafeMath::abs, (final Long n) -> Math.abs(n));
+    test(1, long.class, SafeMath::abs, (final Long n) -> Math.abs(n));
+    test(-1, long.class, SafeMath::abs, (final Long n) -> Math.abs(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, long.class, SafeMath::abs, n -> Math.abs(n));
+      test(d0() * 10, long.class, SafeMath::abs, (final Long n) -> Math.abs(n));
   }
 
   @Test
   public void testAbsFloat() {
-    test(0, float.class, SafeMath::abs, n -> Math.abs(n));
-    test(1, float.class, SafeMath::abs, n -> Math.abs(n));
-    test(-1, float.class, SafeMath::abs, n -> Math.abs(n));
+    test(0, float.class, SafeMath::abs, (final Float n) -> Math.abs(n));
+    test(1, float.class, SafeMath::abs, (final Float n) -> Math.abs(n));
+    test(-1, float.class, SafeMath::abs, (final Float n) -> Math.abs(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, float.class, SafeMath::abs, n -> Math.abs(n));
+      test(d0() * 10, float.class, SafeMath::abs, (final Float n) -> Math.abs(n));
   }
 
   @Test
   public void testAbsDouble() {
-    test(0, double.class, SafeMath::abs, n -> Math.abs(n));
-    test(1, double.class, SafeMath::abs, n -> Math.abs(n));
-    test(-1, double.class, SafeMath::abs, n -> Math.abs(n));
+    test(0, double.class, SafeMath::abs, (final Double n) -> Math.abs(n));
+    test(1, double.class, SafeMath::abs, (final Double n) -> Math.abs(n));
+    test(-1, double.class, SafeMath::abs, (final Double n) -> Math.abs(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, double.class, SafeMath::abs, n -> Math.abs(n));
+      test(d0() * 10, double.class, SafeMath::abs, (final Double n) -> Math.abs(n));
   }
 
   @Test
   public void testAbsBigInteger() {
-    test(0, BigInteger.class, SafeMath::abs, n -> n.abs());
-    test(1, BigInteger.class, SafeMath::abs, n -> n.abs());
-    test(-1, BigInteger.class, SafeMath::abs, n -> n.abs());
+    test(0, BigInteger.class, SafeMath::abs, (final BigInteger n) -> n.abs());
+    test(1, BigInteger.class, SafeMath::abs, (final BigInteger n) -> n.abs());
+    test(-1, BigInteger.class, SafeMath::abs, (final BigInteger n) -> n.abs());
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigInteger.class, SafeMath::abs, n -> n.abs());
+      test(d0() * 10, BigInteger.class, SafeMath::abs, (final BigInteger n) -> n.abs());
   }
 
   @Test
   public void testAbsBigDecimal() {
-    test(0, BigDecimal.class, SafeMath::abs, n -> n.abs());
-    test(1, BigDecimal.class, SafeMath::abs, n -> n.abs());
-    test(-1, BigDecimal.class, SafeMath::abs, n -> n.abs());
+    test(0, BigDecimal.class, SafeMath::abs, (final BigDecimal n) -> n.abs());
+    test(1, BigDecimal.class, SafeMath::abs, (final BigDecimal n) -> n.abs());
+    test(-1, BigDecimal.class, SafeMath::abs, (final BigDecimal n) -> n.abs());
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigDecimal.class, SafeMath::abs, n -> n.abs());
+      test(d0() * 10, BigDecimal.class, SafeMath::abs, (final BigDecimal n) -> n.abs());
   }
 
   @Test
   public void testAcosDouble() {
-    test(0, double.class, SafeMath::acos, n -> Math.acos(n));
-    test(1, double.class, SafeMath::acos, n -> Math.acos(n));
-    test(-1, double.class, SafeMath::acos, n -> Math.acos(n));
+    test(0, double.class, SafeMath::acos, (final Double n) -> Math.acos(n));
+    test(1, double.class, SafeMath::acos, (final Double n) -> Math.acos(n));
+    test(-1, double.class, SafeMath::acos, (final Double n) -> Math.acos(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::acos, n -> Math.acos(n));
+      test(d0(), double.class, SafeMath::acos, (final Double n) -> Math.acos(n));
   }
 
   @Test
   public void testAcosBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.acos(n, mc), (final BigInteger n) -> BigDecimalMath.acos(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test1(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(new BigDecimal(n), mc));
+      test1(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.acos(n, mc), (final BigInteger n) -> BigDecimalMath.acos(new BigDecimal(n), mc));
   }
 
   @Test
   public void testAcosBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.acos(n, mc), (final BigDecimal n) -> BigDecimalMath.acos(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test1(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.acos(n, mc), n -> BigDecimalMath.acos(n, mc));
+      test1(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.acos(n, mc), (final BigDecimal n) -> BigDecimalMath.acos(n, mc));
   }
 
   @Test
   public void testAsinDouble() {
-    test(0, double.class, SafeMath::asin, n -> Math.asin(n));
-    test(1, double.class, SafeMath::asin, n -> Math.asin(n));
-    test(-1, double.class, SafeMath::asin, n -> Math.asin(n));
+    test(0, double.class, SafeMath::asin, (final Double n) -> Math.asin(n));
+    test(1, double.class, SafeMath::asin, (final Double n) -> Math.asin(n));
+    test(-1, double.class, SafeMath::asin, (final Double n) -> Math.asin(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::asin, n -> Math.asin(n));
+      test(d0(), double.class, SafeMath::asin, (final Double n) -> Math.asin(n));
   }
 
   @Test
   public void testAsinBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.asin(n, mc), (final BigInteger n) -> BigDecimalMath.asin(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test1(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(new BigDecimal(n), mc));
+      test1(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.asin(n, mc), (final BigInteger n) -> BigDecimalMath.asin(new BigDecimal(n), mc));
   }
 
   @Test
   public void testAsinBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.asin(n, mc), (final BigDecimal n) -> BigDecimalMath.asin(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test1(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.asin(n, mc), n -> BigDecimalMath.asin(n, mc));
+      test1(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.asin(n, mc), (final BigDecimal n) -> BigDecimalMath.asin(n, mc));
   }
 
   @Test
   public void testAtanDouble() {
-    test(0, double.class, SafeMath::atan, n -> Math.atan(n));
-    test(1, double.class, SafeMath::atan, n -> Math.atan(n));
-    test(-1, double.class, SafeMath::atan, n -> Math.atan(n));
+    test(0, double.class, SafeMath::atan, (final Double n) -> Math.atan(n));
+    test(1, double.class, SafeMath::atan, (final Double n) -> Math.atan(n));
+    test(-1, double.class, SafeMath::atan, (final Double n) -> Math.atan(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::atan, n -> Math.atan(n));
+      test(d0(), double.class, SafeMath::atan, (final Double n) -> Math.atan(n));
   }
 
   @Test
   public void testAtanBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.atan(n, mc), (final BigInteger n) -> BigDecimalMath.atan(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(new BigDecimal(n), mc));
+      test(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.atan(n, mc), (final BigInteger n) -> BigDecimalMath.atan(new BigDecimal(n), mc));
   }
 
   @Test
   public void testAtanBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.atan(n, mc), (final BigDecimal n) -> BigDecimalMath.atan(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.atan(n, mc), n -> BigDecimalMath.atan(n, mc));
+      test(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.atan(n, mc), (final BigDecimal n) -> BigDecimalMath.atan(n, mc));
   }
 
   @Test
@@ -279,224 +279,224 @@ public class SafeMathITest {
 
   @Test
   public void testCeilByte() {
-    test(0, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
-    test(1, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
-    test(-1, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
+    test(0, byte.class, SafeMath::ceil, (final Byte n) -> (byte)Math.ceil(n));
+    test(1, byte.class, SafeMath::ceil, (final Byte n) -> (byte)Math.ceil(n));
+    test(-1, byte.class, SafeMath::ceil, (final Byte n) -> (byte)Math.ceil(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, byte.class, SafeMath::ceil, n -> (byte)Math.ceil(n));
+      test(d0() * 10, byte.class, SafeMath::ceil, (final Byte n) -> (byte)Math.ceil(n));
   }
 
   @Test
   public void testCeilShort() {
-    test(0, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
-    test(1, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
-    test(-1, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
+    test(0, short.class, SafeMath::ceil, (final Short n) -> (short)Math.ceil(n));
+    test(1, short.class, SafeMath::ceil, (final Short n) -> (short)Math.ceil(n));
+    test(-1, short.class, SafeMath::ceil, (final Short n) -> (short)Math.ceil(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, short.class, SafeMath::ceil, n -> (short)Math.ceil(n));
+      test(d0() * 10, short.class, SafeMath::ceil, (final Short n) -> (short)Math.ceil(n));
   }
 
   @Test
   public void testCeilInt() {
-    test(0, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
-    test(1, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
-    test(-1, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
+    test(0, int.class, SafeMath::ceil, (final Integer n) -> (int)Math.ceil(n));
+    test(1, int.class, SafeMath::ceil, (final Integer n) -> (int)Math.ceil(n));
+    test(-1, int.class, SafeMath::ceil, (final Integer n) -> (int)Math.ceil(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, int.class, SafeMath::ceil, n -> (int)Math.ceil(n));
+      test(d0() * 10, int.class, SafeMath::ceil, (final Integer n) -> (int)Math.ceil(n));
   }
 
   @Test
   public void testCeilLong() {
-    test(0, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
-    test(1, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
-    test(-1, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
+    test(0, long.class, SafeMath::ceil, (final Long n) -> (long)Math.ceil(n));
+    test(1, long.class, SafeMath::ceil, (final Long n) -> (long)Math.ceil(n));
+    test(-1, long.class, SafeMath::ceil, (final Long n) -> (long)Math.ceil(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, long.class, SafeMath::ceil, n -> (long)Math.ceil(n));
+      test(d0() * 10, long.class, SafeMath::ceil, (final Long n) -> (long)Math.ceil(n));
   }
 
   @Test
   public void testCeilFloat() {
-    test(0, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
-    test(1, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
-    test(-1, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
+    test(0, float.class, SafeMath::ceil, (final Float n) -> (float)Math.ceil(n));
+    test(1, float.class, SafeMath::ceil, (final Float n) -> (float)Math.ceil(n));
+    test(-1, float.class, SafeMath::ceil, (final Float n) -> (float)Math.ceil(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, float.class, SafeMath::ceil, n -> (float)Math.ceil(n));
+      test(d0() * 10, float.class, SafeMath::ceil, (final Float n) -> (float)Math.ceil(n));
   }
 
   @Test
   public void testCeilDouble() {
-    test(0, double.class, SafeMath::ceil, n -> Math.ceil(n));
-    test(1, double.class, SafeMath::ceil, n -> Math.ceil(n));
-    test(-1, double.class, SafeMath::ceil, n -> Math.ceil(n));
+    test(0, double.class, SafeMath::ceil, (final Double n) -> Math.ceil(n));
+    test(1, double.class, SafeMath::ceil, (final Double n) -> Math.ceil(n));
+    test(-1, double.class, SafeMath::ceil, (final Double n) -> Math.ceil(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, double.class, SafeMath::ceil, n -> Math.ceil(n));
+      test(d0() * 10, double.class, SafeMath::ceil, (final Double n) -> Math.ceil(n));
   }
 
   @Test
   public void testCeilBigInteger() {
-    test(0, BigInteger.class, SafeMath::ceil, n -> n);
-    test(1, BigInteger.class, SafeMath::ceil, n -> n);
-    test(-1, BigInteger.class, SafeMath::ceil, n -> n);
+    test(0, BigInteger.class, SafeMath::ceil, (final BigInteger n) -> n);
+    test(1, BigInteger.class, SafeMath::ceil, (final BigInteger n) -> n);
+    test(-1, BigInteger.class, SafeMath::ceil, (final BigInteger n) -> n);
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigInteger.class, SafeMath::ceil, n -> n);
+      test(d0() * 10, BigInteger.class, SafeMath::ceil, (final BigInteger n) -> n);
   }
 
   @Test
   public void testCeilBigDecimal() {
-    test(0, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
-    test(1, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
-    test(-1, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
+    test(0, BigDecimal.class, SafeMath::ceil, (final BigDecimal n) -> n.setScale(0, RoundingMode.CEILING));
+    test(1, BigDecimal.class, SafeMath::ceil, (final BigDecimal n) -> n.setScale(0, RoundingMode.CEILING));
+    test(-1, BigDecimal.class, SafeMath::ceil, (final BigDecimal n) -> n.setScale(0, RoundingMode.CEILING));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigDecimal.class, SafeMath::ceil, n -> n.setScale(0, RoundingMode.CEILING));
+      test(d0() * 10, BigDecimal.class, SafeMath::ceil, (final BigDecimal n) -> n.setScale(0, RoundingMode.CEILING));
   }
 
   @Test
   public void testCosLong() {
-    test(0, long.class, double.class, SafeMath::cos, n -> Math.cos(n));
-    test(1, long.class, double.class, SafeMath::cos, n -> Math.cos(n));
-    test(-1, long.class, double.class, SafeMath::cos, n -> Math.cos(n));
+    test(0, long.class, double.class, SafeMath::cos, (final Long n) -> Math.cos(n));
+    test(1, long.class, double.class, SafeMath::cos, (final Long n) -> Math.cos(n));
+    test(-1, long.class, double.class, SafeMath::cos, (final Long n) -> Math.cos(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), long.class, double.class, SafeMath::cos, n -> Math.cos(n));
+      test(d0(), long.class, double.class, SafeMath::cos, (final Long n) -> Math.cos(n));
   }
 
   @Test
   public void testCosDouble() {
-    test(0, double.class, SafeMath::cos, n -> Math.cos(n));
-    test(1, double.class, SafeMath::cos, n -> Math.cos(n));
-    test(-1, double.class, SafeMath::cos, n -> Math.cos(n));
+    test(0, double.class, SafeMath::cos, (final Double n) -> Math.cos(n));
+    test(1, double.class, SafeMath::cos, (final Double n) -> Math.cos(n));
+    test(-1, double.class, SafeMath::cos, (final Double n) -> Math.cos(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::cos, n -> Math.cos(n));
+      test(d0(), double.class, SafeMath::cos, (final Double n) -> Math.cos(n));
   }
 
   @Test
   public void testCosBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.cos(n, mc), (final BigInteger n) -> BigDecimalMath.cos(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(new BigDecimal(n), mc));
+      test(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.cos(n, mc), (final BigInteger n) -> BigDecimalMath.cos(new BigDecimal(n), mc));
   }
 
   @Test
   public void testCosBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.cos(n, mc), (final BigDecimal n) -> BigDecimalMath.cos(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.cos(n, mc), n -> BigDecimalMath.cos(n, mc));
+      test(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.cos(n, mc), (final BigDecimal n) -> BigDecimalMath.cos(n, mc));
   }
 
   @Test
   public void testExpDouble() {
-    test(0, double.class, SafeMath::exp, n -> Math.exp(n));
-    test(1, double.class, SafeMath::exp, n -> Math.exp(n));
-    test(-1, double.class, SafeMath::exp, n -> Math.exp(n));
+    test(0, double.class, SafeMath::exp, (final Double n) -> Math.exp(n));
+    test(1, double.class, SafeMath::exp, (final Double n) -> Math.exp(n));
+    test(-1, double.class, SafeMath::exp, (final Double n) -> Math.exp(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::exp, n -> Math.exp(n));
+      test(d0(), double.class, SafeMath::exp, (final Double n) -> Math.exp(n));
   }
 
   @Test
   public void testExpBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.exp(n, mc), (final BigInteger n) -> BigDecimalMath.exp(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test1(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(new BigDecimal(n), mc));
+      test1(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.exp(n, mc), (final BigInteger n) -> BigDecimalMath.exp(new BigDecimal(n), mc));
   }
 
   @Test
   public void testExpBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.exp(n, mc), (final BigDecimal n) -> BigDecimalMath.exp(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test1(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.exp(n, mc), n -> BigDecimalMath.exp(n, mc));
+      test1(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.exp(n, mc), (final BigDecimal n) -> BigDecimalMath.exp(n, mc));
   }
 
   @Test
   public void testFloorByte() {
-    test(0, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
-    test(1, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
-    test(-1, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
+    test(0, byte.class, SafeMath::floor, (final Byte n) -> (byte)Math.floor(n));
+    test(1, byte.class, SafeMath::floor, (final Byte n) -> (byte)Math.floor(n));
+    test(-1, byte.class, SafeMath::floor, (final Byte n) -> (byte)Math.floor(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, byte.class, SafeMath::floor, n -> (byte)Math.floor(n));
+      test(d0() * 10, byte.class, SafeMath::floor, (final Byte n) -> (byte)Math.floor(n));
   }
 
   @Test
   public void testFloorShort() {
-    test(0, short.class, SafeMath::floor, n -> (short)Math.floor(n));
-    test(1, short.class, SafeMath::floor, n -> (short)Math.floor(n));
-    test(-1, short.class, SafeMath::floor, n -> (short)Math.floor(n));
+    test(0, short.class, SafeMath::floor, (final Short n) -> (short)Math.floor(n));
+    test(1, short.class, SafeMath::floor, (final Short n) -> (short)Math.floor(n));
+    test(-1, short.class, SafeMath::floor, (final Short n) -> (short)Math.floor(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, short.class, SafeMath::floor, n -> (short)Math.floor(n));
+      test(d0() * 10, short.class, SafeMath::floor, (final Short n) -> (short)Math.floor(n));
   }
 
   @Test
   public void testFloorInt() {
-    test(0, int.class, SafeMath::floor, n -> (int)Math.floor(n));
-    test(1, int.class, SafeMath::floor, n -> (int)Math.floor(n));
-    test(-1, int.class, SafeMath::floor, n -> (int)Math.floor(n));
+    test(0, int.class, SafeMath::floor, (final Integer n) -> (int)Math.floor(n));
+    test(1, int.class, SafeMath::floor, (final Integer n) -> (int)Math.floor(n));
+    test(-1, int.class, SafeMath::floor, (final Integer n) -> (int)Math.floor(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, int.class, SafeMath::floor, n -> (int)Math.floor(n));
+      test(d0() * 10, int.class, SafeMath::floor, (final Integer n) -> (int)Math.floor(n));
   }
 
   @Test
   public void testFloorLong() {
-    test(0, long.class, SafeMath::floor, n -> (long)Math.floor(n));
-    test(1, long.class, SafeMath::floor, n -> (long)Math.floor(n));
-    test(-1, long.class, SafeMath::floor, n -> (long)Math.floor(n));
+    test(0, long.class, SafeMath::floor, (final Long n) -> (long)Math.floor(n));
+    test(1, long.class, SafeMath::floor, (final Long n) -> (long)Math.floor(n));
+    test(-1, long.class, SafeMath::floor, (final Long n) -> (long)Math.floor(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, long.class, SafeMath::floor, n -> (long)Math.floor(n));
+      test(d0() * 10, long.class, SafeMath::floor, (final Long n) -> (long)Math.floor(n));
   }
 
   @Test
   public void testFloorFloat() {
-    test(0, float.class, SafeMath::floor, n -> (float)Math.floor(n));
-    test(1, float.class, SafeMath::floor, n -> (float)Math.floor(n));
-    test(-1, float.class, SafeMath::floor, n -> (float)Math.floor(n));
+    test(0, float.class, SafeMath::floor, (final Float n) -> (float)Math.floor(n));
+    test(1, float.class, SafeMath::floor, (final Float n) -> (float)Math.floor(n));
+    test(-1, float.class, SafeMath::floor, (final Float n) -> (float)Math.floor(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, float.class, SafeMath::floor, n -> (float)Math.floor(n));
+      test(d0() * 10, float.class, SafeMath::floor, (final Float n) -> (float)Math.floor(n));
   }
 
   @Test
   public void testFloorDouble() {
-    test(0, double.class, SafeMath::floor, n -> Math.floor(n));
-    test(1, double.class, SafeMath::floor, n -> Math.floor(n));
-    test(-1, double.class, SafeMath::floor, n -> Math.floor(n));
+    test(0, double.class, SafeMath::floor, (final Double n) -> Math.floor(n));
+    test(1, double.class, SafeMath::floor, (final Double n) -> Math.floor(n));
+    test(-1, double.class, SafeMath::floor, (final Double n) -> Math.floor(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, double.class, SafeMath::floor, n -> Math.floor(n));
+      test(d0() * 10, double.class, SafeMath::floor, (final Double n) -> Math.floor(n));
   }
 
   @Test
   public void testFloorBigInteger() {
-    test(0, BigInteger.class, SafeMath::floor, n -> n);
-    test(1, BigInteger.class, SafeMath::floor, n -> n);
-    test(-1, BigInteger.class, SafeMath::floor, n -> n);
+    test(0, BigInteger.class, SafeMath::floor, (final BigInteger n) -> n);
+    test(1, BigInteger.class, SafeMath::floor, (final BigInteger n) -> n);
+    test(-1, BigInteger.class, SafeMath::floor, (final BigInteger n) -> n);
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigInteger.class, SafeMath::floor, n -> n);
+      test(d0() * 10, BigInteger.class, SafeMath::floor, (final BigInteger n) -> n);
   }
 
   @Test
   public void testFloorBigDecimal() {
-    test(0, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
-    test(1, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
-    test(-1, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
+    test(0, BigDecimal.class, SafeMath::floor, (final BigDecimal n) -> n.setScale(0, RoundingMode.FLOOR));
+    test(1, BigDecimal.class, SafeMath::floor, (final BigDecimal n) -> n.setScale(0, RoundingMode.FLOOR));
+    test(-1, BigDecimal.class, SafeMath::floor, (final BigDecimal n) -> n.setScale(0, RoundingMode.FLOOR));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigDecimal.class, SafeMath::floor, n -> n.setScale(0, RoundingMode.FLOOR));
+      test(d0() * 10, BigDecimal.class, SafeMath::floor, (final BigDecimal n) -> n.setScale(0, RoundingMode.FLOOR));
   }
 
   @Test
   public void testLogDouble() {
-    test(0, double.class, SafeMath::log, n -> Math.log(n));
-    test(1, double.class, SafeMath::log, n -> Math.log(n));
-    test(-1, double.class, SafeMath::log, n -> Math.log(n));
+    test(0, double.class, SafeMath::log, (final Double n) -> Math.log(n));
+    test(1, double.class, SafeMath::log, (final Double n) -> Math.log(n));
+    test(-1, double.class, SafeMath::log, (final Double n) -> Math.log(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::log, n -> Math.log(n));
+      test(d0(), double.class, SafeMath::log, (final Double n) -> Math.log(n));
   }
 
   @Test
   public void testLogBigInteger() {
-    test(1, BigInteger.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(new BigDecimal(n), mc));
+    test(1, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.log(n, mc), (final BigInteger n) -> BigDecimalMath.log(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d10()), BigInteger.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(new BigDecimal(n), mc));
+      test(Math.abs(d10()), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.log(n, mc), (final BigInteger n) -> BigDecimalMath.log(new BigDecimal(n), mc));
   }
 
   @Test
   public void testLogBigDecimal() {
-    test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(n, mc));
+    test(1, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.log(n, mc), (final BigDecimal n) -> BigDecimalMath.log(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log(n, mc), n -> BigDecimalMath.log(n, mc));
+      test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.log(n, mc), (final BigDecimal n) -> BigDecimalMath.log(n, mc));
   }
 
   @Test
@@ -703,48 +703,48 @@ public class SafeMathITest {
 
   @Test
   public void testLog10Double() {
-    test(0, double.class, SafeMath::log10, n -> Math.log10(n));
-    test(1, double.class, SafeMath::log10, n -> Math.log10(n));
-    test(-1, double.class, SafeMath::log10, n -> Math.log10(n));
+    test(0, double.class, SafeMath::log10, (final Double n) -> Math.log10(n));
+    test(1, double.class, SafeMath::log10, (final Double n) -> Math.log10(n));
+    test(-1, double.class, SafeMath::log10, (final Double n) -> Math.log10(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::log10, n -> Math.log10(n));
+      test(d0(), double.class, SafeMath::log10, (final Double n) -> Math.log10(n));
   }
 
   @Test
   public void testLog10BigInteger() {
-    test(1, BigInteger.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(new BigDecimal(n), mc));
+    test(1, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.log10(n, mc), (final BigInteger n) -> BigDecimalMath.log10(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d10()), BigInteger.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(new BigDecimal(n), mc));
+      test(Math.abs(d10()), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.log10(n, mc), (final BigInteger n) -> BigDecimalMath.log10(new BigDecimal(n), mc));
   }
 
   @Test
   public void testLog10BigDecimal() {
-    test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(n, mc));
+    test(1, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.log10(n, mc), (final BigDecimal n) -> BigDecimalMath.log10(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log10(n, mc), n -> BigDecimalMath.log10(n, mc));
+      test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.log10(n, mc), (final BigDecimal n) -> BigDecimalMath.log10(n, mc));
   }
 
   @Test
   public void testLog2Double() {
-    test(0, double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
-    test(1, double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
-    test(-1, double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
+    test(0, double.class, SafeMath::log2, (final Double n) -> Math.log(n) / Math.log(2));
+    test(1, double.class, SafeMath::log2, (final Double n) -> Math.log(n) / Math.log(2));
+    test(-1, double.class, SafeMath::log2, (final Double n) -> Math.log(n) / Math.log(2));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::log2, n -> Math.log(n) / Math.log(2));
+      test(d0(), double.class, SafeMath::log2, (final Double n) -> Math.log(n) / Math.log(2));
   }
 
   @Test
   public void testLog2BigInteger() {
-    test(1, BigInteger.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(new BigDecimal(n), mc));
+    test(1, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.log2(n, mc), (final BigInteger n) -> BigDecimalMath.log2(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d10()), BigInteger.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(new BigDecimal(n), mc));
+      test(Math.abs(d10()), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.log2(n, mc), (final BigInteger n) -> BigDecimalMath.log2(new BigDecimal(n), mc));
   }
 
   @Test
   public void testLog2BigDecimal() {
-    test(1, BigDecimal.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(n, mc));
+    test(1, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.log2(n, mc), (final BigDecimal n) -> BigDecimalMath.log2(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, n -> SafeMath.log2(n, mc), n -> BigDecimalMath.log2(n, mc));
+      test(Math.abs(d10()), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.log2(n, mc), (final BigDecimal n) -> BigDecimalMath.log2(n, mc));
   }
 
   @Test
@@ -1495,11 +1495,11 @@ public class SafeMathITest {
   public void testRoundByte() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, byte.class, n -> SafeMath.round(n, s), n -> n);
-      test(1, byte.class, n -> SafeMath.round(n, s), n -> n);
-      test(-1, byte.class, n -> SafeMath.round(n, s), n -> n);
+      test(0, byte.class, (final Byte n) -> SafeMath.round(n, s), (final Byte n) -> n);
+      test(1, byte.class, (final Byte n) -> SafeMath.round(n, s), (final Byte n) -> n);
+      test(-1, byte.class, (final Byte n) -> SafeMath.round(n, s), (final Byte n) -> n);
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, byte.class, n -> SafeMath.round(n, s), n -> n);
+        test(d0() * 10, byte.class, (final Byte n) -> SafeMath.round(n, s), (final Byte n) -> n);
     }
   }
 
@@ -1507,11 +1507,11 @@ public class SafeMathITest {
   public void testRoundShort() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, short.class, n -> SafeMath.round(n, s), n -> n);
-      test(1, short.class, n -> SafeMath.round(n, s), n -> n);
-      test(-1, short.class, n -> SafeMath.round(n, s), n -> n);
+      test(0, short.class, (final Short n) -> SafeMath.round(n, s), (final Short n) -> n);
+      test(1, short.class, (final Short n) -> SafeMath.round(n, s), (final Short n) -> n);
+      test(-1, short.class, (final Short n) -> SafeMath.round(n, s), (final Short n) -> n);
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, short.class, n -> SafeMath.round(n, s), n -> n);
+        test(d0() * 10, short.class, (final Short n) -> SafeMath.round(n, s), (final Short n) -> n);
     }
   }
 
@@ -1519,11 +1519,11 @@ public class SafeMathITest {
   public void testRoundInt() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, int.class, n -> SafeMath.round(n, s), n -> n);
-      test(1, int.class, n -> SafeMath.round(n, s), n -> n);
-      test(-1, int.class, n -> SafeMath.round(n, s), n -> n);
+      test(0, int.class, (final Integer n) -> SafeMath.round(n, s), (final Integer n) -> n);
+      test(1, int.class, (final Integer n) -> SafeMath.round(n, s), (final Integer n) -> n);
+      test(-1, int.class, (final Integer n) -> SafeMath.round(n, s), (final Integer n) -> n);
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, int.class, n -> SafeMath.round(n, s), n -> n);
+        test(d0() * 10, int.class, (final Integer n) -> SafeMath.round(n, s), (final Integer n) -> n);
     }
   }
 
@@ -1531,11 +1531,11 @@ public class SafeMathITest {
   public void testRoundLong() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, long.class, n -> SafeMath.round(n, s), n -> n);
-      test(1, long.class, n -> SafeMath.round(n, s), n -> n);
-      test(-1, long.class, n -> SafeMath.round(n, s), n -> n);
+      test(0, long.class, (final Long n) -> SafeMath.round(n, s), (final Long n) -> n);
+      test(1, long.class, (final Long n) -> SafeMath.round(n, s), (final Long n) -> n);
+      test(-1, long.class, (final Long n) -> SafeMath.round(n, s), (final Long n) -> n);
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, long.class, n -> SafeMath.round(n, s), n -> n);
+        test(d0() * 10, long.class, (final Long n) -> SafeMath.round(n, s), (final Long n) -> n);
     }
   }
 
@@ -1543,22 +1543,22 @@ public class SafeMathITest {
   public void testRoundFloat() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
-      test(1, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
-      test(-1, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
+      test(0, float.class, (final Float n) -> SafeMath.round(n, s), (final Float n) -> SafeMath.round(n, s));
+      test(1, float.class, (final Float n) -> SafeMath.round(n, s), (final Float n) -> SafeMath.round(n, s));
+      test(-1, float.class, (final Float n) -> SafeMath.round(n, s), (final Float n) -> SafeMath.round(n, s));
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, float.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
+        test(d0() * 10, float.class, (final Float n) -> SafeMath.round(n, s), (final Float n) -> SafeMath.round(n, s));
     }
   }
 
   private static void testRoundFloatScale(final RoundingMode rm) {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
-      test(1, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
-      test(-1, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      test(0, float.class, (final Float n) -> SafeMath.round(n, s, rm), (final Float n) -> SafeMath.round(n, s, rm));
+      test(1, float.class, (final Float n) -> SafeMath.round(n, s, rm), (final Float n) -> SafeMath.round(n, s, rm));
+      test(-1, float.class, (final Float n) -> SafeMath.round(n, s, rm), (final Float n) -> SafeMath.round(n, s, rm));
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, float.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+        test(d0() * 10, float.class, (final Float n) -> SafeMath.round(n, s, rm), (final Float n) -> SafeMath.round(n, s, rm));
     }
   }
 
@@ -1606,22 +1606,22 @@ public class SafeMathITest {
   public void testRoundDouble() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
-      test(1, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
-      test(-1, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
+      test(0, double.class, (final Double n) -> SafeMath.round(n, s), (final Double n) -> SafeMath.round(n, s));
+      test(1, double.class, (final Double n) -> SafeMath.round(n, s), (final Double n) -> SafeMath.round(n, s));
+      test(-1, double.class, (final Double n) -> SafeMath.round(n, s), (final Double n) -> SafeMath.round(n, s));
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, double.class, n -> SafeMath.round(n, s), n -> SafeMath.round(n, s));
+        test(d0() * 10, double.class, (final Double n) -> SafeMath.round(n, s), (final Double n) -> SafeMath.round(n, s));
     }
   }
 
   private static void testRoundDoubleScale(final RoundingMode rm) {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
-      test(1, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
-      test(-1, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+      test(0, double.class, (final Double n) -> SafeMath.round(n, s, rm), (final Double n) -> SafeMath.round(n, s, rm));
+      test(1, double.class, (final Double n) -> SafeMath.round(n, s, rm), (final Double n) -> SafeMath.round(n, s, rm));
+      test(-1, double.class, (final Double n) -> SafeMath.round(n, s, rm), (final Double n) -> SafeMath.round(n, s, rm));
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, double.class, n -> SafeMath.round(n, s, rm), n -> SafeMath.round(n, s, rm));
+        test(d0() * 10, double.class, (final Double n) -> SafeMath.round(n, s, rm), (final Double n) -> SafeMath.round(n, s, rm));
     }
   }
 
@@ -1669,11 +1669,11 @@ public class SafeMathITest {
   public void testRoundBigInteger() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
-      test(1, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
-      test(-1, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
+      test(0, BigInteger.class, (final BigInteger n) -> SafeMath.round(n, s), (final BigInteger n) -> n);
+      test(1, BigInteger.class, (final BigInteger n) -> SafeMath.round(n, s), (final BigInteger n) -> n);
+      test(-1, BigInteger.class, (final BigInteger n) -> SafeMath.round(n, s), (final BigInteger n) -> n);
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, BigInteger.class, n -> SafeMath.round(n, s), n -> n);
+        test(d0() * 10, BigInteger.class, (final BigInteger n) -> SafeMath.round(n, s), (final BigInteger n) -> n);
     }
   }
 
@@ -1681,199 +1681,199 @@ public class SafeMathITest {
   public void testRoundBigDecimal() {
     for (int j = 0; j < 3; ++j) { // [N]
       final int s = j;
-      test(0, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
-      test(1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
-      test(-1, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
+      test(0, BigDecimal.class, (final BigDecimal n) -> SafeMath.round(n, s), (final BigDecimal n) -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
+      test(1, BigDecimal.class, (final BigDecimal n) -> SafeMath.round(n, s), (final BigDecimal n) -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
+      test(-1, BigDecimal.class, (final BigDecimal n) -> SafeMath.round(n, s), (final BigDecimal n) -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
       for (int i = 0; i < numTests; ++i) // [N]
-        test(d0() * 10, BigDecimal.class, n -> SafeMath.round(n, s), n -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
+        test(d0() * 10, BigDecimal.class, (final BigDecimal n) -> SafeMath.round(n, s), (final BigDecimal n) -> BigDecimals.setScale(n, s, RoundingMode.HALF_UP));
     }
   }
 
   @Test
   public void testSignumByte() {
-    test(0, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(1, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(-1, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+    test(0, byte.class, SafeMath::signum, (final Byte n) -> (byte)Math.signum(n));
+    test(1, byte.class, SafeMath::signum, (final Byte n) -> (byte)Math.signum(n));
+    test(-1, byte.class, SafeMath::signum, (final Byte n) -> (byte)Math.signum(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+      test(d0() * 10, byte.class, SafeMath::signum, (final Byte n) -> (byte)Math.signum(n));
   }
 
   @Test
   public void testSignumShort() {
-    test(0, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(1, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(-1, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+    test(0, short.class, byte.class, SafeMath::signum, (final Short n) -> (byte)Math.signum(n));
+    test(1, short.class, byte.class, SafeMath::signum, (final Short n) -> (byte)Math.signum(n));
+    test(-1, short.class, byte.class, SafeMath::signum, (final Short n) -> (byte)Math.signum(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, short.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+      test(d0() * 10, short.class, byte.class, SafeMath::signum, (final Short n) -> (byte)Math.signum(n));
   }
 
   @Test
   public void testSignumInt() {
-    test(0, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(1, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(-1, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+    test(0, int.class, byte.class, SafeMath::signum, (final Integer n) -> (byte)Math.signum(n));
+    test(1, int.class, byte.class, SafeMath::signum, (final Integer n) -> (byte)Math.signum(n));
+    test(-1, int.class, byte.class, SafeMath::signum, (final Integer n) -> (byte)Math.signum(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, int.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+      test(d0() * 10, int.class, byte.class, SafeMath::signum, (final Integer n) -> (byte)Math.signum(n));
   }
 
   @Test
   public void testSignumLong() {
-    test(0, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(1, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(-1, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+    test(0, long.class, byte.class, SafeMath::signum, (final Long n) -> (byte)Math.signum(n));
+    test(1, long.class, byte.class, SafeMath::signum, (final Long n) -> (byte)Math.signum(n));
+    test(-1, long.class, byte.class, SafeMath::signum, (final Long n) -> (byte)Math.signum(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, long.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+      test(d0() * 10, long.class, byte.class, SafeMath::signum, (final Long n) -> (byte)Math.signum(n));
   }
 
   @Test
   public void testSignumFloat() {
-    test(0, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(1, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(-1, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+    test(0, float.class, byte.class, SafeMath::signum, (final Float n) -> (byte)Math.signum(n));
+    test(1, float.class, byte.class, SafeMath::signum, (final Float n) -> (byte)Math.signum(n));
+    test(-1, float.class, byte.class, SafeMath::signum, (final Float n) -> (byte)Math.signum(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, float.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+      test(d0() * 10, float.class, byte.class, SafeMath::signum, (final Float n) -> (byte)Math.signum(n));
   }
 
   @Test
   public void testSignumDouble() {
-    test(0, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(1, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
-    test(-1, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+    test(0, double.class, byte.class, SafeMath::signum, (final Double n) -> (byte)Math.signum(n));
+    test(1, double.class, byte.class, SafeMath::signum, (final Double n) -> (byte)Math.signum(n));
+    test(-1, double.class, byte.class, SafeMath::signum, (final Double n) -> (byte)Math.signum(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, double.class, byte.class, SafeMath::signum, n -> (byte)Math.signum(n));
+      test(d0() * 10, double.class, byte.class, SafeMath::signum, (final Double n) -> (byte)Math.signum(n));
   }
 
   @Test
   public void testSignumBigInteger() {
-    test(0, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
-    test(1, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
-    test(-1, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
+    test(0, BigInteger.class, byte.class, SafeMath::signum, (final BigInteger n) -> (byte)n.signum());
+    test(1, BigInteger.class, byte.class, SafeMath::signum, (final BigInteger n) -> (byte)n.signum());
+    test(-1, BigInteger.class, byte.class, SafeMath::signum, (final BigInteger n) -> (byte)n.signum());
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigInteger.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
+      test(d0() * 10, BigInteger.class, byte.class, SafeMath::signum, (final BigInteger n) -> (byte)n.signum());
   }
 
   @Test
   public void testSignumBigDecimal() {
-    test(0, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
-    test(1, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
-    test(-1, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
+    test(0, BigDecimal.class, byte.class, SafeMath::signum, (final BigDecimal n) -> (byte)n.signum());
+    test(1, BigDecimal.class, byte.class, SafeMath::signum, (final BigDecimal n) -> (byte)n.signum());
+    test(-1, BigDecimal.class, byte.class, SafeMath::signum, (final BigDecimal n) -> (byte)n.signum());
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0() * 10, BigDecimal.class, byte.class, SafeMath::signum, n -> (byte)n.signum());
+      test(d0() * 10, BigDecimal.class, byte.class, SafeMath::signum, (final BigDecimal n) -> (byte)n.signum());
   }
 
   @Test
   public void testSinDouble() {
-    test(0, double.class, SafeMath::sin, n -> Math.sin(n));
-    test(1, double.class, SafeMath::sin, n -> Math.sin(n));
-    test(-1, double.class, SafeMath::sin, n -> Math.sin(n));
+    test(0, double.class, SafeMath::sin, (final Double n) -> Math.sin(n));
+    test(1, double.class, SafeMath::sin, (final Double n) -> Math.sin(n));
+    test(-1, double.class, SafeMath::sin, (final Double n) -> Math.sin(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::sin, n -> Math.sin(n));
+      test(d0(), double.class, SafeMath::sin, (final Double n) -> Math.sin(n));
   }
 
   @Test
   public void testSinBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.sin(n, mc), (final BigInteger n) -> BigDecimalMath.sin(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(new BigDecimal(n), mc));
+      test(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.sin(n, mc), (final BigInteger n) -> BigDecimalMath.sin(new BigDecimal(n), mc));
   }
 
   @Test
   public void testSinBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.sin(n, mc), (final BigDecimal n) -> BigDecimalMath.sin(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.sin(n, mc), n -> BigDecimalMath.sin(n, mc));
+      test(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.sin(n, mc), (final BigDecimal n) -> BigDecimalMath.sin(n, mc));
   }
 
   @Test
   public void testSqrtDouble() {
-    test(0, double.class, SafeMath::sqrt, n -> Math.sqrt(n));
-    test(1, double.class, SafeMath::sqrt, n -> Math.sqrt(n));
-    test(-1, double.class, SafeMath::sqrt, n -> Math.sqrt(n));
+    test(0, double.class, SafeMath::sqrt, (final Double n) -> Math.sqrt(n));
+    test(1, double.class, SafeMath::sqrt, (final Double n) -> Math.sqrt(n));
+    test(-1, double.class, SafeMath::sqrt, (final Double n) -> Math.sqrt(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::sqrt, n -> Math.sqrt(n));
+      test(d0(), double.class, SafeMath::sqrt, (final Double n) -> Math.sqrt(n));
   }
 
   @Test
   public void testSqrtBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.sqrt(n, mc), (final BigInteger n) -> BigDecimalMath.sqrt(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(new BigDecimal(n), mc));
+      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.sqrt(n, mc), (final BigInteger n) -> BigDecimalMath.sqrt(new BigDecimal(n), mc));
   }
 
   @Test
   public void testSqrtBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.sqrt(n, mc), (final BigDecimal n) -> BigDecimalMath.sqrt(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.sqrt(n, mc), n -> BigDecimalMath.sqrt(n, mc));
+      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.sqrt(n, mc), (final BigDecimal n) -> BigDecimalMath.sqrt(n, mc));
   }
 
   @Test
   public void testToDegreesDouble() {
-    test(0, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
-    test(1, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
-    test(-1, double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
+    test(0, double.class, SafeMath::toDegrees, (final Double n) -> Math.toDegrees(n));
+    test(1, double.class, SafeMath::toDegrees, (final Double n) -> Math.toDegrees(n));
+    test(-1, double.class, SafeMath::toDegrees, (final Double n) -> Math.toDegrees(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::toDegrees, n -> Math.toDegrees(n));
+      test(d0(), double.class, SafeMath::toDegrees, (final Double n) -> Math.toDegrees(n));
   }
 
   @Test
   public void testToDegreesBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.toDegrees(n, mc), (final BigInteger n) -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
+      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.toDegrees(n, mc), (final BigInteger n) -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
   }
 
   @Test
   public void testToDegreesBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.toDegrees(n, mc), (final BigDecimal n) -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.toDegrees(n, mc).setScale(9, RoundingMode.DOWN), n -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc).setScale(9, RoundingMode.DOWN));
+      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.toDegrees(n, mc).setScale(9, RoundingMode.DOWN), (final BigDecimal n) -> new BigDecimal(Math.toDegrees(n.doubleValue()), mc).setScale(9, RoundingMode.DOWN));
   }
 
   @Test
   public void testToRadiansDouble() {
-    test(0, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
-    test(1, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
-    test(-1, double.class, SafeMath::toRadians, n -> Math.toRadians(n));
+    test(0, double.class, SafeMath::toRadians, (final Double n) -> Math.toRadians(n));
+    test(1, double.class, SafeMath::toRadians, (final Double n) -> Math.toRadians(n));
+    test(-1, double.class, SafeMath::toRadians, (final Double n) -> Math.toRadians(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::toRadians, n -> Math.toRadians(n));
+      test(d0(), double.class, SafeMath::toRadians, (final Double n) -> Math.toRadians(n));
   }
 
   @Test
   public void testToRadiansBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.toRadians(n, mc), (final BigInteger n) -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
+      test(Math.abs(d0()), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.toRadians(n, mc), (final BigInteger n) -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
   }
 
   @Test
   public void testToRadiansBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.toRadians(n, mc), (final BigDecimal n) -> new BigDecimal(Math.toRadians(n.doubleValue()), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, n -> SafeMath.toRadians(n, mc).setScale(11, RoundingMode.DOWN), n -> new BigDecimal(Math.toRadians(n.doubleValue()), mc).setScale(11, RoundingMode.DOWN));
+      test(Math.abs(d0()), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.toRadians(n, mc).setScale(11, RoundingMode.DOWN), (final BigDecimal n) -> new BigDecimal(Math.toRadians(n.doubleValue()), mc).setScale(11, RoundingMode.DOWN));
   }
 
   @Test
   public void testTanDouble() {
-    test(0, double.class, SafeMath::tan, n -> Math.tan(n));
-    test(1, double.class, SafeMath::tan, n -> Math.tan(n));
-    test(-1, double.class, SafeMath::tan, n -> Math.tan(n));
+    test(0, double.class, SafeMath::tan, (final Double n) -> Math.tan(n));
+    test(1, double.class, SafeMath::tan, (final Double n) -> Math.tan(n));
+    test(-1, double.class, SafeMath::tan, (final Double n) -> Math.tan(n));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), double.class, SafeMath::tan, n -> Math.tan(n));
+      test(d0(), double.class, SafeMath::tan, (final Double n) -> Math.tan(n));
   }
 
   @Test
   public void testTanBigInteger() {
-    test(0, BigInteger.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(new BigDecimal(n), mc));
+    test(0, BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.tan(n, mc), (final BigInteger n) -> BigDecimalMath.tan(new BigDecimal(n), mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigInteger.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(new BigDecimal(n), mc));
+      test(d0(), BigInteger.class, BigDecimal.class, (final BigInteger n) -> SafeMath.tan(n, mc), (final BigInteger n) -> BigDecimalMath.tan(new BigDecimal(n), mc));
   }
 
   @Test
   public void testTanBigDecimal() {
-    test(0, BigDecimal.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(n, mc));
+    test(0, BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.tan(n, mc), (final BigDecimal n) -> BigDecimalMath.tan(n, mc));
     for (int i = 0; i < numTests; ++i) // [N]
-      test(d0(), BigDecimal.class, BigDecimal.class, n -> SafeMath.tan(n, mc), n -> BigDecimalMath.tan(n, mc));
+      test(d0(), BigDecimal.class, BigDecimal.class, (final BigDecimal n) -> SafeMath.tan(n, mc), (final BigDecimal n) -> BigDecimalMath.tan(n, mc));
   }
 
   private static void testRoundFloat(final RoundingMode rm) {

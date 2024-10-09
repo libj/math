@@ -88,7 +88,7 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
     }
 
     try {
-      PackageLoader.getSystemPackageLoader().loadPackage("org.libj.math", c -> {
+      PackageLoader.getSystemPackageLoader().loadPackage("org.libj.math", (final Class<?> c) -> {
         links.put(c.getSimpleName(), "src/test/java/" + c.getName().replace('.', '/') + ".java");
         return false;
       });
@@ -221,6 +221,9 @@ public class AuditRunner extends BlockJUnit4ClassRunner {
       Main.premain("script:" + rulesFile.getAbsolutePath(), instr);
     }
     catch (final Exception e) {
+      if (e instanceof RuntimeException)
+        throw (RuntimeException)e;
+
       throw new RuntimeException(e);
     }
   }

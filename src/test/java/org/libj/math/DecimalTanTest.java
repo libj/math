@@ -47,9 +47,9 @@ public class DecimalTanTest extends DecimalTest {
     test("tan(" + rm + ")").withEpsilon(null)
       .withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, a -> toBigDecimal(lim(a, Long.MAX_VALUE, 2)), (final BigDecimal a) -> BigDecimalMath.tan(a, mc), o -> o),
-        d(Decimal.class, a -> toDecimal(lim(a, Long.MAX_VALUE, 2)), (final Decimal a) -> tan(a, rm), o -> o),
-        d(long.class, a -> lim(a, Long.MAX_VALUE, 2), (final long a) -> tan(a, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, (final long a) -> toBigDecimal(lim(a, Long.MAX_VALUE, 2)), (final BigDecimal a) -> BigDecimalMath.tan(a, mc), (final BigDecimal o) -> o),
+        d(Decimal.class, (final long a) -> toDecimal(lim(a, Long.MAX_VALUE, 2)), (final Decimal a) -> tan(a, rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> lim(a, Long.MAX_VALUE, 2), (final long a) -> tan(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

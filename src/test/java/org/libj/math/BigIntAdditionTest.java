@@ -39,7 +39,7 @@ public class BigIntAdditionTest extends BigIntTest {
     final int[] sig = {0};
     test("add(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return b;
         }, (final BigInteger a, final int b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -53,7 +53,7 @@ public class BigIntAdditionTest extends BigIntTest {
 
     test("add(int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, int b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
+        i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, final int b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
         i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.add(b), String::valueOf),
         i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.add(a, b), BigInt::toString));
   }
@@ -66,10 +66,10 @@ public class BigIntAdditionTest extends BigIntTest {
     final int[] sig = {0};
     test("add(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return b;
-        }, (final BigInteger a, long b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        }, (final BigInteger a, final long b) -> a.add(BigIntegers.valueOf(sig[0], b)), String::valueOf),
         l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.add(sig[0], b), String::valueOf),
         l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.add(a, sig[0], b), BigInt::toString));
   }
@@ -80,7 +80,7 @@ public class BigIntAdditionTest extends BigIntTest {
 
     test("add(long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, long b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
+        l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, final long b) -> a.add(BigInteger.valueOf(b)), String::valueOf),
         l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.add(b), String::valueOf),
         l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.add(a, b), BigInt::toString));
   }
@@ -104,10 +104,10 @@ public class BigIntAdditionTest extends BigIntTest {
     final int[] sig = {0};
     test("sub(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return b;
-        }, (final BigInteger a, int b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        }, (final BigInteger a, final int b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
         i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.sub(sig[0], b), String::valueOf),
         i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.sub(a, sig[0], b), BigInt::toString));
   }
@@ -118,7 +118,7 @@ public class BigIntAdditionTest extends BigIntTest {
 
     test("sub(int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, int b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
+        i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, final int b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
         i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.sub(b), String::valueOf),
         i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.sub(a, b), BigInt::toString));
   }
@@ -131,10 +131,10 @@ public class BigIntAdditionTest extends BigIntTest {
     final int[] sig = {0};
     test("sub(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return b;
-        }, (final BigInteger a, long b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
+        }, (final BigInteger a, final long b) -> a.subtract(BigIntegers.valueOf(sig[0], b)), String::valueOf),
         l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.sub(sig[0], b), String::valueOf),
         l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.sub(a, sig[0], b), BigInt::toString));
   }
@@ -145,7 +145,7 @@ public class BigIntAdditionTest extends BigIntTest {
 
     test("sub(long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, long b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
+        l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, final long b) -> a.subtract(BigInteger.valueOf(b)), String::valueOf),
         l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.sub(b), String::valueOf),
         l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.sub(a, b), BigInt::toString));
   }

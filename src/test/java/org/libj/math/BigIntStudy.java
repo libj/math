@@ -41,7 +41,7 @@ public class BigIntStudy extends BigIntTest {
   public void testLengthSignum() {
     final int[] v = new int[10];
     test("length signum: regular vs composite").withCases(
-      i("Regular", a -> {
+      i("Regular", (final int a) -> {
         v[0] = Math.abs(a / 2);
         v[1] = Integer.compare(a, 0);
         return v;
@@ -50,7 +50,7 @@ public class BigIntStudy extends BigIntTest {
         final int sig = a[1];
         return len * sig;
       }, Integer::valueOf),
-      i("Composite", a -> {
+      i("Composite", (final int a) -> {
         v[0] = a / 2;
         return v;
       }, (final int[] a) -> {
@@ -70,8 +70,8 @@ public class BigIntStudy extends BigIntTest {
   @Test
   public void testNewVsClone() {
     test("new vs clone").withCases(
-      i("new", a -> new int[Math.abs(a / 100000)], (final int[] a) -> new int[a.length], o -> o.length),
-      i("clone", a -> new int[Math.abs(a / 100000)], (final int[] a) -> a.clone(), o -> o.length));
+      i("new", (final int a) -> new int[Math.abs(a / 100000)], (final int[] a) -> new int[a.length], (final int[] o) -> o.length),
+      i("clone", (final int a) -> new int[Math.abs(a / 100000)], (final int[] a) -> a.clone(), (final int[] o) -> o.length));
   }
 
   @Test
@@ -84,11 +84,11 @@ public class BigIntStudy extends BigIntTest {
   @Test
   public void testPlus() {
     test("++i vs i++").withCases(
-      i("++a", (int a, int b) -> ++a, o -> 0),
-      i("a += b", (int a, int b) -> a += b, o -> 0));
+      i("++a", (int a, int b) -> ++a, (final Integer o) -> 0),
+      i("a += b", (int a, int b) -> a += b, (final Integer o) -> 0));
   }
 
-  private static final Function<Object,Object> function = a -> a;
+  private static final Function<Object,Object> function = (final Object a) -> a;
 
   @Test
   public void testFunctionOverhead() {
@@ -96,33 +96,33 @@ public class BigIntStudy extends BigIntTest {
     final int[] array = new int[10];
 
     test("int function overhead").withCases(
-      i("BiIntFunction", (final int a, int b) -> a, o -> 0),
-      i("ObjIntFunction", (final int a) -> Integer.valueOf(a), (final Object a, final int b) -> a, o -> 0),
-      i("BiFunction(Object)", (final int a) -> object, (final int b) -> Integer.valueOf(b), (final Object a, final Object b) -> a, o -> 0),
-      i("BiFunction(int[])", (final int a) -> array, (final int b) -> array, (final int[] a, final int[] b) -> a, o -> 0),
+      i("BiIntFunction", (final int a, final int b) -> a, (final Integer o) -> 0),
+      i("ObjIntFunction", (final int a) -> Integer.valueOf(a), (final Object a, final int b) -> a, (final Object o) -> 0),
+      i("BiFunction(Object)", (final int a) -> object, (final int b) -> Integer.valueOf(b), (final Object a, final Object b) -> a, (final Object o) -> 0),
+      i("BiFunction(int[])", (final int a) -> array, (final int b) -> array, (final int[] a, final int[] b) -> a, (final Object o) -> 0),
       i("IntFunction", (final int a) -> a, (final int o) -> 0),
       i("IntToIntFunction", (final int a) -> a, (final int o) -> 0),
-      i("Function(Object)", (final int a) -> object, (final Object a) -> a, o -> 0),
-      i("Function(int[])", (final int a) -> array, (final Object a) -> a, o -> 0));
+      i("Function(Object)", (final int a) -> object, (final Object a) -> a, (final Object o) -> 0),
+      i("Function(int[])", (final int a) -> array, (final Object a) -> a, (final Object o) -> 0));
 
     test("long function overhead").withCases(
       l("BiLongFunction", (final long a, final long b) -> a, (final long o) -> 0L),
       l("BiLongToLongFunction", (final long a, final long b) -> a, (final long a) -> 0L),
-      l("ObjLongFunction", (final long a) -> Long.valueOf(a), (final Object a, final long b) -> a, o -> 0L),
-      l("BiFunction(Object)", (final long a) -> object, (final long b) -> object, (final Object a, final Object b) -> a, o -> 0L),
-      l("BiFunction(int[])", (final long a) -> array, (final long b) -> array, (final int[] a, final int[] b) -> a, o -> 0L),
-      l("LongFunction", (final long a) -> a, o -> 0L),
-      l("LongToLongFunction", (final long a) -> a, (final long a) -> a, o -> 0L),
-      l("Function(Object)", (final long a) -> object, (final Object a) -> a, o -> 0L),
-      l("Function(int[])", (final long a) -> array, (final Object a) -> a, o -> 0L));
+      l("ObjLongFunction", (final long a) -> Long.valueOf(a), (final Object a, final long b) -> a, (final Object o) -> 0L),
+      l("BiFunction(Object)", (final long a) -> object, (final long b) -> object, (final Object a, final Object b) -> a, (final Object o) -> 0L),
+      l("BiFunction(int[])", (final long a) -> array, (final long b) -> array, (final int[] a, final int[] b) -> a, (final Object o) -> 0L),
+      l("LongFunction", (final long a) -> a, (final Object o) -> 0L),
+      l("LongToLongFunction", (final long a) -> a, (final long a) -> a, (final long o) -> 0L),
+      l("Function(Object)", (final long a) -> object, (final Object a) -> a, (final Object o) -> 0L),
+      l("Function(int[])", (final long a) -> array, (final Object a) -> a, (final Object o) -> 0L));
 
     test("string function overhead").withCases(
-      s("ObjIntFunction", (final String a) -> a, (final String a, final String b) -> 0, (final String a, final int b) -> a, o -> 0),
-      s("ObjLongFunction", (final String a) -> a, (final String a, final String b) -> 0L, (final String a, final long b) -> a, o -> 0),
-      s("BiFunction(Object)", (final String a) -> object, (final String b) -> object, (final Object a, final Object b) -> a, o -> 0),
-      s("BiFunction(int[])", (final String a) -> array, (final String b) -> array, (final int[] a, final int[] b) -> a, o -> 0),
-      s("Function(Object)", (final String a) -> object, (final Object a) -> a, o -> 0),
-      s("Function(int[])", (final String a) -> array, (final Object a) -> a, o -> 0));
+      s("ObjIntFunction", (final String a) -> a, (final String a, final String b) -> 0, (final String a, final int b) -> a, (final Object o) -> 0),
+      s("ObjLongFunction", (final String a) -> a, (final String a, final String b) -> 0L, (final String a, final long b) -> a, (final Object o) -> 0),
+      s("BiFunction(Object)", (final String a) -> object, (final String b) -> object, (final Object a, final Object b) -> a, (final Object o) -> 0),
+      s("BiFunction(int[])", (final String a) -> array, (final String b) -> array, (final int[] a, final int[] b) -> a, (final Object o) -> 0),
+      s("Function(Object)", (final String a) -> object, (final Object a) -> a, (final Object o) -> 0),
+      s("Function(int[])", (final String a) -> array, (final Object a) -> a, (final Object o) -> 0));
   }
 
   @Test
@@ -131,8 +131,8 @@ public class BigIntStudy extends BigIntTest {
     final int[] array = new int[10];
 
     test("object vs array").withCases(
-      i("object", (final int a) -> function.apply(object), o -> 0),
-      i("array", (final int a) -> function.apply(array), o -> 0));
+      i("object", (final int a) -> function.apply(object), (final Object o) -> 0),
+      i("array", (final int a) -> function.apply(array), (final Object o) -> 0));
   }
 
   @Test
@@ -158,8 +158,8 @@ public class BigIntStudy extends BigIntTest {
   @Test
   public void testMulVsCond() {
     test("sig * value: '*' vs '? :'").withCases(
-      l("s * v", a -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> a * b, (final long o) -> o),
-      l("s < 0 ? -v : v", a -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> a < 0 ? -b : b, (final long o) -> o));
+      l("s * v", (final long a) -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> a * b, (final long o) -> o),
+      l("s < 0 ? -v : v", (final long a) -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> a < 0 ? -b : b, (final long o) -> o));
   }
 
   @Test
@@ -194,8 +194,8 @@ public class BigIntStudy extends BigIntTest {
   @Test
   public void testCast() {
     test("direct vs cast").withCases(
-      i("object", a -> (byte)a, (final int a) -> a, (final int o) -> o),
-      i("array", a -> (byte)a, (final int a) -> (byte)a, (final int o) -> o));
+      i("object", (final int a) -> (byte)a, (final int a) -> a, (final int o) -> o),
+      i("array", (final int a) -> (byte)a, (final int a) -> (byte)a, (final int o) -> o));
   }
 
   private static byte min1(final byte a, final short b) {

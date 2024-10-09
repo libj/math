@@ -39,8 +39,8 @@ public class DecimalValueOfStringTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("valueOf(String)[" + rm + "]").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toDecimalString, (final String a) -> new BigDecimal(a, mc), o -> o),
-        d(Decimal.class, this::toDecimalString, (final String a) -> Decimal.valueOf(a, rm), o -> o),
+        d(BigDecimal.class, this::toDecimalString, (final String a) -> new BigDecimal(a, mc), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimalString, (final String a) -> Decimal.valueOf(a, rm), (final Decimal o) -> o),
         d(long.class, this::toDecimalString, (final String a) -> Decimal.valueOf(a, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 

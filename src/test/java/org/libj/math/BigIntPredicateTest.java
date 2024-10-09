@@ -37,9 +37,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("byteValue()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.byteValue(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.byteValue(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.byteValue(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.byteValue(), (final Byte o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.byteValue(), (final Byte o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.byteValue(a), (final Byte o) -> o));
   }
 
   @Test
@@ -48,9 +48,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("shortValue()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.shortValue(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.shortValue(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.shortValue(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.shortValue(), (final Short o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.shortValue(), (final Short o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.shortValue(a), (final Short o) -> o));
   }
 
   @Test
@@ -59,9 +59,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("intValue()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.intValue(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.intValue(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.intValue(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.intValue(), (final Integer o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.intValue(), (final Integer o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.intValue(a), (final Integer o) -> o));
   }
 
   @Test
@@ -70,9 +70,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("longValue()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.longValue(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.longValue(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.longValue(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.longValue(), (final Long o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.longValue(), (final Long o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.longValue(a), (final Long o) -> o));
   }
 
   @Test
@@ -81,9 +81,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("floatValue()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.floatValue(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.floatValue(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.floatValue(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.floatValue(), (final Float o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.floatValue(), (final Float o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.floatValue(a), (final Float o) -> o));
   }
 
   @Test
@@ -92,9 +92,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("doubleValue()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.doubleValue(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.doubleValue(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.doubleValue(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.doubleValue(), (final Double o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.doubleValue(), (final Double o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.doubleValue(a), (final Double o) -> o));
   }
 
   @Test
@@ -103,9 +103,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("toString()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.toString(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.toString(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.toString(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.toString(), (final String o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.toString(), (final String o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.toString(a), (final String o) -> o));
   }
 
   @Test
@@ -114,9 +114,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("compareTo(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (final BigInteger a, final BigInteger b) -> a.compareTo(b), o -> o),
-        s(BigInt.class, this::scaledBigInt, BigInt::new, (final BigInt a, final BigInt b) -> a.compareTo(b), o -> o),
-        s(int[].class, this::scaledVal, BigInt::valueOf, (final int[] a, final int[] b) -> BigInt.compareTo(a, b), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (final BigInteger a, final BigInteger b) -> a.compareTo(b), (final Integer o) -> o),
+        s(BigInt.class, this::scaledBigInt, BigInt::new, (final BigInt a, final BigInt b) -> a.compareTo(b), (final Integer o) -> o),
+        s(int[].class, this::scaledVal, BigInt::valueOf, (final int[] a, final int[] b) -> BigInt.compareTo(a, b), (final Integer o) -> o));
   }
 
   @Test
@@ -125,9 +125,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("equals(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (final BigInteger a, final BigInteger b) -> a.equals(b), o -> o),
-        s(BigInt.class, this::scaledBigInt, BigInt::new, (final BigInt a, final BigInt b) -> a.equals(b), o -> o),
-        s(int[].class, this::scaledVal, BigInt::valueOf, (final int[] a, final int[] b) -> BigInt.equals(a, b), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, BigInteger::new, (final BigInteger a, final BigInteger b) -> a.equals(b), (final Boolean o) -> o),
+        s(BigInt.class, this::scaledBigInt, BigInt::new, (final BigInt a, final BigInt b) -> a.equals(b), (final Boolean o) -> o),
+        s(int[].class, this::scaledVal, BigInt::valueOf, (final int[] a, final int[] b) -> BigInt.equals(a, b), (final Boolean o) -> o));
   }
 
   @Test
@@ -136,9 +136,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("hashCode()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.hashCode(), o -> Boolean.TRUE),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.hashCode(), o -> Boolean.TRUE),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.hashCode(a), o -> Boolean.TRUE));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.hashCode(), (final Integer o) -> Boolean.TRUE),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.hashCode(), (final Integer o) -> Boolean.TRUE),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.hashCode(a), (final Integer o) -> Boolean.TRUE));
   }
 
   @Test
@@ -169,9 +169,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("signum()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.signum(), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.signum(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.signum(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> a.signum(), (final Integer o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.signum(), (final Integer o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.signum(a), (final Integer o) -> o));
   }
 
   @Test
@@ -181,9 +181,9 @@ public class BigIntPredicateTest extends BigIntTest {
 
     test("precision()").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> Numbers.precision(a), o -> o),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.precision(), o -> o),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.precision(a), o -> o));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> Numbers.precision(a), (final Integer o) -> o),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.precision(), (final Integer o) -> o),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.precision(a), (final Integer o) -> o));
   }
 
   @Test

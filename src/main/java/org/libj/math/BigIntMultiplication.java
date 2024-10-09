@@ -1164,10 +1164,8 @@ abstract class BigIntMultiplication extends BigIntAddition {
     if (newLen > MAX_VAL_LENGTH)
       return setToZero(val);
 
-    // Large number algorithm. This is basically identical to the algorithm
-    // above, but calls mul() and square() which may use more efficient
-    // algorithms for large numbers.
-    // FIXME: Can we make `answer` final?
+    // Large number algorithm. This is basically identical to the algorithm above, but calls
+    // mul() and square() which may use more efficient algorithms for large numbers.
     int[] answer = new int[Math.min(MAX_VAL_LENGTH, 4 * (int)newLen + (bitsToShift >> 5))];
     answer[0] = answer[1] = 1;
 

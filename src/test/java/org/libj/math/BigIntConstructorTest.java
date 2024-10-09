@@ -38,9 +38,9 @@ public class BigIntConstructorTest extends BigIntTest {
 
     test("<init>(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, a -> a % 2 == 0 ? -1 : 1, (final int a, final int b) -> BigIntegers.valueOf(a, b), String::valueOf),
-        i(BigInt.class, a -> a % 2 == 0 ? -1 : 1, (final int a, final int b) -> new BigInt(a, b), String::valueOf),
-        i(int[].class, a -> a % 2 == 0 ? -1 : 1, (final int a, final int b) -> BigInt.valueOf(a, b), BigInt::toString));
+        i(BigInteger.class, (final int a) -> a % 2 == 0 ? -1 : 1, (final int a, final int b) -> BigIntegers.valueOf(a, b), String::valueOf),
+        i(BigInt.class, (final int a) -> a % 2 == 0 ? -1 : 1, (final int a, final int b) -> new BigInt(a, b), String::valueOf),
+        i(int[].class, (final int a) -> a % 2 == 0 ? -1 : 1, (final int a, final int b) -> BigInt.valueOf(a, b), BigInt::toString));
   }
 
   @Test
@@ -58,9 +58,9 @@ public class BigIntConstructorTest extends BigIntTest {
 
     test("<init>(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, a -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> BigIntegers.valueOf((int)a, b), String::valueOf),
-        l(BigInt.class, a -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> new BigInt((int)a, b), String::valueOf),
-        l(int[].class, a -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> BigInt.valueOf((int)a, b), BigInt::toString));
+        l(BigInteger.class, (final long a) -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> BigIntegers.valueOf((int)a, b), String::valueOf),
+        l(BigInt.class, (final long a) -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> new BigInt((int)a, b), String::valueOf),
+        l(int[].class, (final long a) -> a % 2 == 0 ? -1 : 1, (final long a, final long b) -> BigInt.valueOf((int)a, b), BigInt::toString));
   }
 
   @Test
@@ -89,8 +89,8 @@ public class BigIntConstructorTest extends BigIntTest {
         l(BigInteger.class, (final long a) -> {
           x[0] = strip(random.nextDouble() * random.nextLong(), y);
           return y[0];
-        }, a -> new BigInteger(a), o -> o == null ? null : String.valueOf(o)),
-        l(int[].class, (final long a) -> BigInt.valueOf(x[0]), o -> o == null ? null : BigInt.toString(o)));
+        }, (final String a) -> new BigInteger(a), (final BigInteger o) -> o == null ? null : String.valueOf(o)),
+        l(int[].class, (final long a) -> BigInt.valueOf(x[0]), (final int[] o) -> o == null ? null : BigInt.toString(o)));
   }
 
   @Test
@@ -107,9 +107,9 @@ public class BigIntConstructorTest extends BigIntTest {
     final byte[][] bytes = new byte[1][];
     test("<init>(byte[])").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, a -> bytes[0] = new BigInteger(a).toByteArray(), (final byte[] a) -> new BigInteger(a), String::valueOf),
-        s(BigInt.class, a -> bytes[0], (final byte[] a) -> new BigInt(a, false), String::valueOf),
-        s(int[].class, a -> bytes[0], (final byte[] a) -> BigInt.valueOf(a, false), BigInt::toString));
+        s(BigInteger.class, (final String a) -> bytes[0] = new BigInteger(a).toByteArray(), (final byte[] a) -> new BigInteger(a), String::valueOf),
+        s(BigInt.class, (final String a) -> bytes[0], (final byte[] a) -> new BigInt(a, false), String::valueOf),
+        s(int[].class, (final String a) -> bytes[0], (final byte[] a) -> BigInt.valueOf(a, false), BigInt::toString));
   }
 
   @Test
@@ -119,12 +119,12 @@ public class BigIntConstructorTest extends BigIntTest {
     final byte[][] bytes = new byte[2][];
     test("<init>(byte[])").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, a -> {
+        s(BigInteger.class, (final String a) -> {
           bytes[0] = new BigInteger(a).toByteArray();
           bytes[1] = ArrayUtil.reverse(bytes[0].clone());
           return bytes[0];
         }, (final byte[] a) -> new BigInteger(a), String::valueOf),
-        s(BigInt.class, a -> bytes[1], (final byte[] a) -> new BigInt(a, true), String::valueOf),
-        s(int[].class, a -> bytes[1], (final byte[] a) -> BigInt.valueOf(a, true), BigInt::toString));
+        s(BigInt.class, (final String a) -> bytes[1], (final byte[] a) -> new BigInt(a, true), String::valueOf),
+        s(int[].class, (final String a) -> bytes[1], (final byte[] a) -> BigInt.valueOf(a, true), BigInt::toString));
   }
 }

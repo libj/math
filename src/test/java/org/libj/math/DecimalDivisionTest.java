@@ -40,9 +40,9 @@ public class DecimalDivisionTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("div(" + rm + ")").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.divide(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
-        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.div(toDecimal(dnz(b)), rm), o -> o),
-        d(long.class, a -> a, b -> dnz(b), (final long a, final long b) -> Decimal.div(a, b, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.divide(toBigDecimal(dnz(b)), MathContext.DECIMAL128), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.div(toDecimal(dnz(b)), rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> a, b -> dnz(b), (final long a, final long b) -> Decimal.div(a, b, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test
@@ -106,8 +106,8 @@ public class DecimalDivisionTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("rem").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.remainder(toBigDecimal(dnz(b)), MathContext.DECIMAL128), o -> o),
-        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.rem(toDecimal(dnz(b))), o -> o),
-        d(long.class, a -> a, b -> dnz(b), (final long a, final long b) -> Decimal.rem(a, b, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, this::toBigDecimal, (final BigDecimal a, final long b) -> a.remainder(toBigDecimal(dnz(b)), MathContext.DECIMAL128), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final Decimal a, final long b) -> a.rem(toDecimal(dnz(b))), (final Decimal o) -> o),
+        d(long.class, (final long a) -> a, (final long b) -> dnz(b), (final long a, final long b) -> Decimal.rem(a, b, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

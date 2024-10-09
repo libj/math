@@ -38,8 +38,8 @@ public class DecimalValueOfFloatTest extends DecimalTest {
     final long defaultValue = random.nextLong();
     test("valueOf(float)").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toDecimalFloat, (final float a) -> new BigDecimal(String.valueOf(a), mc), o -> o),
-        d(Decimal.class, this::toDecimalFloat, (final float a) -> Decimal.valueOf(a), o -> o),
+        d(BigDecimal.class, this::toDecimalFloat, (final float a) -> new BigDecimal(String.valueOf(a), mc), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimalFloat, (final float a) -> Decimal.valueOf(a), (final Decimal o) -> o),
         d(long.class, this::toDecimalFloat, (final float a) -> Decimal.valueOf(a, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 }

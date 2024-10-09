@@ -39,7 +39,7 @@ public class BigIntDivisionTest extends BigIntTest {
     final int[] sig = {0};
     test("div(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final int b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -55,7 +55,7 @@ public class BigIntDivisionTest extends BigIntTest {
     final int[] sig = {0};
     test("div(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final long b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -88,9 +88,9 @@ public class BigIntDivisionTest extends BigIntTest {
     report.addComment(UNINSTRUMENTED.ordinal(), "Divide by `T`.");
     test("div(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.divide(b), String::valueOf),
-        s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> a.div(b), String::valueOf),
-        s(int[].class, this::scaledVal, b -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> BigInt.div(a, b), BigInt::toString));
+        s(BigInteger.class, this::scaledBigInteger, (final String b) -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.divide(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final String b) -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> a.div(b), String::valueOf),
+        s(int[].class, this::scaledVal, (final String b) -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> BigInt.div(a, b), BigInt::toString));
   }
 
   @Test
@@ -102,7 +102,7 @@ public class BigIntDivisionTest extends BigIntTest {
     final int[] sig = {0};
     test("divRem(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final int b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -125,7 +125,7 @@ public class BigIntDivisionTest extends BigIntTest {
     final int[] sig = {0};
     test("divRem(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final long b) -> a.divide(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -182,12 +182,12 @@ public class BigIntDivisionTest extends BigIntTest {
 
     test("divRem(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.divide(b), String::valueOf),
-        s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> {
+        s(BigInteger.class, this::scaledBigInteger, (final String b) -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.divide(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final String b) -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> {
           a.divRem(b);
           return a;
         }, String::valueOf),
-        s(int[].class, this::scaledVal, b -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> {
+        s(int[].class, this::scaledVal, (final String b) -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> {
           BigInt.divRem(a, b);
           return a;
         }, BigInt::toString));

@@ -36,9 +36,9 @@ public class BigIntLogTest extends BigIntTest {
 
     test("log(" + rm + ")").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, a -> scaledBigInteger(abs(nz(a))), (final BigInteger a) -> BigMath.logBigInteger(a, rm), o -> Double.isNaN(o) || Double.isInfinite(o) ? null : String.valueOf(o.intValue())),
-        s(BigInt.class, a -> scaledBigInt(abs(nz(a))), (final BigInt a) -> a.log(rm), o -> o == -1 ? null : String.valueOf(o)),
-        s(int[].class, a -> scaledVal(abs(nz(a))), (final int[] a) -> BigInt.log(a, rm), o -> o == -1 ? null : String.valueOf(o)));
+        s(BigInteger.class, (final String a) -> scaledBigInteger(abs(nz(a))), (final BigInteger a) -> BigMath.logBigInteger(a, rm), (final Double o) -> Double.isNaN(o) || Double.isInfinite(o) ? null : String.valueOf(o.intValue())),
+        s(BigInt.class, (final String a) -> scaledBigInt(abs(nz(a))), (final BigInt a) -> a.log(rm), (final Integer o) -> o == -1 ? null : String.valueOf(o)),
+        s(int[].class, (final String a) -> scaledVal(abs(nz(a))), (final int[] a) -> BigInt.log(a, rm), (final Integer o) -> o == -1 ? null : String.valueOf(o)));
   }
 
   @Test

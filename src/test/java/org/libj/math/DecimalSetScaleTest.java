@@ -79,9 +79,9 @@ public class DecimalSetScaleTest extends DecimalTest {
 
     test("setScale").withAuditReport(report)
       .withCases(
-        d(BigDecimal.class, this::toBigDecimal, b -> (byte)b, (final BigDecimal a, final long b) -> BigDecimals.setScale(a, (byte)b, rm), o -> o),
-        d(Decimal.class, this::toDecimal, b -> (byte)b, (final Decimal a, final long b) -> a.setScale((byte)b, rm), o -> o),
-        d(long.class, a -> a, b -> (byte)b, (final long a, final long b) -> Decimal.setScale(a, (byte)b, rm, defaultValue), o -> o == defaultValue ? null : o));
+        d(BigDecimal.class, this::toBigDecimal, (final long b) -> (byte)b, (final BigDecimal a, final long b) -> BigDecimals.setScale(a, (byte)b, rm), (final BigDecimal o) -> o),
+        d(Decimal.class, this::toDecimal, (final long b) -> (byte)b, (final Decimal a, final long b) -> a.setScale((byte)b, rm), (final Decimal o) -> o),
+        d(long.class, (final long a) -> a, (final long b) -> (byte)b, (final long a, final long b) -> Decimal.setScale(a, (byte)b, rm, defaultValue), (final long o) -> o == defaultValue ? null : o));
   }
 
   @Test

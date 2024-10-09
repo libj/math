@@ -583,8 +583,8 @@ abstract class BigIntDivision extends BigIntMultiplication {
       return r;
     }
 
-    // Prepare the q array as the replacement for val1, accounting for the extra 1 required slot // FIXME: Can this extra slot be
-    // avoided?
+    // Prepare the q array as the replacement for val1, accounting for the extra 1 required slot
+    // FIXME: Can this extra slot be avoided?
     final int[] q = alloc(len1 == val1.length ? val1.length + 1 : val1.length);
     // Transfer val1 -> q
     System.arraycopy(val1, 0, q, 0, len1);

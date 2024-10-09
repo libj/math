@@ -38,8 +38,8 @@ public class BigIntSqrtTest extends BigIntTest {
 
     test("sqrt(" + rm + ")").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.sqrt(a, rm), o -> o == null ? null : String.valueOf(o)),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.sqrt(rm), o -> o == null ? null : String.valueOf(o)),
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.sqrt(a, rm), (final BigInteger o) -> o == null ? null : String.valueOf(o)),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.sqrt(rm), (final BigInt o) -> o == null ? null : String.valueOf(o)),
         s(int[].class, this::scaledVal, (final int[] a) -> BigInt.sqrt(a, rm), BigInt::toString));
   }
 

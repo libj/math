@@ -43,7 +43,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] sig = {0};
     test("mul(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return b;
         }, (final BigInteger a, final int b) -> a.multiply(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -58,7 +58,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     test("mul(int)").withAuditReport(report)
       .withCases(
         i(BigInteger.class, this::scaledBigInteger, (final BigInteger a, final int b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
-        // i(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, int b) -> { a.mul(b); return a; }, String::valueOf),
+        // i(BigIntHuldra.class, this::scaledBigIntHuldra, (final BigIntHuldra a, final int b) -> { a.mul(b); return a; }, String::valueOf),
         i(BigInt.class, this::scaledBigInt, (final BigInt a, final int b) -> a.mul(b), String::valueOf),
         i(int[].class, this::scaledVal, (final int[] a, final int b) -> BigInt.mul(a, b), BigInt::toString));
   }
@@ -71,7 +71,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] sig = {0};
     test("mul(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return b;
         }, (final BigInteger a, final long b) -> a.multiply(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -86,7 +86,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     test("mul(long)").withAuditReport(report)
       .withCases(
         l(BigInteger.class, this::scaledBigInteger, (final BigInteger a, final long b) -> a.multiply(BigInteger.valueOf(b)), String::valueOf),
-        // l(BigIntHuldra.class, this::scaledBigIntHuldra, (BigIntHuldra a, long b) -> { a.mul(b); return a; }, String::valueOf),
+        // l(BigIntHuldra.class, this::scaledBigIntHuldra, (final BigIntHuldra a, final long b) -> { a.mul(b); return a; }, String::valueOf),
         l(BigInt.class, this::scaledBigInt, (final BigInt a, final long b) -> a.mul(b), String::valueOf),
         l(int[].class, this::scaledVal, (final int[] a, final long b) -> BigInt.mul(a, b), BigInt::toString));
   }
@@ -95,11 +95,11 @@ public class BigIntMultiplicationTest extends BigIntTest {
     test("mul(T): " + scale).withSkip(skip)
       .withAuditReport(report)
       .withCases(
-        s(BigInteger.class, a -> scaledBigInteger(a, scale), a -> scaledBigInteger(a, scale), (final BigInteger a, final BigInteger b) -> a.multiply(b), String::valueOf),
-        // s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) ->
+        s(BigInteger.class, (final String a) -> scaledBigInteger(a, scale), (final String a) -> scaledBigInteger(a, scale), (final BigInteger a, final BigInteger b) -> a.multiply(b), String::valueOf),
+        // s(BigIntHuldra.class, (final String a) -> scaledBigIntHuldra(a, scale), (final String a) -> scaledBigIntHuldra(a, scale), (BigIntHuldra a, BigIntHuldra b) ->
         // a.mul(b), String::valueOf),
-        s(BigInt.class, a -> scaledBigInt(a, scale), a -> scaledBigInt(a, scale), (final BigInt a, final BigInt b) -> a.mul(b), String::valueOf),
-        s(int[].class, a -> scaledVal(a, scale), a -> scaledVal(a, scale), (final int[] a, final int[] b) -> BigInt.mul(a, b), BigInt::toString));
+        s(BigInt.class, (final String a) -> scaledBigInt(a, scale), (final String a) -> scaledBigInt(a, scale), (final BigInt a, final BigInt b) -> a.mul(b), String::valueOf),
+        s(int[].class, (final String a) -> scaledVal(a, scale), (final String a) -> scaledVal(a, scale), (final int[] a, final int[] b) -> BigInt.mul(a, b), BigInt::toString));
 
     printAlgoReport();
   }
@@ -131,10 +131,10 @@ public class BigIntMultiplicationTest extends BigIntTest {
     test("mul(T,T): " + scale).withSkip(skip)
       .withAuditReport(report)
       .withCases(
-        s(BigInteger.class, a -> scaledBigInteger(a, scale), (final BigInteger a) -> a.multiply(a), String::valueOf),
-        // s(BigIntHuldra.class, a -> scaledBigIntHuldra(a, scale), (BigIntHuldra a) -> a.mul(a), String::valueOf),
-        s(BigInt.class, a -> scaledBigInt(a, scale), (final BigInt a) -> a.mul(a), String::valueOf),
-        s(int[].class, a -> scaledVal(a, scale), (final int[] a) -> BigInt.mul(a, a), BigInt::toString));
+        s(BigInteger.class, (final String a) -> scaledBigInteger(a, scale), (final BigInteger a) -> a.multiply(a), String::valueOf),
+        // s(BigIntHuldra.class, (final String a) -> scaledBigIntHuldra(a, scale), (final BigIntHuldra a) -> a.mul(a), String::valueOf),
+        s(BigInt.class, (final String a) -> scaledBigInt(a, scale), (final BigInt a) -> a.mul(a), String::valueOf),
+        s(int[].class, (final String a) -> scaledVal(a, scale), (final int[] a) -> BigInt.mul(a, a), BigInt::toString));
 
     printAlgoReport();
   }
@@ -143,9 +143,9 @@ public class BigIntMultiplicationTest extends BigIntTest {
     test("skip: " + scale).withSkip(skip)
       .withAuditReport(report)
       .withCases(
-        s(BigInteger.class, a -> scaledString(a, scale), b -> b, (final String a, final String b) -> a, o -> o),
-        s(BigInt.class, a -> scaledString(a, scale), b -> b, (final String a, final String b) -> a, o -> o),
-        s(int[].class, a -> scaledString(a, scale), b -> b, (final String a, final String b) -> a, o -> o));
+        s(BigInteger.class, (final String a) -> scaledString(a, scale), (final String b) -> b, (final String a, final String b) -> a, (final String o) -> o),
+        s(BigInt.class, (final String a) -> scaledString(a, scale), (final String b) -> b, (final String a, final String b) -> a, (final String o) -> o),
+        s(int[].class, (final String a) -> scaledString(a, scale), (final String b) -> b, (final String a, final String b) -> a, (final String o) -> o));
   }
 
   @Test
@@ -197,9 +197,9 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int maxPow = TestAide.isInCiTest() ? 64 : TestAide.isInSurefireTest() ? 128 : 256;
     test("pow(int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> abs(b) % maxPow, (final BigInteger a, final int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
-        i(BigInt.class, this::scaledBigInt, b -> abs(b) % maxPow, (final BigInt a, final int b) -> a.pow(b), o -> o == null ? null : String.valueOf(o)),
-        i(int[].class, this::scaledVal, b -> abs(b) % maxPow, (final int[] a, final int b) -> BigInt.pow(a, b), o -> o == null ? null : BigInt.toString(o)));
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> abs(b) % maxPow, (final BigInteger a, final int b) -> a.pow(b), (final BigInteger o) -> o == null ? null : String.valueOf(o)),
+        i(BigInt.class, this::scaledBigInt, (final int b) -> abs(b) % maxPow, (final BigInt a, final int b) -> a.pow(b), (final BigInt o) -> o == null ? null : String.valueOf(o)),
+        i(int[].class, this::scaledVal, (final int b) -> abs(b) % maxPow, (final int[] a, final int b) -> BigInt.pow(a, b), (final int[] o) -> o == null ? null : BigInt.toString(o)));
   }
 
   @Test
@@ -212,7 +212,7 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] val = new int[4];
     test("umul(int[],int)").withAuditReport(report)
       .withCases(
-        l(MPN.class, a -> {
+        l(MPN.class, (final long a) -> {
           x[0] = (int)(a & 0xFFFFFFFFL);
           x[1] = (int)(a >>> 32);
           return a;
@@ -220,14 +220,14 @@ public class BigIntMultiplicationTest extends BigIntTest {
           y[0] = (int)b;
           MPN.mul(zds, x, 2, y, 1);
           return zds;
-        }, o -> BigIntValue.longValue(o, 0, 2)),
-        l(BigInt.class, a -> {
+        }, (final int[] o) -> BigIntValue.longValue(o, 0, 2)),
+        l(BigInt.class, (final long a) -> {
           BigInt.assign(val, 1, a);
           return a;
         }, (final long a, final long b) -> {
           val[0] = BigIntMultiplication.umul(val, 1, val[0], (int)b);
           return val;
-        }, o -> BigIntValue.longValue(o, 1, o[0])));
+        }, (final int[] o) -> BigIntValue.longValue(o, 1, o[0])));
   }
 
   @Test
@@ -240,23 +240,23 @@ public class BigIntMultiplicationTest extends BigIntTest {
     final int[] val = new int[5];
     test("umul(int[],long)").withAuditReport(report)
       .withCases(
-        l(MPN.class, a -> {
+        l(MPN.class, (final long a) -> {
           x[0] = (int)(a & 0xFFFFFFFFL);
           x[1] = (int)(a >>> 32);
           return a;
-        }, (long a, long b) -> {
+        }, (final long a, final long b) -> {
           y[0] = (int)(b & 0xFFFFFFFFL);
           y[1] = (int)(b >>> 32);
           MPN.mul(zds, x, 2, y, 2);
           return zds;
-        }, o -> BigIntValue.longValue(o, 0, 3)),
-        l(BigInt.class, a -> {
+        }, (final int[] o) -> BigIntValue.longValue(o, 0, 3)),
+        l(BigInt.class, (final long a) -> {
           BigInt.assign(val, 1, a);
           return a;
-        }, (long a, long b) -> {
+        }, (final long a, final long b) -> {
           val[0] = BigIntMultiplication.umul(val, 1, val[0], b);
           return val;
-        }, o -> BigIntValue.longValue(o, 1, o[0])));
+        }, (final int[] o) -> BigIntValue.longValue(o, 1, o[0])));
   }
 
   @Test

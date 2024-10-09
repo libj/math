@@ -38,9 +38,9 @@ public class BigIntLog10Test extends BigIntTest {
 
     test("log10(" + rm + ")").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.log10(a, rm), o -> o == null ? null : String.valueOf(o)),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.log10(rm), o -> o == -1 ? null : String.valueOf(o)),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.log10(a, rm), o -> o == -1 ? null : String.valueOf(o)));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.log10(a, rm), (final Integer o) -> o == null ? null : String.valueOf(o)),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.log10(rm), (final Integer o) -> o == -1 ? null : String.valueOf(o)),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.log10(a, rm), (final Integer o) -> o == -1 ? null : String.valueOf(o)));
   }
 
   @Test

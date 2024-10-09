@@ -38,9 +38,9 @@ public class BigIntLog2Test extends BigIntTest {
 
     test("log2(" + rm + ")").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.log2(a, rm), o -> o == null ? null : String.valueOf(o)),
-        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.log2(rm), o -> o == -1 ? null : String.valueOf(o)),
-        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.log2(a, rm), o -> o == -1 ? null : String.valueOf(o)));
+        s(BigInteger.class, this::scaledBigInteger, (final BigInteger a) -> BigIntegerMath.log2(a, rm), (final Integer o) -> o == null ? null : String.valueOf(o)),
+        s(BigInt.class, this::scaledBigInt, (final BigInt a) -> a.log2(rm), (final Integer o) -> o == -1 ? null : String.valueOf(o)),
+        s(int[].class, this::scaledVal, (final int[] a) -> BigInt.log2(a, rm), (final Integer o) -> o == -1 ? null : String.valueOf(o)));
   }
 
   @Test

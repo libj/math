@@ -40,7 +40,7 @@ public class BigIntRemainderTest extends BigIntTest {
     final int[] sig = {0};
     test("rem(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -57,7 +57,7 @@ public class BigIntRemainderTest extends BigIntTest {
     final int[] sig = {0};
     test("rem(int,int):T").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -77,7 +77,7 @@ public class BigIntRemainderTest extends BigIntTest {
     final int[] sig = {0};
     test("rem(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -94,7 +94,7 @@ public class BigIntRemainderTest extends BigIntTest {
     final int[] sig = {0};
     test("rem(int,long):T").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)), String::valueOf),
@@ -165,9 +165,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
     test("rem(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.remainder(b), String::valueOf),
-        s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> a.rem(b), String::valueOf),
-        s(int[].class, this::scaledVal, b -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> BigInt.rem(a, b), BigInt::toString));
+        s(BigInteger.class, this::scaledBigInteger, (final String b) -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.remainder(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final String b) -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> a.rem(b), String::valueOf),
+        s(int[].class, this::scaledVal, (final String b) -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> BigInt.rem(a, b), BigInt::toString));
   }
 
   @Test
@@ -179,7 +179,7 @@ public class BigIntRemainderTest extends BigIntTest {
     final int[] sig = {0};
     test("divRem(int,int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> {
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final int b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -196,7 +196,7 @@ public class BigIntRemainderTest extends BigIntTest {
     final int[] sig = {0};
     test("divRem(int,long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> {
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> {
           sig[0] = b % 2 == 0 ? -1 : 1;
           return nz(b);
         }, (final BigInteger a, final long b) -> a.remainder(BigIntegers.valueOf(sig[0], b)).abs(), String::valueOf),
@@ -235,9 +235,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
     test("divRem(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.remainder(b), String::valueOf),
-        s(BigInt.class, this::scaledBigInt, b -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> a.divRem(b), String::valueOf),
-        s(int[].class, this::scaledVal, b -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> BigInt.divRem(a, b), BigInt::toString));
+        s(BigInteger.class, this::scaledBigInteger, (final String b) -> new BigInteger(nz(b)), (final BigInteger a, final BigInteger b) -> a.remainder(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final String b) -> new BigInt(nz(b)), (final BigInt a, final BigInt b) -> a.divRem(b), String::valueOf),
+        s(int[].class, this::scaledVal, (final String b) -> BigInt.valueOf(nz(b)), (final int[] a, final int[] b) -> BigInt.divRem(a, b), BigInt::toString));
   }
 
   @Test
@@ -246,9 +246,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
     test("mod(int)").withAuditReport(report)
       .withCases(
-        i(BigInteger.class, this::scaledBigInteger, b -> abs(nz(b)), (final BigInteger a, final int b) -> a.mod(BigInteger.valueOf(b)), String::valueOf),
-        i(BigInt.class, this::scaledBigInt, b -> abs(nz(b)), (final BigInt a, final int b) -> a.mod(b), String::valueOf),
-        i(int[].class, this::scaledVal, b -> abs(nz(b)), (final int[] a, final int b) -> BigInt.mod(a, b), BigInt::toString));
+        i(BigInteger.class, this::scaledBigInteger, (final int b) -> abs(nz(b)), (final BigInteger a, final int b) -> a.mod(BigInteger.valueOf(b)), String::valueOf),
+        i(BigInt.class, this::scaledBigInt, (final int b) -> abs(nz(b)), (final BigInt a, final int b) -> a.mod(b), String::valueOf),
+        i(int[].class, this::scaledVal, (final int b) -> abs(nz(b)), (final int[] a, final int b) -> BigInt.mod(a, b), BigInt::toString));
   }
 
   @Test
@@ -257,9 +257,9 @@ public class BigIntRemainderTest extends BigIntTest {
 
     test("mod(long)").withAuditReport(report)
       .withCases(
-        l(BigInteger.class, this::scaledBigInteger, b -> abs(nz(b)), (final BigInteger a, final long b) -> a.mod(BigInteger.valueOf(b)), String::valueOf),
-        l(BigInt.class, this::scaledBigInt, b -> abs(nz(b)), (final BigInt a, final long b) -> a.mod(b), String::valueOf),
-        l(int[].class, this::scaledVal, b -> abs(nz(b)), (final int[] a, final long b) -> BigInt.mod(a, b), BigInt::toString));
+        l(BigInteger.class, this::scaledBigInteger, (final long b) -> abs(nz(b)), (final BigInteger a, final long b) -> a.mod(BigInteger.valueOf(b)), String::valueOf),
+        l(BigInt.class, this::scaledBigInt, (final long b) -> abs(nz(b)), (final BigInt a, final long b) -> a.mod(b), String::valueOf),
+        l(int[].class, this::scaledVal, (final long b) -> abs(nz(b)), (final int[] a, final long b) -> BigInt.mod(a, b), BigInt::toString));
   }
 
   @Test
@@ -268,8 +268,8 @@ public class BigIntRemainderTest extends BigIntTest {
 
     test("mod(T)").withAuditReport(report)
       .withCases(
-        s(BigInteger.class, this::scaledBigInteger, b -> new BigInteger(abs(nz(b))), (final BigInteger a, final BigInteger b) -> a.mod(b), String::valueOf),
-        s(BigInt.class, this::scaledBigInt, b -> new BigInt(abs(nz(b))), (final BigInt a, final BigInt b) -> a.mod(b), String::valueOf),
-        s(int[].class, this::scaledVal, b -> BigInt.valueOf(abs(nz(b))), (final int[] a, final int[] b) -> BigInt.mod(a, b), BigInt::toString));
+        s(BigInteger.class, this::scaledBigInteger, (final String b) -> new BigInteger(abs(nz(b))), (final BigInteger a, final BigInteger b) -> a.mod(b), String::valueOf),
+        s(BigInt.class, this::scaledBigInt, (final String b) -> new BigInt(abs(nz(b))), (final BigInt a, final BigInt b) -> a.mod(b), String::valueOf),
+        s(int[].class, this::scaledVal, (final String b) -> BigInt.valueOf(abs(nz(b))), (final int[] a, final int[] b) -> BigInt.mod(a, b), BigInt::toString));
   }
 }
